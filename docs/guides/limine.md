@@ -45,6 +45,16 @@ also publishes a detached signature made with the fingerprint recorded in
 trusted copy of that public key is provisioned locally. The checksum remains
 mandatory even when a signature is checked.
 
+## Serial console handoff
+
+After initializing its serial console, the bootstrap processor clears the
+visible terminal and moves the cursor home before printing the kernel banner.
+Limine's UEFI console can otherwise position shorter messages over longer
+firmware diagnostics, leaving their trailing characters visible beside the
+banner. This happens once at kernel startup on both architectures. It leaves
+terminal scrollback intact, and raw serial captures retain the earlier firmware
+and loader output together with the clear/home escape sequences.
+
 ## Updating Limine
 
 A loader update can affect the whole boot path. Check it as a platform change:

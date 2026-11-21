@@ -204,6 +204,10 @@ pub extern "C" fn bsp_main() -> ! {
         #[cfg(feature = "kernel_tests")]
         crate::self_test::verify_x86_boot_fp();
     }
+    // Firmware and Limine can leave the cursor over longer diagnostic lines.
+    // Clear the visible serial screen once so their tails cannot survive the
+    // kernel banner. Earlier output remains in the raw serial capture.
+    early_log!("\x1b[2J\x1b[H");
     early_logln!(
         "Knytos Kernel Version {}.{}.{}",
         (KERNEL_VERSION.0),
