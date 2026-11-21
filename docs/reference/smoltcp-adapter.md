@@ -82,12 +82,14 @@ derives a stable link-local IPv4 address from it (`10.0.0.(100 + mac[5] % 100)`
 directly on the same `/24`), registers as `"tcpip"` in the name service, waits
 for the boot-done marker, then runs a poll loop that:
 
-1. Pushes incoming `OP_FRAME` deliveries (IPv4/ARP from the frouter) into the
-   adapter's receive queue;
-2. Runs `iface.poll()` using milliseconds sampled from the kernel monotonic counter;
-3. Services at most 16 requests per cycle through the socket API (`OP_SOCKET`/`OP_CONNECT`/`OP_BIND`/`OP_LISTEN`/
-   `OP_ACCEPT`/`OP_SEND`/`OP_RECV`/`OP_CLOSE`) over its endpoint;
-4. Completes deferred `OP_ACCEPT`, `OP_SEND` and `OP_RECV` replies when their socket state changes.
+1. Runs `iface.poll()` using milliseconds sampled from the kernel monotonic counter;
+2. Completes ready deferred `OP_ACCEPT`, `OP_SEND` and `OP_RECV` operations through
+   their retained owners;
+3. Services at most 16 incoming IPC requests, including `OP_FRAME`, per turn;
+4. Repeats immediately after accepted IPC, socket progress or reclamation, so
+   newly queued frames and sends reach the stack before an idle wait;
+5. Waits on CQ zero only after a turn made no local progress. CQ hint draining
+   is bounded, and every subsequent turn rechecks the actual operation owners.
 
 smoltcp 0.13 transitions a listening socket itself into the established
 connection. `OP_ACCEPT` (15) retains the complete authenticated request until
@@ -120,9 +122,12 @@ A positive immediate TCP receipt can acknowledge a prefix; UDP acknowledges the
 whole datagram. A rejected, timed-out or lost observation grants no general
 business replay authority. See the [immediate-send audit](../reports/audits/2026-10-22-security-immediate-send.md).
 NIC `net::OP_SEND`
-is a separate protocol. TCP/IP retains its 50 ms timed transport cadence;
-deferred send completion supplies a real reply notification, without making the
-whole stack event-driven. See the [output audit](../reports/audits/2026-10-22-security-deployment-output.md).
+is a separate protocol. TCP/IP retains a 50 ms idle maintenance bound for
+protocol timers and owner-status reclamation, which currently lacks a dedicated
+owner-death subscription. That bound does not pace locally queued frames,
+newly installed deferred requests or confirmed send/receive progress. Precise
+smoltcp timer scheduling remains a separate improvement; this change does not
+make the whole stack event-driven. See the [output audit](../reports/audits/2026-10-22-security-deployment-output.md).
 
 The frame router binds its normal receive/forward/control operations to the
 same CQ as its serving endpoint and snapshot leases. Its route/assignment

@@ -586,6 +586,7 @@ fn serve(ctx: &Context) -> ShutdownRequest {
         let (counter, frequency) = knytos_syscall::monotonic_clock();
         let ticks = clock.sample(counter, frequency).unwrap_or_else(|| fail(0xe00b));
         config::write::<u64>(status::MONOTONIC_MS, ticks);
+        let mut progressed = false;
         device.poll_smoltcp(&mut iface, &mut sockets, ticks);
         let assignments_due = ticks >= next_assignment_refresh_ms;
         if assignments_due {
@@ -596,6 +597,7 @@ fn serve(ctx: &Context) -> ShutdownRequest {
         {
             install_interface_addresses(&mut iface, local_cidr, &vips);
             service_vips = vips;
+            progressed = true;
             knytos_rt::logln!("[tcpip] installed {} committed cluster VIP(s)", service_vips.len());
         }
 
@@ -657,6 +659,7 @@ fn serve(ctx: &Context) -> ShutdownRequest {
                     cidr,
                     router,
                 } => {
+                    progressed = true;
                     local_ip = cidr.address();
                     local_cidr = Some(cidr);
                     let octets = local_ip.octets();
@@ -679,6 +682,7 @@ fn serve(ctx: &Context) -> ShutdownRequest {
                     }
                 }
                 DhcpUpdate::Deconfigured => {
+                    progressed = true;
                     local_ip = Ipv4Address::new(0, 0, 0, 0);
                     local_cidr = None;
                     install_interface_addresses(&mut iface, local_cidr, &service_vips);
@@ -693,7 +697,9 @@ fn serve(ctx: &Context) -> ShutdownRequest {
         // request queue is full. Track terminal TCP states as well and
         // force-abort them after a bounded interval. This keeps reconnect
         // churn from exhausting a principal's quota with unusable sockets.
-        state.reap_abandoned(&mut sockets, ticks, |owner| matches!(owner_status(owner), 1 | 2));
+        progressed |= state
+            .reap_abandoned(&mut sockets, ticks, |owner| matches!(owner_status(owner), 1 | 2))
+            != 0;
         let mut closing: [u64; 8] = [0; 8];
         let mut closing_n: usize = 0;
         for (id, entry) in state.sockets.iter_mut() {
@@ -725,6 +731,7 @@ fn serve(ctx: &Context) -> ShutdownRequest {
                 .is_some_and(|started| ticks.saturating_sub(started) >= SOCKET_CLOSE_GRACE_MS)
                 && is_open
             {
+                progressed = true;
                 match entry.kind {
                     SocketKind::Tcp => sockets.get_mut::<TcpSocket>(entry.handle).abort(),
                     SocketKind::Udp => sockets.get_mut::<UdpSocket>(entry.handle).close(),
@@ -747,6 +754,7 @@ fn serve(ctx: &Context) -> ShutdownRequest {
         }
         for id in closing.iter().take(closing_n) {
             if let Some(entry) = state.sockets.remove(id) {
+                progressed = true;
                 sockets.remove(entry.handle);
             }
         }
@@ -758,7 +766,10 @@ fn serve(ctx: &Context) -> ShutdownRequest {
                 let tcp = sockets.get_mut::<TcpSocket>(entry.handle);
                 match knytos_services::socket_state::send_ready(tcp.state(), tcp.can_send()) {
                     Some(false) => {}
-                    None => entry.send_pending.take().unwrap().reply(socket::ERR_NOT_CONNECTED),
+                    None => {
+                        progressed = true;
+                        entry.send_pending.take().unwrap().reply(socket::ERR_NOT_CONNECTED);
+                    }
                     Some(true) => {
                         let result = entry.send_pending.as_mut().unwrap().write(|bytes| {
                             tcp.send_slice(bytes).map_err(|_| socket::ERR_NOT_CONNECTED)
@@ -766,11 +777,15 @@ fn serve(ctx: &Context) -> ShutdownRequest {
                         match result {
                             Ok(0) => {}
                             Ok(count) => {
+                                progressed = true;
                                 tx_ok = tx_ok.wrapping_add(1);
                                 config::write::<u32>(status::TX_OK, tx_ok);
                                 entry.send_pending.take().unwrap().reply(count as i64);
                             }
-                            Err(error) => entry.send_pending.take().unwrap().reply(error),
+                            Err(error) => {
+                                progressed = true;
+                                entry.send_pending.take().unwrap().reply(error);
+                            }
                         }
                     }
                 }
@@ -780,11 +795,13 @@ fn serve(ctx: &Context) -> ShutdownRequest {
                 if let Some(result) = knytos_services::socket_state::accept_result(tcp.state())
                     && let Some(request) = entry.accept_pending.take()
                 {
+                    progressed = true;
                     knytos_services::socket_state::reply_accept(request, result);
                 }
                 if entry.recv_pending.is_some()
                     && knytos_services::socket_state::receive_eof(tcp.state(), tcp.can_recv())
                 {
+                    progressed = true;
                     entry.recv_pending.take().unwrap().reply(0);
                 }
             }
@@ -812,14 +829,24 @@ fn serve(ctx: &Context) -> ShutdownRequest {
                 ),
             });
             match received {
-                Ok(Some(len)) => entry.recv_pending.take().unwrap().reply(len as i64),
+                Ok(Some(len)) => {
+                    progressed = true;
+                    entry.recv_pending.take().unwrap().reply(len as i64);
+                }
                 Ok(None) => {}
-                Err(_) => entry.recv_pending.take().unwrap().reply(socket::ERR_WOULD_BLOCK),
+                Err(_) => {
+                    progressed = true;
+                    entry.recv_pending.take().unwrap().reply(socket::ERR_WOULD_BLOCK);
+                }
             }
         }
 
         for _ in 0..MAX_IPC_REQUESTS_PER_CYCLE {
             let msg = ipc_recv(endpoint.as_raw());
+            // An accepted IPC can enqueue a frame or install a deferred
+            // socket operation after this turn's stack/owner observations.
+            // Recheck those exact owners before admitting an idle wait.
+            progressed |= msg.is_ok();
             if msg.is_ok()
                 && msg.reply != 0
                 && matches!(
@@ -1484,7 +1511,12 @@ fn serve(ctx: &Context) -> ShutdownRequest {
             }
         }
 
-        let _ = knytos_services::reactor::wait(Some(CLOCK_TICK_MS), 0);
+        if !progressed {
+            let _ = knytos_services::reactor::wait(Some(CLOCK_TICK_MS), 0);
+        }
+        // Hints are drained before the next turn rechecks operation owners.
+        // Local progress goes directly to that recheck, including a second
+        // stack poll after a pending send has filled its transmit buffer.
         // Bound draining even if another source replenishes this CQ.
         // Measure elapsed time with the scalar clock, independently of cookie count.
         for _ in 0..cq.entries {
