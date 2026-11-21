@@ -49,7 +49,7 @@ class BootImages(unittest.TestCase):
     def test_default_packages_large_payload_without_truncation(self):
         result = self.create('"$KNYTOS_BOOT_DEFAULT_IMAGE_SIZE_MIB"')
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        for source, member in [(self.kernel, "::/catten"),
+        for source, member in [(self.kernel, "::/knytos"),
                                (ROOT / "limine-binary/BOOTX64.EFI", "::/EFI/BOOT/BOOTX64.EFI"),
                                (ROOT / "limine.conf", "::/limine.conf")]:
             extracted = self.directory / (source.name + ".extracted")

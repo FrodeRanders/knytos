@@ -208,7 +208,7 @@ fi
                                   bundle=str(self.directory), disk=str(image), timeout=10)
 
         def extract(command, **_kwargs):
-            self.assertEqual(command[:4], ["mcopy", "-i", str(image), "::/catten"])
+            self.assertEqual(command[:4], ["mcopy", "-i", str(image), "::/knytos"])
             Path(command[4]).write_bytes(b"executed payload")
 
         with patch.object(DIAG.subprocess, "run", side_effect=extract), \
