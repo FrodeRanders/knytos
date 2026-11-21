@@ -254,7 +254,7 @@ jobs:
               --target "target_specs/${{ matrix.target }}.json" \
               --no-default-features --features "$features"
             python3 scripts/check-boot-profile.py \
-              --kernel "target/${{ matrix.target }}/debug/catten" --mode "$mode"
+              --kernel "target/${{ matrix.target }}/debug/knytos" --mode "$mode"
             # HVF hardware fixtures are excluded at their callers and helpers.
             # Keep this reduced profile buildable without requiring a Mac host.
             if [ "${{ matrix.target }}" = "aarch64-unknown-none-knytos" ] && [ "$mode" = test ]; then
@@ -262,9 +262,9 @@ jobs:
                 --target target_specs/aarch64-unknown-none-knytos.json \
                 --no-default-features --features acpi,kernel_tests,hvf_compat
               python3 scripts/check-boot-profile.py \
-                --kernel target/aarch64-unknown-none-knytos/debug/catten --mode test
+                --kernel target/aarch64-unknown-none-knytos/debug/knytos --mode test
               python3 scripts/check-kernel-asm-sections.py \
-                target/aarch64-unknown-none-knytos/debug/catten
+                target/aarch64-unknown-none-knytos/debug/knytos
             fi
           done
 

@@ -43,14 +43,15 @@ class SecureBootResults(unittest.TestCase):
         evidence = {
             "firmware": b'BdsDxe: failed to load Boot0001 "UEFI QEMU USB HARDDRIVE": Security Violation\n',
             "config": b"!!! CHECKSUM MISMATCH FOR CONFIG FILE !!!\n",
-            "kernel-hash": b"PANIC: Blake2b hash for URI `boot():/catten` does not match!\n",
+            "kernel-hash": b"PANIC: Blake2b hash for URI `boot():/knytos` does not match!\n",
             "policy-hash": b"PANIC: Blake2b hash for URI `boot():/boot-policy.bin` does not match!\n",
         }
         for expectation, message in evidence.items():
             self.assertTrue(secure.observed_result(message, expectation))
             self.assertTrue(secure.observed_result(b"\x1b[31m" + message, expectation))
-            with self.assertRaises(secure.TestFailure):
-                secure.observed_result(message + b"Catten Kernel Version 0.8.1\n", expectation)
+            for banner in (b"Knytos Kernel Version", b"Catten Kernel Version"):
+                with self.assertRaises(secure.TestFailure):
+                    secure.observed_result(message + banner + b" 0.8.1\n", expectation)
         self.assertFalse(secure.observed_result(evidence["policy-hash"], "kernel-hash"))
         self.assertTrue(secure.observed_result(evidence["firmware"].replace(b"Security Violation", b"Access Denied"), "firmware"))
         self.assertFalse(secure.observed_result(b"Security Violation\n", "firmware"))

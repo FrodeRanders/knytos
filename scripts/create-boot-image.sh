@@ -77,7 +77,7 @@ esac
 knytos_boot_init "$ROOT_DIR"
 cd "$ROOT_DIR"
 
-KERNEL="${KERNEL:-${ROOT_DIR}/target/${TARGET_DIR}/${PROFILE}/catten}"
+KERNEL="${KERNEL:-${ROOT_DIR}/target/${TARGET_DIR}/${PROFILE}/knytos}"
 OUTPUT="${OUTPUT:-${ROOT_DIR}/os-images/knytos-${ARCH}-${PROFILE}.img}"
 SIZE_MIB="${SIZE_MIB:-${KNYTOS_BOOT_DEFAULT_IMAGE_SIZE_MIB}}"
 

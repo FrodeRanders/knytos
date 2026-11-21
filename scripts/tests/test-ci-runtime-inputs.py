@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check that CI's pinned Sitas source matches the current kernel wait ABI."""
+"""Check CI kernel artifacts and pinned Sitas wait-ABI inputs."""
 
 from pathlib import Path
 import re
@@ -71,6 +71,18 @@ class CiRuntimeInputs(unittest.TestCase):
                     self.assertEqual(pin, channel)
                 count += 1
         self.assertGreater(count, 0)
+
+    def test_ci_inspects_the_declared_kernel_binary_instead_of_the_package_name(self):
+        kernel = tomllib.loads((ROOT / "crates/catten/Cargo.toml").read_text())
+        binaries = {target["name"] for target in kernel["bin"]}
+        paths = [quoted or bare for quoted, bare in
+                 re.findall(r'--kernel\s+(?:"([^"\n]+)"|(\S+))', self.workflow)]
+        paths.extend(re.findall(r'check-kernel-asm-sections\.py\s*\\\s*\n\s*(\S+)', self.workflow))
+        self.assertGreaterEqual(len(paths), 3, "matrix, HVF and assembly checks must be covered")
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertIn(Path(path).name, binaries,
+                              "CI must inspect Cargo's binary output, not its package name")
 
 
 if __name__ == "__main__":

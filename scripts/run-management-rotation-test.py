@@ -232,7 +232,7 @@ with open(sys.argv[3],'w') as out: out.write(public.hex()+'\\n')
             build_env = dict(environment, KNYTOS_BOOT_TEST_INSTALLED_POLICY=str(state), KNYTOS_MANAGEMENT_TLS_RESOURCE=str(private / f"resource-{resource_revision}"))
             run("cargo", "build", "--locked", "-p", "catten", "--target", "target_specs/x86_64-unknown-none-knytos.json",
                 "--no-default-features", "--features", "acpi,boot_trust_test,virtio_net_test", env=build_env)
-            shutil.copyfile(ROOT / "target/x86_64-unknown-none-knytos/debug/catten", kernel)
+            shutil.copyfile(ROOT / "target/x86_64-unknown-none-knytos/debug/knytos", kernel)
             run("python3", ROOT / "scripts/check-kernel-asm-sections.py", kernel)
             return kernel
         def image(kernel, policy, name):

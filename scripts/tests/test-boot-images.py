@@ -2,6 +2,7 @@
 """Package payloads above the retired 64 MiB FAT boundary using real mtools."""
 
 import hashlib
+import importlib.util
 from pathlib import Path
 import re
 import shutil
@@ -82,6 +83,27 @@ class BootImages(unittest.TestCase):
         self.assertIn("failed to create boot image", result.stderr)
         self.assertEqual(digest(self.image), previous)
         self.assertFalse(list(self.directory.glob("boot.img.tmp.*")))
+
+    def test_secure_configuration_hashes_resolve_to_the_packaged_payloads(self):
+        spec = importlib.util.spec_from_file_location("secure_boot", ROOT / "scripts/run-secure-boot-test.py")
+        secure = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(secure)
+        self.kernel.write_bytes(b"signed-kernel packaging probe")
+        policy = self.directory / "boot-policy.bin"
+        policy.write_bytes(b"signed-policy packaging probe")
+        config = self.directory / "secure.conf"
+        config.write_bytes(secure.configuration(secure.blake2(self.kernel), secure.blake2(policy)))
+        result = self.create('"$KNYTOS_BOOT_DEFAULT_IMAGE_SIZE_MIB"', config)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        subprocess.run(["mcopy", "-i", str(self.image), str(policy), "::/boot-policy.bin"],
+                       check=True, capture_output=True, timeout=30)
+        resources = re.findall(r"boot\(\):([^#\s]+)#([0-9a-f]{128})", config.read_text())
+        self.assertEqual(len(resources), 2)
+        for path, expected in resources:
+            extracted = self.directory / (Path(path).name + ".hashed")
+            subprocess.run(["mcopy", "-i", str(self.image), "::" + path, str(extracted)],
+                           check=True, capture_output=True, timeout=30)
+            self.assertEqual(secure.blake2(extracted), expected)
 
 
 if __name__ == "__main__":

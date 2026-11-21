@@ -304,7 +304,7 @@ fi
 IMAGE="${IMAGE_DIR}/knytos-${ARCH}-${PROFILE}${INSTANCE_SUFFIX}.img"
 DATA_IMAGE="${IMAGE_DIR}/x86-data${INSTANCE_SUFFIX}.img"
 DATA_BUNDLE_HASH="${DATA_IMAGE}.bundle-sha256"
-KERNEL="./target/${TARGET_DIR}/${PROFILE}/catten"
+KERNEL="./target/${TARGET_DIR}/${PROFILE}/knytos"
 EFI_BOOT_FILE="BOOTX64.EFI"
 
 # Resolve the edk2 x86_64 firmware shipped with QEMU only when this invocation

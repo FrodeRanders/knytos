@@ -64,13 +64,13 @@ def observed_result(raw, expected):
             return True
         return False
     if expected in ("firmware", "config", "kernel-hash", "policy-hash"):
-        if "Catten Kernel Version" in text:
+        if any(banner in text for banner in ("Knytos Kernel Version", "Catten Kernel Version")):
             raise TestFailure("rejected boot input reached kernel entry")
         if expected == "firmware":
             return bool(re.search(r"BdsDxe: failed to load Boot[0-9A-Fa-f]+ .*USB.*: (Security Violation|Access Denied)", text))
         if expected == "config":
             return "CHECKSUM MISMATCH FOR CONFIG FILE" in text
-        resource = "/catten" if expected == "kernel-hash" else "/boot-policy.bin"
+        resource = "/knytos" if expected == "kernel-hash" else "/boot-policy.bin"
         return "PANIC" in text and "Blake2b hash for URI" in text and resource in text and "does not match" in text
     if expected in ("platform-ns-root", "platform-driver-root"):
         if "[launch] steady-state service set published." in text:
@@ -106,7 +106,7 @@ def configuration(kernel_hash, policy_hash, modules=1):
     data = (
         "TIMEOUT: 0\nSERIAL: yes\nHASH_MISMATCH_PANIC: yes\nEDITOR_ENABLED: no\n"
         "/Catten boot trust fixture\n PROTOCOL: limine\n"
-        f" KERNEL_PATH: boot():/catten#{kernel_hash}\n KASLR: no\n"
+        f" KERNEL_PATH: boot():/knytos#{kernel_hash}\n KASLR: no\n"
     )
     for _ in range(modules):
         data += f" MODULE_PATH: boot():/boot-policy.bin#{policy_hash}\n MODULE_STRING: knytos.boot-trust-test\n"
@@ -242,7 +242,7 @@ with os.fdopen(os.open(sys.argv[1], os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
                                 "--features", "acpi,boot_trust_test"], cwd=ROOT, env=environment,
                                stdout=log, stderr=log, check=True)
             snapshot = private / name
-            shutil.copyfile(ROOT / "target/x86_64-unknown-none-knytos/debug/catten", snapshot)
+            shutil.copyfile(ROOT / "target/x86_64-unknown-none-knytos/debug/knytos", snapshot)
             run(["python3", ROOT / "scripts/check-kernel-asm-sections.py", snapshot], preparation)
             return snapshot
 
@@ -297,14 +297,14 @@ with os.fdopen(os.open(sys.argv[1], os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
                 changed.write_bytes(baseline + b"# unauthorized config substitution\n")
                 run(["mcopy", "-o", "-i", image, changed, "::/limine.conf"], preparation)
             elif case == "kernel-tamper":
-                changed = private / "catten"
+                changed = private / "knytos"
                 shutil.copyfile(kernel, changed)
                 with changed.open("r+b") as stream:
                     stream.seek(-1, 2)
                     byte = stream.read(1)
                     stream.seek(-1, 2)
                     stream.write(bytes([byte[0] ^ 1]))
-                run(["mcopy", "-o", "-i", image, changed, "::/catten"], preparation)
+                run(["mcopy", "-o", "-i", image, changed, "::/knytos"], preparation)
             elif case.startswith("policy-") or case.endswith("-module") or case.startswith("platform-"):
                 if case in ("policy-tamper", "policy-signature"):
                     changed = bytearray(case_policy.read_bytes())
@@ -321,7 +321,7 @@ with os.fdopen(os.open(sys.argv[1], os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
                     changed_config = private / "authorized.conf"
                     case_kernel = kernels.get(case, kernel)
                     changed_config.write_bytes(configuration(blake2(case_kernel), blake2(case_policy), modules))
-                    run(["mcopy", "-o", "-i", image, case_kernel, "::/catten"], preparation)
+                    run(["mcopy", "-o", "-i", image, case_kernel, "::/knytos"], preparation)
                     unsigned = private / "authorized.EFI"
                     shutil.copyfile(ROOT / "limine-binary/BOOTX64.EFI", unsigned)
                     run([enroll, "enroll-config", unsigned, blake2(changed_config)], preparation)

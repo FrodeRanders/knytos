@@ -127,7 +127,7 @@ def main() -> int:
         description="Map Knytos panic return addresses to kernel functions."
     )
     source = parser.add_mutually_exclusive_group()
-    source.add_argument("--kernel", type=pathlib.Path, help="matching unstripped catten ELF")
+    source.add_argument("--kernel", type=pathlib.Path, help="matching unstripped Knytos ELF")
     source.add_argument("--symbols", type=pathlib.Path, help="generated .symbols sidecar")
     parser.add_argument(
         "--source",

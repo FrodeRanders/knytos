@@ -195,8 +195,8 @@ def main():
                            KNYTOS_MANAGEMENT_TLS_RESOURCE=str(credentials / "resource.bin"))
         run(["cargo", "build", "--locked", "-p", "catten", "--target", "target_specs/aarch64-unknown-none-knytos.json",
              "--no-default-features", "--features", "acpi,virtio_net_test"], environment)
-        kernel = private / "catten"
-        kernel.write_bytes((ROOT / "target/aarch64-unknown-none-knytos/debug/catten").read_bytes())
+        kernel = private / "knytos"
+        kernel.write_bytes((ROOT / "target/aarch64-unknown-none-knytos/debug/knytos").read_bytes())
         run(["python3", ROOT / "scripts/check-kernel-asm-sections.py", kernel])
         image = private / "boot.img"
         run(["bash", "-c", 'source "$1/scripts/lib/boot-common.sh"; knytos_boot_create_uefi_image "$2" 128 "$1/limine-binary/BOOTAA64.EFI" "$3" "$1/limine.conf" CATOS',

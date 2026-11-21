@@ -81,7 +81,7 @@ def validate(data, mode, archive_interval_ms=None, otlp_sha256=None):
     if not names:
         raise ValueError("kernel symbol table required for boot-profile inspection")
     if mode == "minimal":
-        fixtures = [name for name in names if b"6catten" in name
+        fixtures = [name for name in names if any(crate in name for crate in (b"6knytos", b"6catten"))
                     and any(part in name for part in (b"9self_test", b"_tests", b"_for_test", b"test_"))]
         fixtures.extend(name for name in names if name in {
             b"probe_device_topology", b"test_fn", b"async_syscall_coordinator",

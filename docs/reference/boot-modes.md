@@ -104,6 +104,13 @@ failed or pending results. Minimal runs never synthesize a zero-test success.
 
 ## Compile-time and bundle selection
 
+The kernel's Cargo package is still `catten` (`cargo build -p catten`), but its
+binary target is `knytos`. Build checks and runners consume
+`target/<target>/<profile>/knytos`; the shared boot-image helper packages it as
+`/knytos`, matching the Limine configuration. Package/source-directory names do
+not determine the executable filename. Profile inspection recognizes fixture
+symbols from both current `knytos` and older `catten` binaries.
+
 | Selection | Kernel | Signed bundle |
 | --- | --- | --- |
 | Runner default / `--tests` | `acpi,kernel_tests` plus selected integration/display/trace features | Operational services plus development applications |

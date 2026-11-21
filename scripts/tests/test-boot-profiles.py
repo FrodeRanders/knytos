@@ -27,7 +27,7 @@ SEED = b"[store] bootstrap seed complete: retained=0 written=25\n"
 MINIMAL = b"KNYTOS_BOOT_MODE=minimal\n" + MEMORY + SEED + boot.COMPLETE + b"\n"
 
 
-def elf(mode, symbol=b"_RNvCs123_6catten8bsp_main"):
+def elf(mode, symbol=b"_RNvCs123_6knytos8bsp_main"):
     header = bytearray(64)
     header[:6] = b"\x7fELF\x02\x01"
     struct.pack_into("<Q", header, 40, 64)
@@ -70,7 +70,8 @@ class BootProfiles(unittest.TestCase):
             profile.validate(b"not an ELF " + profile.MODES["minimal"], "minimal")
 
     def test_native_fixture_symbols_and_markers_reject_minimal_artifacts(self):
-        for name in (b"_RNvNtCs123_6catten9self_test3run", b"_RNv6catten15admission_tests3run"):
+        for name in (b"_RNvNtCs123_6knytos9self_test3run", b"_RNv6knytos15admission_tests3run",
+                     b"_RNvNtCs123_6catten9self_test3run", b"_RNv6catten15admission_tests3run"):
             with self.assertRaisesRegex(ValueError, "fixture"):
                 profile.validate(elf("minimal", name), "minimal")
         with self.assertRaisesRegex(ValueError, "fixture"):
