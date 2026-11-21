@@ -60,7 +60,11 @@ def new_project(sdk, project, lock):
         raise ValueError(f'refusing to overwrite {project}')
     (project / 'app/src').mkdir(parents=True)
     (project / 'logic/src').mkdir(parents=True)
-    sdk_dependency = json.dumps(str(sdk / 'crates/knytos-app'))
+    # Own the SDK under the application so both can move together. Dependencies
+    # and the development plan stay relative to their respective manifests.
+    selected_sdk = project / '.knytos/sdk/knytos-app-sdk'
+    shutil.copytree(sdk, selected_sdk)
+    sdk_dependency = json.dumps('../.knytos/sdk/knytos-app-sdk/crates/knytos-app')
     (project / 'Cargo.toml').write_text('[workspace]\nmembers = ["app", "logic"]\nresolver = "3"\n\n[profile.release]\npanic = "abort"\nlto = true\nopt-level = 3\n')
     (project / 'rust-toolchain.toml').write_text(f'[toolchain]\nchannel = "{lock["toolchain"]}"\ncomponents = ["rust-src", "llvm-tools"]\n')
     (project / 'app/Cargo.toml').write_text(f'[package]\nname = "{name}"\nversion = "0.1.0"\nedition = "2024"\n\n[[bin]]\nname = "{name}"\npath = "src/main.rs"\ntest = false\nbench = false\n\n[dependencies]\nknytos-app = {{ path = {sdk_dependency} }}\n{name}-logic = {{ path = "../logic" }}\n')
@@ -92,10 +96,10 @@ fn run(ctx: &Context) -> Result<AppExit, LaunchError> {{
 }}
 knytos_app::entry!(run);
 ''')
-    (project / 'knytos.json').write_text(json.dumps({'name': name, 'sdk': str(sdk), 'sdk_fingerprint': hashlib.sha256((sdk / 'sdk.json').read_bytes()).hexdigest(), 'stack_pages': 4, 'max_threads': 1, 'shutdown_grace_ms': 5000, 'grants': []}, indent=2) + '\n')
+    (project / 'knytos.json').write_text(json.dumps({'name': name, 'sdk': '.knytos/sdk/knytos-app-sdk', 'sdk_fingerprint': hashlib.sha256((sdk / 'sdk.json').read_bytes()).hexdigest(), 'stack_pages': 4, 'max_threads': 1, 'shutdown_grace_ms': 5000, 'grants': []}, indent=2) + '\n')
     (project / '.gitignore').write_text('/target/\n/.knytos/\n')
     shutil.copyfile(sdk / 'Cargo.lock', project / 'Cargo.lock')
-    print(f'Created {project}; run {sdk / "knytos"} test {project}')
+    print(f'Created {project}; run {selected_sdk / "knytos"} test {project}')
 
 
 def main():
@@ -120,8 +124,13 @@ def main():
         new_project(sdk, project, lock); return
     plan = json.loads((project / 'knytos.json').read_text())
     fingerprint = hashlib.sha256((sdk / 'sdk.json').read_bytes()).hexdigest()
-    if plan['sdk_fingerprint'] != fingerprint or Path(plan['sdk']).resolve() != sdk:
+    selected_sdk = (project / plan['sdk']).resolve()
+    if plan['sdk_fingerprint'] != fingerprint:
         raise ValueError('project pins a different SDK; update its reviewed knytos.json explicitly')
+    sdk = selected_sdk
+    lock = checked_sdk(sdk)
+    if hashlib.sha256((sdk / 'sdk.json').read_bytes()).hexdigest() != fingerprint:
+        raise ValueError('project SDK differs from its reviewed fingerprint')
     checked_project_sources(sdk, project)
     cargo = ['cargo', f'+{toolchain}']
     if args.command == 'test':

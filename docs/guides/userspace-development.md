@@ -8,9 +8,19 @@ records its boundaries and remaining extensions.
 Run `cargo fmt --all` from the repository root to format every package,
 including the separately targeted service and application crates and host
 tools. Use `cargo fmt --all -- --check` for a non-mutating CI-style check.
-Because `knytos-user` is part of that workspace, its sibling
-`../../gautelis/sitas` path dependency must be checked out, and CI provisions the
-pinned revision before running workspace tooling.
+Prepare the source dependency once before Cargo workspace tooling:
+
+```sh
+python3 scripts/resolve-dependencies.py --fetch
+# Offline alternative; this checkout may live anywhere and need not be at HEAD:
+python3 scripts/resolve-dependencies.py --sitas-source /path/to/sitas
+```
+
+`dependencies.lock` pins Sitas for local builds, SDK export and CI. The resolver
+materializes `.dependencies/sitas` from that exact commit without changing the
+input checkout. Cargo needs no sibling repositories or network after resolution.
+Use `--check` to verify the snapshot; use `--fetch` or an explicit local source to
+replace it after changing the pin. See [dependency setup](repository-dependencies.md).
 The source-level entry contract is:
 
 ```rust
@@ -225,10 +235,9 @@ tests must point that variable at an already built and signed native bundle.
 Service bundles are architecture-qualified and must never be shared between
 AArch64 and x86-64 builds.
 
-`knytos-user` currently integrates the sibling `sitas` checkout. CI obtains
-`FrodeRanders/sitas` at the pinned revision recorded in the workflow and places
-it at the path expected by `../../crates/knytos-user`, and developer checkouts
-may provide the same sibling repository locally.
+`knytos-user` and `knytos-app-sitas` use the same resolved Sitas snapshot.
+CI prepares it with `scripts/resolve-dependencies.py --fetch`; the workflow
+contains no separate runtime revision or developer directory layout.
 
 ## Building an out-of-tree application
 

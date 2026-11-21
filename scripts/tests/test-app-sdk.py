@@ -33,6 +33,8 @@ class SdkTests(unittest.TestCase):
             lock = {'toolchain': channel, 'files': {}}
             (sdk / 'sdk.json').write_text(json.dumps(lock))
             (sdk / 'Cargo.lock').write_text('version = 4\n')
+            (sdk / 'crates/knytos-app').mkdir(parents=True)
+            (sdk / 'crates/knytos-app/Cargo.toml').write_text('[package]\nname="knytos-app"\n')
             project = root / 'orders'
             sdk_cli.new_project(sdk, project, lock)
             self.assertEqual(tomllib.loads((project / 'rust-toolchain.toml').read_text())['toolchain']['channel'], channel)
@@ -41,13 +43,15 @@ class SdkTests(unittest.TestCase):
             self.assertEqual(config['sdk_fingerprint'], hashlib.sha256((sdk / 'sdk.json').read_bytes()).hexdigest())
             self.assertTrue((project / 'logic/src/lib.rs').is_file())
             self.assertTrue((project / 'app/src/main.rs').is_file())
-            (sdk / 'crates/knytos-app').mkdir(parents=True)
-            (sdk / 'crates/knytos-app/Cargo.toml').write_text('[package]\nname="knytos-app"\n')
-            sdk_cli.checked_project_sources(sdk, project)
+            sdk_cli.checked_project_sources(project / config['sdk'], project)
+            moved = root / 'moved-orders'
+            project.rename(moved)
+            project = moved
+            sdk_cli.checked_project_sources(project / config['sdk'], project)
             manifest = project / 'app/Cargo.toml'
-            manifest.write_text(manifest.read_text().replace(str(sdk / 'crates/knytos-app'), str(root / 'other-sdk/knytos-app')))
+            manifest.write_text(manifest.read_text().replace('../.knytos/sdk/knytos-app-sdk/crates/knytos-app', str(root / 'other-sdk/knytos-app')))
             with self.assertRaisesRegex(ValueError, 'selected SDK'):
-                sdk_cli.checked_project_sources(sdk, project)
+                sdk_cli.checked_project_sources(project / config['sdk'], project)
             (project / 'sentinel').write_text('keep')
             with self.assertRaisesRegex(ValueError, 'overwrite'):
                 sdk_cli.new_project(sdk, project, lock)

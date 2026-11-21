@@ -108,6 +108,8 @@ explicitly coordinate shutdown across their other queues.
 ## Export and create a project
 
 ```sh
+python3 scripts/resolve-dependencies.py --fetch
+# Or resolve offline with --sitas-source /path/to/sitas.
 scripts/export-app-sdk.sh --output /tmp/knytos-app-sdk.tar.gz
 mkdir -p /tmp/knytos-sdk
 # Extract into an application-owned directory.
@@ -121,7 +123,9 @@ tar -xzf /tmp/knytos-app-sdk.tar.gz -C /tmp/knytos-sdk
 
 Use `--arch x86_64` for the other target. `new` creates an independent Cargo
 workspace with a host-testable business library and a small EL0 binary. It
-refuses to overwrite an existing directory. The generated application borrows
+refuses to overwrite an existing directory. It copies its SDK into
+`.knytos/sdk/knytos-app-sdk` and records relative dependency/plan paths, so the
+application and SDK can move together. The generated application borrows
 its launch authority, and it is intended for the normal signed deployment path.
 
 The CLI's `test` and `build` commands currently select this starter's
@@ -131,7 +135,7 @@ lower-level `build-external-elf.sh --manifest PATH --bin NAME --output PATH`
 interface with explicitly reviewed Cargo pins, and the builder itself does not
 replace that dependency review.
 
-The SDK contains runtime/client source, the owned async adapter, CI-pinned
+The SDK contains runtime/client source, the owned async adapter, `dependencies.lock`-pinned
 `sitas-core`, `sitas-knytos` and `sitas-unix`, the `knytos-kafka` client
 codec for host conformance tests, platform definitions, a standalone signer and
 public development keys. `sdk.json` records runtime ABI, toolchain, OS and Sitas
@@ -158,6 +162,17 @@ ELF in place and stops there. It does not choose production credentials, upload
 an artifact or submit a deployment. Use the existing
 [signing](signing-and-trust.md) and [deployment](../reference/deployment-ingress.md)
 workflows for the remaining handoff.
+
+## Dependency selection
+
+The exporter uses the OS checkout's `dependencies.lock`, independently of the
+caller's working directory. It accepts `KNYTOS_SITAS_DIR=/any/path/to/sitas`
+for a read-only Git input or uses the verified `.dependencies/sitas` snapshot.
+`--fetch` explicitly permits fetching a missing source. The exported closure
+contains only SDK-relative Cargo dependencies and needs no OS/Sitas checkout.
+Export includes local OS changes and records `source_dirty`; Sitas is always
+read at its locked commit. See [repository dependencies](repository-dependencies.md)
+for local adoption, force installation, CI and publishing rules.
 
 ## Host tests and qualification
 

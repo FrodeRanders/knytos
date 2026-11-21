@@ -13,7 +13,6 @@ env:
   CARGO_TERM_COLOR: always
   # A global RUSTFLAGS overrides the kernel target's frame-pointer settings.
   CARGO_BUILD_RUSTFLAGS: "-D warnings"
-  SITAS_REV: 0f5ddc437b6d4e410c90cb2d9f958905da8b1df5
 
 jobs:
   dependency-advisories:
@@ -59,10 +58,7 @@ jobs:
 
       - name: Check all Rust packages
         run: |
-          SITAS_DIR="$(cd "$GITHUB_WORKSPACE/../.." && pwd)/gautelis/sitas"
-          mkdir -p "$(dirname "$SITAS_DIR")"
-          git clone https://github.com/FrodeRanders/sitas.git "$SITAS_DIR"
-          git -C "$SITAS_DIR" checkout --detach "$SITAS_REV"
+          python3 scripts/resolve-dependencies.py --fetch
           cargo fmt --all -- --check
 
   clippy:
@@ -83,10 +79,7 @@ jobs:
       - name: Lint workspace
         run: |
           python3 scripts/tests/test-kernel-c-flags.py
-          SITAS_DIR="$(cd "$GITHUB_WORKSPACE/../.." && pwd)/gautelis/sitas"
-          mkdir -p "$(dirname "$SITAS_DIR")"
-          git clone https://github.com/FrodeRanders/sitas.git "$SITAS_DIR"
-          git -C "$SITAS_DIR" checkout --detach "$SITAS_REV"
+          python3 scripts/resolve-dependencies.py --fetch
           scripts/build-knytos-services.sh --embed
           scripts/build-knytos-user.sh --embed
           export KNYTOS_AARCH64_SERVICE_BUNDLE="$GITHUB_WORKSPACE/target/embedded-services/aarch64-unknown-none"
@@ -135,10 +128,42 @@ jobs:
       - name: Run host-testable library suites
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ripgrep
-          SITAS_DIR="$(cd "$GITHUB_WORKSPACE/../.." && pwd)/gautelis/sitas"
-          git clone https://github.com/FrodeRanders/sitas.git "$SITAS_DIR"
-          git -C "$SITAS_DIR" checkout --detach "$SITAS_REV"
+          python3 scripts/resolve-dependencies.py --fetch
           scripts/run-host-tests.sh
+
+  sdk-portability:
+    name: Portable SDK source closure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Install pinned Rust nightly
+        uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # master
+        with:
+          toolchain: nightly-2026-11-14
+          components: rust-src,llvm-tools
+
+      - name: Prepare and check source resolution
+        run: |
+          python3 scripts/resolve-dependencies.py --fetch
+          python3 scripts/tests/test-dependency-resolution.py
+          python3 scripts/tests/test-app-sdk.py
+
+      - name: Export outside the checkout and move the consuming project
+        working-directory: ${{ runner.temp }}
+        run: |
+          "$GITHUB_WORKSPACE/scripts/export-app-sdk.sh" --output "$RUNNER_TEMP/sdk.tar.gz"
+          mkdir sdk
+          tar -xzf sdk.tar.gz -C sdk
+          sdk/knytos-app-sdk/knytos new "$RUNNER_TEMP/orders"
+          mv orders "moved orders"
+          "moved orders/.knytos/sdk/knytos-app-sdk/knytos" test "$RUNNER_TEMP/moved orders"
+          for arch in aarch64 x86_64; do
+            "moved orders/.knytos/sdk/knytos-app-sdk/knytos" build "$RUNNER_TEMP/moved orders" \
+              --arch "$arch" --output "$RUNNER_TEMP/orders-$arch.elf"
+          done
 
   formal-models:
     name: TLA+ safety models
@@ -182,13 +207,9 @@ jobs:
           targets: aarch64-unknown-none
           components: rust-src,llvm-tools
 
-      # knytos-user integrates the sibling gautelis/sitas checkout and is built
-      # by scripts/build-knytos-user.sh in developer trees that provide it.
       - name: Build service bundle
         run: |
-          SITAS_DIR="$(cd "$GITHUB_WORKSPACE/../.." && pwd)/gautelis/sitas"
-          git clone https://github.com/FrodeRanders/sitas.git "$SITAS_DIR"
-          git -C "$SITAS_DIR" checkout --detach "$SITAS_REV"
+          python3 scripts/resolve-dependencies.py --fetch
           scripts/build-knytos-services.sh
 
   build:
@@ -214,9 +235,7 @@ jobs:
 
       - name: Build kernel
         run: |
-          SITAS_DIR="$(cd "$GITHUB_WORKSPACE/../.." && pwd)/gautelis/sitas"
-          git clone https://github.com/FrodeRanders/sitas.git "$SITAS_DIR"
-          git -C "$SITAS_DIR" checkout --detach "$SITAS_REV"
+          python3 scripts/resolve-dependencies.py --fetch
           source scripts/lib/service-bundle.sh
           for mode in minimal test; do
             features=acpi
@@ -293,9 +312,7 @@ jobs:
 
       - name: Check out Sitas userspace dependency
         run: |
-          SITAS_DIR="$(cd "$GITHUB_WORKSPACE/../.." && pwd)/gautelis/sitas"
-          git clone https://github.com/FrodeRanders/sitas.git "$SITAS_DIR"
-          git -C "$SITAS_DIR" checkout --detach "$SITAS_REV"
+          python3 scripts/resolve-dependencies.py --fetch
 
       # Keep CI on the same multicore, MSI-X/NVMe configuration and marker
       # list used by developers. This also rebuilds the embedded EL0 bundle.

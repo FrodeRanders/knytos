@@ -522,6 +522,11 @@ PC and Server:
 
 ## Contributing
 
+For local and CI source setup, see
+[repository dependencies and SDK selection](docs/guides/repository-dependencies.md).
+Knytos resolves its pinned Sitas sources inside the checkout; no sibling
+repository layout is required.
+
 The Knytos upstream project welcomes contributions of all forms—code,
 design proposals, documentation, and testing. Please use the upstream
 repository and the community links below when contributing to Knytos

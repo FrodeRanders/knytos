@@ -1,0 +1,6 @@
+# Reviewed source inputs shared by local builds, SDK export and CI.
+schema = 1
+
+[sitas]
+repository = "https://github.com/FrodeRanders/sitas.git"
+revision = "0b2a85c144f178dd85992e42889464937a498f74"

@@ -22,10 +22,12 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OUTPUT=""
+FETCH=()
 while [ "$#" -gt 0 ]; do
     case "$1" in
         --output) OUTPUT="$2"; shift 2 ;;
-        *) echo "usage: $0 [--output PATH]" >&2; exit 2 ;;
+        --fetch) FETCH=(--fetch); shift ;;
+        *) echo "usage: $0 [--output PATH] [--fetch]" >&2; exit 2 ;;
     esac
 done
 
@@ -70,18 +72,27 @@ for package in knytos-rt knytos-syscall knytos-launch knytos-lifecycle \
     tar -C "$ROOT/crates" --exclude target --exclude .DS_Store -cf - "$package" \
         | tar -C "$SDK/crates" -xf -
 done
-SITAS_DIR="${KNYTOS_SITAS_DIR:-$ROOT/../../gautelis/sitas}"
-#SITAS_REVISION="$(sed -n 's/^  SITAS_REV: //p' "$ROOT/.github/workflows/ci.yml" | head -1)"
-SITAS_REVISION="$(sed -n 's/^  SITAS_REV: //p' "./.github/workflows/ci.yml" | head -1)"
-[ -n "$SITAS_REVISION" ] || { echo "error: missing pinned Sitas revision" >&2; exit 1; }
-git -C "$SITAS_DIR" archive "$SITAS_REVISION" crates/sitas-core crates/sitas-knytos crates/sitas-unix \
-    | tar -C "$SDK" -xf -
-# Both source trees now live inside the SDK, without a required sibling checkout.
+# One lock is shared by Cargo preparation, SDK export and CI. Local sources
+# are read at that commit, not at their HEAD; --fetch is the network opt-in.
+SITAS_DIR="$(python3 "$ROOT/scripts/resolve-dependencies.py" \
+    --destination "$STAGE/sitas" "${FETCH[@]}")"
+SITAS_REVISION="$(python3 - "$ROOT/dependencies.lock" <<'PYSDK'
+import sys, tomllib
+with open(sys.argv[1], 'rb') as f:
+    print(tomllib.load(f)['sitas']['revision'])
+PYSDK
+)"
+tar -C "$SITAS_DIR" --exclude target --exclude .DS_Store -cf - \
+    crates/sitas-core crates/sitas-knytos crates/sitas-unix | tar -C "$SDK" -xf -
 python3 - "$SDK/crates/knytos-app-sitas/Cargo.toml" <<'PYSDK'
 from pathlib import Path
 import sys
 p = Path(sys.argv[1])
-p.write_text(p.read_text().replace('../../../../gautelis/sitas/crates/sitas-core', '../sitas-core'))
+s = p.read_text()
+old = '../../.dependencies/sitas/crates/sitas-core'
+if old not in s:
+    raise SystemExit('missing SDK Sitas dependency rewrite')
+p.write_text(s.replace(old, '../sitas-core'))
 PYSDK
 cat > "$SDK/Cargo.toml" <<'EOF'
 [workspace]
@@ -128,7 +139,7 @@ any service binary.
   a new mode-0600 private file and never prints its contents. Current OS images
   use development trust; production image provisioning is not implemented.
 - `crates/` contains the runtime, small application library, optional connector
-  clients and owned Sitas call adapter, the client Kafka codec, and CI-pinned
+  clients and owned Sitas call adapter, the client Kafka codec, and dependency-lock-pinned
   Sitas core/native/Unix backends for host tests and EL0 builds.
 - `sdk.json` binds the exact source snapshot, file hashes, runtime ABI, Sitas
   revision and toolchain. `VERSION` retains the basic tooling metadata.

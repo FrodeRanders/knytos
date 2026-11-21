@@ -1,4 +1,5 @@
 target/
+.dependencies/
 # Track the shared workspace lock; ignore obsolete per-package lockfiles.
 **/Cargo.lock
 !/Cargo.lock
