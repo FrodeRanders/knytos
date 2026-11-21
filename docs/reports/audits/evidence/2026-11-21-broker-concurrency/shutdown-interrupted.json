@@ -1,0 +1,63 @@
+{
+  "bootstrap": "127.0.0.1:19099",
+  "payload_bytes": 40,
+  "acks": 1,
+  "batch_size": 0,
+  "linger_ms": 0,
+  "max_in_flight_per_connection": 1,
+  "api_version": "negotiated",
+  "phase_seconds": 3,
+  "host": "macOS-26.7.3-arm64-arm-64bit",
+  "phases": [
+    {
+      "producers": 1,
+      "partition_mode": "single",
+      "records": 26,
+      "elapsed_s": 3.0208143749914598,
+      "records_per_s": 8.606950567783068,
+      "ack_ms_p50": 117.55858399556018,
+      "ack_ms_p95": 122.33654098236002,
+      "ack_ms_p99": 124.90650001564063,
+      "errors": [],
+      "client_cpu_s": 0.015294999999999996,
+      "qemu_cpu_s": 1.2699999999999818
+    },
+    {
+      "producers": 2,
+      "partition_mode": "single",
+      "records": 457,
+      "elapsed_s": 3.0415536660002545,
+      "records_per_s": 150.252157345943,
+      "ack_ms_p50": 11.113584012491629,
+      "ack_ms_p95": 28.113958018366247,
+      "ack_ms_p99": 44.35133299557492,
+      "errors": [],
+      "client_cpu_s": 0.11296299999999998,
+      "qemu_cpu_s": 3.410000000000025
+    },
+    {
+      "producers": 4,
+      "partition_mode": "single",
+      "records": 37,
+      "elapsed_s": 8.250051042006817,
+      "records_per_s": 4.4848207376665865,
+      "ack_ms_p50": 22.17191702220589,
+      "ack_ms_p95": 47.82891599461436,
+      "ack_ms_p99": 62.23541699000634,
+      "errors": [
+        "KafkaTimeoutError('Timeout after waiting for 8 secs.')",
+        "KafkaTimeoutError('Timeout after waiting for 8 secs.')",
+        "KafkaTimeoutError('Timeout after waiting for 8 secs.')",
+        "KafkaTimeoutError('Timeout after waiting for 8 secs.')"
+      ],
+      "client_cpu_s": 0.29946199999999995,
+      "qemu_cpu_s": null
+    }
+  ],
+  "idle": {
+    "elapsed_s": 3.0109759159968235,
+    "qemu_cpu_s": 1.1400000000000148
+  },
+  "ack_with_incomplete_other_frame_ms": 25.111666996963322,
+  "fatal_error": "RuntimeError('phase failed')"
+}
