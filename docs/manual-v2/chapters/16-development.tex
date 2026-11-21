@@ -428,7 +428,7 @@ For new contributors, the recommended reading order:
 
 \begin{description}
     \item[Triple fault during boot] Check that the panic handler is working.
-        Early faults before heap initialization rely on
+        Early faults before heap initialisation rely on
         \texttt{early\_logln!} (direct serial writes). Ensure the serial port
         is configured correctly.
     \item[Blocked thread] The block--yield--wake cycle requires
