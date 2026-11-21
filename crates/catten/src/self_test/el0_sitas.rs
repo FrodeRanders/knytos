@@ -420,7 +420,6 @@ pub fn test_el0_sitas() {
             crate::self_test::results::TestId::Sitas,
             verify_el0_sitas,
         );
-        logln!("[sitas] verifier deferred");
     }
     #[cfg(not(target_arch = "aarch64"))]
     {

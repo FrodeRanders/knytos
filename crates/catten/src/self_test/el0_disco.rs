@@ -15,7 +15,6 @@ mod inner {
             crate::self_test::results::TestId::Disco,
             verify_el0_disco,
         );
-        logln!("[disco] verifier deferred (waits for disco service + optional cross-node peer)");
     }
 
     extern "C" fn verify_el0_disco() {

@@ -2,12 +2,8 @@ use core::arch::asm;
 
 use super::interrupts::load_ivt;
 use crate::{
-    cpu::isa::{
-        interface::init::InitInterface,
-        lp::ops::get_lp_id,
-    },
+    cpu::isa::interface::init::InitInterface,
     early_logln,
-    logln,
 };
 
 pub struct IsaInitializer;
@@ -44,13 +40,10 @@ impl InitInterface for IsaInitializer {
     #[inline(always)]
     fn init_bsp() -> Result<(), Self::Error> {
         let (sctlr_before, sctlr_after) = clear_write_execute_never();
-        early_logln!(
-            "BSP: SCTLR_EL1 WXN clear before={:#x} after={:#x}",
-            sctlr_before,
-            sctlr_after
-        );
+        if sctlr_before != sctlr_after {
+            early_logln!("[boot] cleared SCTLR_EL1.WXN: {:#x} -> {:#x}", sctlr_before, sctlr_after);
+        }
         load_ivt();
-        early_logln!("BSP: Aarch64 ISA initialization complete.");
         crate::cpu::execution_target::record_current_lp();
         Ok(())
     }
@@ -58,7 +51,6 @@ impl InitInterface for IsaInitializer {
     fn init_ap() -> Result<(), Self::Error> {
         clear_write_execute_never();
         load_ivt();
-        logln!("LP {}: Aarch64 ISA initialization complete.", get_lp_id());
         crate::cpu::execution_target::record_current_lp();
         Ok(())
     }

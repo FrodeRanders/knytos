@@ -137,7 +137,6 @@ mod inner {
             crate::self_test::results::TestId::Dhcp,
             verify_el0_dhcp,
         );
-        logln!("[dhcp] verifier deferred (waits for a DHCP lease)");
     }
 
     extern "C" fn verify_el0_dhcp() {

@@ -9,21 +9,18 @@ use super::{
     INTERRUPT_STACK_SIZE,
     gdt,
 };
-use crate::{
-    cpu::{
-        isa::{
-            interrupts::{
-                idt::{
-                    Idt,
-                    asm_load_idt,
-                },
-                x2apic::X2Apic,
+use crate::cpu::{
+    isa::{
+        interrupts::{
+            idt::{
+                Idt,
+                asm_load_idt,
             },
-            lp::ops::init_lp_state,
+            x2apic::X2Apic,
         },
-        multiprocessor::get_lp_count,
+        lp::ops::init_lp_state,
     },
-    logln,
+    multiprocessor::get_lp_count,
 };
 
 static AP_INTERRUPT_STACKS: LazyLock<Vec<[u8; INTERRUPT_STACK_SIZE]>> = LazyLock::new(|| {
@@ -106,5 +103,4 @@ pub fn init_ap() {
     unsafe { asm_load_idt(&raw const AP_IDTRS[ap_index]) };
     init_lp_state();
     X2Apic::record_id();
-    logln!("LP {}: x86-64 AP initialization complete.", lp_id);
 }

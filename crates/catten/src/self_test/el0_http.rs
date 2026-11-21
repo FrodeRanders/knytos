@@ -297,7 +297,6 @@ mod inner {
             crate::self_test::results::TestId::Http,
             verify_el0_http,
         );
-        logln!("[http] verifier deferred (waits for tcpip + httpd listening)");
     }
 
     extern "C" fn verify_el0_http() {

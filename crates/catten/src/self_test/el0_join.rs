@@ -166,7 +166,6 @@ pub mod inner {
             crate::self_test::results::TestId::Join,
             verify_join_cluster,
         );
-        crate::logln!("[join] verifier deferred (locates the cluster via discovery and joins)");
     }
 
     extern "C" fn verify_join_cluster() {

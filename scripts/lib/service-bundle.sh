@@ -7,9 +7,7 @@ knytos_service_bundle() {
         minimal|test) ;;
         *) echo "error: bundle mode must be minimal or test" >&2; return 1 ;;
     esac
-    local default_heartbeats=1
-    [ "$mode" != "minimal" ] || default_heartbeats=0
-    SERVICE_HEARTBEATS="${KNYTOS_SERVICE_HEARTBEATS-$default_heartbeats}"
+    SERVICE_HEARTBEATS="${KNYTOS_SERVICE_HEARTBEATS-0}"
     case "$SERVICE_HEARTBEATS" in
         0|1) ;;
         *) echo "error: KNYTOS_SERVICE_HEARTBEATS must be 0 or 1" >&2; return 1 ;;

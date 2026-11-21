@@ -1,0 +1,1350 @@
+UEFI firmware (version edk2-stable202408-prebuilt.qemu.org built at 16:28:50 on Sep 12 2024)
+ArmTrngLib could not be correctly initialized.
+Error: Image at 0005FDB6000 start failed: 00000001
+Error: Image at 0005FD6D000 start failed: Not Found
+Error: Image at 0005FCBA000 start failed: Unsupported
+Error: Image at 0005FC3F000 start failed: Not Found
+Error: Image at 0005FB65000 start failed: Aborted
+Tpm2SubmitCommand - Tcg2 - Not Found
+Tpm2GetCapabilityPcrs fail!
+Tpm2SubmitCommand - Tcg2 - Not Found
+Image type X64 can't be loaded on AARCH64 UEFI system.
+BdsDxe: failed to load Boot0001 "UEFI QEMU NVMe Ctrl cat0 1" from PciRoot(0x0)/Pci(0x2,0x0)/NVMe(0x1,00-00-00-00-00-00-00-00): Not Found
+BdsDxe: loading Boot0002 "UEFI Non-Block Boot Device" from PciRoot(0x0)/Pci(0x3,0x0)
+BdsDxe: starting Boot0002 "UEFI Non-Block Boot Device" from PciRoot(0x0)/Pci(0x3,0x0)
+ConvertPages: range 5E84A000 - 5E89CFFF covers multiple entries
+ConvertPages: range 5E84A000 - 5E89CFFF covers multiple entries
+ConvertPages: Incompatible memory types, the pages to allocate have been allocated
+ConvertPages: Incompatible memory types, the pages to allocate have been allocated
+limine: Loading executable `boot():/knytos`...[+     0.005282] Knytos Kernel Version 0.8.1
+[+     0.005510] ========================================================================
+[+     0.005798] Initializing the system using the bootstrap processor...
+[+     0.006120] Logical Processor with local interrupt controller ID = 0 has been designated LP 0.
+[+     0.006430] [MPIDR] LP0 mpidr=2147483648 aff=0.0.0.0
+[+     0.006714] BSP assigned ID 0.
+[+     0.007104] LP 0: Performing ISA specific initialization...
+[+     0.007334] BSP: SCTLR_EL1 WXN clear before=0x30d0199d after=0x30d0199d
+[+     0.007670] BSP: Aarch64 ISA initialization complete.
+[+     0.007916] LP 0: ISA specific initialization complete.
+[+     0.008134] LP 0: Performing ISA independent initialization...
+[+     0.008358] LP 0: Initializing physical memory...
+[+     0.008582] LP 0: PhysicalFrameAllocator: PhysicalFrameAllocator { bitmap_ptr: 0xffff00005a3b1000, bitmap_len: 48394, next_free_hint: 32768, usable_bytes: 394285056, free_frames: 96247 }
+[+     0.009356] LP 0: Initializing kernel allocator...
+[+     0.009558] Resource policy: development-default (compile-time)
+[+     0.009818] Kernel heap: usable=376 MiB initial=8 MiB reserve=64 MiB total=72 MiB
+[+     0.017038] LP 0: Intialized kernel allocator.
+[+     0.021546] LP 0: ISA independent initialization complete.
+[+     0.021706] LP 0: BSP initialization complete.
+[+     0.021966] [hardware ASID] boot return storage prepared: 256 tags, 512 requested bytes; retirement cannot grow
+[+     0.022230] KNYTOS_BOOT_MODE=tests
+[+     0.022872] [boot validation] memory passed: usable=376 MiB, free=77794 frames, heap reserve=64 MiB
+[+     0.024410] [boot trust] artifact authority selected before platform services
+[+     0.025694] [ACPI] Parsing XSDT at address PAddr { raw: 1555316504 }
+[+     0.025898] [ACPI] XSDT header located.
+[+     0.026194] [ACPI] XSDT data physical address: 0xffff00005cb43f3c, number of entries: 8
+[+     0.027142] [ACPI] Warning: Unrecognized ACPI table with signature [80, 80, 84, 84] at address PAddr { raw: 1555312792 }
+[+     0.028042] [ACPI] Warning: Unrecognized ACPI table with signature [68, 66, 71, 50] at address PAddr { raw: 1555315096 }
+[+     0.028332] [ACPI] Finished parsing XSDT. Found 6 tables.
+[+     0.029242] System initialized.
+[+     0.029346] Starting secondary LPs...
+[+     0.029458] Obtained multiprocessor response from Limine
+[+     0.029628] Writing entry point address for LP 0
+[+     0.029764] Writing entry point address for LP 1
+[+     0.029876] Writing entry point address for LP 2
+[+     0.030168] Writing entry point address for LP 3
+[+     0.030466] Logical Processor with local interrupt controller ID = 1 has been designated LP 1.
+[+     0.030716] Logical Processor with local interrupt controller ID = 3 has been designated LP 3.
+[+     0.030964] Logical Processor with local interrupt controller ID = 2 has been designated LP 2.
+[+     0.031530] [MPIDR] LP1 mpidr=2147483649 aff=0.0.0.1
+[+     0.031662] [MPIDR] LP3 mpidr=2147483651 aff=0.0.0.3
+[+     0.031804] Initializing LP 1...
+[+     0.031890] Initializing LP 3...
+[+     0.031982] LP 1: Performing ISA specific initialization...
+[+     0.032120] LP 3: Performing ISA specific initialization...
+[+     0.032264] LP 1: Aarch64 ISA initialization complete.
+[+     0.032394] LP 3: Aarch64 ISA initialization complete.
+[+     0.032524] LP 1: ISA specific initialization complete.
+[+     0.032654] LP 3: ISA specific initialization complete.
+[+     0.032786] LP 1: Performing ISA independent initialization.
+[+     0.032930] LP 3: Performing ISA independent initialization.
+[+     0.033076] [MPIDR] LP2 mpidr=2147483650 aff=0.0.0.2
+[+     0.034250] Initializing LP 2...
+[+     0.034342] LP 2: Performing ISA specific initialization...
+[+     0.034484] LP 2: Aarch64 ISA initialization complete.
+[+     0.034614] LP 2: ISA specific initialization complete.
+[+     0.034746] LP 2: Performing ISA independent initialization.
+[+     0.034896] LP 1: ISA independent initialization complete.
+[+     0.035582] LP 3: ISA independent initialization complete.
+[+     0.035748] LP 2: ISA independent initialization complete.
+[+     0.035996] LP 2: Starting local interrupt controller initialization.
+[+     0.036176] LP 3: Starting local interrupt controller initialization.
+[+     0.036476] LP 1: Starting local interrupt controller initialization.
+[+     0.042536] [bootstrap storage] lp=3 local timer initialized without backing allocation
+[+     0.042742] [bootstrap storage] lp=1 local timer initialized without backing allocation
+[+     0.042942] [bootstrap storage] lp=0 local timer initialized without backing allocation
+[+     0.043146] [bootstrap storage] lp=2 local timer initialized without backing allocation
+[+     0.043348] LP 1: Initialized local interrupt controller.
+[+     0.043480] LP 3: Initialized local interrupt controller.
+[+     0.043618] LP 2: Initialized local interrupt controller.
+[+     0.065042] LP 2: Bootstrapping complete.
+[+     0.065182] LP 1: Bootstrapping complete.
+[+     0.065320] LP 3: Bootstrapping complete.
+[+     0.065472] [bootstrap storage] all 4 LP timers ready; shared timer queues and IRQ storage prepared
+[+     0.125458] [node] name service started (asid=1, tid=4)
+[+     0.140346] [node] capability grant controller started (asid=2, tid=5)
+[+     0.146846] KNYTOS_TELEMETRY_ARCHIVE_INTERVAL_MS=0;
+[+     0.147828] [node] observability service started (asid=3, tid=6)
+[+     0.160712] [smmu] enabled SMMUv3 at 0x9050000: 16 StreamID bits, 4 KiB stage-1 translation
+[+     0.162010] [IOMMU unit initialization] 3 allocated region prefixes plus complete private preparation refunded; 5 real waits and publication outside backend/lifecycle/device/table guards; installed once, caller IRQ policy preserved
+[+     0.163714] [smmu] early initialization complete.
+[+     0.163922] Running self tests...
+[+     0.170358] [device] stale address-space teardown rejected after ASID reuse
+[+     0.174470] [table lifetime] sparse aliases, 16 unmap/remap rounds, private-tree isolation, retained high-water and teardown refunds passed
+[+     0.174852] Entering Virtual Memory Subsystem Self Test
+[+     0.175056] Allocating physical frame
+[+     0.175402] Physical frame allocated
+[+     0.175516] Obtaining current address space
+[+     0.175740] Obtained current address space.
+[+     0.175880] Creating MemoryMapping struct.
+[+     0.176028] Created MemoryMapping struct... Mapping the allocated frame to the beginning of the higher half.
+[+     0.176364] Page mapped successfully.
+[+     0.176516] Writing magic number cafebabe_16 to virtual address VAddr(0xfffffffffffff000)
+[+     0.176882] Reading magic number back from VAddr(0xfffffffffffff000)
+[+     0.177086] Magic number matches.
+[+     0.177196] Test completed successfully.
+[+     0.177326] Unmapping test page.
+[+     0.177594] Test page successfully unmapped.
+[+     0.177748] All virtual memory tests passed!
+[+     0.188790] [kernel physical release] 35-page/2 MiB batches, post-guard completion, terminal partial failure, successor preservation and interrupted owner passed (two additional retained base frames)
+[+     0.190548] [kernel preparation] unpublished/published abandonment retains backing under allocator/table guards (two additional reserved pages)
+[+     0.190924] [kernel retirement] detach-before-release, failed barrier/retry, allocation/map rollback, foreign-leaf preservation, bounded metadata and Drop quarantine under allocator/table guards (one reserved test page) and preparation abandonment passed
+[+     0.191580] Testing first-class memory objects...
+[+     0.191882] [memory object] budget sponsor AS asid=4
+[+     0.192060] [memory object] budget receiver AS asid=5
+[+     0.204154] [memory object] replacement sponsor AS asid=4
+[+     0.204814] [memory object] retirement rollback source AS asid=4
+[+     0.205882] [memory object] pinned sponsor AS asid=5
+[+     0.207308] [memory object] pinned replacement AS asid=5
+[+     0.207910] [memory budget] limits, failed copy, move/rollback, lend, retirement and late-unpin accounting passed
+[+     0.208272] [memory object] capability pressure source AS asid=5
+[+     0.208478] [memory object] capability pressure target AS asid=4
+[+     0.677986] [memory object] move batch source AS asid=4
+[+     0.678208] [memory object] move batch target AS asid=5
+[+     0.679174] [memory object] retired source rollback target AS asid=5
+[+     0.679898] [memory object] prepared move retiring source AS asid=5
+[+     0.680112] [memory object] prepared move surviving target AS asid=4
+[+     0.680604] [memory object] prepared move replacement source AS asid=5
+[+     0.681390] [memory object] prepared move stable source AS asid=4
+[+     0.681592] [memory object] prepared move retiring target AS asid=5
+[+     0.682050] [memory object] prepared move replacement target AS asid=5
+[+     0.682696] [memory admission] quota, atomic move batches, cancellation, retirement and ASID reuse passed
+[+     0.683040] [memory object] hidden loan source AS asid=4
+[+     0.683206] [memory object] hidden loan target AS asid=5
+[+     0.928250] [memory object] hidden loan source AS asid=5
+[+     0.928462] [memory object] hidden loan target AS asid=4
+[+     1.174296] [memory object] private copy source AS asid=4
+[+     1.174510] [memory object] private copy target AS asid=5
+[+     1.175736] [memory object] mixed retirement source AS asid=5
+[+     1.175926] [memory object] mixed retirement target AS asid=4
+[+     1.423474] [memory object] staged alias retiring source AS asid=4
+[+     1.423710] [memory object] staged alias stable target AS asid=5
+[+     1.424264] [memory object] staged alias source successor AS asid=4
+[+     1.424992] [memory object] staged alias stable source AS asid=5
+[+     1.425194] [memory object] staged alias retiring target AS asid=4
+[+     1.425646] [memory object] staged alias target successor AS asid=4
+[+     1.426368] [memory object] staged alias retiring source AS asid=5
+[+     1.426570] [memory object] staged alias stable target AS asid=4
+[+     1.426972] [memory object] staged alias source successor AS asid=5
+[+     1.427476] [memory object] staged alias stable source AS asid=4
+[+     1.427656] [memory object] staged alias retiring target AS asid=5
+[+     1.428050] [memory object] staged alias target successor AS asid=5
+[+     1.428614] [memory object] staged alias retiring source AS asid=4
+[+     1.428798] [memory object] staged alias stable target AS asid=5
+[+     1.429200] [memory object] staged alias source successor AS asid=4
+[+     1.429710] [memory object] staged alias stable source AS asid=5
+[+     1.429890] [memory object] staged alias retiring target AS asid=4
+[+     1.430236] [memory object] staged alias target successor AS asid=4
+[+     1.430744] [memory staging] hidden copy/loans, mixed retirement, refunds and exact ASID/cap reuse passed
+[+     1.431102] [memory object] pool admission AS asid=5
+[+     1.431410] [memory object] pool admission AS asid=4
+[+     1.431576] [memory object] pool ordinary denial AS asid=6
+[+     1.432368] [memory budget] ordinary pool exhaustion preserved platform admission and reconciled all reservations
+[+     1.432736] [memory object] mapping preflight denial AS asid=6
+[+     1.435612] [memory object] mapping rejected prefix AS asid=6
+[+     1.436802] [memory object] mapping unconfirmed invalidation AS asid=6
+[+     1.437894] [memory mapping retained] object=49 asid=6 phase=map-invalidation error=InvalidationFailed(AddressSpaceMissing) prior=Ok(()) pages=1 mapping=Some(MemoryMappingState { address_space: AddressSpaceHandle { id: 6, generation: 4 }, base: VAddr(0x1a0000), installed_pages: 1, writable: true, scratch: false })
+[+     1.439360] [memory object] mapping unconfirmed invalidation AS asid=4
+[+     1.439832] [memory mapping retained] object=50 asid=4 phase=map-invalidation error=InvalidationFailed(AddressSpaceMissing) prior=Ok(()) pages=1 mapping=Some(MemoryMappingState { address_space: AddressSpaceHandle { id: 4, generation: 25 }, base: VAddr(0x40000000), installed_pages: 1, writable: true, scratch: true })
+[+     1.440794] [memory object] unmap invalidation failure retains mapping identity AS asid=5
+[+     1.441578] [memory mapping retained] object=51 asid=5 phase=unmap-invalidation error=InvalidationFailed(AddressSpaceMissing) prior=Ok(()) pages=1 mapping=Some(MemoryMappingState { address_space: AddressSpaceHandle { id: 5, generation: 24 }, base: VAddr(0x40000000), installed_pages: 1, writable: true, scratch: true })
+[+     1.442608] [object mapping admission] 256 pin-free denials skipped maintenance and recovered scratch; admitted success/rolled-back prefix still invalidate; per-call causes retain exact mapping/backing pin and original charge without replay; rollback/unmap failures capture the original mapping identity and cause
+[+     1.443304] [memory object] coherent DMA CPU remap fence AS asid=7
+[+     1.444312] [memory object] coherent DMA CPU remap fence AS asid=7
+[+     1.445082] [memory object] coherent DMA CPU remap fence AS asid=7
+[+     1.445732] [DMA CPU remap fence] existing shared mapping, read/write remap rejection, three directions, two coherent pins, last-unpin reuse and original charge cleanup passed
+[+     1.446192] [memory object] revocation owner AS asid=7
+[+     1.446374] [memory object] revocation borrower AS asid=8
+[+     1.446534] [memory object] revocation remaining reader AS asid=9
+[+     1.449128] [memory object] revocation preparation owner AS asid=9
+[+     1.449318] [memory object] revocation preparation borrower AS asid=8
+[+     1.450038] [memory object] DMA-pinned loan owner AS asid=8
+[+     1.450214] [memory object] DMA-pinned loan borrower AS asid=9
+[+     1.451238] [memory object] DMA-pinned loan owner AS asid=9
+[+     1.451416] [memory object] DMA-pinned loan borrower AS asid=8
+[+     1.452072] [loan revocation] read/write DMA pins reject revocation until explicit unpin
+[+     1.452326] [memory object] revocation staged owner AS asid=8
+[+     1.452500] [memory object] revocation staged borrower AS asid=9
+[+     1.453898] [memory object] revocation closing-admission owner AS asid=8
+[+     1.454100] [memory object] revocation closing-admission borrower AS asid=9
+[+     1.454846] [memory object] revocation failed owner AS asid=9
+[+     1.455028] [memory object] revocation failed borrower AS asid=8
+[+     1.456198] [memory object] revocation failed owner AS asid=7
+[+     1.456370] [memory object] revocation failed borrower AS asid=10
+[+     1.456806] [memory object] revocation failed owner AS asid=11
+[+     1.456972] [memory object] revocation failed borrower AS asid=12
+[+     1.457350] [memory object] revocation failed owner AS asid=13
+[+     1.457522] [memory object] revocation failed borrower AS asid=14
+[+     1.457910] [loan revocation] both roots leased; lifecycle/registry/table-free detach and barrier, reader preservation, preparation rollback, staged close and four failure/Drop quarantines passed (four reserved data pages)
+[+     1.458444] [memory object] detached backing original AS asid=15
+[+     1.460160] [memory object] detached backing successor AS asid=15
+[+     1.460926] [memory object] detached backing original AS asid=15
+[+     1.461446] [memory object] detached backing successor AS asid=15
+[+     1.462230] [memory object] retirement batched owner AS asid=15
+[+     1.462578] [memory object] retirement batched borrower AS asid=16
+[+     1.467738] [memory object] retirement scratch failure owner AS asid=16
+[+     1.467950] [memory object] retirement scratch success borrower AS asid=15
+[+     1.468146] [memory object] retirement scratch failure borrower AS asid=17
+[+     1.469478] [memory object] quarantined object=68 pages=1 scratch release failed
+[+     1.470646] [memory object] retirement pinned owner AS asid=16
+[+     1.470836] [memory object] retirement pinned borrower AS asid=17
+[+     1.472480] [memory object] retirement live owner AS asid=17
+[+     1.472658] [memory object] retirement write borrower AS asid=16
+[+     1.473684] [memory object] retirement partial detach AS asid=17
+[+     1.474442] [memory object] quarantined object=72 pages=2 detached=false quiescent=true
+[+     1.475136] [memory object] retirement abandoned fence AS asid=17
+[+     1.475636] [memory object] quarantined object=73 pages=1 detached=true quiescent=false
+[+     1.476220] [memory object] retirement abandoned fence AS asid=17
+[+     1.476982] [memory object] retirement failed map prefix AS asid=17
+[+     1.478776] [object retirement] bounded lock-separated batches, last-unpin fence, borrower authority, scratch rejection, partial detach, failed barrier, Drop quarantine and foreign-leaf preservation passed (twelve reserved data pages including loan revocation and detached backing)
+[+     1.479410] [memory object] owner AS asid=17
+[+     1.479554] [memory object] target AS asid=16
+[+     1.479690] [memory object] reader AS asid=15
+[+     1.479822] [memory object] writer AS asid=18
+[+     1.483908] [memory object] deferred pin cleanup AS asid=19
+[+     1.484342] [memory object] deferred map guard owner AS asid=19
+[+     1.484524] [memory object] deferred map guard borrower AS asid=20
+[+     1.485978] First-class memory object tests passed.
+[+     1.489076] [heap admission] pool reserve/refund, zero backing, quota, repeated touch, retirement and exact ASID reuse passed
+[+     1.499440] [root metadata phases] 2 mailbox, 2 authority and 2 policy/usage/signed-authority and 2 scratch namespace release entries outside local lifecycle/mailbox/queue/table/physical/heap/capability/policy/usage/signed-authority guards; entry IRQ state preserved
+[+     1.502162] [mailbox node retirement] two nodes 192 bytes retained across rejected invalidation; confirmed retry refunds before root backing, exact ASID reuse and stale extraction preserve replacement, existing guarded complete-root abandonment retains original byte/count charges
+[+     1.502776] [scratch principal recovery] 152 bytes retained through final invalidation rejection and guarded root-attempt abandonment; confirmed release and successor isolation passed
+[+     1.503180] [root container principal recovery] 1680 bytes retained through rejected invalidation, confirmed release zeroed original principal and preserved funded successor; 1680 bytes retained by guarded complete-root abandonment
+[+     1.503684] [root metadata ownership] rejected barrier retains mailbox words and original charges; confirmed custody retry releases metadata post-guard before root backing; stale extraction preserves reused generation; guarded attempt abandonment retains one complete root/slot, two mailbox charges, three shared authority charges, one heap page and queue backing plus its scratch namespace/extent nodes
+[+     1.510808] [root release] rejected frame=0x40120000: CannotDeallocateUnallocatedFrame
+[+     1.511132] [root release] quarantined failures=1 heap_pages=1 image_pages=0
+[+     1.511338] [root metadata phases] 1 mailbox, 1 authority and 1 policy/usage/signed-authority and 0 scratch namespace release entries outside local lifecycle/mailbox/queue/table/physical/heap/capability/policy/usage/signed-authority guards; entry IRQ state preserved
+[+     1.513456] [root recovery] retained invalidation receipt slot=0 serial=1
+[+     1.514042] [root recovery registry] bounded custody, exact tickets, unlocked retry, attempt/slot limits, abandonment and terminal physical rejection passed
+[+     1.519210] [live operations] explicit completion, busy-close rollback, stale/detached rejection and abandonment passed; retained_frames=5 heap_pages=1
+[+     1.522174] [staged close] lease admission fence, pending owner return, old-operation completion, post-guard release and bounded timeout passed; retained_frames=5 heap_pages=1
+[+     1.525052] [root recovery] retained invalidation receipt slot=0 serial=2
+[+     1.525594] [root retirement] quarantine abandon=false retained_frames=5 heap_pages=1
+[+     1.526340] [root retirement] quarantine abandon=true retained_frames=5 heap_pages=1
+[+     1.526570] [root retirement] preflight rollback, post-guard invalidation, retained backing/charges, leased slot and hardware tag, exact reuse, failed barrier and Drop quarantine passed (two retired roots, one retained live root and one retained closing root)
+[+     1.532638] [shutdown] status pages rejected: Root(StaleHandle)
+[+     1.533276] [shutdown] device status pages rejected: Root(StaleHandle)
+[+     1.534646] [service page ownership] exact backing, close fencing, reuse rejection, cached shutdown failures and abandoned image charges passed
+[+     1.535696] [deployment registry] reserved capacity/identity, Pending retirement, unlocked one-shot launch, rejection and publication passed
+[+     1.537774] [domain retirement] root=18:7 error=AddressSpace(OperationDrainTimedOut) pending=Some(InitialOperations { leases: 1 })
+[+     1.538240] [supervisor] retaining failed deployment reclamation asid=18 generation=7 error=AddressSpace(OperationDrainTimedOut)
+[+     1.539822] [shutdown storage] full 12-phase/3-device plan, one-time transfer and inert parent abandonment passed beneath lifecycle/root/thread/heap guards; node_bytes=6280 device_bytes=1168
+[+     1.540250] [shutdown] status pages rejected: Root(Closing)
+[+     1.540402] [shutdown] device status pages rejected: Root(Closing)
+[+     1.540862] [domain retirement] root=18:7 error=AddressSpace(CloseInProgress) pending=None
+[+     1.541322] [domain retirement] root=18:7 error=AddressSpace(CloseInProgress) pending=None
+[+     1.541944] [shutdown reclamation] terminal error retains phase/device gating and counters; coordinator poll releases registry and rejects competing claim
+[+     1.542290] [supervisor retirement] timeout retains deployment entry/root retained_frames=5 heap_pages=1
+[+     1.542958] [domain retirement] root=24:3 error=AddressSpace(StaleHandle) pending=None
+[+     1.543340] [supervisor retirement] pending ownership, close fencing, exact reuse, cached terminal error and deployment claim/counter retention passed
+[+     1.545898] [root release test] injecting rejection at release 1 (all=false)
+[+     1.546090] [root release] rejected frame=0x40141000: CannotDeallocateUnallocatedFrame
+[+     1.546290] [root release] quarantined failures=1 heap_pages=1 image_pages=1
+[+     1.546758] [root release test] injecting rejection at release 2 (all=false)
+[+     1.546940] [root release] rejected frame=0x40140000: CannotDeallocateUnallocatedFrame
+[+     1.547138] [root release] quarantined failures=1 heap_pages=1 image_pages=1
+[+     1.547474] [root release test] injecting rejection at release 3 (all=false)
+[+     1.547664] [root release] rejected frame=0x4013f000: CannotDeallocateUnallocatedFrame
+[+     1.547858] [root release] quarantined failures=1 heap_pages=1 image_pages=1
+[+     1.548158] [root release test] injecting rejection at release 4 (all=false)
+[+     1.548340] [root release] rejected frame=0x4013e000: CannotDeallocateUnallocatedFrame
+[+     1.548532] [root release] quarantined failures=1 heap_pages=1 image_pages=1
+[+     1.548886] [root release test] injecting rejection at release 5 (all=false)
+[+     1.549072] [root release] rejected frame=0x4013d000: CannotDeallocateUnallocatedFrame
+[+     1.549266] [root release] quarantined failures=1 heap_pages=1 image_pages=1
+[+     1.549590] [root release test] injecting rejection at release 6 (all=false)
+[+     1.549772] [root release] rejected frame=0x40147000: CannotDeallocateUnallocatedFrame
+[+     1.549966] [root release] quarantined failures=1 heap_pages=1 image_pages=1
+[+     1.550268] [root release test] injecting rejection at release 1 (all=true)
+[+     1.550448] [root release] rejected frame=0x40146000: CannotDeallocateUnallocatedFrame
+[+     1.550644] [root release test] injecting rejection at release 2 (all=true)
+[+     1.550810] [root release] rejected frame=0x40145000: CannotDeallocateUnallocatedFrame
+[+     1.551000] [root release test] injecting rejection at release 3 (all=true)
+[+     1.551166] [root release] rejected frame=0x40144000: CannotDeallocateUnallocatedFrame
+[+     1.551356] [root release test] injecting rejection at release 4 (all=true)
+[+     1.551520] [root release] rejected frame=0x40143000: CannotDeallocateUnallocatedFrame
+[+     1.551708] [root release test] injecting rejection at release 5 (all=true)
+[+     1.551874] [root release] rejected frame=0x40142000: CannotDeallocateUnallocatedFrame
+[+     1.552062] [root release test] injecting rejection at release 6 (all=true)
+[+     1.552230] [root release] rejected frame=0x40148000: CannotDeallocateUnallocatedFrame
+[+     1.552418] [root release] quarantined failures=6 heap_pages=1 image_pages=1
+[+     1.552616] [root release] success, each table/root/heap/image failure, all-release failure, no retry, borrowed root and foreign leaf passed (12 retained frames; 7 heap and 7 image charges; 28 table charges)
+[+     1.555770] [backing preparation test] injecting Heap release rejection platform=false
+[+     1.556016] [backing preparation] release rejected frame=0x40149000: CannotDeallocateUnallocatedFrame
+[+     1.556276] [backing preparation] quarantined kind=Heap pages=1 (domain charge retained)
+[+     1.558152] [backing preparation test] injecting Heap release rejection platform=true
+[+     1.558346] [backing preparation] release rejected frame=0x4014a000: CannotDeallocateUnallocatedFrame
+[+     1.558576] [backing preparation] quarantined kind=Heap pages=1 (domain charge retained)
+[+     1.564072] [backing preparation test] injecting Image release rejection platform=false
+[+     1.564278] [backing preparation] release rejected frame=0x40150000: CannotDeallocateUnallocatedFrame
+[+     1.564500] [backing preparation] quarantined kind=Image pages=1 (domain charge retained)
+[+     1.565182] [backing preparation test] injecting Image release rejection platform=true
+[+     1.565380] [backing preparation] release rejected frame=0x40151000: CannotDeallocateUnallocatedFrame
+[+     1.565602] [backing preparation] quarantined kind=Image pages=1 (domain charge retained)
+[+     1.568418] [backing preparation test] admission/tracking/allocation rejection, explicit cancellation and mapping rollback, fill/success, failed release/domain ceiling, pool identity, mixed teardown/reuse, unconfirmed publication and abandonment under table/allocator/pool guards passed (14 retained frames; 8 heap and 8 image charges)
+[+     1.573834] [root frame tracking] signed unpublished capacity, shared diagnostic/root principal growth, 256 pre-frame denials, original ordinary class, healthy root, close/reuse, late-binding atomicity and guarded retention passed
+[+     1.574786] [table preparation] Arm tag rejection explicitly cancels unpublished root backing and original table charge
+[+     1.578320] [table preparation] scope/floor policy, zeroed-owner cancellation, every construction prefix, retry/cached reuse, sparse partial tree and exact teardown passed (no retained frames)
+[+     1.579106] [raw frame preparation] Drop under allocator/table/pool guards and terminal release rejection passed (two retained frames)
+[+     1.585628] [table admission] sparse domain ceiling, public object map rejection/cleanup, partial-tree charge/retry, cached reuse, independent roots, ordinary-pressure platform root/mapping and exact teardown passed; rejected/abandoned preparation retains three frames/four charges under allocator/table/pool guards
+[+     1.589842] [shared table admission] rejection before backing allocation, unused/zeroed-owner refund, sparse partial-tree retention/retry, cached reuse at the ceiling and shared-root counting passed; rejected/abandoned preparation retains three frames/four charges under allocator/table/pool guards
+[+     1.590752] [namespace node allocation] family=ipc bytes=144; 64 allocator rejections passed
+[+     1.593428] [IPC namespace preparation] missing namespace rejects, 64 heap-held publications/detaches, account disposal and guarded partial/retired retention passed; four standalone nodes and five budget accounts deliberately retained
+[+     1.617450] [IPC root publication] 256 phase rejections release the complete unpublished root; 64 publication leases prevent early close and missing/retired namespaces never recreate
+[+     1.634972] [root metadata pressure] 12194 ordinary + 4087 reserved actual nodes; 12288/16384 ceilings, one/two/three-node partial rollback, trusted root publication and close at total exhaustion passed
+[+     1.635434] [root metadata layouts] three policy nodes 440 bytes; memory account 192 bytes; complete root 632 bytes
+[+     1.635704] [root metadata admission] 192 allocator rejections, partial-quota rollback, ordinary/total real-node exhaustion, trusted reserve, immutable classification and exact-root close/recovery passed
+[+     1.639314] [namespace node principal] completion/mailbox/word namespace additions=504 bytes; separate authority=96 endpoint=96 CQ node=240 buffers=4288 bytes; exact composition passed
+[+     1.640434] [root container principal] root construction layouts=[152, 192, 88, 208, 144, 144], mandatory=928 bytes; sibling sharing, twelve exact quota prefixes, 128 heap-held denials, healthy principal and full five-namespace accounting/release passed
+[+     1.650402] [root authority slot] empty grants no authority; heap-held signed-identity/descriptor installation, duplicate/zero/stale rejection and exact generation reuse passed
+[+     1.656924] [principal history pressure] 3038 ordinary + 1020 reserved real candidate nodes; ordinary registration rejected before publication, trusted root admitted, total exhaustion and existing-root close/recovery passed
+[+     1.657726] [principal history admission] charged candidates/publications, allocation rejection, full ordinary/total pools, trusted-constructor reserve, close progress/recovery and guarded abandonment passed
+[+     1.671868] [principal backing admission] shared heap/image/object ceiling, copy sponsorship, promotion rejection, 256 denied requests with unrelated progress, retained transfer across exit/reuse, and atomic pre-launch binding passed
+[+     1.723660] [principal structural admission] sparse roots share table ceiling; rejected prefixes stay charged and cached branches reuse; full user/kernel stack capacity shares quota before allocation, growth pays once, unrelated principal progresses, confirmed cancellation/refund and root teardown passed
+[+     1.745348] [thread metadata node pressure] 3072 real prepared nodes exhausted ordinary admission; kernel thread reserve and post-deallocation recovery passed
+[+     1.746718] [thread metadata admission] bytes=720 per bundle; shared-root pressure, 256 pre-allocation denials, independent byte/count limits, promotion, retired sponsor/ASID reuse, late release and healthy progress passed
+[+     1.750842] [thread table reserve] counter-only ordinary byte/slot saturation rejects; platform headroom and exact refunds passed
+[+     1.751152] [thread table admission] real backing and guarded publication, shared principal rejection, sticky promotion, independent bytes/slots, retired root and ASID reuse passed
+[+     1.754826] [root table retention] four-slot candidate and original signed charge retained under lifecycle/root/history/heap/pool guards after original root disposal; no cleanup/retry authority
+[+     1.755878] [root table reserve] counter-only ordinary bytes/slots exhausted; platform headroom and exact original refunds passed
+[+     1.756214] [root table admission] real signed backing, 64 pre-allocation denials, guarded scalar publication, exact lease, sticky promotion, independent bytes/slots and late refund after ASID reuse passed
+[+     1.756664] [principal history preparation] 64 heap-held first/duplicate publications; allocation-free monotonic stack/heap updates, root retirement/restart and unrelated-principal ASID reuse passed
+[+     1.757758] [root policy preparation] 320 phase rejections, 64 heap-held publications, exact generation reuse and guarded partial retention passed; ten standalone empty nodes retained
+[+     1.758928] [memory sponsor registration] 64 preparation rejections precede root publication and release original roots outside local guards
+[+     1.760708] [root table conflict] unstarted rejection preserves root/namespaces through one retry; eight-attempt exhaustion releases original ownership after guards with exact frame/backing recovery
+[+     1.764058] [memory sponsor preparation] 64 allocator rejections, four rejection phases, 64 heap/pool-held publications and four guarded abandonments passed; retains three charged 192-byte nodes, two waiter sponsors and one timer sponsor, no root or object/event/entry charge
+[+     1.768324] [memory sponsor metadata] heap-held first lookup/reservation, exact generation reuse, retired memory/node admission and independent waiter/timer lifetimes passed
+[+     1.770536] [memory sponsor registration retention] guarded abandonment retains one unpublished root, capability/IPC namespaces, complete sponsors and policy/usage/authority metadata; no ASID published; 256 namespace + 144 reactor account + 928 metadata original principal bytes retained
+[+     1.778736] [slot publication] repeated rejection releases unpublished roots outside guards, preserves existing namespaces and recovers the exact slot generation
+[+     1.779732] [root preparation] constructor failure returned before namespace publication; ASID capacity preserved
+[+     1.815030] [principal signed launch] two verified instances share image/object ceiling; rejected oversized backing allocates no frames; confirmed teardown refunds both
+[+     1.819424] [principal launch rejection] verified sponsor bound before preparation; moved backing remains charged after unstarted root closes and refunds only at receiver release
+[+     1.819822] [loader admission] bounded validation, fill/zero, quota, mapping rollback, retirement/reuse and signed partial/successful launch cleanup passed
+[+     1.846872] [launch transaction profile] real signed ELF, bootstrap rejection and post-profile-transfer limits rejection recover exact memory/IPC metadata; stale source generation and one-shot busy-root termination passed
+[+     1.847580] [launch transaction] 16 explicit profile/domain/source rollbacks; complete unguarded/guarded abandonment retains roots, profile, backing and charges; busy-profile failure stops without domain cleanup or retry
+[+     1.853846] [upgrade preparation] full arrays max=31 entry=384 bytes=12152; original ordinary/trusted class, pre-transfer quota rejection, prefix cancellation and complete guarded abandonment passed
+[+     1.855614] [service image cache abandonment] four count reservations and two 37-byte private images retained before/after copy; heap/cache/pool guards and IRQ preservation passed
+[+     1.856028] [service image cache] reserved publication, private cancellation and absent/error/attachment response discrimination passed
+[+     1.868614] [waiter account pressure] 6101 ordinary + 2045 reserved actual accounts; 6144/8192 ceilings and exact recovery passed
+[+     1.870268] [waiter account admission] real-account ordinary/total exhaustion, pre-allocation denial, trusted root reserve, immutable classification, root rollback and final-weak release across exact ASID reuse passed
+[+     1.881240] [waiters] SUCCESS: source/domain/node bounds, owning cancellation, detached charges, promotion and ASID reuse
+[+     1.888292] [lock waiters] SUCCESS: bounds/rollback, ready fast path, cancel/rearm, broadcast reentrancy, expired writer, final reader and source destruction
+[+     1.893524] [timer waiters] SUCCESS: bounds/rollback, cancellation, callback reentrancy, expired callback and source destruction
+[+     1.895624] [timer account lifetime] actual event/node/cancellation retention across root close and exact ASID reuse; final-weak backing refund and successor independence passed
+[+     1.900096] [timer cancellation identity] exact live removal, 64 stale predecessor requests, weak-only original charges, fired successor notification and busy-queue identity passed
+[+     1.914910] [timer disposal retention] guarded complete receipt abandonment retained one original event/node/cancellation charge and source; independent waiter cancellation preserved
+[+     1.915456] [timer queue disposal] 64 heap-held exact removals, purge/rejected enqueue, expiry and keyed handback, post-queue guard checks, weak-only original-account retention and IRQ preservation passed
+[+     1.923848] [timer delivery retention] guarded complete selected/purged owner abandonment retained two original event charges and sources; private claim fenced and independent waiter cancellation preserved
+[+     1.924512] [timer callback delivery] 64 ordered heap-held selections, post-queue callback/waiter and final observer destruction, selected/queued cancellation, nested drain fencing, next-pass enqueue, original charges and IRQ policy passed
+[+     1.927570] [timer preparation retention] guarded unpublished owner abandonment retained one original node/event/cancellation charge, callback and source; independent waiter cancellation preserved
+[+     1.928116] [timer preparation disposal] 64 complete unused watchdog nodes, source cleanup, pre-publication cancellation, weak-only original charges, sleep preparation and caller IRQ preservation passed
+[+     1.931812] [timer cancellation retention] guarded final-handle and complete removed-node handback abandonment retained two original event charges and one source; no fabricated flag or notification, independent waiter cancellation preserved
+[+     1.932462] [timer cancellation handback] 64 heap-held complete removals, post-queue node and final-reference disposal, stale final reference under busy queue, remote flag-only cancellation, weak-only original charges and IRQ policy passed
+[+     1.937544] [timer node preparation retention] guarded pre-allocation and empty-backing abandonment retained two original event charges, callback/source fields and one uninitialized Box; independent waiter cancellation preserved
+[+     1.938146] [timer node preparation] 64 heap/queue-held allocation-free initializations, retained allocation rejection, post-callback rollback, unused empty backing, weak-only original charges and IRQ preservation passed
+[+     1.943368] [timer event construction retention] guarded source-only, reservation, holder and cancellation phases retained three original event charges and four source/callback fields; independent waiter cancellation preserved
+[+     1.943994] [timer event construction] 64 guarded allocation-free completions, original source/deadline/admission retention, full sponsor and cancellation rejection, public sleep cleanup, weak-only original charges and IRQ preservation passed
+[+     1.944516] [timer events] SUCCESS: scheduler/domain/node admission, shared reserve, prepared-node rollback, sorted/iterative reclamation, inline quantum, retained cancellation backing and retirement
+[+     1.945266] Testing completion-capability subsystem...
+[+     1.961740] [completion timer observers] allocation rejection, rollback and recovery passed
+[+     1.969378] [completion timers] quota, reserved progress, cancellation churn, rollback and namespace replacement passed
+[+     1.978186] [completion records] quotas, retained strong/weak objects/results, rollback, retirement and exact ASID reuse passed
+[+     2.001576] [completion queues] count/bytes, aliasing, replacement, loader rollback and retirement passed
+[+     2.001930] Completion-capability subsystem tests passed.
+[+     2.002096] Testing capability-free (detached) completion path...
+[+     2.003398] Capability-free (detached) completion tests passed.
+[+     2.014868] [exit watch preparation] allocation rejection, exact-generation reuse, competing source, authorization and heap-held publication/rejection passed
+[+     2.019860] [exit watch owner retention] four guarded captured/source/candidate/entry phases retained four original watch charges, three lists, one entry and four weak-only callback allocations after empty fixture-source closure; no target thread or root retained
+[+     2.020690] [exit watch owner] retained guarded list/borrowed-entry rejection, four ordered unused finishes, final-weak disposal, 64 heap/table-held publications and post-guard finishes with actual token cancellation passed
+[+     2.051052] [exit watches] SUCCESS: bounded source/shared admission, rollback, cancel churn, generation reuse, reentrant exit and teardown/install fencing
+[+     2.054610] [kernel stack ownership] exact owned ranges, unmapped guards, invalid layout and independent release passed
+[+     2.061204] [stack growth handback] unfinished/foreign owners reject without mutation; completed original owners restore usability and charges
+[+     2.069508] [stack retirement diagnostics] distinct invalidation/physical rejections retain leases and count once; counters=[87, 85, 0, 0, 1, 1]
+[+     2.075444] [published stack abandonment] complete pair Drop under lifecycle/table/allocator/pool guards retains two roots/slots, 34 reservation/data pages
+[+     2.080826] [stack preparation abandonment] explicit cancellation/rejection and Drop under lifecycle/table/allocator/pool guards passed; 16 original roots/slots retain 272 reservation pages (136 ordinary) and 10 provisional frames
+[+     2.081346] [stack backing admission] maximum user/kernel reservation, growth/collision/retry, explicit success refund, rejection before allocation, transient-invalidation re-confirmation and platform progress passed; six failed/abandoned owners retain original roots/slots/reservations (20 data frames retained)
+[+     2.095640] [reaper readiness] guarded staging, coalesced exact-LP wake, late registration recheck, full-source rejection and original frame recovery passed
+[+     2.097490] [inline run queue retirement] linked stack/unstarted release rejected under heap, master/retirement/physical guards; complete exact owner returned, explicit unlink and final frame recovery passed
+[+     2.099264] [published stack retirement] failed pair/node retained through two scans; no physical retry
+[+     2.101726] [thread metadata retention] kernel/user payload Drop under table/retirement/root/allocator guards: no exit, waiter cancellation, usage refund or frame return; exact user root remains busy
+[+     2.102184] [thread retirement] node/context-storage rejection, masked entry, same-LP/current-stack retention, unlocked callbacks and physical stack recovery passed
+[+     2.114678] [shutdown] exact domain thread abort rejected: ThreadTerminated
+[+     2.115378] [shutdown] drain pages rejected: Root(StaleHandle)
+[+     2.115578] [shutdown] device drain pages rejected: Root(StaleHandle)
+[+     2.118442] [domain abort] inline fence, rejected prepared/late threads, unlocked generation claim, TID/ASID reuse and root/frame recovery passed
+[+     2.123776] [scheduler selection] heap-held load ties, stale/reused generations, policy fences, architecture dispatch gate, exact Ready owner and empty/no-candidate scans passed; inline queue transfer, rejection before mutation and FIFO reuse passed
+[+     2.280540] [observer backing] actual Arc layouts probe=16 large=1040; weak-only count pressure ordinary=49142 trusted=16380 at 49152/65536; real byte pressure ordinary=12098 trusted=4033 below count ceilings; 128 heap-held bundle denials, payload-layout byte denials, guarded erasure/upgrade, trusted reserve, exact weak-release recovery and real waker rejection passed
+[+     2.285074] [scheduler wait publication] guard-free registration, early/late wake, exact wait/slot identity, registered-before-Blocked Ready control, heap-held publication/detachment and post-guard cancellation passed
+[+     2.414648] [thread admission] collision/quota rejection, slot reuse, launch rollback, scoped watches and privileged owner inspection passed
+[+     2.417110] [CQ waiter preparation] heap-held success/full/ready/reused-source publication, retained rejection charge and post-guard cancellation passed
+[+     2.418488] [device] prepared CQ wake fenced against exact numeric namespace reuse
+[+     2.422218] [backlog charge handback] full/FIFO flush under registry/domain/node/heap guards, ordinary/platform aggregation, original-account replacement and both producers passed
+[+     2.424594] Operation-ID exhaustion controls passed (isolated counters).
+[+     2.427850] [completion node principal] siblings share funding, 192 funded allocator failures, all three adapter denials, heap-held CQ prefix rollback and healthy progress passed
+[+     2.453990] [completion node pressure] actual mixed candidates ordinary=15353 trusted=5109 at 15360/20480; 384 heap-held three-layout denials; all three production adapters reject/recover, trusted reserve progresses, promoted original refund and weak-record independence passed
+[+     2.456598] [completion principal retention] record/authority=176 queue node=240 heap/backlog=4288 detached=152 bytes retained across root close and ASID reuse; each original refund reconciled
+[+     2.457064] [completion node admission] layouts capability=80 detached=152 queue=240; 192 injected allocation rejections, independent byte denial, root close/exact ASID reuse, retained original nodes and exact post-deallocation refund passed
+[+     2.463362] [capability completion preparation] unlocked construction/rejection, hidden authority, heap-held stale publication, original charges, absolute deadline and close-before-enqueue passed
+[+     2.474126] [capability metadata retention] guarded prepared/retired abandonment retained payload, hidden/detached authority, original charges, timer, watch and buffer; numeric successor unchanged
+[+     2.474632] [capability metadata] unlocked allocation/rejection, 64 heap-held publications and paired payload/authority removals, 128 full-ring aborts, weak-only original charges and namespace identity passed
+[+     2.480570] [completion initial admission retention] guarded captured-buffer, record and watch phases retained three 16-byte buffers, two original record charges, one watch charge and captured accounts across namespace replacement; no authority or user root
+[+     2.481270] [completion initial admission] identity/record/watch/factory rejection, retained pre-record buffer and original charge, 64 borrowed factory publication/result transfers and explicit payload-first rollback passed
+[+     2.483632] [waiter source preparation] unlocked allocation/failure, competing initialization, heap-held publication and post-guard original-charge disposal passed
+[+     2.490860] [observer lists] retained token/weak backing, rollback, captured classification, node reserve and subsystem rejection passed
+[+     2.494254] [observer entry construction retention] guarded pre-storage and empty-storage phases retained two original watch charges, two final weak callback allocations and one empty entry Box; no list charge, token or user root retained
+[+     2.494896] [observer entry construction] 64 heap/list-held initializations, exact weak identity, 32 unused disposals, 32 publications/cancellations, retaining rejection, final-weak allocator-return disposal and explicit backing/weak-before-charge passed
+[+     2.500780] [waiter preparation owner retention] three guarded captured/admitted/entry phases retained two original waiter charges, one closed source list, one entry and three weak-only callback allocations after sponsor retirement; no target thread or root retained
+[+     2.501498] [waiter preparation owner] quota/retired/borrowed-entry rejection, three ordered unused finishes, final-weak/source disposal, 64 heap/table-held publications and post-guard finishes, original classification through promotion and actual cancellation passed
+[+     2.506500] [completed observer entry retention] heap/list-held abandonment retained one original watch charge, one original waiter charge, two complete entry Boxes and two weak-only callback allocations after empty sources closed; no list, token, thread or root retained
+[+     2.507234] [completed observer entry] both production charge types: 64 unused finishes, 64 heap-held publications with post-guard empty finishes, full/closed retained rejection, direct-adapter rejection, detached discard and final-weak finish passed
+[+     2.512850] [lazy waiter owner retention] six guarded capture/candidate/selection/release/entry/ published phases retained six lists, one original waiter charge, one entry and five weak-only callback allocations after source closure and sponsor retirement
+[+     2.513538] [lazy waiter owner] six ordered finishes, guarded allocation/retired/quota/closed/full rejection, 64 competing heap-held selections, 63 losing releases before admission, 64 heap/slot-held entry publications and post-guard finish/cancellation passed
+[+     2.517900] [completion record construction retention] guarded buffer/charge, holder and list phases retained three original record charges, three 16-byte buffers, two holders and one empty source list; no root or authority
+[+     2.518448] [completion record construction] 64 exact buffer/operation transfers, weak-only original admission, holder/list/backing rejection and payload-first explicit cancellation passed
+[+     2.525296] [completion callback preparation] unlocked allocation/rejection, heap-held competing/full/ready/retired/reused publication, reentrant namespace disposal and complete charged CQ detachment passed
+[+     2.532132] [completion callback owner retention] guarded captured/charged/list/entry phases retained one exact buffered record, three original watch charges, two candidate lists, one entry and four weak-only callback allocations across namespace replacement
+[+     2.532878] [completion callback owner] quota/list/borrowed-entry rejection, four explicit unused finishes, retained guarded rejection, 64 heap-held publications and post-guard finishes with original charges and no fabricated callback passed
+[+     2.539550] [completion terminal disposal] heap-held owner detachment, post-publication reentrant event/worker disposal, cancellation parity, idempotency, exact CQ replacement and ten installation controls passed
+[+     2.544648] [completion physical principal] backlog=384 bytes, borrowed frame excluded, alias rejection retained both preparations
+[+     2.546964] [CQ namespace retention] heap/registry-held unpublished namespace abandonment retained global node, all original accounts, complete payload and 4960 original-principal bytes
+[+     2.547436] [CQ payload preparation] unlocked list/ring allocation and partial rejection, heap-held competing/stale/retired/aliased publication, unchanged physical bytes, exact original charges and whole namespace replacement passed
+[+     2.552450] [CQ metadata retention] guarded prepared/retired fallback retained two original queue charges and one backlog record; successor and independent waiter cancellation preserved
+[+     2.553000] [CQ metadata] unlocked node rejection, 32 heap-held fresh publications/removals, admission before allocation, complete backlog/source handback and original-account reuse passed
+[+     2.553648] [namespace node allocation] family=completion bytes=240; 64 allocator rejections passed
+[+     2.591874] [completion account pressure] 18409 ordinary + 6138 reserved actual mixed accounts; 18432/24576 ceilings, 192 heap-held denials, zero/one/two-slot namespace rollback, trusted backing without record/CQ/watch privilege, immutable promotion and close/recovery passed
+[+     2.595384] [completion account lifetime] real completion/weak backing, retired heap CQ and owned watch entry retained original accounts across root close and exact ASID reuse; four reactor final-weak original-principal refunds left successor unchanged
+[+     2.618206] [timer account pressure] 12219 ordinary + 4082 reserved actual accounts; 12288/16384 ceilings, heap-held denial, trusted root/namespace backing without event privilege, failed root rollback, immutable promotion and close/recovery at total exhaustion passed
+[+     2.626986] [completion namespace metadata] five unlocked allocation-stage rejections, 64 heap-held fresh publications/removals, complete source/timer/backlog/authority handback, reentrant disposal, retired-generation rejection and original-account reuse passed
+[+     2.631336] [detached timer disposal] heap-held admitted-node removal and direct/backlog/missing-CQ splice, post-registry cancellation and charges, manual/cancel/firing producers, duplicate rejection and exact successor-source fencing passed
+[+     2.635598] [detached preparation] unlocked node/observer allocation and rejection, bounded prepared charges, heap-held stale/replaced/missing/retired publication, public recovery and close-before-enqueue retention passed
+[+     2.642474] [detached metadata retention] guarded namespace/preparation/terminal abandonment retained original nodes/charges, timers, CQ backing, watch and buffer; successors unaffected
+[+     2.642980] [detached metadata] unlocked allocation/rejection, 64 heap-held fresh publications/removals, charged backlog nodes, exact duplicate rejection and complete namespace close/replacement passed
+[+     2.658116] [completion callbacks] SUCCESS: owning cancellation, source/shared admission, late/reentrant notification, abort rollback, retirement and exact namespace reuse
+[+     2.658698] Testing endpoint IPC subsystem...
+[+     2.664192] [ipc memory] server AS asid=63
+[+     2.664358] [ipc memory] client AS asid=62
+[+     2.675042] [ipc memory] teardown server AS asid=61
+[+     2.675252] [ipc memory] teardown client AS asid=64
+[+     2.677020] [ipc memory] death server AS asid=64
+[+     2.677182] [ipc memory] death client AS asid=61
+[+     2.679310] Endpoint IPC subsystem tests passed.
+[+     2.679466] Testing endpoint capacity adaptation...
+[+     2.680856] Testing aggregate endpoint admission...
+[+     2.685994] [ipc memory] endpoint sponsor AS asid=61
+[+     2.686592] [ipc memory] endpoint replacement AS asid=61
+[+     2.687242] Aggregate endpoint admission passed.
+[+     2.705712] [snapshot count pressure] 6143 ordinary + 2048 reserve actual buffers; 6144/8192 limits, three adapter denials, empty escrow and exact old/new-generation unpin refund passed
+[+     2.707324] [snapshot byte pressure] 96 ordinary + 32 reserve actual buffers, up to 128 KiB each; exact 12582912/16777216 byte limits before count limits and post-deallocation baseline recovery passed
+[+     2.711052] [snapshot principal frames] shared-root copy/DMA/map denials, original class, independent sponsor, retained old-principal refund after close/reuse, free-before-refund and guarded abandonment passed
+[+     2.712140] [snapshot buffer admission] 64 charged allocation rejections; 64 buffer-free-before-refund observations; real ordinary/total count and byte exhaustion, three pin/map rejection paths, empty escrow, trusted reserve, promotion/root reuse and exact baseline recovery passed; no quota reset
+[+     2.749056] [object frame-vector admission] real empty buffers ordinary=15426 trusted=16199; byte-only ordinary/total exhaustion, heap-held pre-allocator denial, 64 allocated-prefix rejections, captured trusted reserve, node counts unchanged and exact recovery passed; max=131072 bytes
+[+     2.750900] [object frame-vector preparation] 64 allocated-vector rejections after charged object preparation; no physical allocation, exact metadata/page/object refunds and original error preserved
+[+     2.752214] [memory object node class] original generation captured before allocation; promotion and root reuse preserve ordinary node charge; late private backing release refunds the original owner
+[+     2.766054] WARNING: failed to free memory-object frames; charge quarantined
+[+     2.768280] [backing abandonment] inert reservation-only, private and published owners; all local memory/table/heap/frame/budget/authority guards held for data-owner Drop; two real data pages, three original page/object reservations, complete nodes/authority retained past root retirement and ASID reuse; 128 physical-prefix rejections, 64 post-guard failures and 64 real copy cancellations/publication releases passed
+[+     2.769192] [memory object storage] 128 charged preparation and 64 copied-prefix rejections, 64 heap-held object relinks/detaches, post-physical node/charge disposal, non-reused IDs and terminal release rejection passed; one data page, complete object node and original charge deliberately retained
+[+     2.799908] [memory borrower admission] 24500 ordinary + 8182 reserve pressure nodes; payload/namespace/borrower layouts 64/64/56 bytes; ordinary/total third-node rejection, two-node write cancellation, trusted read reserve and mapped revocation at exhaustion with original charges passed; exact baseline restored
+[+     2.820378] [memory borrower storage] 128 pre-escrow rejections, 64 unused cancellations, 64 heap-held two-reader relinks/detaches and 32 reader-preserving revocation/namespace closes passed; borrower cancellation keeps storage before authority refund
+[+     2.866890] [memory capability node pressure] 24509 ordinary + 8182 reserve unused payload nodes; capability+object+frame-buffer/namespace release bytes 320/64 bytes, ordinary/total byte ceilings 3145728/4194304, node ceilings 24576/32768; exact baseline after real cleanup and root reuse passed
+[+     2.883044] [memory object node pressure] bytes=248 ordinary=12649 trusted=4222; real empty object layouts exhaust independent byte limits below count ceilings; heap-held pre-allocation denials, trusted reserve and exact recovery passed
+[+     2.883578] [memory capability node admission] 256 charged allocator rejections; captured classification, actual ordinary/total exhaustion, trusted reserve, two-/three-node partial rejection, public allocate/move/copy/loan denial without source mutation, published/detached charge lifetime and cleanup at exhaustion passed; no quota reset
+[+     2.886118] [memory capability storage] 192 charged preparation-prefix rejections, 64 heap-held two-capability/namespace publications and paired detachments, post-guard count recovery and stale captured-generation rejection passed
+[+     2.886646] [memory capability preparation] inert partial/full/published ownership; 64 explicit storage-before-authority finishes, 64 local-guard rejection finishes and 192 containing move/loan/copy rejections passed; guarded fallback retains four unused metadata nodes and captured authority/account references, no data/root/pin; namespace retirement may dispose hidden authority, retained payload metadata keeps original byte/count admission
+[+     2.900584] [mapping node pressure] 6131 ordinary + 2048 reserve actual unused nodes plus one public mapping, 136 requested bytes/node; 884736/1179648 bytes and 6144/8192 node ceilings; exact baseline after deallocation, public unmap and generation reuse at total exhaustion passed
+[+     2.903718] [scratch/mapping principal] extent=64 namespace=88 mapping=136 bytes; sibling quotas, both scratch prefix denials, post-scratch mapping denial, healthy map and exact refunds
+[+     2.904136] [mapping node admission] 64 charged allocator rejections; captured classification, published/detached lifetime, actual ordinary/total node exhaustion, trusted reserve, denial before snapshots/pins/leaves and cleanup at exhaustion passed; no quota reset
+[+     2.924172] [memory mapping retained] object=620 asid=64 phase=map-invalidation error=InvalidationFailed(AddressSpaceMissing) prior=Err(MapFailed) pages=2 mapping=Some(MemoryMappingState { address_space: AddressSpaceHandle { id: 64, generation: 32 }, base: VAddr(0x200000), installed_pages: 1, writable: true, scratch: false })
+[+     2.925482] [mapping principal retention] 136 original metadata bytes retained with the detached node and pin after rejected invalidation under principal-history and pool guards
+[+     2.925948] [memory mapping storage] 192 unlocked record/snapshot prefix rejections, source-close revalidation, 64 heap-held snapshot fills/node publications/detachments, 32 rollback receipts through confirmed maintenance, and guarded uncertain rollback passed; two data pages, their mapping node/root and original charge deliberately retained
+[+     2.926658] [mapping preparation ownership] captured generation rejects real ASID reuse; 64 ordinary success/rollback disposal entries outside memory/table/heap/frame guards; guarded partial/full/published preparation retains two empty nodes and two snapshots, no additional data/root/lease; existing uncertain rollback remains separately retained
+[+     2.934586] [copy snapshot storage] 128 unlocked prefix rejections, overflow rejection, source close/write-map/DMA and real ASID-reuse revalidation, 64 heap-held snapshot fills/pin publications and post-guard snapshot-before-unpin disposal passed; guarded fallback retains one unused snapshot and one real pin/snapshot/data page/original charge past source-root retirement and ASID reuse
+[+     2.943202] [DMA snapshot storage] 128 unlocked shared/exclusive prefix rejections, invalid/overflow rejection, source close/CPU-map/DMA/copy/loan and real ASID-reuse revalidation, 64 heap-held fills/dual-counter publications and snapshot-before-unpin disposal passed; guarded exclusive pin/snapshot/data page/original charge retained past source-root retirement and ASID reuse; no hardware claim or retained root
+[+     2.955186] [scratch node pressure] 6127 ordinary + 2048 reserved actual extent nodes; 6144/8192 count ceilings, one-slot rollback, trusted publication and close at total exhaustion passed
+[+     2.962340] [scratch byte pressure] 5572 ordinary + 1862 reserved actual namespace nodes, 88 bytes each; 491520/655360 byte ceilings reject before count limits and return exact baseline after deallocation
+[+     2.962788] [scratch admission] layouts extent=64 namespace=88; 128 funded allocation rejections; ordinary/total byte and node exhaustion, partial-quota rollback, trusted reserve, captured classification and exact-generation close/reuse passed
+[+     2.968168] [scratch storage] 192 unlocked prefix rejections, 64 heap-held namespace/extent publications/detachments, competing namespace, full/invalid/stale rejection and guarded partial/retired retention passed; six isolated metadata nodes retained, no data/root
+[+     2.993876] [IPC borrowed publication] empty and 257-member mixed authority batches with heap held; late transfer/extra namespace rejection preserved every destination/source, cancellation restored baselines; complete mixed commit including payloads needs no heap
+[+     3.000222] [IPC scalar publication] 64 complete prepared call commits with IPC/heap held, enqueue/reply/observation, original count reconciliation and IRQ preservation passed
+[+     3.257246] [IPC unlocked preparation] 320 call-stage and 64 authority-factory rejections; 64 heap-held call revalidations, quota-before-payload/list rejection, retirement race and exact-root/IRQ retention passed; publication vectors and other capability callers remain separate
+[+     3.269268] [IPC vector capacity] real ordinary/total byte pressure, heap-held growth denial, full old/candidate rejection, original pointer/prefix and popped capacity retained; exact recovery; cap=8 transfer=384 loan=32 allocator=1 bytes
+[+     3.272454] [IPC buffer principal] sibling denial, full growth overlap, diagnostic sharing, promotion, independent sponsor, retained old-principal refund after root reuse, attachment-prefix rollback and guarded metadata retention passed
+[+     3.276036] [IPC descriptor principal] 64 public vector-send denials preserve descriptor/source and exact byte prefix; funded retry delivers; principal fully refunded
+[+     3.279728] [IPC loan capacity] real mapped read loan, caller promotion, receive/reply revocation and call close recover exact backing; token keeps original loan-vector allocation until actual disposal
+[+     3.281248] [IPC vector rollback] transfer capacity admitted before cap-ID quota rejection; complete copied transfer retained until post-guard finish; original counts, authority, buffer bytes, source and physical frames recovered
+[+     3.284510] [IPC descriptor capacity] 4082 requested bytes; ordinary/total quota denial under heap guard, trusted headroom, invalid source/length and malformed rollback; public send rejection preserves source/descriptor/frames, retry delivers; immutable copied bytes and original class survive promotion/root retirement until actual buffer disposal
+[+     3.288750] [IPC attachment capacity] ordinary=486 trusted=162 real empty buffers; byte-only ordinary/total exhaustion, 64 allocated-prefix rejections and exact recovery; retired=136 max=34680 bytes; node slots unchanged
+[+     3.292370] [IPC attachment ownership] real copy call quota rollback, queued cancellation and receive/reply/close recover backing, counts and physical frames; promotion retains original ordinary buffer class; delivered storage disposed after IPC unlock
+[+     3.293152] [IPC receive storage] complete delivered receive owner abandonment retains one empty retirement catalog and original byte charge under IPC/heap/pool guards; no physical backing or authority adopted
+[+     3.368740] [IPC node pressure] 216 bytes; 58235 ordinary + 19412 trusted real empty nodes; heap-held quota rejection, separate trusted reserve, independent counter-only byte exhaustion and exact recovery
+[+     3.445498] [IPC node pressure] 216 bytes; 58235 ordinary + 19412 trusted real empty nodes; heap-held quota rejection, separate trusted reserve, independent counter-only byte exhaustion and exact recovery
+[+     3.539256] [IPC node pressure] 136 bytes; 73712 ordinary + 24570 trusted real empty nodes; heap-held quota rejection, separate trusted reserve, independent counter-only byte exhaustion and exact recovery
+[+     3.588022] [IPC node pressure] 336 bytes; 37437 ordinary + 12479 trusted real empty nodes; heap-held quota rejection, separate trusted reserve, independent counter-only byte exhaustion and exact recovery
+[+     3.590468] [IPC node rollback] 64 admitted pending-prefix / rejected reply-node preparations; original resource counts and backing bytes/slots recovered before authority or attachment publication
+[+     3.590984] [IPC node admission] 512 allocator rejections; actual pending/reply/capability/endpoint layouts 216/216/136/336 bytes; complete node keeps backing and logical record reservations through real disposal
+[+     3.596806] [IPC pending storage] 64 invalid-handle and 64 preparation rejections, 64 heap-held publications/detaches, original charge through node disposal and IRQ preservation passed; three abandoned call owners retain storage, three call/reply reservations, five roots and copied backing
+[+     3.605600] [IPC reply storage] 64 second-allocation rejections, 64 heap-held paired publications/detaches and one 64-node retirement batch passed; token charge survives pending-node disposal, original class survives promotion; two abandoned scalar token nodes/counts and one notification entry retained across exact root reuse
+[+     3.608842] [IPC capability backing] 64 heap-held quota denials after authority reservation, namespace-captured class survives promotion and exact cleanup; ordinary grantor uses trusted recipient backing reserve without acquiring trusted logical admission
+[+     3.616934] [IPC capability storage] 128 stage rejections, 64 heap-held joint publications/detaches, post-guard payload/authority refunds, containing-call rejection and guarded retention passed; one call root/lease with two family records and one staged capability, plus one detached connection payload/authority pair deliberately retained
+[+     3.619834] [IPC endpoint backing] 64 backing-quota rejections refund original endpoint/queue reservations; promotion between admission and node allocation preserves original ordinary class and exact cleanup
+[+     3.650460] [IPC endpoint storage] 640 preparation and 96 growth rejections; 64 complete heap-held endpoint publications plus 64 heap-held publications/detaches, heap-held FIFO replacement, concurrent resize/close, hidden connection final-reference cleanup and guarded retention passed; two roots/leases, three endpoint records and twenty slots deliberately retained
+[+     3.780376] [IPC account lifetime] delegated connection retained real closed endpoint/record accounts across root close and exact ASID reuse; final-weak refunds preserved successor
+[+     6.654828] [ipc shared admission] endpoint/delegation refunds, scalar/vector receive pressure, result failure, call/attachment composition, returned authority and retired publication passed
+[+     6.655370] [ipc records] SUCCESS: connection/call/reply bounds, pre-transfer rejection, rollback, result/cancellation cleanup and generation reuse
+[+     6.670654] [IPC connection delivery] guessed send/call/mint/watch/close rejected without charge changes; receive rollback, queue/result cleanup, repeated observation and delivered attenuation passed
+[+     6.718744] [IPC backing retirement] preparation rollback, maximum vectors, bulk queue, call/result release outside IPC passed
+[+     6.734894] [IPC scalar submission] copy/move sends and copy/move/read/write calls prepare outside IPC with both roots; attachment/authority/endpoint rejection restores sources; heap-held send publication and inert complete scalar/vector-send abandonment passed; vector fixture retains two data pages and its complete original root/transfer/catalog owner after promotion
+[+     6.735682] [IPC staged rollback] partial vector, storage/publication rejection, closed destination, unlocked copy release and exact root retention passed
+[+     6.752436] [IPC memory delivery] guessed move/copy/result use rejected; receive rollback, vector delivery, cancellation, endpoint/root cleanup and observed ownership passed
+[+     6.760152] [IPC reply work] parent=1144 entry=200 max=51000 bytes; ordinary/total quota denial under heap guard before claim, original class after promotion, full capacity through final pop/publication, zero-work admission at quota and exact recovery
+[+     6.768282] [IPC claim readiness] preparation rejects a successor episode on the same reply token
+[+     7.047692] [IPC returned connection] source endpoint/connection close waits, external owner close, delivered-source checks, hidden attenuated grants, observed/unobserved cleanup, quota/preparation rollback and rejected publication passed
+[+     7.355140] [deferred node admission] family=memory-close bytes=56 actual candidates ordinary=12287 trusted=4096; ceilings 12288/16384; 64 allocator failures, byte denial, 64 partial-list rejections, 128 heap-held source denials, trusted cancellation, guarded enqueue and exact producer-LP drain/refund passed
+[+     7.366078] [memory close principal] 64 allocation rollbacks; pre-heap quota rejection, sibling sharing, independent principal, queued retention, late interest, promotion and exact-generation reuse refunds passed
+[+     7.366592] [memory close readiness] exact-root wait, rollback/move, closed-source late bind, IPC-deferred notification/list disposal, saturation and preparation race passed
+[+     7.367012] [IPC returned memory] hidden escrow/backing, unlocked source close, observed/unobserved cleanup, quota/loan/publication rollback, delivered-source checks, staged close, joint authority and source-fence release passed
+[+     7.372736] [IPC reply work abandonment] complete parent retains work capacity, returned-memory escrow, hidden grants, roots and two data pages per fixture after promotion; unguarded and cleanup-guard-held Drop inert
+[+     7.373208] [IPC reply ownership] unlocked loan detach, competing reply/close, preparation rollback, staged close, partial failure and abandonment passed; failed cleanup retains exact closing roots and original backing charges
+[+     7.384858] [IPC cancellation work] parent=560 entry=200 max=51000 bytes; queued/delivered ordinary/total quota denial under heap guard before claim, original class after promotion, full capacity through final pop/attachment release, zero-work admission at quota and exact recovery
+[+     7.409514] [IPC DMA loans] cancellation/reply preserve read/write loans until DMA unpin
+[+     7.421628] [IPC] bulk cancellation retained token 1201 after uncertain loan cleanup
+[+     7.423986] [IPC] bulk cancellation retained token 1202 after uncertain loan cleanup
+[+     7.436932] [IPC namespace recheck] removed queued/delivered token drains in one pass; delivered move retains its original charge
+[+     7.438712] [IPC namespace recheck] removed selection preserves the next live claim/epoch and exact closing root until its owner completes
+[+     7.448068] [IPC namespace kernel caller] queued/delivered mapped read/write loans retired without leasing or closing the permanent root
+[+     7.453356] [IPC namespace ownership] unlocked queued/delivered cleanup, both closing peers, preparation rollback, partial failure and abandonment passed; failed roots/backing retained; exact pending token/epoch diagnosed
+[+     7.477070] [IPC cancellation work abandonment] complete parent retains work capacity, queue, claim, roots, mapping and original loan backing after promotion; unguarded and cleanup-guard-held Drop inert
+[+     7.477534] [IPC cancellation ownership] queued/delivered close, unlocked loan cleanup, competing close/reply/receive, staged close, preparation rollback, partial failure and abandonment passed; bulk failure retains queued authority and exact closing roots
+[+     7.501622] [deferred node admission] family=ipc-claim bytes=56 actual candidates ordinary=12287 trusted=4096; ceilings 12288/16384; 64 allocator failures, byte denial, 64 partial-list rejections, 128 heap-held source denials, trusted cancellation, guarded enqueue and exact producer-LP drain/refund passed
+[+     7.532450] [IPC claim principal] reply caller and endpoint owner funded; allocator/list rejection, heap-held quota denial, different actor, promotion, accepted wait rejection, queued retention and original refunds across retired generations passed
+[+     7.533010] [IPC claim readiness] exact-root wait, late closed bind, saturation, admission rejection and completion-before-relink passed
+[+     7.533370] Testing cancellable endpoint-close registrations...
+[+     7.573904] [close watches] cancellation, entry bounds, notification, rollback and generation reuse passed
+[+     7.577064] [IPC waiter preparation] heap-held receive/reply/full/ready/foreign/closed-source publication and post-guard original-charge disposal passed
+[+     7.586576] [ipc waiters] SUCCESS: source bounds, cancellation/rearm, message/reply/close notifications, loan revocation and retired sponsorship
+[+     7.588884] [reply CQ] reply/cancel/late binding, unobserved results, saturated admission and owner cancellation passed
+[+     7.589218] Testing endpoint IPC connection attachment and re-delegation...
+[+     7.591306] Endpoint IPC connection attachment tests passed.
+[+     7.591470] Testing combined connection + copied-memory IPC attachment...
+[+     7.591700] [ipc memory] named-ns AS asid=104
+[+     7.591858] [ipc memory] named-service AS asid=103
+[+     7.594308] Combined connection + copied-memory IPC attachment tests passed.
+[+     7.594506] Testing vector IPC transaction rollback...
+[+     7.594700] [ipc memory] vector-server AS asid=104
+[+     7.594864] [ipc memory] vector-client AS asid=103
+[+     7.595028] [ipc memory] vector-result-owner AS asid=105
+[+     7.597238] [ipc memory] vector quota server AS asid=105
+[+     7.597428] [ipc memory] vector quota client AS asid=104
+[+     8.129306] [ipc memory] reply quota server AS asid=105
+[+     8.129530] [ipc memory] reply quota client AS asid=104
+[+     8.390448] [ipc memory admission] failed second vector move restored full source; rejected reply preserved loan and retried
+[+     8.391112] [ipc memory] mixed vector server AS asid=105
+[+     8.391314] [ipc memory] mixed vector client AS asid=104
+[+     8.661532] [ipc memory] mixed vector server AS asid=105
+[+     8.661766] [ipc memory] mixed vector client AS asid=104
+[+     8.932116] [ipc memory] mixed vector server AS asid=105
+[+     8.932340] [ipc memory] mixed vector client AS asid=104
+[+     9.202688] [ipc memory] mixed vector server AS asid=105
+[+     9.202916] [ipc memory] mixed vector client AS asid=104
+[+     9.472568] [ipc memory] mixed vector server AS asid=105
+[+     9.472796] [ipc memory] mixed vector client AS asid=104
+[+     9.474476] [ipc memory] mixed vector server AS asid=105
+[+     9.474696] [ipc memory] mixed vector client AS asid=104
+[+     9.477824] [ipc memory] mixed vector server AS asid=105
+[+     9.478022] [ipc memory] mixed vector client AS asid=104
+[+     9.479512] [ipc memory] mixed vector server AS asid=105
+[+     9.479694] [ipc memory] mixed vector client AS asid=104
+[+     9.481404] [ipc memory] mixed vector server AS asid=105
+[+     9.481584] [ipc memory] mixed vector client AS asid=104
+[+     9.483348] [ipc memory] mixed vector server AS asid=105
+[+     9.483526] [ipc memory] mixed vector client AS asid=104
+[+     9.484878] [ipc vector staging] all four modes cancel privately; mixed reply, queued/delivered cancellation and endpoint close revoke all loans
+[+     9.485238] Vector IPC transaction rollback test passed.
+[+     9.485388] Testing adversarial IPC scenarios...
+[+     9.485776] [adversarial] double-close rejected
+[+     9.486326] [adversarial] double-reply rejected
+[+     9.486684] [adversarial] wrong-ASID rejected, delegation accepted
+[+     9.487248] [adversarial] insufficient-rights rejected
+[+     9.487614] [adversarial] queue-full rejected, ordering preserved
+[+     9.488020] [adversarial] queued-call cancellation clears the queue
+[+     9.488268] Adversarial IPC tests passed.
+[+     9.488402] Testing syscall dispatch subsystem...
+[+     9.578728] [syscall snapshot maxima] image+descriptor=4194304+3584; two pickup+plaintext=4269180+65536 each and 3145728 actual mixed bytes; peak additional=11815160; policy=12582912/16777216; exact recovery
+[+     9.586064] [syscall snapshot consumption] four public handlers, invalid content and quota denial: family/principal denial, original status/input consumption, zero scoped receipt and exact refund passed
+[+     9.589314] [snapshot principal inputs] signed maxima, sibling byte ceiling, frame/diagnostic sharing, promotion, prefix rollback and retained old-principal refund after ASID reuse passed
+[+     9.589738] [syscall snapshots] all six buffers: maxima, original class/generation, ordinary/total denial before allocator entry, prefix cleanup and public input consumption passed; exact byte/count recovery
+[+     9.590880] [EL0 LOG] lp=0 asid=0 a=0xbeef b=0x0
+[+     9.632880] [namespace node pressure] 30499 ordinary + 10214 reserved actual capability-layout nodes; 30720/40960 node ceilings, byte denial, heap-held denial, root rollback, completion/mailbox rejection, trusted five-node reserve, immutable promotion and close/recovery passed
+[+     9.633568] [namespace node layouts] complete five-node root 800 bytes; count-headroom layouts 6553600 total / 4915200 ordinary bytes
+[+     9.684454] [namespace account pressure] 24271 ordinary + 8156 reserved actual accounts; 24576/32768 ceilings, 256 heap-held four-constructor denials, zero/one/two-slot root rollback, trusted backing without authority/IPC/mailbox privilege, existing receiver/word progress and immutable promotion/close/recovery passed
+[+     9.729532] [namespace account principal] actual cap/endpoint/record/mailbox bundles=72/80/104/104 bytes; sibling sharing, 256 heap-held denials, independent sponsor, three root-prefix rollbacks, promotion, four final-weak refunds after ASID reuse and 14560 real bundles at 1048576-byte principal ceiling passed
+[+     9.730406] [namespace node allocation] family=capability bytes=152; 64 allocator rejections passed
+[+     9.733094] [capability namespace storage] first-node/account preparation rejection before ASID publication; heap-held exact namespace publication/detachment; original-charge release outside capability guard; late token cannot alter replacement; guarded abandonment retains one empty node/account (7 allocation, 6 disposal boundaries; entry IRQ preserved)
+[+     9.740120] [capability record phases] 20 prepared-node and 18 disposal boundaries outside local capability/heap guards; entry IRQ state preserved
+[+     9.740470] [capability record ownership] all six kinds reject storage before serial/charge mutation; heap-held captured admission/publication/escrow/detach; mixed batch rejection is atomic, move retains its exact retired source charge until explicit completion; cancellation and late tokens preserve exact accounts; guarded preparation/retirement abandonment retains two original ordinary charges after root reuse
+[+     9.883468] [authority node backing] bytes=96 actual candidates ordinary=98134 trusted=32760; ordinary/total ceilings 98304/131072; 64 allocation failures, byte denials, 128 heap-held admission denials, immutable promotion, trusted storage without grants, retained record across root close/ASID reuse, exact recovery passed
+[+    10.035434] [record node principal] authority/mailbox payload layouts=96/96 bytes; sibling sharing, 128 funded allocator failures, principal denials before allocation, six mailbox prefixes, healthy sponsor, promotion, retained original record across exact ASID reuse and 87371 real candidates at 8388608-byte ceiling passed
+[+    10.493932] [capability account lifetime] stale token, actual root close/ASID reuse and final-weak original backing refund passed
+[+    10.758514] [IOMMU ledger admission] real buffers ordinary=1152 trusted=638; byte-only limits, full replacement overlap, allocator rejection, exact address transfer, bounded capacity, heap-held quota denials and deallocation-before-refund passed
+[+    10.760356] [IOMMU ledger physical admission] fresh/growth quota denial precedes physical allocation; existing capacity and captured trusted class progress; page reservations, buffers and charges recover exactly
+[+    10.766844] [IOMMU admission] rejected table release; whole charge retained
+[+    10.794016] [IOMMU preparation abandonment] explicit metadata/allocation/prefix rollback and Drop under backend/lifecycle/table/heap/physical/pool guards passed; 14 original charges (7 domain), 10 frames and table ledgers retained
+[+    10.798670] [IOMMU admission] rejected table release; whole charge retained
+[+    10.799528] [IOMMU detached ownership] complete metadata retained under guards; exact-slot partial rejection is terminal; 3 original domain charges/2 frames retained
+[+    10.808064] [smmu command owner] private timeout producer, full-ring and malformed-consumer rejection preserved
+[+    10.809820] [IOMMU admission] rejected table release; whole charge retained
+[+    10.810324] [IOMMU unit retention] empty/private abandonment under guards, partial release without retry and uncertain control/published rejection remain fenced; 5 original unit charges/4 frames and complete metadata retained
+[+    10.810836] [IOMMU admission] node/domain/unit limits, private rollback, partial release fence and cached sparse walkers passed; original release fixtures retain 5 charged pages/3 frames
+[+    10.948238] [device node pressure] actual mixed candidates ordinary=104447 trusted=34815 at 104448/139264; 256 heap-held layout and 128 complete-storage denials; MMIO/IRQ/DMA reject before hardware/authority, one-node rollback, two-node recovery, trusted storage without resource privilege and promoted original refund passed
+[+    11.101828] [device node principal] namespace/payload/authority=64/88/96 bytes; siblings, 128 funded allocator failures, 96 heap-held adapter denials, six MMIO/IRQ/DMA prefix controls, healthy grant, immutable promotion, retained candidates across funded ASID reuse and 95314 real candidates at 8388608-byte ceiling passed
+[+    11.102584] [device node admission] layouts namespace=64 capability=88 charge=32; 128 allocator rejections, independent byte denial, retained empty candidates across exact root close/ASID reuse and original-class deallocation refunds passed
+[+    11.108856] [device authority phases] 7 preparation-entry and 10 disposal-entry boundaries outside local lifecycle/device/backend/table/physical/heap/capability guards; entry IRQ state preserved
+[+    11.109330] [device registry phases] 17 allocated-node and 14 disposal boundaries outside local lifecycle/device/backend/table/physical/heap guards; entry IRQ state preserved
+[+    11.109718] [device registry ownership] device/unified node rejection precedes all MMIO/IRQ/DMA authority/hardware; heap-held authority admission, namespace creation/reuse and capability publication; explicit post-guard node disposal and exact-root completion passed
+[+    11.110514] [backend node layout] requester=48 bytes; 64 allocator rejections passed
+[+    11.110914] [backend node layout] dma-mapping=128 bytes; 64 allocator rejections passed
+[+    11.111368] [backend node layout] smmu-walker=48 bytes; 64 allocator rejections passed
+[+    11.111774] [backend node layout] smmu-domain=192 bytes; 64 allocator rejections passed
+[+    11.329176] [backend node count pressure] actual requester-layout candidates ordinary=196608 trusted=65536 at 196608/262144; heap-held all-layout denials, captured grant class, trusted reserve and one/two/three-node rollback/recovery passed
+[+    11.440126] [backend node byte pressure] actual layout=(u64, core::option::Option<knytos::device::smmu::Domain>) empty candidates ordinary=98300 trusted=32765 at bytes=192; ordinary/total byte exhaustion below count ceilings, 128 heap-held byte denials and exact recovery passed
+[+    11.604976] [backend node byte pressure] actual layout=(u64, knytos::device::mapping_storage::Record) empty candidates ordinary=147451 trusted=49146 at bytes=128; ordinary/total byte exhaustion below count ceilings, 128 heap-held byte denials and exact recovery passed
+[+    11.605624] [backend node admission] requested-layout bytes/count, original captured backing class, empty real-layout pressure and complete preparation rollback passed; charge=16 bytes
+[+    11.607914] [backend registry phases] 6 node-preparation and 7 disposal entries outside local backend/lifecycle/device/capability/table/physical/heap guards; entry IRQ state preserved
+[+    11.609200] [backend registry ownership] node rejection, heap-held publication/claimed-cell restoration/detach and exact zero-fence reuse passed; guarded complete-grant abandonment retains one root/reservation and unused backend nodes without new IOMMU table/data charge
+[+    11.612648] [DMA metadata phases] 8 preparation and 6 disposal entries outside local guards; entry IRQ state preserved
+[+    11.612974] [backend registry phases] 8 node-preparation and 6 disposal entries outside local backend/lifecycle/device/capability/table/physical/heap guards; entry IRQ state preserved
+[+    11.613378] [DMA metadata ownership] rejected admission releases pin; heap-held publish/detach/quarantine keeps exact node; duplicate and early close reject; confirmed private completion releases original storage; shared byte/count admission, heap-held denial and trusted headroom passed
+[+    11.620646] [device authority phases] 9 preparation-entry and 22 disposal-entry boundaries outside local lifecycle/device/backend/table/physical/heap/capability guards; entry IRQ state preserved
+[+    11.621082] [device registry phases] 18 allocated-node and 17 disposal boundaries outside local lifecycle/device/backend/table/physical/heap guards; entry IRQ state preserved
+[+    11.621466] [device authority close] heap-held MMIO/IRQ claim retains original charge; scratch/direct/IRQ success disposes metadata before staged root completion; detach/invalidation/scratch rejection and MMIO/IRQ guarded abandonment retain five root leases, five authority charges and four scratch pages
+[+    11.623914] [DMA map readiness] root=109:3 cap=1 domain=18446744073709551615 waiting on original unit
+[+    11.624812] [DMA map readiness] root=109:4 cap=1 domain=18446744073709551615 waiting on original unit
+[+    11.625386] [DMA map readiness] root=109:4 cap=1 domain=18446744073709551615 unit claim admitted once
+[+    11.626478] [DMA map readiness] source/wait rejection, captured ordinary sponsorship, pre-registration wake, detached-cell fence, masked rejection and exactly one admitted claim passed
+[+    11.628388] [DMA unmap phase] only pre-work busy returns OperationInFlight; completion busy/timeout and other rejection remain DmaInvalid; exact public root/claim and original capability cell preserved
+[+    11.630246] [DMA close ownership] busy/timeout/physical rejection with heap held preserves the same payload cell and authority; nested close/map and exact-root close reject; confirmed close consumes authority before the original staged root completes
+[+    11.631258] [DMA unmap phase] final public-claim rejection remains terminal after work; failed completion retains its exact count in the existing abandonment fixture root
+[+    11.632680] [DMA mapping ownership] exact-root/capability busy close and ordinary completion; complete domain/engine/pending-pin Drop under guards retains one domain table, two data frames, metadata, original authority and root
+[+    11.633686] [DMA map readiness] pre-claim Drop under guards retains original root, public claim, two-page pin and interest; source closure is no cleanup proof
+[+    11.658442] [deferred node admission] family=dma-readiness bytes=56 actual candidates ordinary=12287 trusted=4096; ceilings 12288/16384; 64 allocator failures, byte denial, 64 partial-list rejections, 128 heap-held source denials, trusted cancellation, guarded enqueue and exact producer-LP drain/refund passed
+[+    11.664250] [DMA creation readiness] exact root/reservation retained; detached cell gates engine wake; deferred notification, late registration, source rejection, saturation, preparation race, competing epoch and masked rejection passed
+[+    11.666488] [DMA grant cancellation readiness] armed grant kept exact root/reservation through pre-destruction wait; engine-only return did not wake; one admitted cleanup and explicit refund/root completion passed
+[+    11.669782] [device unit principal retention] complete unit/grant/pin owner retains 1368 original-principal metadata bytes through guarded abandonment
+[+    11.670718] [DMA creation ownership] exact unit/engine state restored on success/error; detached-domain and absent-engine claims reject before work; complete-unit/grant Drop under all guards retains one unit and one domain table, two data frames, metadata, exact root and original authority reservation
+[+    11.674926] [PCI boot] real RAM builder: cycle/range fences, multifunction seven, stable reset cell and rejected private prefix passed; device=136 endpoint=200 bus=32 metadata ceiling=5768704 bytes
+[+    11.676064] [drivers::busses::pci_express] Mapping PCIe ECAM at physical address PAddr { raw: 275146342400 }
+[+    11.676398] [drivers::busses::pci_express] Finding free virtual address range for PCIe ECAM mapping of size 268435456 bytes
+[+    11.676788] [drivers::busses::pci_express] Mapping PCIe ECAM at physical address PAddr { raw: 275146342400 } to virtual address VAddr(0xffff820000000000)
+[+    11.678466] [drivers::busses::pci_express] Successfully mapped PCIe ECAM at physical address PAddr { raw: 275146342400 } to virtual address VAddr(0xffff820000000000)
+[+    11.683838] [PCI reset ownership] RAM claim rejection, explicit unstarted cancellation/activation and complete-grant abandonment/uncertain cancellation under config and all guards passed; two exact roots/reservations and endpoint claims retained without hardware writes
+[+    11.938008] [DMA grant rollback] unlocked one-shot rollback, guarded containing-owner Drop, exact root/capability retention and successor isolation passed; four roots/reservations retained
+[+    11.940318] [IOMMU admission] rejected table release; whole charge retained
+[+    11.941246] [DMA private retention] complete grant Drop under guards, armed rejection and partial release with no retry passed; 10 original domain charges, 9 frames, both exact roots and authority reservations retained
+[+    11.942774] [DMA creation ownership] backend error preserves registered obligation through unlocked rollback; confirmed refund and failed exact root/reservation retention passed (one additional retained root/reservation)
+[+    11.952044] [device namespace principal retention] remaining nodes=240 authority=192 scratch=152 bytes after Detach; confirmed siblings refunded, exact root/remaining authority retained
+[+    11.953490] [device namespace principal retention] remaining nodes=240 authority=192 scratch=152 bytes after Invalidate; confirmed siblings refunded, exact root/remaining authority retained
+[+    11.954578] [device namespace principal retention] remaining nodes=240 authority=192 scratch=152 bytes after Scratch; confirmed siblings refunded, exact root/remaining authority retained
+[+    11.955722] [device namespace principal retention] remaining nodes=152 authority=96 scratch=88 bytes after Dma; confirmed siblings refunded, exact root/remaining authority retained
+[+    11.957010] [device namespace principal retention] remaining nodes=328 authority=288 scratch=152 bytes after Abandon; confirmed siblings refunded, exact root/remaining authority retained
+[+    11.957650] [device retirement] unlocked MMIO/DMA completion, exact leaf ownership, partial failure, preparation rejection and abandonment passed; six closing roots retained
+[+    11.967774] [memory namespace] stale mapped peer rejected; owner/charged object and successor mapping retained
+[+    11.969552] [memory object] quarantined object=2112 pages=2 detached=false quiescent=true
+[+    11.970548] [memory object] quarantined object=2113 pages=2 detached=true quiescent=false
+[+    11.971244] [memory object] quarantined object=2114 pages=2 scratch release failed
+[+    11.971952] [memory namespace] mapped peers retained outside lifecycle, closing peers, unmapped revocation fence, preparation rollback and four failure/Drop quarantines passed
+[+    11.972366] [device admission] quota, MMIO/IRQ recovery, DMA create/refund/rollback and exact namespace reuse passed
+[+    12.806642] [observer admission] quota recovery, startup claim cancellation and exact generation fencing passed
+[+    12.806944] [capability] shared counts, staged admission, move escrow and generation fencing passed
+[+    12.848922] [mailbox account lifetime] retired identity rejected across real root close/ASID reuse; final-weak original backing refund preserved successor
+[+    13.134188] [mailbox node backing] bytes=96 actual candidates ordinary=12284 trusted=4095; ordinary/total ceilings 12288/16384; 64 allocation failures, byte denials, 128 heap-held admission denials, receiver reuse, pre-promotion capture, fresh promotion reserve, trusted backing without grants, final-root release and exact ASID-reuse recovery passed
+[+    13.135208] [namespace node allocation] family=mailbox-capability bytes=112; 64 allocator rejections passed
+[+    13.139534] [mailbox metadata principal retention] complete unpublished/retired parents retain 1344/1232 original-principal node bytes under history/publication/pool/heap guards
+[+    13.140118] [mailbox authority phases] 12 preparation-entry and 15 disposal-entry boundaries outside local lifecycle/mailbox/queue/table/physical/heap/capability guards; entry IRQ state preserved
+[+    13.140564] [mailbox authority ownership] four storage rejection phases before charge/serial mutation; receiver reuse; heap-held publication/detach; staged-close rejection; guarded complete-owner abandonment retains two roots and two original mailbox/authority charges
+[+    13.141390] [namespace node allocation] family=mailbox-words bytes=152; 64 allocator rejections passed
+[+    13.148094] [mailbox queue backing] 8288 requested bytes per 4-LP queue set; backing rejection refunds, shared per-generation ceiling rejects third preparation, final detach retains charge until release, successor and guarded abandonment preserve original ordinary classification
+[+    13.148726] [mailbox queue phases] 8 preparation-entry and 16 completion-entry boundaries outside local lifecycle/mailbox/queue/table/physical/heap/capability guards; entry IRQ state preserved
+[+    13.149148] [mailbox queue ownership] node rejection, competing creators, 256-word FIFO/backpressure and wrap, heap-held publication/final detach, retired/staged/stale-root rejection; guarded abandonment retains one exact root and its unused queue/node
+[+    13.149744] [mailbox] record quota, churn, rollback, retirement and generation fencing passed
+[+    13.154360] [syscall] delegated queue-full admission returned exact status; same-source retry published one grant and completed once
+[+    13.155204] [syscall memory] owner AS asid=139
+[+    13.155384] [syscall memory] server AS asid=140
+[+    13.167114] [diagnostic buffer admission] real shared-principal buffers, 128 denials, healthy sponsor, promotion, retired sponsor/ASID reuse, family rejection rollback and recovery passed
+[+    13.225114] [reactor account principal] waiter/scheduler/timer/record/CQ/watch bundles=72/72/72/64/80/64 bytes; sibling sharing, 384 heap-held denials, four root and eight namespace prefixes, healthy sponsor, immutable promotion and 16381 real bundles at 1048576-byte ceiling passed
+[+    13.234476] [metadata admission] 24 independent pools; heap-held nonblocking observation, busy state and owner sizes passed
+[+    13.243782] [telemetry snapshot] 256 preparation/publication rejections, heap-held captures, checked sizing and generation-qualified heap reads passed
+[+    13.247244] Syscall dispatch subsystem tests passed.
+[+    13.247422] Testing bounded IPI queue and typed-message dispatch...
+[+    13.249192] Bounded IPI queue and typed-message dispatch tests passed.
+[+    13.249822] Testing ShardLocal<T> lock-free discipline...
+[+    13.250864] ShardLocal<T> tests passed.
+[+    13.251358] Testing typed ShardMailbox<M>...
+[+    13.253054] ShardMailbox<M> tests passed.
+[+    13.253930] Running-statistics tests passed.
+[+    13.254972] Boot continuation spawned with ID = 9.
+[+    13.261540] [EL0 LOG] lp=0 asid=3 [observe] history=memory archive=disabled
+[+    13.262548] System Information:
+[+    13.262666] CPU Vendor: ARM
+[+    13.262788] CPU Model: Part Number: 0x0471
+Revision: 15
+Variant: 2
+Architecture: 0x7
+
+[+    13.263090] Physical Address bits implemented: 40
+[+    13.263224] Virtual Address bits implemented: 48
+[+    13.263360] The ARM Generic Timer frequency is 62500000 Hz.
+[+    13.263522] The ARM Generic Timer period is 16000 picoseconds.
+[+    13.264190] ACPI Table Map:
+MADT: [PAddr { raw: 1555315864 }]
+SPCR: [PAddr { raw: 1555314968 }]
+FADT: [PAddr { raw: 1555315480 }]
+IORT: [PAddr { raw: 1555313048 }]
+GTDT: [PAddr { raw: 1555314712 }]
+MCFG: [PAddr { raw: 1555315352 }]
+
+[+    13.264700] Spawning kernel diagnostic thread to print device topology...
+[+    13.265576] Topology diagnostic thread spawned with ID = 7.
+[+    13.265838] LP 1: Probing device topology...
+[+    13.266412] LP 1: Device Topology:
+PCIe:
+  Segment Group 0 (ECAM @ 0xffff820000000000, buses 0x00-0xff)
+    Bus 0x00
+      B:D.F    VID:DID    Class (cc:sc:pi)
+      00:00.0  | Red Hat, Inc.[0x1b36]:0x0008 | PCI Express Host Bridge[class 0x06, subclass 0x00, prog IF 0x00] |
+      00:01.0  | Red Hat, Inc. (VirtIO)[0x1af4]:0x1041 | Unrecognized Device Interface[class 0x02, subclass 0x00, prog IF 0x00] |
+      00:02.0  | Red Hat, Inc.[0x1b36]:0x0010 | Non-Volatile Memory Express (NVMe) Controller[class 0x01, subclass 0x08, prog IF 0x02] |
+      00:03.0  | Red Hat, Inc. (VirtIO)[0x1af4]:0x1001 | Unrecognized Device Interface[class 0x01, subclass 0x00, prog IF 0x00] |
+      00:04.0  | Red Hat, Inc. (VirtIO)[0x1af4]:0x1044 | Unrecognized Device Interface[class 0x00, subclass 0xff, prog IF 0x00] |
+
+[+    13.271360] [thread] abort tid=7 lp=1 asid=0
+[+    13.276352] [backend node real rejection] 32 quota denials before NVMe reset/ID/table publication; requester, registry, authority and table charges unchanged
+[+    13.277180] [backend registry rejection] every required node rejected before reset/domain IDs/backing; original requester/registry snapshot, table charges and authority preserved
+[+    13.285140] [DMA creation phases] complete installed-unit claim, allocation, initial configuration and exact restoration outside backend/lifecycle/device/table/allocator guards; preserved IRQ policy, exact-root busy close and nested mutation/reset exclusion passed
+[+    13.286950] [DMA metadata rejection] mapping/walker admission rejected before new table/data leaves; exact pin cleanup and unchanged table charges; same domain remains usable
+[+    13.291816] [DMA close recovery] original payload cell/authority survived actual rejected drain; public close claim fenced nested close/map/root through real maintenance and physical release, then confirmed success consumed authority once without reinsertion
+[+    13.298662] [DMA private rollback] all 5 allocated prefixes plus complete preparation rejected; physical/metadata cleanup outside backend/lifecycle/device/config guards, exact charge/capability refund and root close passed
+[+    13.300526] [DMA creation rollback] real configuration followed by injected rejection; unlocked maintenance/physical phase with PCI config released and bus mastering disabled, exact charge/capability refund and root close passed
+[+    13.303206] [DMA map readiness] root=139:2 cap=4 domain=10 waiting on original unit
+[+    13.306396] [DMA map readiness] root=139:2 cap=4 domain=10 unit claim admitted once
+[+    13.306752] [thread] abort tid=7 lp=0 asid=0
+[+    13.308482] [DMA map readiness] root=139:2 cap=4 domain=10 waiting on original unit
+[+    13.310216] [DMA map readiness] root=139:2 cap=4 domain=10 unit claim admitted once
+[+    13.310416] [thread] abort tid=7 lp=0 asid=0
+[+    13.311088] [DMA map readiness] real map and map-exclusive parked behind complete unit ownership, resumed original pin/root/cap once, and confirmed unmap before backing release
+[+    13.313898] [DMA mapping maintenance] real map/unmap/prefix completion outside backend/lifecycle/device/table guards; exact-root/capability busy close, unit-wide mutation/reset exclusion and rejected-unmap pin retention until real retirement passed
+[+    13.314402] [IOMMU recovery] detached physical-release boundary keeps pins/source claim, guards available and competing operations fenced; hardware table charges retained until drain, node pressure refunded capability, rejected sparse-prefix cleanup retained pin until real retirement
+[+    13.317048] [DMA creation phases] complete installed-unit claim, allocation, initial configuration and exact restoration outside backend/lifecycle/device/table/allocator guards; preserved IRQ policy, exact-root busy close and nested mutation/reset exclusion passed
+[+    13.317924] [DMA creation closing] real configuration with retained root/reservation; staged close stayed Pending, publication rejected before activation, confirmed post-guard rollback refunded authority and original closing owner completed
+[+    13.321528] [DMA metadata admission] 32 real ordinary map denials after root promotion; unchanged tables/charges and returned pins; fresh trusted grant maps/unmaps under ordinary pressure; original backing fully refunded
+[+    13.322006] [PCI reset publication] 5 real grants: exact root and published capability remain busy with BME disabled until explicit post-publication activation
+[+    13.322358] [PCI reset claim] 14 real reset wait boundaries: local config/device/lifecycle/backend/table/allocator guards available, bus mastering disabled, ordinary config/MSI lookup rejected and captured BAR ranges fenced; IRQ policy preserved
+[+    13.322880] [backend registry phases] 72 node-preparation and 75 disposal entries outside local backend/lifecycle/device/capability/table/physical/heap guards; entry IRQ state preserved
+[+    13.323278] [DMA metadata phases] 20 preparation and 18 disposal entries outside local guards; entry IRQ state preserved
+[+    13.323534] [device authority phases] 66 preparation-entry and 138 disposal-entry boundaries outside local lifecycle/device/backend/table/physical/heap/capability guards; entry IRQ state preserved
+[+    13.323946] [device registry phases] 132 allocated-node and 75 disposal boundaries outside local lifecycle/device/backend/table/physical/heap guards; entry IRQ state preserved
+[+    13.324342] [capability record phases] 79 prepared-node and 80 disposal boundaries outside local capability/heap guards; entry IRQ state preserved
+[+    13.324664] [device recovery] rejected drain retained/fenced DMA; real retry, old-MMIO exclusion and QEMU NVMe reset/reassignment passed
+[+    13.324996] [security] DEVELOPMENT image: public fixture trust; not suitable for production.
+[+    13.340508] [boot trust] admission policy published: revision=1
+[+    13.341480] [nvme] MSI-X vector 0: address=0x8020040 data=80 intid=80
+[+    13.341714] [launch] NVMe controller at BAR0=0x800000c000 intid=80
+[+    13.347640] [launch] virtio-rng at BAR4=0x8000008000 requester=0x20
+[+    13.353012] [net] virtio cap type=5 bar=0 offset=0x0 length=0x0
+[+    13.353194] [net] virtio cap type=2 bar=4 offset=0x3000 length=0x1000
+[+    13.353360] [net] virtio cap type=4 bar=4 offset=0x2000 length=0x1000
+[+    13.353514] [net] virtio cap type=3 bar=4 offset=0x1000 length=0x1000
+[+    13.353666] [net] virtio cap type=1 bar=4 offset=0x0 length=0x1000
+[+    13.354030] [net] MSI-X vector 0: address=0x8020040 data=81 intid=81
+[+    13.354268] [launch] net controller at BAR0=0x8000000000 (interrupt 81, requester 0x8)
+[+    13.359438] [launch] driver grant batch prepared before threads: storage=true entropy=true network=true
+[+    13.381420] [EL0 LOG] lp=0 asid=140 [rng] serving host-backed VirtIO entropy
+[+    13.395512] [EL0 LOG] lp=0 asid=142 [net] hb rx_unrecycled=0/256 tx_busy=0/256
+[+    13.656628] [EL0 LOG] lp=0 asid=141 [frouter] hb rx=0 fwd=0 dropped=0 unknown=0 routes=0 ingress=0/0/0 epoch=0
+[+    13.754138] [store] bootstrap seed complete: retained=8 written=0
+[+    13.890472] [launch] cluster services spawned: disco=144 relmsg=145 dns=146 (single Raft owner)
+[+    13.951484] [EL0 LOG] lp=0 asid=147 [tcpip] NIC MAC 52:54:00:12:34:56
+[+    14.096410] [EL0 LOG] lp=0 asid=149 [time] serving; NTP 162.159.200.1:123 persistence=true
+[+    14.210054] [launch] deployment plane spawned: clusterctl=150 agent=151 ingress=152 port=7444
+[+    14.210366] KNYTOS_OTLP_PROFILE_SHA256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855;
+[+    14.210730] [launch] steady-state service set published.
+[+    14.316056] [launch] management TLS resource rejected before trust publication: WrongPolicy
+[+    14.352236] [boot trust] signed handoff, cluster/recipient rejection, shared manifest/gate policy and one-shot publication passed; early artifact selection retained
+[+    14.352704] Testing EL0 syscall round-trip...
+[+    14.353064] User AS registered in global table with asid=153
+[+    14.353474] Allocated CQ ring frame PAddr { raw: 1164021760 } at vaddr VAddr(0x11000)
+[+    14.353890] Allocated result frame at vaddr VAddr(0x12000)
+[+    14.354268] CQ ring attached to completion AS asid=153
+[+    14.355144] User thread spawned with tid=26 asid=153 vaddr=VAddr(0x10000)
+[+    14.355808] EL0 verifier thread spawned with tid=27; assertion deferred to scheduler.
+[+    14.356014] Testing EL0 userspace NVMe block device driver and object store...
+[+    14.356600] [nvme] verifier deferred
+[+    14.356806] Testing EL0 userspace UART driver (delegated MMIO + interrupt)...
+[+    14.357108] [uart] using node name service (asid=1)
+[+    14.371586] [EL0] SUCCESS: user thread ran at ring 3, submit returned cap 2, result page verified.
+[+    14.372708] [thread] abort tid=29 lp=1 asid=0
+[+    14.372834] [domain abort] lifecycle ownership observation: local hold detected, remote contention accepted and caller IRQ state preserved
+[+    14.374370] [domain abort] scheduled root/publication rejection released executor ownership
+[+    14.375650] [user isolation] launching 132 bytes: first=[00, 00, 80, d2, 00, 00, 40, f9] asid=154
+[+    14.376648] [nvme] verifier running, discovering NVMe...
+[+    14.376904] [nvme] driver spawned (asid=139)
+[+    14.377032] [nvme] objstore spawned (asid=143)
+[+    14.377180] [nvme] driver stage=18 raw_dw3=0x10001 irq_count=105
+[+    14.393756] FATAL EL0 DATA/INST ABORT: ASID=154 ESR=92000007 ELR=20004 FAR=0
+[+    14.394006] Aborting user address space 154
+[+    14.395560] [uart] driver spawned (asid=155) with PL011 MMIO + IRQ grants
+[+    14.406292] [nvme] NVMe driver and object store both initialised and registered.
+[+    14.480028] [thread] abort tid=30 lp=0 asid=154
+[+    14.490544] [domain abort] real fault: stale identity rejection, peer request, eight pre-handoff yields, masked self-request/root completion and exact root teardown passed
+[+    14.503692] [user isolation] launching 24 bytes: first=[00, 00, 84, d2, 20, 00, a0, f2] asid=154
+[+    14.504596] FATAL EL0 DATA/INST ABORT: ASID=154 ESR=92000007 ELR=20014 FAR=0
+[+    14.504912] Aborting user address space 154
+[+    14.512198] [uart] console client spawned (asid=156)
+[+    14.512844] [uart] verifier deferred
+[+    14.513010] Testing EL0 sitas (Rust-compiled knytos-user binary)...
+[+    14.525982] FATAL EL0 DATA/INST ABORT: ASID=154 ESR=92000007 ELR=20014 FAR=0
+[+    14.526298] Aborting user address space 154
+[+    14.529354] [thread] abort tid=30 lp=1 asid=154
+UART[+    14.571144] [thread] abort tid=31 lp=0 asid=154
+-[+    14.610376] [domain abort] two faulting executors: nested rejection, mutual abort requests, timer wake and eight deferred-retirement yields each, masked owner completion and exact root teardown passed
+[+    14.611498] [user isolation] launching 44 bytes: first=[e0, 0f, 40, d1, 81, 46, 82, d2] asid=154
+[+    14.629338] [sitas] verifier deferred
+[+    14.629460] Testing EL0 endpoint IPC...
+[+    14.629764] [EL0 IPC] user AS asid=158
+O[+    14.639180] FATAL EL0 DATA/INST ABORT: ASID=154 ESR=92000007 ELR=20028 FAR=0
+[+    14.639496] Aborting user address space 154
+[+    14.639680] [thread] abort tid=31 lp=0 asid=154
+[+    14.640882] [EL0 IPC] user thread spawned tid=31 asid=158
+[+    14.641482] [EL0 IPC] verifier tid=37; assertion deferred.
+[+    14.641704] Testing EL0 blocking endpoint receive...
+[+    14.641968] [thread] abort tid=31 lp=1 asid=158
+[+    14.642090] [EL0 IPC block] user AS asid=159
+[+    14.651494] [stack growth execution] exact-root handback, table reentry and retained abort/migration fence passed; mode=0 irq-qualified-yields=0
+[+    14.651992] [user isolation] launching 44 bytes: first=[e0, 0f, 40, d1, 81, 46, 82, d2] asid=154
+[+    14.652830] [EL0 IPC] SUCCESS: endpoint cap 1, connection cap 2, call cap 3, reply result 0x1234.
+[+    14.653096] [thread] abort tid=37 lp=0 asid=0
+[+    14.653560] [EL0 IPC block] server tid=31 client tid=37 asid=159
+[+    14.654220] [EL0 IPC block] verifier tid=39; assertion deferred.
+[+    14.654452] Testing EL0 cross-address-space endpoint IPC...
+[+    14.654886] [thread] abort tid=37 lp=1 asid=159
+[+    14.655020] [EL0 IPC] cross-AS server AS asid=160
+[+    14.655208] [thread] abort tid=31 lp=2 asid=159
+[+    14.655380] [EL0 IPC] cross-AS client AS asid=161
+K[+    14.666490] [EL0 IPC cross-AS] server tid=38 asid=160 client tid=31 asid=161
+[+    14.667210] [EL0 IPC cross-AS] verifier tid=37; assertion deferred.
+[+    14.667486] Testing EL0 cross-address-space memory IPC...
+[+    14.667852] [EL0 IPC] memory server AS asid=162
+[+    14.668118] [EL0 IPC] memory client AS asid=163
+[+    14.669070] [thread] abort tid=38 lp=1 asid=160
+[+    14.669644] [EL0 IPC memory] server tid=40 asid=162 client tid=38 asid=163 object_vaddr=0x12000
+[+    14.670910] [thread] abort tid=31 lp=1 asid=161
+[+    14.674728] [thread] abort tid=40 lp=2 asid=162
+[+    14.675118] [thread] abort tid=38 lp=3 asid=163
+[+    14.683598] [stack growth execution] exact-root handback, table reentry and retained abort/migration fence passed; mode=1 irq-qualified-yields=0
+[+    14.684304] [user isolation] launching 44 bytes: first=[e0, 0f, 40, d1, 81, 46, 82, d2] asid=154
+[+    14.685290] [EL0 IPC block] SUCCESS: server blocked on endpoint 1, client call cap 3, reply result 0x4567.
+[+    14.685562] [thread] abort tid=39 lp=0 asid=0
+[+    14.686712] [EL0 IPC cross-AS] SUCCESS: client AS 161 called server endpoint; call cap 2, reply result 0x6789.
+[+    14.686990] [thread] abort tid=37 lp=0 asid=0
+[+    14.687900] [EL0 IPC memory] verifier tid=37; assertion deferred.
+[+    14.688062] Testing EL0 copied memory IPC...
+[+    14.688282] [EL0 IPC] memory copy server AS asid=164
+
+[+    14.694178] FATAL EL0 DATA/INST ABORT: ASID=154 ESR=92000047 ELR=20008 FAR=1001000
+[+    14.694464] Aborting user address space 154
+[+    14.694656] [thread] abort tid=38 lp=0 asid=154
+[+    14.697682] [EL0 IPC memory] SUCCESS: moved cap 2 to server cap 2, returned cap 4, borrow-read 0x42525244, borrow-write 0x42525752.
+[+    14.698006] [thread] abort tid=37 lp=0 asid=0
+[+    14.698512] [EL0 IPC] memory copy client AS asid=165
+[+    14.699876] [EL0 IPC memory copy] server tid=37 asid=164 client tid=38 asid=165
+[+    14.701830] [thread] abort tid=37 lp=1 asid=164
+[+    14.702176] [thread] abort tid=38 lp=2 asid=165
+[+    14.705688] [thread] abort tid=36 lp=1 asid=157
+[+    14.705834] [thread] abort tid=35 lp=0 asid=157
+[+    14.716812] [stack growth execution] exact-root handback, table reentry and retained abort/migration fence passed; mode=2 irq-qualified-yields=0
+[+    14.717128] [user isolation] real EL0 stack growth, deferred-abort handback and foreign-leaf rollback passed
+[+    14.717898] [user isolation] launching 192 bytes: first=[ff, 43, 0c, d1, e0, 07, 00, a9] asid=154
+[+    14.724690] [thread] abort tid=36 lp=0 asid=154
+[+    14.725288] [thread] abort tid=31 lp=1 asid=157
+[+    14.726048] [EL0 IPC memory copy] verifier tid=31; assertion deferred.
+[+    14.726964] [uart] console client wrote through the EL0 driver (8 bytes served via PL011 MMIO)
+[+    14.728186] [thread] abort tid=40 lp=0 asid=157
+[+    14.730856] [user isolation] first-entry GPR and FP/SIMD snapshot passed
+[+    14.732070] [thread] abort tid=37 lp=1 asid=157
+[+    14.733796] [EL0 IPC memory copy] SUCCESS: source cap 2, copied server cap 2, payload stayed 0xc091 while server wrote 0xc092.
+[+    14.734110] [thread] abort tid=31 lp=0 asid=0
+[+    14.734554] [thread] abort tid=38 lp=0 asid=157
+[+    14.735512] [thread] abort tid=39 lp=0 asid=157
+[+    14.742530] [IPC endpoint retirement] mapped loans from two callers retired with secondary LPs online
+[+    14.747916] [thread] abort tid=38 lp=1 asid=157
+[+    14.750636] [IPC namespace runtime] delivered/queued mapped loans from two callers retired with secondary LPs online
+[+    14.751608] [device retirement runtime] scratch/direct MMIO retired with secondary LPs online
+[+    14.753142] [memory namespace runtime] local/peer mapped backing retired with secondary LPs online
+[+    14.753454] [thread] abort tid=27 lp=0 asid=0
+[+    14.753704] Testing EL0 queued memory IPC cancellation...
+[+    14.753920] [EL0 IPC] memory cancel server AS asid=167
+[+    14.754098] [EL0 IPC] memory cancel client AS asid=168
+[+    14.755104] [thread] abort tid=32 lp=0 asid=156
+[+    14.756344] [thread] abort tid=39 lp=0 asid=157
+[+    14.758544] [EL0 IPC memory cancel] server tid=27 asid=167 client tid=39 asid=168
+[+    14.759340] [EL0 IPC memory cancel] verifier tid=32; assertion deferred.
+[+    14.759704] Testing EL0 cross-LP async round-trip (via raw syscall ABI)...
+[+    14.760434] [EL0 xLP] user AS asid=154
+[+    14.761552] [EL0 xLP] coordinator spawned tid=26 asid=154
+[+    14.762266] [EL0 xLP] verifier thread tid=38; assertion deferred to scheduler.
+[+    14.762936] Testing EL0 ping-pong (Ping on LP0, Pong on LP1, via raw syscall ABI)...
+[+    14.763580] [PP] user AS asid=169
+[+    14.765026] [PP] Ping spawned tid=37, pinned to LP0
+[+    14.765968] [PP] Pong spawned tid=40, pinned to LP1
+[+    14.767346] [thread] abort tid=39 lp=2 asid=168
+[+    14.767952] [uart] deferred read completed by a delegated device interrupt (result 0x100)
+[+    14.772980] [EL0 xLP] SUCCESS: EL0 coordinator submitted cap 1, worker completed cross-LP, result 42 drained from CQ ring — all via raw syscall ABI.
+[+    14.774210] [thread] abort tid=38 lp=0 asid=0
+[+    14.775896] [PP] verifier tid=38; assertion deferred.
+[+    14.777058] [thread] abort tid=27 lp=1 asid=167
+[+    14.778142] [thread] abort tid=40 lp=1 asid=169
+[+    14.778840] [EL0 IPC memory cancel] SUCCESS: cancelled queued move cap 3, queued borrow cap 5, delivered borrow cap 7; server recv statuses 2/2.
+[+    14.779458] [thread] abort tid=32 lp=0 asid=0
+[+    14.781160] [uart] verifier got generation-1 console connection
+[+    14.781934] [thread] abort tid=37 lp=0 asid=169
+[+    14.786694] [thread] abort tid=29 lp=0 asid=155
+[+    14.788034] [EL0 LOG] lp=1 asid=157 [sitas] owned IPC future verified
+[+    14.788498] [thread] abort tid=30 lp=1 asid=157
+[+    14.788830] [sitas] SUCCESS: basic_kv total_len=3, mailbox index verified 1024 records, join probe sum 81, SDK/Sitas CQ probe verified 64 records
+[+    14.789308] [thread] abort tid=34 lp=0 asid=0
+[+    14.793660] [uart] driver crashed (uncooperative exit) with a deferred read outstanding
+[+    14.794716] [uart] teardown reclaimed device authority, cancelled the outstanding read, and stale connections fail EndpointClosed
+[+    14.800424] [PP] SUCCESS: Ping completed with result 99; Pong read buffer 0xfeedf00d; all via raw syscall ABI (EXIT, MAILBOX_CAP, WAIT_TIMEOUT, SUBMIT Read).
+[+    14.800822] [thread] abort tid=38 lp=0 asid=0
+[+    14.804156] [EL0 LOG] lp=0 asid=1 [ns] endpoint-death retired Some("uart") generation=1
+[+    14.805682] [supervisor] adaptive stack: principal=16185941133728815485 high_water_pages=1 free_frames=72910 reserve_frames=6016 stack_pages=4
+[+    14.806424] [uart] driver restarted (asid=155) with fresh device grants
+[+    14.809284] [thread] abort tid=35 lp=0 asid=166
+2[+    14.815988] [uart] SUCCESS: userspace driver served console writes and an interrupt-driven deferred read from EL0; after an uncooperative driver exit, teardown reclaimed the delegated MMIO and interrupt, cancelled the outstanding deferred read, invalidated stale connections, and a restarted generation-2 instance serves with fresh device grants.
+[+    14.816700] [thread] abort tid=33 lp=0 asid=0
+[+    14.820774] [nvme] 12 KiB PRP-list write/flush/read round trip verified
+[+    14.821008] [nvme] MSI-X delivered 116 completion interrupt(s)
+[+    14.821176] [nvme] DMA domain completed the transfer without translation faults
+[+    14.876360] [service image cache live] signed store read=180568 bytes, immutable allocation-free hit under heap/pool guards, quota-rejected reseed stops and installed image remains unchanged; exact temporary-byte recovery
+[+    14.876918] Testing EL0 name service, bootstrap delivery, and service restart...
+[+    14.877158] [service] using node name service (asid=1, tid=4)
+[+    14.884450] [service] echo service spawned (asid=170, tid=33)
+[+    14.941866] [service] client spawned (asid=171, tid=35)
+[+    14.942328] [service] verifier deferred
+[+    14.942450] Testing completion-queue ring...
+[+    14.943156] Completion-queue ring tests passed.
+[+    14.943284] Testing CQ ring integration with completion subsystem...
+[+    14.952528] [CQ contract] production producer / SDK consumer: 128 wrapped records verified
+[+    14.952842] CQ ring integration tests passed.
+[+    14.953004] Testing blocking CQ wait (completion, wake, and endpoint readiness releases)...
+[+    14.954220] [cq wait] waiter and driver deferred
+[+    14.954362] Testing device capabilities (MMIO regions and interrupt objects)...
+[+    14.955338] [device] capability-model negative tests passed
+[+    14.955704] [thread] abort tid=30 lp=1 asid=0
+[+    14.956994] [device] MMIO map/unmap into a real address space passed
+[+    14.957684] [device] failed DMA map released its memory pin
+[+    14.959970] [thread] abort tid=30 lp=1 asid=0
+[+    14.961764] [thread] abort tid=30 lp=1 asid=0
+[+    14.962050] [device] deferred IRQ notification reentered device/CQ registries outside guards
+[+    14.962756] [device] flooded stale IRQ wakes retired; fresh rebound wake delivered
+[+    14.963518] [thread] abort tid=30 lp=1 asid=0
+[+    14.964324] [device] interrupt waiter and driver deferred
+[+    14.964600] Testing EL0 userspace Ethernet driver...
+[+    14.965082] [net] using node name service (asid=1)
+[+    14.965198] [thread] abort tid=37 lp=1 asid=0
+[+    14.965582] [net] verifier deferred (waits for PCI topology + driver + client)
+[+    14.965874] Skipping EL0 disco test (enable disco_net_test with matching PCI hardware).
+[+    14.966162] Skipping EL0 dns test (enable dns_net_test with matching PCI hardware).
+[+    14.966452] Skipping EL0 tcpip test (enable tcpip_net_test with matching PCI hardware).
+[+    14.967066] Skipping EL0 http test (enable http_net_test with matching PCI hardware).
+[+    14.967364] Testing EL0 single-node DHCP lease acquisition...
+[+    14.967498] [scheduler park delivery] timed/event-only precursor delivery before registration, retaining nested IRQ masks and admission rejection; four forced Ready-producer controls passed
+[+    14.967880] [dhcp] using node name service (asid=1)
+[+    14.968384] [dhcp] verifier deferred (waits for a DHCP lease)
+[+    14.968766] Testing EL0 S3 client over verified TLS against RustFS...
+[+    14.969596] Skipping EL0 Kafka test (enable kafka_test with the Kafka fixture).
+[+    14.969818] Synchronous self-tests passed; deferred scheduler/EL0 verifiers are still pending.
+[+    14.970016] [thread] abort tid=40 lp=1 asid=0
+[+    14.973568] [net] verifier running, waiting for PCI topology...
+[+    14.973848] [net] started userspace driver (asid=142) with MMIO, IRQ, and protected-DMA grants
+[+    14.974102] [frouter] frame demux spawned (asid=141, tid=16)
+[+    14.974364] [frouter] reached serving stage.
+[+    14.974802] [dhcp] tcpip spawned (asid=147)
+[+    14.977264] [scheduler lifecycle] 3 initially co-located timer-affinity workers deferred
+[+    14.978606] SELFTEST WAITING: passed=11 pending=9 passed_bitmap=0x47fd pending_bitmap=0x303b802
+[+    14.979048] [scheduler rebalance] moved 3 certified Ready thread(s) at boot quiescence.
+[+    14.979368] Submitted all initial kernel threads.
+[+    14.979528] [scheduler lifecycle] worker tid=39 running on LP2
+[+    14.979746] [scheduler lifecycle] worker tid=31 running on LP3
+[+    14.980014] [thread] abort tid=9 lp=0 asid=0
+[+    14.980208] [scheduler lifecycle] worker tid=26 running on LP1
+[+    14.980492] SELFTEST PENDING: raft-storage
+[+    14.980796] SELFTEST PENDING: service-lifecycle
+[+    14.981116] SELFTEST PENDING: cq-wait
+[+    14.981286] SELFTEST PENDING: device
+[+    14.981602] SELFTEST DEVICE PHASES: waiter=3 driver=11
+[+    14.981886] SELFTEST PENDING: scheduler-lifecycle
+[+    14.982062] SELFTEST PENDING: nvme
+[+    14.982214] SELFTEST PENDING: net
+[+    14.982434] SELFTEST PENDING: dhcp
+[+    14.982624] SELFTEST PENDING: s3-tls
+[+    14.983784] [thread] abort tid=40 lp=1 asid=0
+[+    14.984836] [thread] abort tid=35 lp=0 asid=171
+[+    14.987298] [device] SUCCESS: MMIO map/unmap, capability-model rejections, and interrupt delivery to a completion queue via both the kernel path and the live routed-interrupt path verified.
+[+    14.987754] [thread] abort tid=30 lp=0 asid=0
+[+    14.989792] [service] EL0 client completed name lookup and echo call (generation 1)
+[+    14.993088] [service] verifier got generation-1 connection
+[+    14.994170] [thread] abort tid=33 lp=0 asid=170
+[+    14.996686] [service] echo acknowledged shutdown
+[+    14.997002] [service] echo generation 1 exited
+[+    14.997756] [service] echo generation 1 shut down and torn down
+[+    15.002404] [EL0 LOG] lp=0 asid=1 [ns] endpoint-death retired Some("system.console.echo.primary.v1") generation=1
+[+    15.002728] [EL0 LOG] lp=0 asid=1 [ns] endpoint-death retired Some("echo") generation=1
+[+    15.005202] [supervisor] adaptive stack: principal=9884409323672458654 high_water_pages=1 free_frames=72793 reserve_frames=6016 stack_pages=4
+[+    15.009264] [service] echo service restarted (asid=170)
+[+    15.039794] [net] client spawned (asid=173)
+[+    15.049718] [thread] abort tid=30 lp=0 asid=173
+[+    15.051242] [net] client status link=1 MAC=52:54:00:12:34:56
+[+    15.051472] [net] SUCCESS: NIC is online, link up, MAC 52:54:00:12:34:56, hardware TX completions=1.
+[+    15.053920] [thread] abort tid=37 lp=0 asid=0
+[+    15.111798] [s3-test] S3 service spawned (asid=172)
+[+    15.151730] [service] service manager spawned (asid=174, tid=30)
+[+    15.174012] [waiters] SUCCESS: Running/Ready rejection is non-mutating; retained-Waker cancellation; 64 completion/CQ timeout cleanups
+[+    15.176324] [thread] abort tid=33 lp=0 asid=170
+[+    15.214320] [supervisor] adaptive stack: principal=9884409323672458654 high_water_pages=1 free_frames=72530 reserve_frames=6016 stack_pages=4
+[+    15.225216] [service] manager upgrade replied: stage=5, error=0
+[+    15.226126] [service] EL0 manager spawned generation-3 echo (asid=177)
+[+    15.231826] [service] live handoff verified
+[+    15.232062] [service] SUCCESS: bootstrap delivery, name lookup, stale-connection failure, and restart generation all verified.
+[+    15.232400] [thread] abort tid=34 lp=0 asid=0
+[+    15.338350] [EL0 LOG] lp=0 asid=143 [objstore] operator scope table applied (1 entries)
+[+    15.338856] [scheduler lifecycle] worker tid=26 completed on LP1
+[+    15.339140] [thread] abort tid=26 lp=1 asid=0
+[+    15.342574] [scheduler lifecycle] worker tid=39 completed on LP2
+[+    15.342876] [scheduler lifecycle] worker tid=31 completed on LP3
+[+    15.343202] [thread] abort tid=39 lp=2 asid=0
+[+    15.343374] [scheduler lifecycle] 192 timer wakes retained established LP affinity.
+[+    15.344270] [thread] abort tid=31 lp=3 asid=0
+[+    15.379842] [thread] abort tid=26 lp=1 asid=0
+[+    15.383144] [thread] abort tid=26 lp=1 asid=0
+[+    15.384382] [ipc waiters] SUCCESS: 64 reply/readiness timeout cleanups; non-mutating rejection; forced untimed receive/reply recovery with a live loan
+[+    15.386550] [thread] abort tid=26 lp=1 asid=0
+[+    15.388040] [thread] abort tid=26 lp=1 asid=0
+[+    15.388724] [reply CQ] timed/untimed parked callers awakened by exact pending reply without a completion entry
+[+    15.501248] [thread] abort tid=26 lp=2 asid=0
+[+    15.503876] [thread] abort tid=26 lp=2 asid=0
+[+    15.504216] [thread] abort tid=34 lp=2 asid=0
+[+    15.505372] [thread] abort tid=34 lp=2 asid=0
+[+    15.505596] [lock waiters] SUCCESS: timed cleanup, non-mutating rejection, forced mutex/reader/writer retries, remote contention and final-reader wake
+[+    15.617298] [EL0 LOG] lp=0 asid=175 [objstore-client] automatic-ID collision preserved foreign ownership; unauthorized scope replacement denied and original read grant preserved
+[+    15.645718] [EL0 LOG] lp=0 asid=143 [objstore] operator scope table applied (0 entries)
+[+    15.654146] [EL0 LOG] lp=0 asid=175 [objstore-client] live scope revocation denied read and info
+[+    15.654458] [thread] abort tid=31 lp=0 asid=175
+[+    15.655614] [nvme] 2 MiB + 4 KiB persistent object round trip verified.
+[+    15.669934] [EL0 LOG] lp=0 asid=1 [ns] endpoint-death retired Some("objdone") generation=1
+[+    15.685066] [service] zero-size and oversized upgrades rejected and input backing released; authorized manager remains live
+[+    15.687796] [thread] abort tid=35 lp=0 asid=177
+[+    15.707110] [supervisor] adaptive stack: principal=9884409323672458654 high_water_pages=1 free_frames=72576 reserve_frames=6016 stack_pages=4
+[+    15.716012] [service] persistent upgrade completed: ns_waiters=3, ns_handled=740
+[+    15.718186] [service] persistent NVMe ELF reload verified.
+[+    15.718350] [raft-storage] testing NVMe-backed Raft recovery...
+[+    15.720756] [timer waiters] SUCCESS: sleep delivery, timed cleanup, non-mutating rejection and runnable sleep fallback
+[+    15.766172] [raft-storage] first process waiting: stage=0, state=0, term=0, durable=0
+[+    15.934806] [timer events] SUCCESS: pre-park rejection, sleep fallback, deferred queue reclamation and sleep/watchdog accounting
+[+    15.935420] [thread] abort tid=31 lp=2 asid=0
+[+    15.937814] [exit watch preparation] scheduled table reentry and caller IRQ preservation passed
+[+    15.939816] [thread] abort tid=31 lp=0 asid=0
+[+    15.942132] [thread] abort tid=31 lp=1 asid=0
+[+    15.943444] [thread] abort tid=31 lp=2 asid=0
+[+    15.944678] [thread] abort tid=31 lp=3 asid=0
+[+    15.945846] [scheduler first entry] exact-dispatch readiness delivered before fresh kernel entry on all selected LPs; exact exit watches completed
+[+    15.956842] [thread] abort tid=31 lp=2 asid=0
+[+    15.958240] [thread] abort tid=31 lp=2 asid=0
+[+    15.959520] [thread] abort tid=31 lp=2 asid=0
+[+    15.960700] [thread] abort tid=31 lp=2 asid=0
+[+    15.961930] [thread] abort tid=31 lp=2 asid=0
+[+    15.963100] [thread] abort tid=31 lp=2 asid=0
+[+    15.964376] [thread] abort tid=31 lp=2 asid=0
+[+    15.965550] [thread] abort tid=31 lp=2 asid=0
+[+    15.966976] [thread] abort tid=31 lp=2 asid=0
+[+    15.968218] [thread] abort tid=31 lp=2 asid=0
+[+    15.969404] [thread] abort tid=31 lp=2 asid=0
+[+    15.970638] [thread] abort tid=31 lp=2 asid=0
+[+    15.972226] [thread] abort tid=31 lp=2 asid=0
+[+    15.973468] [thread] abort tid=31 lp=2 asid=0
+[+    15.974698] [thread] abort tid=31 lp=2 asid=0
+[+    15.975970] [thread] abort tid=31 lp=2 asid=0
+[+    15.977212] [thread] abort tid=31 lp=2 asid=0
+[+    15.978508] [thread] abort tid=31 lp=2 asid=0
+[+    15.979802] [thread] abort tid=31 lp=2 asid=0
+[+    15.980874] [thread] abort tid=31 lp=2 asid=0
+[+    15.982116] [thread] abort tid=31 lp=2 asid=0
+[+    15.982918] SELFTEST WAITING: passed=14 pending=6 passed_bitmap=0x26ffd pending_bitmap=0x3019002
+[+    15.983704] [thread] abort tid=31 lp=3 asid=0
+[+    15.983912] SELFTEST PENDING: raft-storage
+[+    15.984142] SELFTEST PENDING: cq-wait
+[+    15.984418] SELFTEST PENDING: scheduler-lifecycle
+[+    15.984858] SELFTEST PENDING: nvme
+[+    15.985338] SELFTEST PENDING: dhcp
+[+    15.985624] SELFTEST PENDING: s3-tls
+[+    15.985780] [thread] abort tid=31 lp=3 asid=0
+[+    15.987044] [thread] abort tid=31 lp=2 asid=0
+[+    15.988238] [thread] abort tid=31 lp=2 asid=0
+[+    15.989478] [thread] abort tid=31 lp=2 asid=0
+[+    15.990668] [thread] abort tid=31 lp=2 asid=0
+[+    15.991830] [thread] abort tid=31 lp=2 asid=0
+[+    15.993102] [thread] abort tid=31 lp=2 asid=0
+[+    15.994376] [thread] abort tid=31 lp=2 asid=0
+[+    15.995522] [thread] abort tid=31 lp=2 asid=0
+[+    15.996636] [thread] abort tid=31 lp=2 asid=0
+[+    16.000360] [thread] abort tid=31 lp=2 asid=0
+[+    16.001288] [exit watches] SUCCESS: live-target cancel/rearm, self-exit switch ownership, fast worker registration-before-admission and deferred producer cancellation
+[+    16.179272] [raft-storage] first process reached term 1.
+[+    16.192782] [EL0 LOG] lp=0 asid=1 [ns] endpoint-death retired None generation=1
+[+    16.220486] [thread] abort tid=34 lp=2 asid=0
+[+    16.225454] [thread] abort tid=34 lp=2 asid=0
+[+    16.226414] [raft-storage] restarted process waiting: stage=0, state=0, term=0, durable=0
+[+    16.227244] [thread] abort tid=31 lp=3 asid=0
+[+    16.228652] [thread] abort tid=31 lp=3 asid=0
+[+    16.229884] [thread] abort tid=31 lp=3 asid=0
+[+    16.231160] [thread] abort tid=31 lp=3 asid=0
+[+    16.232374] [thread] abort tid=31 lp=2 asid=0
+[+    16.233598] [thread] abort tid=31 lp=2 asid=0
+[+    16.234820] [thread] abort tid=31 lp=2 asid=0
+[+    16.236618] [thread] abort tid=31 lp=2 asid=0
+[+    16.237792] [thread] abort tid=31 lp=2 asid=0
+[+    16.238872] [thread] abort tid=31 lp=2 asid=0
+[+    16.240072] [thread] abort tid=31 lp=2 asid=0
+[+    16.241330] [thread] abort tid=31 lp=2 asid=0
+[+    16.242674] [thread] abort tid=31 lp=2 asid=0
+[+    16.243988] [thread] abort tid=31 lp=2 asid=0
+[+    16.245166] [thread] abort tid=31 lp=2 asid=0
+[+    16.246394] [thread] abort tid=31 lp=2 asid=0
+[+    16.247580] [thread] abort tid=31 lp=2 asid=0
+[+    16.248780] [thread] abort tid=31 lp=2 asid=0
+[+    16.250014] [thread] abort tid=31 lp=2 asid=0
+[+    16.251196] [thread] abort tid=31 lp=2 asid=0
+[+    16.252416] [thread] abort tid=31 lp=2 asid=0
+[+    16.253626] [thread] abort tid=31 lp=2 asid=0
+[+    16.254852] [thread] abort tid=31 lp=2 asid=0
+[+    16.256034] [thread] abort tid=31 lp=2 asid=0
+[+    16.257168] [thread] abort tid=31 lp=2 asid=0
+[+    16.258496] [thread] abort tid=31 lp=3 asid=0
+[+    16.259660] [thread] abort tid=31 lp=3 asid=0
+[+    16.260856] [thread] abort tid=31 lp=2 asid=0
+[+    16.262104] [thread] abort tid=31 lp=2 asid=0
+[+    16.263346] [thread] abort tid=31 lp=2 asid=0
+[+    16.264142] [status waiters] SUCCESS: 64 publication plus 64 result timeout cycles and 32 real worker callbacks reconcile owning admission without weak-entry pruning
+[+    16.267594] [thread] abort tid=31 lp=1 asid=0
+[+    16.271688] [thread] abort tid=31 lp=1 asid=0
+[+    16.272676] [completion timed wait] kernel/dispatcher source and watchdog rejection preserve pending ownership; unrelated wakes repark before actual completion with the original deadline
+[+    16.276464] [thread] abort tid=31 lp=1 asid=0
+[+    16.278136] [memory close readiness] scheduled closer parked on the exact transfer; rollback woke it and both roots closed
+[+    16.282408] [thread] abort tid=31 lp=1 asid=0
+[+    16.283822] [DMA creation readiness] scheduled grant parked with exact root/reservation, woke on unit availability, created once and closed its original fixture authority
+[+    16.288362] [thread] abort tid=31 lp=1 asid=0
+[+    16.289670] [DMA grant cancellation readiness] scheduled armed grant parked before descriptor work; original reservation/root retained, one cleanup admitted and exact root closed
+[+    16.291714] [DMA map readiness] root=179:4 cap=1 domain=18446744073709551615 waiting on original unit
+[+    16.293382] [DMA map readiness] root=179:4 cap=1 domain=18446744073709551615 unit claim admitted once
+[+    16.293882] [thread] abort tid=31 lp=1 asid=0
+[+    16.304706] [DMA map readiness] scheduled map parked with original root/claim/two-page pin, woke on unit restoration, ran once and released original authority/backing
+[+    16.305408] [IPC claim readiness] round=0 producer_lp=1 worker_lp=1
+[+    16.310286] [thread] abort tid=31 lp=1 asid=0
+[+    16.316266] [thread] abort tid=31 lp=1 asid=0
+[+    16.317868] [IPC claim readiness] round=0 worker_lp=1 call and endpoint roots closed after exact exit watches
+[+    16.318294] [IPC claim readiness] round=0 producer_lp=1 worker_lp=2
+[+    16.322102] [thread] abort tid=31 lp=2 asid=0
+[+    16.327174] [thread] abort tid=31 lp=2 asid=0
+[+    16.328514] [IPC claim readiness] round=0 worker_lp=2 call and endpoint roots closed after exact exit watches
+[+    16.328930] [IPC claim readiness] round=0 producer_lp=1 worker_lp=3
+[+    16.332614] [thread] abort tid=31 lp=3 asid=0
+[+    16.337064] [thread] abort tid=31 lp=3 asid=0
+[+    16.338418] [IPC claim readiness] round=0 worker_lp=3 call and endpoint roots closed after exact exit watches
+[+    16.338814] [IPC claim readiness] round=0 producer_lp=1 worker_lp=0
+[+    16.341948] [thread] abort tid=31 lp=0 asid=0
+[+    16.346776] [thread] abort tid=31 lp=0 asid=0
+[+    16.348098] [IPC claim readiness] round=0 worker_lp=0 call and endpoint roots closed after exact exit watches
+[+    16.348486] [IPC claim readiness] round=1 producer_lp=1 worker_lp=1
+[+    16.351640] [thread] abort tid=31 lp=1 asid=0
+[+    16.356356] [thread] abort tid=31 lp=1 asid=0
+[+    16.357646] [IPC claim readiness] round=1 worker_lp=1 call and endpoint roots closed after exact exit watches
+[+    16.358058] [IPC claim readiness] round=1 producer_lp=1 worker_lp=2
+[+    16.361574] [thread] abort tid=31 lp=2 asid=0
+[+    16.365604] [thread] abort tid=31 lp=2 asid=0
+[+    16.366890] [IPC claim readiness] round=1 worker_lp=2 call and endpoint roots closed after exact exit watches
+[+    16.367270] [IPC claim readiness] round=1 producer_lp=1 worker_lp=3
+[+    16.370794] [thread] abort tid=31 lp=3 asid=0
+[+    16.375728] [thread] abort tid=31 lp=3 asid=0
+[+    16.376930] [IPC claim readiness] round=1 worker_lp=3 call and endpoint roots closed after exact exit watches
+[+    16.377310] [IPC claim readiness] round=1 producer_lp=1 worker_lp=0
+[+    16.381520] [thread] abort tid=31 lp=0 asid=0
+[+    16.386722] [thread] abort tid=31 lp=0 asid=0
+[+    16.388012] [IPC claim readiness] round=1 worker_lp=0 call and endpoint roots closed after exact exit watches
+[+    16.388446] [IPC claim readiness] round=2 producer_lp=1 worker_lp=1
+[+    16.391482] [thread] abort tid=31 lp=1 asid=0
+[+    16.395926] [thread] abort tid=31 lp=1 asid=0
+[+    16.397346] [IPC claim readiness] round=2 worker_lp=1 call and endpoint roots closed after exact exit watches
+[+    16.397756] [IPC claim readiness] round=2 producer_lp=1 worker_lp=2
+[+    16.400610] [thread] abort tid=31 lp=2 asid=0
+[+    16.405260] [thread] abort tid=31 lp=2 asid=0
+[+    16.406512] [IPC claim readiness] round=2 worker_lp=2 call and endpoint roots closed after exact exit watches
+[+    16.406904] [IPC claim readiness] round=2 producer_lp=1 worker_lp=3
+[+    16.410020] [thread] abort tid=31 lp=3 asid=0
+[+    16.415082] [thread] abort tid=31 lp=3 asid=0
+[+    16.416310] [IPC claim readiness] round=2 worker_lp=3 call and endpoint roots closed after exact exit watches
+[+    16.416664] [IPC claim readiness] round=2 producer_lp=1 worker_lp=0
+[+    16.420262] [thread] abort tid=31 lp=0 asid=0
+[+    16.425582] [thread] abort tid=31 lp=0 asid=0
+[+    16.427090] [IPC claim readiness] round=2 worker_lp=0 call and endpoint roots closed after exact exit watches
+[+    16.427474] [IPC claim readiness] round=3 producer_lp=1 worker_lp=1
+[+    16.431196] [thread] abort tid=31 lp=1 asid=0
+[+    16.435396] [thread] abort tid=31 lp=1 asid=0
+[+    16.436642] [IPC claim readiness] round=3 worker_lp=1 call and endpoint roots closed after exact exit watches
+[+    16.437056] [IPC claim readiness] round=3 producer_lp=1 worker_lp=2
+[+    16.441096] [thread] abort tid=31 lp=2 asid=0
+[+    16.446050] [thread] abort tid=31 lp=2 asid=0
+[+    16.447210] [IPC claim readiness] round=3 worker_lp=2 call and endpoint roots closed after exact exit watches
+[+    16.447588] [IPC claim readiness] round=3 producer_lp=1 worker_lp=3
+[+    16.450678] [thread] abort tid=31 lp=3 asid=0
+[+    16.455802] [thread] abort tid=31 lp=3 asid=0
+[+    16.457098] [IPC claim readiness] round=3 worker_lp=3 call and endpoint roots closed after exact exit watches
+[+    16.457524] [IPC claim readiness] round=3 producer_lp=1 worker_lp=0
+[+    16.461360] [thread] abort tid=31 lp=0 asid=0
+[+    16.466380] [thread] abort tid=31 lp=0 asid=0
+[+    16.467888] [IPC claim readiness] round=3 worker_lp=0 call and endpoint roots closed after exact exit watches
+[+    16.468268] [IPC claim readiness] round=4 producer_lp=1 worker_lp=1
+[+    16.471672] [thread] abort tid=31 lp=1 asid=0
+[+    16.476724] [thread] abort tid=31 lp=1 asid=0
+[+    16.477978] [IPC claim readiness] round=4 worker_lp=1 call and endpoint roots closed after exact exit watches
+[+    16.478364] [IPC claim readiness] round=4 producer_lp=1 worker_lp=2
+[+    16.481676] [thread] abort tid=31 lp=2 asid=0
+[+    16.486014] [thread] abort tid=31 lp=2 asid=0
+[+    16.488636] [IPC claim readiness] round=4 worker_lp=2 call and endpoint roots closed after exact exit watches
+[+    16.488932] [IPC claim readiness] round=4 producer_lp=1 worker_lp=3
+[+    16.492676] [thread] abort tid=31 lp=3 asid=0
+[+    16.497324] [thread] abort tid=31 lp=3 asid=0
+[+    16.498718] [IPC claim readiness] round=4 worker_lp=3 call and endpoint roots closed after exact exit watches
+[+    16.499130] [IPC claim readiness] round=4 producer_lp=1 worker_lp=0
+[+    16.504292] [thread] abort tid=31 lp=0 asid=0
+[+    16.509646] [thread] abort tid=31 lp=0 asid=0
+[+    16.511496] [IPC claim readiness] round=4 worker_lp=0 call and endpoint roots closed after exact exit watches
+[+    16.511874] [IPC claim readiness] round=5 producer_lp=1 worker_lp=1
+[+    16.515008] [thread] abort tid=31 lp=1 asid=0
+[+    16.519118] [thread] abort tid=31 lp=1 asid=0
+[+    16.520334] [IPC claim readiness] round=5 worker_lp=1 call and endpoint roots closed after exact exit watches
+[+    16.520718] [IPC claim readiness] round=5 producer_lp=1 worker_lp=2
+[+    16.523502] [thread] abort tid=31 lp=2 asid=0
+[+    16.527958] [thread] abort tid=31 lp=2 asid=0
+[+    16.529204] [IPC claim readiness] round=5 worker_lp=2 call and endpoint roots closed after exact exit watches
+[+    16.529552] [IPC claim readiness] round=5 producer_lp=1 worker_lp=3
+[+    16.530994] [thread] abort tid=31 lp=3 asid=0
+[+    16.535156] [thread] abort tid=31 lp=3 asid=0
+[+    16.536356] [IPC claim readiness] round=5 worker_lp=3 call and endpoint roots closed after exact exit watches
+[+    16.536718] [IPC claim readiness] round=5 producer_lp=1 worker_lp=0
+[+    16.540492] [thread] abort tid=31 lp=0 asid=0
+[+    16.546618] [thread] abort tid=31 lp=0 asid=0
+[+    16.549242] [IPC claim readiness] round=5 worker_lp=0 call and endpoint roots closed after exact exit watches
+[+    16.549626] [IPC claim readiness] round=6 producer_lp=1 worker_lp=1
+[+    16.552890] [thread] abort tid=31 lp=1 asid=0
+[+    16.557564] [thread] abort tid=31 lp=1 asid=0
+[+    16.558934] [IPC claim readiness] round=6 worker_lp=1 call and endpoint roots closed after exact exit watches
+[+    16.559290] [IPC claim readiness] round=6 producer_lp=1 worker_lp=2
+[+    16.562338] [thread] abort tid=31 lp=2 asid=0
+[+    16.567340] [thread] abort tid=31 lp=2 asid=0
+[+    16.568664] [IPC claim readiness] round=6 worker_lp=2 call and endpoint roots closed after exact exit watches
+[+    16.569056] [IPC claim readiness] round=6 producer_lp=1 worker_lp=3
+[+    16.572102] [thread] abort tid=31 lp=3 asid=0
+[+    16.576254] [thread] abort tid=31 lp=3 asid=0
+[+    16.577576] [IPC claim readiness] round=6 worker_lp=3 call and endpoint roots closed after exact exit watches
+[+    16.577980] [IPC claim readiness] round=6 producer_lp=1 worker_lp=0
+[+    16.581262] [thread] abort tid=31 lp=0 asid=0
+[+    16.587094] [thread] abort tid=31 lp=0 asid=0
+[+    16.588966] [IPC claim readiness] round=6 worker_lp=0 call and endpoint roots closed after exact exit watches
+[+    16.589304] [IPC claim readiness] round=7 producer_lp=1 worker_lp=1
+[+    16.592346] [thread] abort tid=31 lp=1 asid=0
+[+    16.596502] [thread] abort tid=31 lp=1 asid=0
+[+    16.597668] [IPC claim readiness] round=7 worker_lp=1 call and endpoint roots closed after exact exit watches
+[+    16.598046] [IPC claim readiness] round=7 producer_lp=1 worker_lp=2
+[+    16.601012] [thread] abort tid=31 lp=2 asid=0
+[+    16.606278] [thread] abort tid=31 lp=2 asid=0
+[+    16.607544] [IPC claim readiness] round=7 worker_lp=2 call and endpoint roots closed after exact exit watches
+[+    16.607944] [IPC claim readiness] round=7 producer_lp=1 worker_lp=3
+[+    16.611740] [thread] abort tid=31 lp=3 asid=0
+[+    16.616208] [thread] abort tid=31 lp=3 asid=0
+[+    16.617360] [IPC claim readiness] round=7 worker_lp=3 call and endpoint roots closed after exact exit watches
+[+    16.617752] [IPC claim readiness] round=7 producer_lp=1 worker_lp=0
+[+    16.624450] [thread] abort tid=31 lp=0 asid=0
+[+    16.630160] [thread] abort tid=31 lp=0 asid=0
+[+    16.631944] [IPC claim readiness] round=7 worker_lp=0 call and endpoint roots closed after exact exit watches
+[+    16.632332] [IPC claim readiness] 64 scheduled claim/endpoint close episodes completed with exact exit watches
+[+    16.632834] [IPC claim readiness] sampled registration before Blocked 0 time(s); registration alone was never accepted as a parked worker
+[+    16.633328] [cq wait] SUCCESS: blocking CQ wait released by completion, by explicit wake, by a per-queue wake on a second shard queue, and by CQ-bound endpoint readiness.
+[+    16.633980] [thread] abort tid=29 lp=1 asid=0
+[+    16.647922] [raft-storage] restarted process reached term 2.
+[+    16.659048] [raft-storage] SUCCESS: term/vote state survived Raft process restart on NVMe.
+[+    16.659320] [nvme] SUCCESS: storage stack verified.
+[+    16.659582] [thread] abort tid=28 lp=0 asid=0
+[+    16.660210] [EL0 LOG] lp=0 asid=1 [ns] endpoint-death retired None generation=2
+[+    16.986510] SELFTEST WAITING: passed=17 pending=3 passed_bitmap=0x37fff pending_bitmap=0x3008000
+[+    16.986950] SELFTEST PENDING: scheduler-lifecycle
+[+    16.987152] SELFTEST PENDING: dhcp
+[+    16.987338] SELFTEST PENDING: s3-tls
+[+    17.986500] [node] boot-done marker registered (generation 1).
+[+    17.986732] [thread] abort tid=41 lp=0 asid=0
+[+    17.991674] [EL0 LOG] lp=0 asid=172 [s3] serving endpoint=rustfs.test:19000 bucket=knytos-test prefix= region=us-east-1 tls=true rights=0x7
+[+    18.006654] [EL0 LOG] lp=0 asid=147 [tcpip] socket policy requested_slots=64 effective_slots=64 per_owner=16 buffer_quota=2048 KiB heap=4096 KiB
+[+    18.008708] [dhcp] tcpip reached the serving stage; polling for a lease.
+[+    18.014196] [EL0 LOG] lp=0 asid=147 [tcpip] hb rx=0 rxq=0 rx_drop=0 rx_map_err=0:0 tx_ok=0 tx_err=0 sockets=0 tcp=l0/c0/e0/x0/z0 udp=0 recv=0/0 send_ready=0
+[+    18.039210] [EL0 LOG] lp=0 asid=148 [http] listening port=443; bounded client reactor
+[+    18.044076] [EL0 LOG] lp=0 asid=147 [tcpip] DHCP assigned 10.0.2.15/24
+[+    18.048000] [dhcp] SUCCESS: DHCP assigned 10.0.2.15
+[+    18.048212] [thread] abort tid=32 lp=0 asid=0
+[+    18.062770] [EL0 LOG] lp=0 asid=152 [deployd] listening port=7444
+[+    18.346496] [scheduler runtime rebalance] constructing LP0 load 1+4 against busiest peer load 1.
+[+    18.356682] [thread] abort tid=39 lp=1 asid=0
+[+    18.459316] [scheduler runtime rebalance] sustained-window sampling advanced certified migrations to 4; starting cross-LP abort regression.
+[+    18.459644] [thread] abort tid=41 lp=1 asid=0
+[+    18.460706] [thread] abort tid=34 lp=0 asid=0
+[+    18.460976] [thread] abort tid=28 lp=0 asid=0
+[+    18.461142] [thread] abort tid=32 lp=0 asid=0
+[+    18.461916] [scheduler remote abort] target stayed on LP1 through request, late admission was rejected, and owner-side retirement completed off-CPU.
+[+    18.462322] [scheduler lifecycle] SUCCESS: timer affinity, certified runtime migration, and safe cross-LP retirement verified.
+[+    18.462754] [thread] abort tid=41 lp=0 asid=0
+[+    18.613748] [EL0 LOG] lp=0 asid=146 [dns] MEMBERSHIP epoch=0 joint=false members=1 commit=0 last=0 finalize_pending=false term=0 leader=false
+[+    18.614264] [EL0 LOG] lp=0 asid=146 [dns] RAFT STATE state=Follower term=0 leader=None millis=502 pending=0 queued=0
+[+    18.989118] SELFTEST WAITING: passed=19 pending=1 passed_bitmap=0x103ffff pending_bitmap=0x2000000
+[+    18.989618] SELFTEST PENDING: s3-tls
+[+    19.055802] [EL0 LOG] lp=0 asid=149 [time] requesting NTP sample
+[+    19.570240] [EL0 LOG] lp=0 asid=149 [time] synchronized unix_s=1795285256 utc=2026-11-21T18:20:56.404628889Z stratum=3 uncertainty_ms=258 drift_ppb=0
+[+    19.955918] [EL0 LOG] lp=0 asid=176 [s3-smoke] S3 TLS PUT/HEAD/GET/DELETE round trip succeeded
+[+    19.956204] [thread] abort tid=33 lp=0 asid=176
+[+    19.956604] [s3-test] SUCCESS: verified 28-byte object round trip
+[+    19.956874] [thread] abort tid=27 lp=0 asid=0
+[+    19.957058] SELFTEST COMPLETE: passed=20 failed=0 pending=0 passed_bitmap=0x303ffff failed_bitmap=0x0 pending_bitmap=0x0

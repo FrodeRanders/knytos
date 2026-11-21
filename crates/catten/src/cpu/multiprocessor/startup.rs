@@ -39,9 +39,7 @@ pub enum MpError {
 }
 
 pub fn start_secondary_lps() -> Result<(), MpError> {
-    logln!("Starting secondary LPs...");
     if let Some(res) = MP_REQUEST.response() {
-        logln!("Obtained multiprocessor response from Limine");
         #[cfg(target_arch = "x86_64")]
         {
             if res.flags & MP_FLAG_X2APIC as u32 != 0 {
@@ -52,7 +50,6 @@ pub fn start_secondary_lps() -> Result<(), MpError> {
         }
         let lps = res.cpus();
         for lp in lps {
-            logln!("Writing entry point address for LP {}", (lp.processor_id));
             lp.bootstrap(ap_main, 0);
         }
         Ok(())

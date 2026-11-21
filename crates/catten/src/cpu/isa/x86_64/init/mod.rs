@@ -3,14 +3,9 @@ pub(crate) mod boot;
 mod bsp;
 pub mod gdt;
 
-use crate::{
-    cpu::isa::{
-        interface::init::InitInterface,
-        lp::ops::get_lp_id,
-        memory::paging::PAGE_SIZE,
-    },
-    early_logln,
-    logln,
+use crate::cpu::isa::{
+    interface::init::InitInterface,
+    memory::paging::PAGE_SIZE,
 };
 
 const INTERRUPT_STACK_SIZE: usize = PAGE_SIZE * 4;
@@ -21,22 +16,16 @@ impl InitInterface for IsaInitializer {
     type Error = core::convert::Infallible;
 
     fn init_bsp() -> Result<(), Self::Error> {
-        let lp_id = get_lp_id();
-        early_logln!("LP {lp_id}: Starting x86-64 bootstrap processor initialization");
         // Initialize TSS, GDT, and IDT
         bsp::init_bsp();
-        early_logln!("LP {lp_id}: x86-64 bootstrap processor initialization complete");
         // return success
         crate::cpu::execution_target::record_current_lp();
         Ok(())
     }
 
     fn init_ap() -> Result<(), Self::Error> {
-        let lp_id = get_lp_id();
-        logln!("LP {lp_id}: Starting x86-64 application processor initialization");
         // Initialize TSS, GDT, and IDT
         ap::init_ap();
-        logln!("LP {lp_id}: x86-64 logical processor initialization complete");
         crate::cpu::execution_target::record_current_lp();
         Ok(())
     }

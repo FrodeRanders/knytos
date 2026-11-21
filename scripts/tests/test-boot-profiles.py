@@ -136,7 +136,7 @@ class BootProfiles(unittest.TestCase):
 
     def test_cached_bundle_must_match_heartbeat_selection(self):
         for arch in ("aarch64", "x86_64"):
-            for mode, default in (("minimal", "0"), ("test", "1")):
+            for mode, default in (("minimal", "0"), ("test", "0")):
                 with self.subTest(arch=arch, mode=mode), tempfile.TemporaryDirectory() as directory:
                     bundle, *services = self.bundle(arch, mode, directory).stdout.splitlines()
                     Path(bundle).mkdir(parents=True)

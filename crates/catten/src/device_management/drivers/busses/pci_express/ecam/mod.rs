@@ -26,13 +26,7 @@ use crate::{
 };
 
 pub(super) fn map_ecam(base: PAddr) -> VAddr {
-    logln!("[drivers::busses::pci_express] Mapping PCIe ECAM at physical address {:?}", base);
     let mut kas = KERNEL_AS.lock();
-    logln!(
-        "[drivers::busses::pci_express] Finding free virtual address range for PCIe ECAM mapping \
-         of size {:?} bytes",
-        ECAM_SIZE
-    );
     let vbase = kas
         .find_free_region_large_aligned(
             ECAM_SIZE / PageSize::Large.num_bytes(),
@@ -41,12 +35,6 @@ pub(super) fn map_ecam(base: PAddr) -> VAddr {
             ),
         )
         .expect("Failed to find free virtual address range for PCIe ECAM mapping");
-    logln!(
-        "[drivers::busses::pci_express] Mapping PCIe ECAM at physical address {:?} to virtual \
-         address {:?}",
-        base,
-        vbase
-    );
     let mut mem_mapping: MemoryMapping;
     let large_aligned = base.is_aligned_to(PageSize::Large.num_bytes());
     let step = if large_aligned {
@@ -68,11 +56,6 @@ pub(super) fn map_ecam(base: PAddr) -> VAddr {
             kas.map_page(mem_mapping).expect("Failed to map page for a PCIe ECAM!");
         }
     }
-    logln!(
-        "[drivers::busses::pci_express] Successfully mapped PCIe ECAM at physical address {:?} to \
-         virtual address {:?}",
-        base,
-        vbase
-    );
+    logln!("[PCI] ECAM {:?} -> {:?} ({} MiB)", base, vbase, ECAM_SIZE / (1024 * 1024));
     vbase
 }

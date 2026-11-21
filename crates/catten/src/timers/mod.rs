@@ -116,10 +116,6 @@ pub(crate) fn initialize_local_boot() {
         "timer boot requires masked CPU interrupts"
     );
     LpTimer::initialize_local_boot();
-    crate::logln!(
-        "[bootstrap storage] lp={} local timer initialized without backing allocation",
-        crate::cpu::isa::lp::ops::get_lp_id()
-    );
 }
 
 pub(crate) fn validate_boot_storage() {

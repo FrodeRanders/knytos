@@ -27,50 +27,32 @@ pub fn test_vmem() {
 
     test_retained_tables();
 
-    logln!("Entering Virtual Memory Subsystem Self Test");
-    logln!("Allocating physical frame");
     let frame = PHYSICAL_FRAME_ALLOCATOR.lock().allocate_frame().unwrap();
-    logln!("Physical frame allocated");
-    logln!("Obtaining current address space");
     let mut current_as = AddressSpace::get_current();
-    logln!("Obtained current address space.");
-    logln!("Creating MemoryMapping struct.");
     let higher_half_start: VAddr = VAddr::from(0xffff_ffff_ffff_f000usize);
     let mapping = MemoryMapping {
         vaddr: higher_half_start,
         paddr: frame,
         page_type: PageType::KernelData,
     };
-    logln!(
-        "Created MemoryMapping struct... Mapping the allocated frame to the beginning of the \
-         higher half."
-    );
     match current_as.map_page(mapping) {
-        Ok(_) => logln!("Page mapped successfully."),
+        Ok(_) => {}
         Err(e) => panic!("Error mapping page: {:?}", e),
     }
     let addr: *mut u32 = higher_half_start.into_mut();
     const MAGIC_NUMBER: u32 = 0xcafebabe;
     unsafe {
-        logln!(
-            "Writing magic number {:x?}_16 to virtual address {:?}",
-            MAGIC_NUMBER,
-            higher_half_start
-        );
-        addr.write(MAGIC_NUMBER);
-        logln!("Reading magic number back from {:?}", higher_half_start);
-        let read_value = addr.read();
+        // This is a real mapping probe, even without intervening console calls.
+        // Keep the compiler from folding the write/read into a constant result.
+        addr.write_volatile(MAGIC_NUMBER);
+        let read_value = addr.read_volatile();
         assert_eq!(read_value, MAGIC_NUMBER);
-        logln!("Magic number matches.");
-        logln!("Test completed successfully.");
-        logln!("Unmapping test page.");
         let unmapped = current_as.unmap_page(higher_half_start).expect("Error unmapping page.");
         assert_eq!(unmapped, frame);
         // This boot fixture runs before secondary LP scheduler admission.
         crate::cpu::isa::memory::tlb::inval_range_kernel(higher_half_start, 1);
         PHYSICAL_FRAME_ALLOCATOR.lock().deallocate_frame(unmapped).unwrap();
-        logln!("Test page successfully unmapped.");
-        logln!("All virtual memory tests passed!");
+        logln!("[vmem] kernel map/write/read/unmap passed");
     }
 }
 

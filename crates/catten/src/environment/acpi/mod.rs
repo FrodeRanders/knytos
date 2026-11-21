@@ -277,10 +277,8 @@ pub fn find_table_type(table: AcpiTableType) -> Result<&'static [PAddr], Error> 
 
 fn parse_xsdt(xsdt_addr: PAddr) -> HashMap<AcpiTableType, Vec<PAddr>> {
     let mut tables = HashMap::new();
-    logln!("[ACPI] Parsing XSDT at address {:?}", xsdt_addr);
     let xsdt_header: &SdtHeader =
         unsafe { (xsdt_addr.into_hhdm_ptr::<SdtHeader>()).as_ref().unwrap() };
-    logln!("[ACPI] XSDT header located.");
     if !xsdt_header.validate() {
         panic!(
             "[ACPI] XSDT checksum validation failed. This machine's firmware is invalid or has \
@@ -297,11 +295,6 @@ fn parse_xsdt(xsdt_addr: PAddr) -> HashMap<AcpiTableType, Vec<PAddr>> {
         .saturating_sub(size_of::<SdtHeader>())
         .min(MAX_ACPI_TABLE_LEN as usize);
     let num_entries = data_length / size_of::<u64>();
-    logln!(
-        "[ACPI] XSDT data physical address: {:?}, number of entries: {}",
-        xsdt_data_ptr,
-        num_entries
-    );
     let mut table_addrs = Vec::<PAddr>::with_capacity(num_entries);
     for i in 0..num_entries {
         let entry_addr = unsafe { xsdt_data_ptr.as_ptr().add(i).read_unaligned() };
@@ -311,19 +304,18 @@ fn parse_xsdt(xsdt_addr: PAddr) -> HashMap<AcpiTableType, Vec<PAddr>> {
     }
 
     for table_addr in &table_addrs {
-        if let Some(signature) = get_table_signature(*table_addr) {
-            if let Ok(table_type) = AcpiTableType::try_from(signature) {
-                tables.entry(table_type).or_insert_with(Vec::new).push(*table_addr);
-            } else {
-                logln!(
-                    "[ACPI] Warning: Unrecognized ACPI table with signature {:?} at address {:?}",
-                    signature,
-                    table_addr
-                );
-            }
+        if let Some(signature) = get_table_signature(*table_addr)
+            && let Ok(table_type) = AcpiTableType::try_from(signature)
+        {
+            tables.entry(table_type).or_insert_with(Vec::new).push(*table_addr);
         }
     }
-    logln!("[ACPI] Finished parsing XSDT. Found {} tables.", (tables.len()));
+    let registered: usize = tables.values().map(Vec::len).sum();
+    logln!(
+        "[ACPI] registered {} tables; ignored {} unsupported entries",
+        registered,
+        table_addrs.len().saturating_sub(registered)
+    );
     tables
 }
 

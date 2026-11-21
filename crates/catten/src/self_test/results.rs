@@ -451,13 +451,18 @@ extern "C" fn coordinator() {
                 passed,
                 pending
             );
-            for test in TestId::ALL {
-                if pending & bit(test) != 0 {
-                    logln!("SELFTEST PENDING: {}", test.name());
-                    #[cfg(any(target_arch = "aarch64", target_arch = "x86_64"))]
-                    if matches!(test, TestId::Device) {
-                        let (waiter, driver) = crate::self_test::device::progress();
-                        logln!("SELFTEST DEVICE PHASES: waiter={} driver={}", waiter, driver);
+            // Counts show ordinary progress. Name unresolved tests and dump
+            // device phases only on a stalled heartbeat; terminal failures
+            // above always retain their complete failed/pending list.
+            if pending == last_pending {
+                for test in TestId::ALL {
+                    if pending & bit(test) != 0 {
+                        logln!("SELFTEST PENDING: {}", test.name());
+                        #[cfg(any(target_arch = "aarch64", target_arch = "x86_64"))]
+                        if matches!(test, TestId::Device) {
+                            let (waiter, driver) = crate::self_test::device::progress();
+                            logln!("SELFTEST DEVICE PHASES: waiter={} driver={}", waiter, driver);
+                        }
                     }
                 }
             }

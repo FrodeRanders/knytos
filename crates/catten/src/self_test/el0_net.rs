@@ -39,7 +39,6 @@ pub fn test_el0_net() {
         crate::self_test::results::TestId::Net,
         verify_el0_net,
     );
-    logln!("[net] verifier deferred (waits for PCI topology + driver + client)");
 }
 
 extern "C" fn verify_el0_net() {

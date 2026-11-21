@@ -212,7 +212,6 @@ pub fn test_el0_ping_pong() {
             AddressSpace::new_user()
         };
         let asid = crate::memory::register_user_address_space(user_as).unwrap().id();
-        logln!("[PP] user AS asid={}", asid);
 
         pp_map_code_page(asid, VAddr::from(PING_VADDR), ping_code());
         pp_map_code_page(asid, VAddr::from(PONG_VADDR), pong_code());
@@ -243,7 +242,6 @@ pub fn test_el0_ping_pong() {
             let tid = crate::cpu::scheduler::system_scheduler::publish_thread(t)
                 .expect("PP: Ping address space rejected publication");
             SYSTEM_SCHEDULER.read().submit_to_lp(tid, 0).expect("PP: failed to pin Ping to LP0");
-            logln!("[PP] Ping spawned tid={}, pinned to LP0", tid);
         }
         {
             use crate::cpu::scheduler::{
@@ -254,14 +252,12 @@ pub fn test_el0_ping_pong() {
             let tid = crate::cpu::scheduler::system_scheduler::publish_thread(t)
                 .expect("PP: Pong address space rejected publication");
             SYSTEM_SCHEDULER.read().submit_to_lp(tid, 1).expect("PP: failed to pin Pong to LP1");
-            logln!("[PP] Pong spawned tid={}, pinned to LP1", tid);
         }
 
-        let vtid = crate::self_test::results::spawn_verifier(
+        crate::self_test::results::spawn_verifier(
             crate::self_test::results::TestId::PingPong,
             verify_ping_pong,
         );
-        logln!("[PP] verifier tid={}; assertion deferred.", vtid);
     }
     #[cfg(not(any(target_arch = "aarch64", target_arch = "x86_64")))]
     {

@@ -42,8 +42,8 @@ The following inputs have different authorities and lifetimes:
     \item[Service console heartbeats.] Service build input
         \path{KNYTOS_SERVICE_HEARTBEATS} accepts 0 or 1, selecting the
         \texttt{knytos-services} Cargo feature \texttt{service-heartbeats}.
-        Runners and service builders default it off for minimal bundles and on
-        for test bundles. It controls periodic \texttt{hb} console diagnostics
+        Runners and service builders default it off for both minimal and test
+        bundles. Set it to 1 for periodic \texttt{hb} console diagnostics
         from the network drivers, frame router, TCP/IP and time services.
         Status counters and protocol heartbeats remain active. Changing it
         requires rebuilding the services, kernel and images, then restarting;

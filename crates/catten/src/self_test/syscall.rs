@@ -96,9 +96,7 @@ fn create_syscall_test_address_space(label: &str) -> crate::memory::AddressSpace
         let _kas = KERNEL_AS.lock();
         AddressSpace::new_user()
     };
-    let asid = crate::memory::register_user_address_space(user_as).unwrap().id();
-    logln!("[syscall memory] {} AS asid={}", label, asid);
-    asid
+    crate::memory::register_user_address_space(user_as).expect(label).id()
 }
 
 pub(crate) fn test_cq_wait_result(

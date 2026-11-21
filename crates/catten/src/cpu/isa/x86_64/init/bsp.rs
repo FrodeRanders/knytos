@@ -4,16 +4,13 @@ use super::{
     INTERRUPT_STACK_SIZE,
     gdt::*,
 };
-use crate::{
-    cpu::isa::{
-        interrupts::{
-            dynamic::register_dynamic_isr_gates,
-            fixed::register_fixed_isr_gates,
-            idt::Idt,
-        },
-        lp::ops::init_lp_state,
+use crate::cpu::isa::{
+    interrupts::{
+        dynamic::register_dynamic_isr_gates,
+        fixed::register_fixed_isr_gates,
+        idt::Idt,
     },
-    early_logln,
+    lp::ops::init_lp_state,
 };
 
 static mut BSP_INTERRUPT_STACK: [u8; INTERRUPT_STACK_SIZE] = [0u8; INTERRUPT_STACK_SIZE];
@@ -41,5 +38,4 @@ pub fn init_bsp() {
     }
     BSP_IDT.load();
     init_lp_state();
-    early_logln!("LP 0: x86-64 ISA initialization complete");
 }

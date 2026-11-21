@@ -17,6 +17,8 @@ report is useful for a significant investigation or qualification checkpoint.
 
 ## Reports
 
+- [Non-minimal boot logging review](2026-11-22-boot-logging.md) records removed bring-up chatter, retained diagnostics, quieter heartbeat defaults and full AArch64/x86 test-boot qualification.
+
 - [Broker business futures and TCP progress](2026-11-21-broker-async-dispatch.md) records delayed-business concurrency, owned-buffer/retention changes, comparable native measurements and signed shutdown qualification.
 
 - [Broker traffic and initial concurrency measurements](2026-11-21-broker-traffic-and-concurrency.md) records the original native traffic/sweep results, limitations and separately retained failed attempts.

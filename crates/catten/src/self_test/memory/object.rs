@@ -26,9 +26,7 @@ fn create_memory_object_test_address_space(label: &str) -> usize {
         let _kas = KERNEL_AS.lock();
         AddressSpace::new_user()
     };
-    let asid = crate::memory::register_user_address_space(user_as).unwrap().id();
-    logln!("[memory object] {} AS asid={}", label, asid);
-    asid
+    crate::memory::register_user_address_space(user_as).expect(label).id()
 }
 
 pub fn test_memory_objects() {

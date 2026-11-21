@@ -325,19 +325,11 @@ pub(crate) fn scheduled() {
     let probe_lps = lp_count.min(4);
     // Repeat real claims within a fixed bound, leaving allocator/watchdog pressure
     // to separate tests. Each episode requires exact exit and closes its roots before the next.
-    for round in 0..8 {
+    for _ in 0..8 {
         for offset in 0..probe_lps {
             let worker_lp = (producer_lp + offset) % lp_count;
-            crate::logln!(
-                "[IPC claim readiness] round={round} producer_lp={producer_lp} \
-                 worker_lp={worker_lp}"
-            );
             scheduled_call(worker_lp);
             scheduled_front(worker_lp);
-            crate::logln!(
-                "[IPC claim readiness] round={round} worker_lp={worker_lp} call and endpoint \
-                 roots closed after exact exit watches"
-            );
         }
     }
     crate::logln!(

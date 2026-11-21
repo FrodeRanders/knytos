@@ -119,8 +119,8 @@ symbols from both current `knytos` and older `catten` binaries.
 
 All integration-test features imply `kernel_tests`. That feature gates the
 self-test registry, native test modules and adapters, failure-injection hooks
-and state, test-only metrics, IOMMU rejection/recovery fixtures and the topology
-printing worker. Host `#[cfg(test)]` logic tests retain their ordinary Cargo
+and state, test-only metrics and IOMMU rejection/recovery fixtures.
+Host `#[cfg(test)]` logic tests retain their ordinary Cargo
 harness independently. Explicit scheduler tracing remains available for runtime
 diagnosis; it is not a regression suite.
 
@@ -132,18 +132,18 @@ scripts/build-knytos-services-x86_64.sh --mode minimal
 # --mode test is the default for both builders.
 ```
 
-Periodic service console heartbeats default off for minimal bundles and on for
-test bundles. Override either default with `KNYTOS_SERVICE_HEARTBEATS=0` or `1`:
+Periodic service console heartbeats default off in both minimal and test bundles.
+Enable them explicitly for a diagnostic run:
 
 ```sh
-KNYTOS_SERVICE_HEARTBEATS=1 scripts/run-aarch64.sh --minimal
-KNYTOS_SERVICE_HEARTBEATS=0 scripts/run-x86_64.sh --tests
+KNYTOS_SERVICE_HEARTBEATS=1 scripts/run-aarch64.sh --tests
+KNYTOS_SERVICE_HEARTBEATS=1 scripts/run-x86_64.sh --minimal
 ```
 
 Both runners and standalone service builders accept this build-time setting;
 empty or other values reject. It selects the `knytos-services` Cargo feature
-`service-heartbeats` (`--no-default-features` disables it for direct Cargo
-builds). It gates the periodic `hb` lines from `net`, `e1000e`, `frouter`,
+`service-heartbeats` (also opt-in for direct Cargo builds). It gates the periodic
+`hb` lines from `net`, `e1000e`, `frouter`,
 `tcpip` and `time`, including their logging-only counters and socket summaries.
 Operational status counters, startup/error/state-change messages, time
 synchronization and network/Raft/Kafka protocol heartbeats remain active.
@@ -151,6 +151,16 @@ The staged bundle records its selection; reuse rejects a missing or mismatched
 record. Rebuild services, kernel and disk images when changing the setting;
 `KNYTOS_SKIP_KERNEL_BUILD` still means retaining the existing embedded services.
 There is no live toggle for a running node.
+
+Boot output retains version/mode, CPU and memory limits, hardware/driver selection,
+trust publication, service readiness, test outcomes and failure diagnostics. Routine
+initialization start/finish pairs, successful thread exits, temporary test ASIDs,
+per-round fixture progress and the redundant topology-printer thread are omitted.
+Unsupported ACPI tables contribute to an ignored-entry count rather than warnings;
+invalid firmware and required-device failures still report their actual cause.
+Deferred tests print compact progress counts; unresolved test names and device
+phases appear on a stalled heartbeat or at a terminal failed result. This logging
+policy does not change test registration, assertions, deadlines or resource cleanup.
 
 `scripts/lib/service-bundle.sh` owns the architecture-specific operational and
 probe inventories. Builders select explicit bins and replace the staged bundle

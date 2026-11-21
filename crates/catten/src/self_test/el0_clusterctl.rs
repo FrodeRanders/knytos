@@ -138,9 +138,6 @@ mod inner {
             crate::self_test::results::TestId::Clusterctl,
             verify_el0_clusterctl,
         );
-        logln!(
-            "[clusterctl] verifier deferred (drives upload/rejection/status; console on serial)"
-        );
     }
 
     extern "C" fn verify_el0_clusterctl() {

@@ -402,16 +402,10 @@ pub fn run_deferred_self_tests() {
     el0_net::test_el0_net();
     #[cfg(all(feature = "virtio_net_test", feature = "hvf_compat"))]
     logln!("Skipping EL0 net test (hvf_compat: HVF cannot emulate EL0 MMIO).");
-    #[cfg(not(feature = "virtio_net_test"))]
-    logln!("Skipping EL0 net test (enable virtio_net_test with matching PCI hardware).");
     #[cfg(feature = "disco_net_test")]
     el0_disco::test_el0_disco();
-    #[cfg(not(feature = "disco_net_test"))]
-    logln!("Skipping EL0 disco test (enable disco_net_test with matching PCI hardware).");
     #[cfg(feature = "dns_net_test")]
     el0_dns::test_el0_dns();
-    #[cfg(not(feature = "dns_net_test"))]
-    logln!("Skipping EL0 dns test (enable dns_net_test with matching PCI hardware).");
     #[cfg(feature = "tcpip_net_test")]
     el0_tcpip::test_el0_tcpip();
     #[cfg(feature = "cluster_ingress_test")]
@@ -420,23 +414,13 @@ pub fn run_deferred_self_tests() {
     el0_clusterctl::test_el0_clusterctl();
     #[cfg(feature = "clusterctl_test")]
     el0_join::test_el0_join();
-    #[cfg(not(feature = "tcpip_net_test"))]
-    logln!("Skipping EL0 tcpip test (enable tcpip_net_test with matching PCI hardware).");
     #[cfg(feature = "http_net_test")]
     el0_http::test_el0_http();
-    #[cfg(not(feature = "http_net_test"))]
-    logln!("Skipping EL0 http test (enable http_net_test with matching PCI hardware).");
     #[cfg(feature = "dhcp_test")]
     el0_dhcp::test_el0_dhcp();
-    #[cfg(not(feature = "dhcp_test"))]
-    logln!("Skipping EL0 dhcp test (enable dhcp_test with matching PCI hardware).");
     #[cfg(feature = "s3_test")]
     el0_s3::test_el0_s3();
-    #[cfg(not(feature = "s3_test"))]
-    logln!("Skipping EL0 S3 test (enable s3_test with the RustFS fixture).");
     #[cfg(feature = "kafka_test")]
     el0_kafka::test_el0_kafka();
-    #[cfg(not(feature = "kafka_test"))]
-    logln!("Skipping EL0 Kafka test (enable kafka_test with the Kafka fixture).");
     logln!("Synchronous self-tests passed; deferred scheduler/EL0 verifiers are still pending.");
 }

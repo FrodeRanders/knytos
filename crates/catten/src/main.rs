@@ -64,15 +64,6 @@ use spin::{
     LazyLock,
 };
 
-#[cfg(all(
-    feature = "kernel_tests",
-    not(feature = "hvf_compat"),
-    not(feature = "live_upgrade_test")
-))]
-use crate::{
-    cpu::scheduler::spawn_thread,
-    memory::KERNEL_ASID,
-};
 use crate::{
     cpu::{
         isa::{
@@ -214,12 +205,9 @@ pub extern "C" fn bsp_main() -> ! {
         (KERNEL_VERSION.1),
         (KERNEL_VERSION.2)
     );
-    early_logln!("========================================================================");
-    early_logln!("Initializing the system using the bootstrap processor...");
     unsafe {
         assign_id();
     }
-    early_logln!("BSP assigned ID 0.");
     // Reject unsupported firmware counts before ISA initialization, logging or
     // scheduler construction can initialize a heap-backed per-LP factory.
     let _ = get_lp_count();
@@ -237,7 +225,6 @@ pub extern "C" fn bsp_main() -> ! {
     crate::timers::prepare_boot_storage();
     #[cfg(feature = "acpi")]
     crate::environment::acpi::prepare_boot_storage();
-    logln!("System initialized.");
     start_secondary_lps().expect("Failed to start secondary LPs");
     INIT_BARRIER.wait();
     // Deferred verifiers and EL0 bootstrap services may begin running while
@@ -280,7 +267,7 @@ pub extern "C" fn bsp_main() -> ! {
         #[cfg(feature = "kernel_tests")]
         crate::device::smmu::test_initialization();
         match crate::device::smmu::initialize_early() {
-            Ok(()) => logln!("[smmu] early initialization complete."),
+            Ok(()) => {}
             Err(crate::device::smmu::Error::Unsupported) => {
                 logln!("[smmu] no supported SMMUv3 discovered; DMA isolation unavailable.")
             }
@@ -294,7 +281,7 @@ pub extern "C" fn bsp_main() -> ! {
         #[cfg(feature = "kernel_tests")]
         crate::device::iommu::test_initialization();
         match crate::device::iommu::initialize_early() {
-            Ok(()) => logln!("[iommu] early initialization complete."),
+            Ok(()) => {}
             Err(crate::device::iommu::Error::Unsupported) => {
                 logln!(
                     "[iommu] no supported VT-d/AMD-Vi unit discovered; DMA isolation unavailable."
@@ -309,12 +296,7 @@ pub extern "C" fn bsp_main() -> ! {
     // yield while the NVMe/object-store bootstrap domains run. Execute it in a
     // scheduler-owned context: yielding from this raw BSP entry stack would
     // abandon the continuation because it has no Thread record to re-admit.
-    let continuation = crate::cpu::scheduler::spawn_thread_on_lp(
-        crate::memory::KERNEL_ASID,
-        finish_boot,
-        get_lp_id(),
-    );
-    logln!("Boot continuation spawned with ID = {continuation}.");
+    crate::cpu::scheduler::spawn_thread_on_lp(crate::memory::KERNEL_ASID, finish_boot, get_lp_id());
     // The global-state probes above are complete. Release the APs into their
     // idle schedulers before the continuation admits EL0 work; store-backed
     // service discovery may then yield and make progress on any LP.
@@ -332,16 +314,11 @@ pub extern "C" fn bsp_main() -> ! {
 /// Store-backed service resolution can block cooperatively, so this phase may
 /// be suspended and later resumed just like every other kernel thread.
 extern "C" fn finish_boot() {
-    logln!("System Information:");
     logln!("CPU Vendor: {}", (CpuInfo::get_vendor()));
     logln!("CPU Model: {}", (CpuInfo::get_model()));
     logln!("Physical Address bits implemented: {}", (CpuInfo::get_paddr_sig_bits()));
     logln!("Virtual Address bits implemented: {}", (CpuInfo::get_vaddr_sig_bits()));
     print_timer_info();
-    #[cfg(feature = "acpi")]
-    {
-        environment::acpi::print_table_map();
-    }
     mask_interrupts!();
     #[cfg(all(not(feature = "hvf_compat"), not(feature = "live_upgrade_test")))]
     {
@@ -353,12 +330,6 @@ extern "C" fn finish_boot() {
         // Topology publication is complete. Stack preparation can rendezvous
         // with APs, so do not inherit this boot-only local interrupt mask.
         unmask_interrupts!();
-        #[cfg(feature = "kernel_tests")]
-        {
-            logln!("Spawning kernel diagnostic thread to print device topology...");
-            let thread_id = spawn_thread(KERNEL_ASID, probe_device_topology);
-            logln!("Topology diagnostic thread spawned with ID = {thread_id}.");
-        }
     }
     #[cfg(all(feature = "hvf_compat", not(feature = "live_upgrade_test")))]
     logln!("PCI topology probe skipped (hvf_compat: ECAM MMIO triggers HVF assertion).");
@@ -423,7 +394,6 @@ extern "C" fn finish_boot() {
             rebalanced
         );
     }
-    logln!("Submitted all initial kernel threads.");
     unmask_interrupts!();
 }
 
@@ -449,24 +419,12 @@ pub unsafe extern "C" fn ap_main(_cpuinfo: &MpInfo) -> ! {
     init::ap_init();
     mask_interrupts!();
     INIT_BARRIER.wait();
-    let lp_id = get_lp_id();
-    logln!("LP {lp_id}: Starting local interrupt controller initialization.");
     LocalIntCtlr::init_lp();
     crate::timers::initialize_local_boot();
-    logln!("LP {lp_id}: Initialized local interrupt controller.");
     INTERRUPT_INIT_BARRIER.wait();
-    logln!("LP {lp_id}: Bootstrapping complete.");
     YIELD_BARRIER.wait();
     unmask_interrupts!();
     yield_lp();
     /* We've switched into thread context and never come back */
     unsafe { unreachable_unchecked() }
-}
-
-#[unsafe(no_mangle)]
-#[cfg(feature = "kernel_tests")]
-pub extern "C" fn probe_device_topology() {
-    logln!("LP {}: Probing device topology...", (get_lp_id()));
-    let device_topology = &*DEVICE_TOPOLOGY;
-    logln!("LP {}: Device Topology:\n{}", (get_lp_id()), device_topology);
 }

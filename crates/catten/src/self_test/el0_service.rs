@@ -112,7 +112,6 @@ pub fn test_el0_service() {
         crate::self_test::results::TestId::Service,
         verify_el0_service,
     );
-    logln!("[service] verifier deferred");
 }
 
 pub(crate) fn verify_persistent_upgrade(name_service: &NameServiceHandle) {

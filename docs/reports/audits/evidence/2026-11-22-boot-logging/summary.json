@@ -1,0 +1,25 @@
+{
+  "before-aarch64": {
+    "kernel_lines": 1332,
+    "kernel_bytes": 148331,
+    "verdict": "[+    19.957058] SELFTEST COMPLETE: passed=20 failed=0 pending=0 passed_bitmap=0x303ffff failed_bitmap=0x0 pending_bitmap=0x0",
+    "heartbeat_lines": 3,
+    "kernel_sha256": "babbc566e0a861ce8787ed67c4bc17926b411d8a880c3331f8d36af237d4b174"
+  },
+  "after-aarch64": {
+    "kernel_lines": 739,
+    "kernel_bytes": 111100,
+    "verdict": "[+    17.026358] SELFTEST COMPLETE: passed=20 failed=0 pending=0 passed_bitmap=0x303ffff failed_bitmap=0x0 pending_bitmap=0x0",
+    "heartbeat_lines": 0,
+    "kernel_sha256": "4a6e8221d175ceb9276e59d30b4bd5552d5231b804eb2e895e152918e250bd09"
+  },
+  "after-x86_64": {
+    "kernel_lines": 750,
+    "kernel_bytes": 113876,
+    "verdict": "[+    30.412888] SELFTEST COMPLETE: passed=16 failed=0 pending=0 passed_bitmap=0x3bbff failed_bitmap=0x0 pending_bitmap=0x0",
+    "heartbeat_lines": 0,
+    "kernel_sha256": "6e6ea05671c4ac4b966d09cc760592b4cd5fe505e45b43c2c95e867b5d6ef4ae"
+  },
+  "aarch64_line_reduction_percent": 44.51951951951952,
+  "aarch64_byte_reduction_percent": 25.09994539239943
+}

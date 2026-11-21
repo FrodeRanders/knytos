@@ -177,7 +177,6 @@ pub fn test_el0_uart() {
             crate::self_test::results::TestId::Uart,
             verify_el0_uart,
         );
-        logln!("[uart] verifier deferred");
     }
     #[cfg(not(target_arch = "aarch64"))]
     {

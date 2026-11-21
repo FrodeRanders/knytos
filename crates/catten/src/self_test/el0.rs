@@ -139,7 +139,6 @@ fn prepare_user_address_space(vaddr: VAddr, cq_vaddr: VAddr, result_vaddr: VAddr
 
     // Use normal domain registration, including generation and admission.
     let asid = crate::memory::register_user_address_space(user_as).unwrap().id();
-    logln!("User AS registered in global table with asid={}", asid);
 
     // --- map user code page ---------------------------------------------------
     let code_frame = PHYSICAL_FRAME_ALLOCATOR
@@ -186,7 +185,6 @@ fn prepare_user_address_space(vaddr: VAddr, cq_vaddr: VAddr, result_vaddr: VAddr
         .lock()
         .allocate_frame()
         .expect("failed to allocate physical frame for CQ ring");
-    logln!("Allocated CQ ring frame {:?} at vaddr {:?}", cq_frame, cq_vaddr);
 
     let cq_mapping = MemoryMapping {
         vaddr: cq_vaddr,
@@ -205,7 +203,6 @@ fn prepare_user_address_space(vaddr: VAddr, cq_vaddr: VAddr, result_vaddr: VAddr
         .lock()
         .allocate_frame()
         .expect("failed to allocate physical frame for result page");
-    logln!("Allocated result frame at vaddr {:?}", result_vaddr);
 
     // Store the frame address so the test function can later read the user
     // binary's output via HHDM.
@@ -229,7 +226,6 @@ fn prepare_user_address_space(vaddr: VAddr, cq_vaddr: VAddr, result_vaddr: VAddr
     // with the completion subsystem so `complete()` writes to the ring.
     crate::completion::open_address_space_with_cq_phys(asid, 16, cq_frame, 32)
         .expect("CQ setup failed");
-    logln!("CQ ring attached to completion AS asid={}", asid);
 
     asid
 }
@@ -276,7 +272,7 @@ pub fn test_el0_syscall_round_trip() {
     // `prepare_user_address_space` attached stay in place — we deliberately
     // do NOT reopen the AS with a heap-backed CQ, which would detach the
     // page mapped into the user address space.
-    let tid = crate::cpu::scheduler::spawn_thread_after_publish(
+    crate::cpu::scheduler::spawn_thread_after_publish(
         asid as crate::memory::AddressSpaceId,
         user_thread_entry_ptr(vaddr),
         |tid, generation| {
@@ -284,16 +280,14 @@ pub fn test_el0_syscall_round_trip() {
             EL0_USER_TID.store(tid + 1, Ordering::Release);
         },
     );
-    logln!("User thread spawned with tid={} asid={} vaddr={:?}", tid, asid, vaddr);
     EL0_USER_ASID.store(asid + 1, Ordering::Release);
 
     // The verifier polls the result page through HHDM and checks the sentinel
     // and returned capability. A timeout or mismatch fails its registered test.
-    let vtid = crate::self_test::results::spawn_verifier(
+    crate::self_test::results::spawn_verifier(
         crate::self_test::results::TestId::El0,
         verify_el0_result,
     );
-    logln!("EL0 verifier thread spawned with tid={}; assertion deferred to scheduler.", vtid);
 }
 
 /// Kernel thread that verifies the EL0 user thread's side effects. Polls the

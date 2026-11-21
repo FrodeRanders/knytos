@@ -6,7 +6,7 @@ description = "Reference EL0 service programs: name service, echo service, clien
 autobins = false
 
 [features]
-default = ["service-heartbeats"]
+default = []
 # Periodic console diagnostics; independent of protocol/liveness heartbeats.
 service-heartbeats = []
 

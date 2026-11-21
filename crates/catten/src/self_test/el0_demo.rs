@@ -232,7 +232,6 @@ pub fn test_el0_cross_lp_async() {
         let handle = crate::memory::register_user_address_space(user_as).unwrap();
         let asid = handle.id();
         *XLP_DOMAIN.lock() = Some(handle);
-        logln!("[EL0 xLP] user AS asid={}", asid);
 
         // --- map code (coordinator + worker), CQ ring, and result pages ---
         map_code_page(asid, VAddr::from(COORD_CODE_VADDR), coordinator_code());
@@ -255,14 +254,12 @@ pub fn test_el0_cross_lp_async() {
         // --- spawn the EL0 coordinator; it spawns the worker on LP1 itself ---
         let entry: extern "C" fn() =
             unsafe { core::mem::transmute::<usize, extern "C" fn()>(COORD_CODE_VADDR) };
-        let tid = spawn_thread(asid as crate::memory::AddressSpaceId, entry);
-        logln!("[EL0 xLP] coordinator spawned tid={} asid={}", tid, asid);
+        spawn_thread(asid as crate::memory::AddressSpaceId, entry);
 
-        let vtid = crate::self_test::results::spawn_verifier(
+        crate::self_test::results::spawn_verifier(
             crate::self_test::results::TestId::El0CrossLp,
             verify_el0_demo,
         );
-        logln!("[EL0 xLP] verifier thread tid={}; assertion deferred to scheduler.", vtid);
     }
     #[cfg(not(any(target_arch = "aarch64", target_arch = "x86_64")))]
     {

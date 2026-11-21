@@ -12,7 +12,6 @@ pub fn test_el0_ingress() {
         crate::self_test::results::TestId::Ingress,
         verify_el0_ingress,
     );
-    logln!("[ingress] passive verifier deferred; waiting for external L2 traffic and failover");
 }
 
 extern "C" fn verify_el0_ingress() {

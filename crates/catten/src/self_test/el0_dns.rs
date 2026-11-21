@@ -219,7 +219,6 @@ mod inner {
             crate::self_test::results::TestId::Dns,
             verify_el0_dns,
         );
-        logln!("[dns] verifier deferred (waits for discovery + Raft election + replication)");
     }
 
     /// The cluster-deployment phase of the dns self-test (`deploy_net_test`):

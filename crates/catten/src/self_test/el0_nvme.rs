@@ -67,7 +67,6 @@ pub fn test_el0_nvme() {
         crate::self_test::results::TestId::Nvme,
         verify_el0_nvme,
     );
-    logln!("[nvme] verifier deferred");
 }
 
 extern "C" fn verify_el0_nvme() {

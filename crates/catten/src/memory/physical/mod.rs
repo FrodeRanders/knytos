@@ -305,12 +305,8 @@ impl PhysicalFrameAllocator {
 
 impl From<&MemmapResponse> for PhysicalFrameAllocator {
     fn from(response: &MemmapResponse) -> Self {
-        early_logln!("Computing PhysicalFrameAllocator bitmap size...");
         let bitmap_size = compute_bitmap_size(response);
-        early_logln!("PhysicalFrameAllocator bitmap size: {:?} bytes", bitmap_size);
-        early_logln!("Finding best fit memory location for the PhysicalFrameAllocator bitmap...");
         let bitmap_addr: PAddr = find_mmap_best_fit(response, bitmap_size).unwrap();
-        early_logln!("PhysicalFrameAllocator bitmap addr (physical): {:?}", bitmap_addr);
         let usable_bytes = response
             .entries()
             .iter()
@@ -325,13 +321,11 @@ impl From<&MemmapResponse> for PhysicalFrameAllocator {
             free_frames: 0,
         };
         // Initially mark all frames as unavailable.
-        early_logln!("Clearing PhysicalFrameAllocator bitmap...");
         for i in 0..bitmap_size {
             unsafe {
                 *(pfa.bitmap_ptr.add(i)) = 0xffu8;
             }
         }
-        early_logln!("Initializing PhysicalFrameAllocator bitmap...");
         init_bitmap_from_mmap(pfa.bitmap_ptr, response);
         //address zero is not accessible
         unsafe {
@@ -345,7 +339,7 @@ impl From<&MemmapResponse> for PhysicalFrameAllocator {
             free_frames += unsafe { *pfa.bitmap_ptr.add(index) }.count_zeros() as usize;
         }
         pfa.free_frames = free_frames;
-        early_logln!("PhysicalFrameAllocator bitmap initialized ({} free frames).", free_frames);
+        early_logln!("[memory] frame bitmap={} bytes, free={} frames", bitmap_size, free_frames);
 
         pfa
     }

@@ -46,7 +46,6 @@ mod inner {
             crate::self_test::results::TestId::Tcpip,
             verify_el0_tcpip,
         );
-        logln!("[tcpip] verifier deferred (waits for tcpip service + cross-node TCP exchange)");
     }
 
     extern "C" fn verify_el0_tcpip() {
