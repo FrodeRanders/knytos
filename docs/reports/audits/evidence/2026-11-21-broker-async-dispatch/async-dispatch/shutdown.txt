@@ -1,0 +1,2 @@
+[+   195.044846] [EL0 LOG] lp=0 asid=175 [broker] partition workers joined; network scope released
+[+   195.100708] [shutdown] POWER-OFF REQUESTED via PSCI Hvc

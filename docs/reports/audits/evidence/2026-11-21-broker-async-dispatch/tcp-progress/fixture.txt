@@ -1,0 +1,36 @@
+Cloning into '/Users/froran/Projects/private/knytos-kafka-broker/.knytos/runner-5c99fc8c96305827e8ee3d2f4b00b1e0f4eaf346/knytos'...
+warning: --filter is ignored in local clones; use file:// instead.
+done.
+HEAD is now at 5c99fc8c docs: record broker traffic and exploratory concurrency measurements
+>>> Exported /Users/froran/Projects/private/knytos-kafka-broker/.knytos/runner-sdk-check.tar.gz
+>>> sha256 90381a6832b932ca4cfcc9c8bdb96bedbe79151a2cb6107496af78f79fa53c4b
+Cloning into '/Users/froran/Projects/private/knytos-kafka-broker/.knytos/runner-5c99fc8c96305827e8ee3d2f4b00b1e0f4eaf346/sitas'...
+warning: --filter is ignored in local clones; use file:// instead.
+done.
+HEAD is now at 0b2a85c ci: restore GitHub Actions workflow
+/Users/froran/Projects/private/knytos-kafka-broker/.knytos/runner-5c99fc8c96305827e8ee3d2f4b00b1e0f4eaf346/knytos/.dependencies/sitas
+>>> Building broker-el0 for aarch64 (release)
+    Finished `release` profile [optimized] target(s) in 0.09s
+>>> ELF: /Users/froran/Projects/private/knytos-kafka-broker/target/elf/broker.elf (  287176 bytes, 3 LOAD segments, entry 0x20000)
+>>> Signing is a separate step: cluster-sign elf-sign <elf> <name> <private-key-file> ...
+   Compiling knytos-launch v0.1.0 (/Users/froran/Projects/private/knytos-kafka-broker/.knytos/signer/crates/knytos-launch)
+   Compiling cluster-sign v0.1.0 (/Users/froran/Projects/private/knytos-kafka-broker/.knytos/signer/tools/cluster-sign)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.69s
+signed artifact opened at /Users/froran/Projects/private/knytos-kafka-broker/target/elf/broker.elf as "broker" class=Service version=1 rollback=1 flags=0x0
+public key id: 1a5769257e458eef5601bd127466ef31
+artifact sha256: 90ca64378bdcdd680a3e45600641d7e38c8e86e03805db64ef6c2751f499a602
+>>> signed artifact: /Users/froran/Projects/private/knytos-kafka-broker/target/elf/broker.elf
+>>> artifact name:   broker
+>>> artifact sha256: 90ca64378bdcdd680a3e45600641d7e38c8e86e03805db64ef6c2751f499a602
+>>> CDEPLOY6 deployment handoff (requires management mTLS; see docs/development-model.md):
+    /Users/froran/Projects/private/knytos-kafka-broker/.knytos/signer-target/debug/cluster-sign deployment-sign <descriptor.cdep> broker \
+        <object-key> /Users/froran/Projects/private/knytos-kafka-broker/target/elf/broker.elf <node-key> $(date +%s) <stack-pages> <max-threads> <grace> \
+        <private-key-file> [placement] tcpip=client broker=publish
+    /Users/froran/Projects/private/knytos-kafka-broker/.knytos/signer-target/debug/cluster-sign deployment-notify <descriptor.cdep> 127.0.0.1:${KNYTOS_DEPLOY_HOST_PORT:-8081}
+    /Users/froran/Projects/private/knytos-kafka-broker/.knytos/signer-target/debug/cluster-sign deployment-status broker 127.0.0.1:${KNYTOS_DEPLOY_HOST_PORT:-8081} 120
+>>> booting one guest and deploying broker (log: /Users/froran/Projects/private/knytos-kafka-broker/target/qemu-smoke.log)
+>>> broker is ready; running remote smoke on 127.0.0.1:19099
+COMMAND     PID   USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+qemu-syst 47961 froran   15u  IPv4 0xacc8c68893af3dbf      0t0  TCP *:19099 (LISTEN)
+>>> remote smoke ok: partition 0 base offset 0, high watermark 1, latest 1
+>>> cooperative broker drain and node poweroff verified

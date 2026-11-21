@@ -17,6 +17,10 @@ report is useful for a significant investigation or qualification checkpoint.
 
 ## Reports
 
+- [Broker business futures and TCP progress](2026-11-21-broker-async-dispatch.md) records delayed-business concurrency, owned-buffer/retention changes, comparable native measurements and signed shutdown qualification.
+
+- [Broker traffic and initial concurrency measurements](2026-11-21-broker-traffic-and-concurrency.md) records the original native traffic/sweep results, limitations and separately retained failed attempts.
+
 - [Rust nightly upgrade qualification](2026-11-15-rust-toolchain.md) records the allocator-clone safety migration, synchronized CI/SDK pins, compiler adaptations and the remaining x86 future-incompatibility boundary.
 
 - [Broker SDK adoption and manual client review](2026-11-14-broker-sdk-adoption.md) records the bounded session reactor, actual partition joins, one-source SDK workflow and native deployment/drain qualification.

@@ -1,0 +1,5 @@
+19:21:10 soak start bootstrap=127.0.0.1:19099 topic=events partition=1 start_offset=0 producers=2 rate=5.0/s
+19:21:25 status produced=76 consumed=76 lag=0 gaps=0 errors=0 rate=5.1/s elapsed=15s
+19:21:40 status produced=152 consumed=152 lag=0 gaps=0 errors=0 rate=5.1/s elapsed=30s
+19:21:55 status produced=227 consumed=227 lag=0 gaps=0 errors=0 rate=5.0/s elapsed=45s
+19:22:10 soak stop produced=302 consumed=302 gaps=0 errors=0 elapsed=60s

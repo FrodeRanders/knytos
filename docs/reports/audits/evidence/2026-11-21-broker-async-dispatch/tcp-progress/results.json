@@ -1,0 +1,83 @@
+{
+  "bootstrap": "127.0.0.1:19099",
+  "payload_bytes": 40,
+  "acks": 1,
+  "batch_size": 0,
+  "linger_ms": 0,
+  "max_in_flight_per_connection": 1,
+  "api_version": "negotiated",
+  "phase_seconds": 8,
+  "host": "macOS-26.7.3-arm64-arm-64bit",
+  "phases": [
+    {
+      "producers": 1,
+      "partition_mode": "single",
+      "records": 1265,
+      "elapsed_s": 8.003347916994244,
+      "records_per_s": 158.05885400957132,
+      "ack_ms_p50": 6.233833002625033,
+      "ack_ms_p95": 7.285792002221569,
+      "ack_ms_p99": 9.601084020687267,
+      "errors": [],
+      "client_cpu_s": 0.306617,
+      "qemu_cpu_s": 9.060000000000002
+    },
+    {
+      "producers": 2,
+      "partition_mode": "single",
+      "records": 1462,
+      "elapsed_s": 8.006525208998937,
+      "records_per_s": 182.60106123899848,
+      "ack_ms_p50": 10.759292024886236,
+      "ack_ms_p95": 13.841874984791502,
+      "ack_ms_p99": 15.947541018249467,
+      "errors": [],
+      "client_cpu_s": 0.35136599999999996,
+      "qemu_cpu_s": 9.120000000000005
+    },
+    {
+      "producers": 4,
+      "partition_mode": "single",
+      "records": 1560,
+      "elapsed_s": 8.022497666999698,
+      "records_per_s": 194.4531572027765,
+      "ack_ms_p50": 20.062124996911734,
+      "ack_ms_p95": 27.721416990971193,
+      "ack_ms_p99": 30.920542019885033,
+      "errors": [],
+      "client_cpu_s": 0.37822300000000014,
+      "qemu_cpu_s": 9.20999999999998
+    },
+    {
+      "producers": 4,
+      "partition_mode": "spread",
+      "records": 1625,
+      "elapsed_s": 8.015071750007337,
+      "records_per_s": 202.74303845109216,
+      "ack_ms_p50": 19.29829199798405,
+      "ack_ms_p95": 26.824666012544185,
+      "ack_ms_p99": 32.02212500036694,
+      "errors": [],
+      "client_cpu_s": 0.3935,
+      "qemu_cpu_s": 9.409999999999997
+    },
+    {
+      "producers": 1,
+      "partition_mode": "single",
+      "records": 1270,
+      "elapsed_s": 8.003973707993282,
+      "records_per_s": 158.6711858800456,
+      "ack_ms_p50": 6.208957987837493,
+      "ack_ms_p95": 7.184166985098273,
+      "ack_ms_p99": 9.57158298115246,
+      "errors": [],
+      "client_cpu_s": 0.3059799999999999,
+      "qemu_cpu_s": 9.060000000000002
+    }
+  ],
+  "idle": {
+    "elapsed_s": 3.0100912079797126,
+    "qemu_cpu_s": 1.299999999999983
+  },
+  "ack_with_incomplete_other_frame_ms": 30.02529198420234
+}

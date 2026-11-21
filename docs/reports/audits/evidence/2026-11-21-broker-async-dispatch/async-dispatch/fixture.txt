@@ -1,0 +1,35 @@
+HEAD is now at 5c99fc8c docs: record broker traffic and exploratory concurrency measurements
+M	crates/knytos-services/src/bin/tcpip.rs
+M	docs/reference/smoltcp-adapter.md
+>>> Exported /Users/froran/Projects/private/knytos-kafka-broker/.knytos/runner-sdk-check.tar.gz
+>>> sha256 af72c86b210c3c83aefd2e5bc99aeae284f19f5b7cba5f9198368af084f1d9bd
+HEAD is now at 0b2a85c ci: restore GitHub Actions workflow
+/Users/froran/Projects/private/knytos-kafka-broker/.knytos/runner-5c99fc8c96305827e8ee3d2f4b00b1e0f4eaf346/knytos/.dependencies/sitas
+>>> Building broker-el0 for aarch64 (release)
+   Compiling broker-core v0.1.0 (/Users/froran/Projects/private/knytos-kafka-broker/crates/broker-core)
+   Compiling broker-wire v0.1.0 (/Users/froran/Projects/private/knytos-kafka-broker/crates/broker-wire)
+   Compiling broker-runtime v0.1.0 (/Users/froran/Projects/private/knytos-kafka-broker/crates/broker-runtime)
+   Compiling broker-engine v0.1.0 (/Users/froran/Projects/private/knytos-kafka-broker/crates/broker-engine)
+   Compiling broker-el0 v0.1.0 (/Users/froran/Projects/private/knytos-kafka-broker/crates/broker-el0)
+    Finished `release` profile [optimized] target(s) in 3.13s
+>>> ELF: /Users/froran/Projects/private/knytos-kafka-broker/target/elf/broker.elf (  319944 bytes, 3 LOAD segments, entry 0x20000)
+>>> Signing is a separate step: cluster-sign elf-sign <elf> <name> <private-key-file> ...
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
+signed artifact opened at /Users/froran/Projects/private/knytos-kafka-broker/target/elf/broker.elf as "broker" class=Service version=1 rollback=1 flags=0x0
+public key id: 1a5769257e458eef5601bd127466ef31
+artifact sha256: 9c222eba97bc4fdf77cc9fabe008eb2807b391886644965bfa676ef8d49e51d0
+>>> signed artifact: /Users/froran/Projects/private/knytos-kafka-broker/target/elf/broker.elf
+>>> artifact name:   broker
+>>> artifact sha256: 9c222eba97bc4fdf77cc9fabe008eb2807b391886644965bfa676ef8d49e51d0
+>>> CDEPLOY6 deployment handoff (requires management mTLS; see docs/development-model.md):
+    /Users/froran/Projects/private/knytos-kafka-broker/.knytos/signer-target/debug/cluster-sign deployment-sign <descriptor.cdep> broker \
+        <object-key> /Users/froran/Projects/private/knytos-kafka-broker/target/elf/broker.elf <node-key> $(date +%s) <stack-pages> <max-threads> <grace> \
+        <private-key-file> [placement] tcpip=client broker=publish
+    /Users/froran/Projects/private/knytos-kafka-broker/.knytos/signer-target/debug/cluster-sign deployment-notify <descriptor.cdep> 127.0.0.1:${KNYTOS_DEPLOY_HOST_PORT:-8081}
+    /Users/froran/Projects/private/knytos-kafka-broker/.knytos/signer-target/debug/cluster-sign deployment-status broker 127.0.0.1:${KNYTOS_DEPLOY_HOST_PORT:-8081} 120
+>>> booting one guest and deploying broker (log: /Users/froran/Projects/private/knytos-kafka-broker/target/qemu-smoke.log)
+>>> broker is ready; running remote smoke on 127.0.0.1:19099
+COMMAND     PID   USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+qemu-syst 53017 froran   15u  IPv4 0xb220fdb43e3ac4c5      0t0  TCP *:19099 (LISTEN)
+>>> remote smoke ok: partition 0 base offset 0, high watermark 1, latest 1
+>>> cooperative broker drain and node poweroff verified
