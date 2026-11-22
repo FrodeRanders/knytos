@@ -824,6 +824,22 @@ mount-free UEFI boot image from an already-built kernel, use
 `scripts/create-boot-image.sh`; the Justfile's `create-image` recipe delegates
 to the same implementation.
 
+Before packaging, the native runners check the EFI PE machine and kernel ELF
+machine against the requested architecture. AArch64 uses `BOOTAA64.EFI`
+(PE `0xaa64`, ELF `183`); x86-64 uses `BOOTX64.EFI` (PE `0x8664`, ELF `62`).
+The FAT image contains only the selected fallback loader. Host controls in
+`scripts/tests/test-boot-payloads.py` reject mixed or malformed inputs;
+`scripts/tests/test-boot-images.py` extracts both architectures' actual loaders
+from separately generated images.
+
+The AArch64 runner gives its FAT boot disk `bootindex=1` and disables the
+VirtIO NIC's unused PXE option ROM with `romfile=`. QEMU's default
+`efi-virtio.rom` includes an x86-64 EFI image. Without this override, AArch64
+firmware can print `Image type X64 can't be loaded on AARCH64 UEFI system.`
+while probing the NIC, even before a successful AArch64 Knytos boot. That
+line alone neither identifies the kernel architecture nor explains a stall.
+The NIC and its protected-DMA configuration remain enabled.
+
 Timed ARM and x86 runs automatically prepare independent failure capture.
 `Kernel panic:`, `SELFTEST FAILED:`, a complete unsuccessful result, a Raft
 persistence fail-stop, or expiry of the original monotonic host window triggers
@@ -864,6 +880,13 @@ retain their immutable input metadata/ELF, with no debugger attach unless an
 explicit snapshot was requested. These are local build artifacts; publish
 relevant diagnostics and hashes inline or in version-controlled evidence before
 using them in an audit report. Private socket storage is removed on finalization.
+
+Failed CI boot jobs upload `boot-diagnostics-<target>-<mode>` artifacts with
+seven-day retention. These contain per-run captures, QEMU/package versions and
+firmware hashes; they exclude the data disks and management client keys. Download
+them before expiry when investigating a hosted-runner failure. Firmware-only
+output requires the captured CPU state and failure reason; a passing repeat does
+not resolve an intermittent pre-kernel stall.
 
 Long-running external harnesses can retain a live guest for post-failure
 inspection without depending on architecture-specific command-line switches.

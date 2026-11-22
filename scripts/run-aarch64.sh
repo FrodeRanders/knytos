@@ -849,6 +849,8 @@ else
 fi
 
 python3 "$ROOT_DIR/scripts/check-boot-profile.py" --kernel "$KERNEL" --mode "$BOOT_MODE"
+python3 "$ROOT_DIR/scripts/check-boot-payloads.py" "$ARCH" \
+    "${ROOT_DIR}/limine-binary/${EFI_BOOT_FILE}" "$KERNEL"
 knytos_boot_report_kernel "$KERNEL"
 
 # --- Build a FAT32 EFI System Partition image with mtools. ---
@@ -958,7 +960,7 @@ else
         -m 512M
         -bios "$FIRMWARE"
         -drive "file=${IMAGE},format=raw,if=none,id=boot0"
-        -device "virtio-blk-pci,drive=boot0,addr=3"
+        -device "virtio-blk-pci,drive=boot0,addr=3,bootindex=1"
     )
 fi
 
@@ -1031,8 +1033,10 @@ if [ "$NETWORK" = "1" ]; then
             QEMU_OPTS+=(-netdev "socket,id=knytos-net,mcast=${NET_GROUP}")
             ;;
     esac
+    # Boot from our FAT volume, not PXE. QEMU's default efi-virtio.rom has an
+    # x86-64 EFI image which AArch64 firmware rejects before loading Limine.
     QEMU_OPTS+=(
-        -device "virtio-net-pci,netdev=knytos-net,disable-legacy=on,iommu_platform=on,mac=${NET_MAC},addr=1"
+        -device "virtio-net-pci,netdev=knytos-net,disable-legacy=on,iommu_platform=on,mac=${NET_MAC},addr=1,romfile="
     )
     if [ "${KNYTOS_QEMU_NET_DUMP:-0}" = "1" ]; then
         QEMU_OPTS+=(

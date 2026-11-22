@@ -37,13 +37,13 @@ class BootImages(unittest.TestCase):
             stream.write(b"end!")
         self.image = self.directory / "boot.img"
 
-    def create(self, size, config=None):
+    def create(self, size, config=None, loader="BOOTX64.EFI"):
         return subprocess.run([
             "bash", "-c",
             'source "$1"; knytos_boot_create_uefi_image "$2" '
             + size + ' "$3" "$4" "$5"',
             "boot-image-test", str(COMMON), str(self.image),
-            str(ROOT / "limine-binary/BOOTX64.EFI"), str(self.kernel),
+            str(ROOT / "limine-binary" / loader), str(self.kernel),
             str(config or ROOT / "limine.conf"),
         ], capture_output=True, text=True, timeout=30)
 
@@ -58,6 +58,23 @@ class BootImages(unittest.TestCase):
                            check=True, capture_output=True, timeout=30)
             self.assertEqual(digest(extracted), digest(source))
         self.assertFalse(list(self.directory.glob("boot.img.tmp.*")))
+
+    def test_each_architecture_packages_only_its_selected_fallback_loader(self):
+        self.kernel.write_bytes(b"boot loader selection probe")
+        loaders = ("BOOTAA64.EFI", "BOOTX64.EFI")
+        for loader in loaders:
+            with self.subTest(loader=loader):
+                result = self.create('"$KNYTOS_BOOT_DEFAULT_IMAGE_SIZE_MIB"', loader=loader)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                extracted = self.directory / (loader + ".extracted")
+                subprocess.run(["mcopy", "-i", str(self.image), "::/EFI/BOOT/" + loader,
+                                str(extracted)], check=True, capture_output=True, timeout=30)
+                self.assertEqual(digest(extracted), digest(ROOT / "limine-binary" / loader))
+                other = next(name for name in loaders if name != loader)
+                result = subprocess.run(["mcopy", "-i", str(self.image),
+                                         "::/EFI/BOOT/" + other, str(self.directory / "wrong-loader")],
+                                        capture_output=True, text=True, timeout=30)
+                self.assertNotEqual(result.returncode, 0, "foreign fallback loader was packaged")
 
     def test_shipped_configs_resolve_the_packaged_kernel(self):
         self.kernel.write_bytes(b"kernel path integration probe")

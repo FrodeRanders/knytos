@@ -1,0 +1,321 @@
+{
+  "schema": "knytos.aarch64-uefi-investigation.v1",
+  "failed_ci": {
+    "run": 44964330748,
+    "job": 137031922698,
+    "revision": "261436436011cc8767dafffacf26d9bd1219563d",
+    "reported_capture": "aarch64-x0m_gvck",
+    "available": "User-provided firmware-only serial excerpt; no uploaded diagnostic artifacts. REST job-log access returned HTTP 403.",
+    "excerpt": [
+      "UEFI firmware (version edk2-stable202408-prebuilt.qemu.org built at 16:28:50 on Sep 12 2024)",
+      "Image type X64 can't be loaded on AARCH64 UEFI system."
+    ],
+    "causal_status": "Pre-kernel stall remains unexplained; original failure reason and CPU state unavailable."
+  },
+  "qemu_version": "QEMU emulator version 11.1.2\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "loaders": {
+    "BOOTAA64.EFI": "11288bad5042853c8fbad27ddf65f9bc53675959a87e0e67908a173ce1571479",
+    "BOOTX64.EFI": "e486ae7abd7d5b88f98f43cfd6e8f9057ff975ecd667dfb33f1581de36e00982"
+  },
+  "expected_machines": {
+    "aarch64": {
+      "efi": 43620,
+      "elf": 183
+    },
+    "x86_64": {
+      "efi": 34404,
+      "elf": 62
+    }
+  },
+  "tooling_sha256": {
+    "run-aarch64.sh": "cfafe8a1ce02f15bc9ee0f5ee98051cc1277ea157202a1b496bfdb50b2fe6f44",
+    "run-x86_64.sh": "6acb97be3b839acd9d4a89a6efb9fc5fbee8173b2d4b1bdccd9eb93feccb9392",
+    "check-boot-payloads.py": "8062ee935dd49dc528283b2608e2f060788b85665a09cc8c4a7d2d782e35f8c8"
+  },
+  "runs": [
+    {
+      "capture": "aarch64-g8wdtc0j",
+      "command": "scripts/run-aarch64.sh release --minimal --smp 4 --fresh-storage --timeout 180",
+      "disposition": "Unchanged runner: passed with the X64 warning.",
+      "revision": "261436436011cc8767dafffacf26d9bd1219563d",
+      "prepared_utc": "2026-11-22T11:19:22Z",
+      "timeout_seconds": 180,
+      "kernel_sha256": "7e820fbf3e6e058b435b75b91b7e9dd9636e68b7b1314ab650b44bce16c887e8",
+      "boot_image_sha256": "47aec2e79782707522fca86128efe8db32ea487dca405d9a1dc1881979517043",
+      "initial_disk_sha256": "9fc3ced268a174fcc57b6b168a71833d79e94513d7b2316c8f5d324c23a47ba5",
+      "qemu_arguments": [
+        "-M",
+        "virt,gic-version=3,msi=gicv2m,iommu=smmuv3,default-bus-bypass-iommu=off",
+        "-m",
+        "512M",
+        "-bios",
+        "/opt/homebrew/share/qemu/edk2-aarch64-code.fd",
+        "-drive",
+        "file=./os-images/knytos-aarch64-release-default-minimal.img,format=raw,if=none,id=boot0",
+        "-device",
+        "virtio-blk-pci,drive=boot0,addr=3",
+        "-cpu",
+        "cortex-a710",
+        "-object",
+        "rng-random,filename=/dev/urandom,id=knytos-rng",
+        "-device",
+        "virtio-rng-pci,rng=knytos-rng,disable-legacy=on,iommu_platform=on,addr=4",
+        "-smp",
+        "4",
+        "-drive",
+        "if=none,file=./os-images/nvme-disk-default-minimal.img,format=raw,id=nvme0",
+        "-device",
+        "nvme,drive=nvme0,serial=cat0,max_ioqpairs=4,addr=2",
+        "-nic",
+        "none",
+        "-netdev",
+        "user,id=knytos-net,hostfwd=tcp::18080-:443,hostfwd=tcp::18081-:7444",
+        "-device",
+        "virtio-net-pci,netdev=knytos-net,disable-legacy=on,iommu_platform=on,mac=52:54:00:12:34:56,addr=1",
+        "-display",
+        "none",
+        "-qmp",
+        "unix:/tmp/ctdiag-pwbtd6ff/qmp.sock,server=on,wait=off",
+        "-gdb",
+        "unix:/tmp/ctdiag-pwbtd6ff/gdb.sock,server=on,wait=off",
+        "-serial",
+        "file:/tmp/knytos-default-minimal-serial.log"
+      ],
+      "result": {
+        "reason": "complete",
+        "snapshot": "not-requested"
+      },
+      "x64_warning": true,
+      "kernel_banner": true,
+      "firmware_prefix": "UEFI firmware (version edk2-stable202408-prebuilt.qemu.org built at 16:28:50 on Sep 12 2024)\nArmTrngLib could not be correctly initialized.\nError: Image at 0005FDB6000 start failed: 00000001\nError: Image at 0005FD6D000 start failed: Not Found\nError: Image at 0005FCBA000 start failed: Unsupported\nError: Image at 0005FC3F000 start failed: Not Found\nError: Image at 0005FB65000 start failed: Aborted\nTpm2SubmitCommand - Tcg2 - Not Found\nTpm2GetCapabilityPcrs fail!\nTpm2SubmitCommand - Tcg2 - Not Found\nImage type X64 can't be loaded on AARCH64 UEFI system.\nBdsDxe: failed to load Boot0001 \"UEFI QEMU NVMe Ctrl cat0 1\" from PciRoot(0x0)/Pci(0x2,0x0)/NVMe(0x1,00-00-00-00-00-00-00-00): Not Found\nBdsDxe: loading Boot0002 \"UEFI Non-Block Boot Device\" from PciRoot(0x0)/Pci(0x3,0x0)\nBdsDxe: starting Boot0002 \"UEFI Non-Block Boot Device\" from PciRoot(0x0)/Pci(0x3,0x0)\nlimine: Loading executable `boot():/knytos`...[+     0.004495] Knytos Kernel Version 0.8.1",
+      "verdict_lines": [
+        "[+     3.922616] BOOT COMPLETE: validation passed; local storage ready; services submitted",
+        "[+     3.953825] [EL0 LOG] lp=0 asid=12 [tcpip] DHCP assigned 10.0.2.15/24"
+      ]
+    },
+    {
+      "capture": "aarch64-p6vxwowb",
+      "command": "scripts/run-aarch64.sh release --minimal --smp 4 --fresh-storage --timeout 180",
+      "disposition": "Sandbox prevented QMP socket binding; no guest boot. Retained separately.",
+      "revision": "261436436011cc8767dafffacf26d9bd1219563d",
+      "prepared_utc": "2026-11-22T11:28:27Z",
+      "timeout_seconds": 180,
+      "kernel_sha256": "85e32b2ff6abac5aec85ba04c3051c119783c9b4281189e6ac7e873bc04a22fe",
+      "boot_image_sha256": "2d5e55d470179c5246b0427b98be18285d32222b7f523ac235654b16bbb3d969",
+      "initial_disk_sha256": "9fc3ced268a174fcc57b6b168a71833d79e94513d7b2316c8f5d324c23a47ba5",
+      "qemu_arguments": [
+        "-M",
+        "virt,gic-version=3,msi=gicv2m,iommu=smmuv3,default-bus-bypass-iommu=off",
+        "-m",
+        "512M",
+        "-bios",
+        "/opt/homebrew/share/qemu/edk2-aarch64-code.fd",
+        "-drive",
+        "file=./os-images/knytos-aarch64-release-default-minimal.img,format=raw,if=none,id=boot0",
+        "-device",
+        "virtio-blk-pci,drive=boot0,addr=3,bootindex=1",
+        "-cpu",
+        "cortex-a710",
+        "-object",
+        "rng-random,filename=/dev/urandom,id=knytos-rng",
+        "-device",
+        "virtio-rng-pci,rng=knytos-rng,disable-legacy=on,iommu_platform=on,addr=4",
+        "-smp",
+        "4",
+        "-drive",
+        "if=none,file=./os-images/nvme-disk-default-minimal.img,format=raw,id=nvme0",
+        "-device",
+        "nvme,drive=nvme0,serial=cat0,max_ioqpairs=4,addr=2",
+        "-nic",
+        "none",
+        "-netdev",
+        "user,id=knytos-net,hostfwd=tcp::18080-:443,hostfwd=tcp::18081-:7444",
+        "-device",
+        "virtio-net-pci,netdev=knytos-net,disable-legacy=on,iommu_platform=on,mac=52:54:00:12:34:56,addr=1,romfile=",
+        "-display",
+        "none",
+        "-qmp",
+        "unix:/tmp/ctdiag-vpcwwsvo/qmp.sock,server=on,wait=off",
+        "-gdb",
+        "unix:/tmp/ctdiag-vpcwwsvo/gdb.sock,server=on,wait=off",
+        "-serial",
+        "file:/tmp/knytos-default-minimal-serial.log"
+      ],
+      "result": {
+        "reason": "guest-exited",
+        "snapshot": "unavailable"
+      },
+      "x64_warning": false,
+      "kernel_banner": false,
+      "firmware_prefix": "",
+      "verdict_lines": []
+    },
+    {
+      "capture": "aarch64-vxgviuio",
+      "command": "scripts/run-aarch64.sh release --minimal --smp 4 --fresh-storage --timeout 180",
+      "disposition": "Changed runner outside sandbox: passed without the X64 warning.",
+      "revision": "261436436011cc8767dafffacf26d9bd1219563d",
+      "prepared_utc": "2026-11-22T11:31:20Z",
+      "timeout_seconds": 180,
+      "kernel_sha256": "d8d04ef50fbe3f675f32d9b840bae8dc400c0f7fafc1a59ec2d26bd3c1ac639f",
+      "boot_image_sha256": "1487701a26634fbf406d8c4d7c2f5c03c65978006c2b8a134520223dd9a40934",
+      "initial_disk_sha256": "9fc3ced268a174fcc57b6b168a71833d79e94513d7b2316c8f5d324c23a47ba5",
+      "qemu_arguments": [
+        "-M",
+        "virt,gic-version=3,msi=gicv2m,iommu=smmuv3,default-bus-bypass-iommu=off",
+        "-m",
+        "512M",
+        "-bios",
+        "/opt/homebrew/share/qemu/edk2-aarch64-code.fd",
+        "-drive",
+        "file=./os-images/knytos-aarch64-release-default-minimal.img,format=raw,if=none,id=boot0",
+        "-device",
+        "virtio-blk-pci,drive=boot0,addr=3,bootindex=1",
+        "-cpu",
+        "cortex-a710",
+        "-object",
+        "rng-random,filename=/dev/urandom,id=knytos-rng",
+        "-device",
+        "virtio-rng-pci,rng=knytos-rng,disable-legacy=on,iommu_platform=on,addr=4",
+        "-smp",
+        "4",
+        "-drive",
+        "if=none,file=./os-images/nvme-disk-default-minimal.img,format=raw,id=nvme0",
+        "-device",
+        "nvme,drive=nvme0,serial=cat0,max_ioqpairs=4,addr=2",
+        "-nic",
+        "none",
+        "-netdev",
+        "user,id=knytos-net,hostfwd=tcp::18080-:443,hostfwd=tcp::18081-:7444",
+        "-device",
+        "virtio-net-pci,netdev=knytos-net,disable-legacy=on,iommu_platform=on,mac=52:54:00:12:34:56,addr=1,romfile=",
+        "-display",
+        "none",
+        "-qmp",
+        "unix:/tmp/ctdiag-oqxfzut4/qmp.sock,server=on,wait=off",
+        "-gdb",
+        "unix:/tmp/ctdiag-oqxfzut4/gdb.sock,server=on,wait=off",
+        "-serial",
+        "file:/tmp/knytos-default-minimal-serial.log"
+      ],
+      "result": {
+        "reason": "complete",
+        "snapshot": "not-requested"
+      },
+      "x64_warning": false,
+      "kernel_banner": true,
+      "firmware_prefix": "UEFI firmware (version edk2-stable202408-prebuilt.qemu.org built at 16:28:50 on Sep 12 2024)\nArmTrngLib could not be correctly initialized.\nError: Image at 0005FDB6000 start failed: 00000001\nError: Image at 0005FD6D000 start failed: Not Found\nError: Image at 0005FCBA000 start failed: Unsupported\nError: Image at 0005FC3F000 start failed: Not Found\nError: Image at 0005FB65000 start failed: Aborted\nTpm2SubmitCommand - Tcg2 - Not Found\nTpm2GetCapabilityPcrs fail!\nTpm2SubmitCommand - Tcg2 - Not Found\nBdsDxe: loading Boot0001 \"UEFI Non-Block Boot Device\" from PciRoot(0x0)/Pci(0x3,0x0)\nBdsDxe: starting Boot0001 \"UEFI Non-Block Boot Device\" from PciRoot(0x0)/Pci(0x3,0x0)\nConvertPages: Incompatible memory types, the pages to allocate have been allocated\nConvertPages: Incompatible memory types, the pages to allocate have been allocated\nlimine: Loading executable `boot():/knytos`...[+     0.004440] Knytos Kernel Version 0.8.1",
+      "verdict_lines": [
+        "[+     3.927562] BOOT COMPLETE: validation passed; local storage ready; services submitted",
+        "[+     3.973396] [EL0 LOG] lp=0 asid=12 [tcpip] DHCP assigned 10.0.2.15/24"
+      ]
+    },
+    {
+      "capture": "aarch64-3ouq5uqk",
+      "command": "scripts/run-aarch64.sh debug --tests --smp 4 --security-test --fresh-storage --timeout 180",
+      "disposition": "Changed runner outside sandbox: 19 passed, zero failed/pending; no X64 warning.",
+      "revision": "261436436011cc8767dafffacf26d9bd1219563d",
+      "prepared_utc": "2026-11-22T11:35:59Z",
+      "timeout_seconds": 180,
+      "kernel_sha256": "aa6fd31a4fbc622fc0f71968e0530c878a57e76704d2de3af3b65cff3d94e338",
+      "boot_image_sha256": "043e8a913a982cff61a98fbbf3fa09a1e700e4104ebcfa5e11b4aac22c9ce441",
+      "initial_disk_sha256": "ddd0b26861e76eaeea327a8dd3c17087641989eaa1a645f7426525a3a4711a24",
+      "qemu_arguments": [
+        "-M",
+        "virt,gic-version=3,msi=gicv2m,iommu=smmuv3,default-bus-bypass-iommu=off",
+        "-m",
+        "512M",
+        "-bios",
+        "/opt/homebrew/share/qemu/edk2-aarch64-code.fd",
+        "-drive",
+        "file=./os-images/knytos-aarch64-debug.img,format=raw,if=none,id=boot0",
+        "-device",
+        "virtio-blk-pci,drive=boot0,addr=3,bootindex=1",
+        "-cpu",
+        "cortex-a710",
+        "-object",
+        "rng-random,filename=/dev/urandom,id=knytos-rng",
+        "-device",
+        "virtio-rng-pci,rng=knytos-rng,disable-legacy=on,iommu_platform=on,addr=4",
+        "-smp",
+        "4",
+        "-drive",
+        "if=none,file=./os-images/nvme-disk.img,format=raw,id=nvme0",
+        "-device",
+        "nvme,drive=nvme0,serial=cat0,max_ioqpairs=4,addr=2",
+        "-nic",
+        "none",
+        "-netdev",
+        "user,id=knytos-net,hostfwd=tcp::18080-:443,hostfwd=tcp::18081-:7444",
+        "-device",
+        "virtio-net-pci,netdev=knytos-net,disable-legacy=on,iommu_platform=on,mac=52:54:00:12:34:56,addr=1,romfile=",
+        "-display",
+        "none",
+        "-qmp",
+        "unix:/tmp/ctdiag-9ghqkknd/qmp.sock,server=on,wait=off",
+        "-gdb",
+        "unix:/tmp/ctdiag-9ghqkknd/gdb.sock,server=on,wait=off",
+        "-serial",
+        "file:/tmp/knytos-serial.log"
+      ],
+      "result": {
+        "reason": "complete",
+        "snapshot": "not-requested"
+      },
+      "x64_warning": false,
+      "verdict_lines": [
+        "[+    15.433817] [EL0 LOG] lp=0 asid=147 [tcpip] DHCP assigned 10.0.2.15/24",
+        "[+    50.681654] [security] probe passed; retired policy fenced, publication generation=1",
+        "[+    84.623703] [security] probe passed; retired policy fenced, publication generation=2",
+        "[+    84.639699] [security] concurrent cancellation traffic retired after 19768 requests",
+        "[+    84.640260] SELFTEST COMPLETE: passed=19 failed=0 pending=0 passed_bitmap=0x2003ffff failed_bitmap=0x0 pending_bitmap=0x0"
+      ]
+    }
+  ],
+  "comparison_limit": "Rebuilds regenerate fixture inputs. These are separate qualifications, not a bit-identical replay or a performance comparison.",
+  "default_network_option_rom": {
+    "sha256": "26be36901db7f8181c306cc62bd74891d8646528965a78e40cceadba5dd7c8e7",
+    "images": [
+      {
+        "offset": 0,
+        "size": 69120,
+        "code_type": 0,
+        "efi_machine": null
+      },
+      {
+        "offset": 69120,
+        "size": 91648,
+        "code_type": 3,
+        "efi_machine": 34404
+      }
+    ]
+  },
+  "packaged_payload_checks": [
+    {
+      "arch": "aarch64",
+      "member": "EFI/BOOT/BOOTAA64.EFI",
+      "efi_machine": 43620,
+      "elf_machine": 183,
+      "kernel_sha256": "d8d04ef50fbe3f675f32d9b840bae8dc400c0f7fafc1a59ec2d26bd3c1ac639f",
+      "foreign_loader_present": false
+    },
+    {
+      "arch": "x86_64",
+      "member": "EFI/BOOT/BOOTX64.EFI",
+      "efi_machine": 34404,
+      "elf_machine": 62,
+      "kernel_sha256": "6e6ea05671c4ac4b966d09cc760592b4cd5fe505e45b43c2c95e867b5d6ef4ae",
+      "foreign_loader_present": false,
+      "note": "Existing x86 image from the prior boot-logging qualification; extracted and checked, not rebooted in this investigation."
+    }
+  ],
+  "host_checks": {
+    "boot-payloads": 4,
+    "boot-images": 5,
+    "boot-diagnostics": 14,
+    "boot-profiles": 10,
+    "ci-runtime-inputs": 6,
+    "boot-results": 5
+  }
+}

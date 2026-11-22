@@ -561,6 +561,8 @@ else
 fi
 
 python3 "$ROOT_DIR/scripts/check-boot-profile.py" --kernel "$KERNEL" --mode "$BOOT_MODE"
+python3 "$ROOT_DIR/scripts/check-boot-payloads.py" "$ARCH" \
+    "${ROOT_DIR}/limine-binary/${EFI_BOOT_FILE}" "$KERNEL"
 knytos_boot_report_kernel "$KERNEL"
 
 # --- Build a disposable FAT32 EFI System Partition image with mtools. ---

@@ -308,7 +308,20 @@ jobs:
           components: rust-src,llvm-tools
 
       - name: Install QEMU
-        run: brew install qemu mtools
+        run: |
+          brew install qemu mtools
+          mkdir -p target/boot-diagnostics
+          brew list --versions qemu mtools | tee target/boot-diagnostics/packages.txt
+          qemu-system-aarch64 --version | tee target/boot-diagnostics/qemu-aarch64.txt
+          qemu-system-x86_64 --version | tee target/boot-diagnostics/qemu-x86_64.txt
+          shasum -a 256 "$(brew --prefix qemu)/share/qemu/edk2-aarch64-code.fd" \
+            "$(brew --prefix qemu)/share/qemu/edk2-x86_64-code.fd" \
+            | tee target/boot-diagnostics/firmware-sha256.txt
+
+      - name: Check boot payload selection
+        run: |
+          python3 scripts/tests/test-boot-payloads.py
+          python3 scripts/tests/test-boot-images.py
 
       - name: Check out Sitas userspace dependency
         run: |
@@ -318,3 +331,13 @@ jobs:
       # list used by developers. This also rebuilds the embedded EL0 bundle.
       - name: Boot QEMU and verify self-tests
         run: ${{ matrix.boot }}
+
+      - name: Preserve failed boot diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: boot-diagnostics-${{ matrix.target }}-${{ matrix.mode }}
+          path: target/boot-diagnostics/
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 1
