@@ -130,7 +130,7 @@ waker remembers early notifications and later callbacks match the installed
 wait itself, so an older wait cannot wake a new park on the same thread. Ready
 admission carries the old subscription past guard exit before cancellation.
 Callers keep their existing IRQ policy, condition rechecks and absolute
-deadlines. Lazy list allocation leaves its source initialization mutex, and IPC/CQ
+deadlines. Lazy list allocation leaves its source initialisation mutex, and IPC/CQ
 entries prepare outside their registries and revalidate the exact retained
 source before readiness and allocation-free publication. Losing or rejected
 storage stays owned until post-guard disposal. Source teardown, other observer
@@ -218,7 +218,7 @@ poisoned-state recovery policy.
         specific LP is an explicit operation (\texttt{try\_run\_on\_lp},
         \texttt{ShardSender::try\_send}) and it is not at the mercy of a global
         work-stealing scheduler. This makes it possible to reason about locality,
-        cache behavior, and latency.
+        cache behaviour, and latency.
 
     \item The two container types force a design choice: when you reach
         for shared data, you must decide: is this accessed from interrupt context?

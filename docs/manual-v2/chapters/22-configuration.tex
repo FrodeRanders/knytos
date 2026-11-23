@@ -80,7 +80,7 @@ The following inputs have different authorities and lifetimes:
         delegated capabilities and protocol-specific launch profiles. An
         application's request does not enlarge a node-wide capacity pool.
     \item[Persistent state.] A storage format tag and committed state are not
-        disposable configuration. Changing capacity never authorizes silent
+        disposable configuration. Changing capacity never authorises silent
         reformatting, resetting election state or discarding retained charges.
 \end{description}
 
@@ -116,8 +116,8 @@ The runners pass this environment input through to the kernel build. Cargo
 tracks the selected path, its contents and environment selection. Changing or
 unsetting the selection rebuilds the kernel, but userspace service images do not
 need rebuilding for these policy fields. Boot serial output identifies the
-selected policy name. Record the exact profile source and kernel artifact
-hashes with qualification evidence, because the name alone is not an artifact identity.
+selected policy name. Record the exact profile source and kernel artefact
+hashes with qualification evidence, because the name alone is not an artefact identity.
 
 There is currently no resource-policy boot-module parser, capability, syscall
 or live-resizing interface. The compiled policy does not change after charges
@@ -306,7 +306,7 @@ the source-freshness interval, with an acknowledged current-term log entry.
 Only a committed availability projection changes the new-flow backend set.
 These settings require a service rebuild/restart. Review election timing,
 replication latency, projection convergence and flow-history retention together, and
-a readiness signal or availability change cannot authorize request replay.
+a readiness signal or availability change cannot authorise request replay.
 
 \section{Management TLS configuration}
 
@@ -324,7 +324,7 @@ sessions cannot resize in place.
 Generate a complete editable limits file with
 \texttt{cluster-sign management-limits-default}. The profile-creation command
 requires every named limit, server key/chain, client roots and explicit reader
-or administrator enrollments. Unknown, duplicate, missing and inconsistent
+or administrator enrolments. Unknown, duplicate, missing and inconsistent
 settings reject. Seal the private profile with the selected policy's operations
 signing key and recipient public key, and set
 \path{KNYTOS_MANAGEMENT_TLS_RESOURCE} to its absolute file path when
@@ -380,7 +380,7 @@ fixture. The host commits the selected public snapshot before building the
 authenticated kernel, and the separate boot module must match it exactly. This
 input rejects outside that development fixture. It supports restart and
 credential-rotation testing, but provides neither protected state nor platform
-rollback resistance: an older still-authorized kernel can carry its older
+rollback resistance: an older still-authorised kernel can carry its older
 snapshot. Production remains disabled.
 
 \section{Planning and validating a policy change}
@@ -394,7 +394,7 @@ Use the following process before selecting a profile for a new workload:
         retained uncertain cleanup. Separate structural bounds from capacity policy.
     \item Measure peak occupancy and rejection under the intended concurrency.
         Choose ordinary capacity and trusted headroom together, explaining
-        dependencies and expected failure behavior. A previously passing default
+        dependencies and expected failure behaviour. A previously passing default
         is not a capacity estimate for a larger workload.
     \item Run the policy harness and strict kernel builds. The harness compiles
         the actual policy, exercises admission counters and rejects inconsistent
@@ -404,9 +404,9 @@ Use the following process before selecting a profile for a new workload:
         success, exhaustion, allocation rejection, cancellation, restart/generation
         reuse, retained charges and confirmed cleanup. Measure management,
         timer/scheduler and teardown progress against deadlines fixed beforehand.
-    \item Preserve the profile, artifact hashes, occupancy/latency results and
+    \item Preserve the profile, artefact hashes, occupancy/latency results and
         failure diagnostics. Keep failed or interrupted attempts separate from
-        successful repeats. Requalify after changing the workload or profile.
+        successful repeats. Re-qualify after changing the workload or profile.
 \end{enumerate}
 
 \noindent\begin{minipage}{\linewidth}
@@ -427,9 +427,9 @@ essential-service fairness remain acceptance work under SEC-07/18.
 Boot-time installation should reuse this typed policy and its validation, but
 must also define a complete authenticated input, reject unknown or incomplete
 settings, and establish authority before the first relevant allocation.
-Kernel-heap sizing and statically initialized counters currently precede a
+Kernel-heap sizing and statically initialised counters currently precede a
 general resource-policy installation point. A future implementation must order
-those initializations, validate discovered-memory and structural constraints,
+those initialisations, validate discovered-memory and structural constraints,
 then publish one immutable policy before schedulers and services consume it.
 
 Do not implement this by resizing live pools independently. Any future update

@@ -17,13 +17,13 @@ Each operational node runs exactly one durable Raft member inside
 that member's ordered log. Multi-guest admission observes it through discovery
 and exercises \texttt{JOIN}, joint consensus, and \texttt{FINALIZE}. The separate
 \texttt{raft.elf} process is network-disabled and used only by the NVMe
-term-recovery fixture. Power-loss behavior within a live quorum is not yet
+term-recovery fixture. Power-loss behaviour within a live quorum is not yet
 validated end to end.
 
 The core follows the shared Graft model for
-normalized peer identity, voters and learners, joint-consensus quorums,
+normalised peer identity, voters and learners, joint-consensus quorums,
 replicated \texttt{JOIN}/\texttt{JOINT}/\texttt{FINALIZE} commands, leader
-no-op entries, current-term commit rules, linearizable-read contact quorums,
+no-op entries, current-term commit rules, linearisable-read contact quorums,
 and membership-bearing snapshots. These paths have focused regression tests. The
 \texttt{dns} service exposes both client commands and membership
 administration end to end through one concrete state machine and log.
@@ -131,7 +131,7 @@ stale connections fail and clients can re-lookup a replacement generation.
 The operational DNS node requires persistent storage. One jointly opened pair
 of stable objects derived from cluster/node identity holds tagged
 \texttt{CRFTSTA4} term/vote/join-admission state and \texttt{CRFTLOG4}
-snapshot/log state. Only two absent objects authorize initialization, but
+snapshot/log state. Only two absent objects authorise initialisation, but
 incomplete, corrupt and unsupported records reject without reset or a volatile
 fallback. Older layouts are not migrated. Mutations are followed by an NVMe
 flush. In addition, snapshot bytes and their retained suffix share one record replacement.
@@ -142,8 +142,8 @@ election, admission and committed state. See
 
 The catalog accepts only its complete version-19 snapshot, identified by
 \texttt{CATALOGJ}. It includes mandatory execution profiles and per-replica signed variant indices,
-without redundant object IDs, primary nodes or variant-zero digests. Earlier snapshot decoders and synthesized generations,
-digests, descriptors, replica sets and authorization signatures are removed.
+without redundant object IDs, primary nodes or variant-zero digests. Earlier snapshot decoders and synthesised generations,
+digests, descriptors, replica sets and authorisation signatures are removed.
 Every registration command carries an explicit deployment generation: zero
 for system services, or the exact desired generation for applications. Missing
 suffixes reject before catalog mutation, and all callers use one encoder. Pair-v4
@@ -178,7 +178,7 @@ expresses the seed as a service name or capability rather than an IP address.
 Probes and responses carry one complete version-1 advertisement: node identity,
 service name, cluster role and Raft/leader IDs. Its header declares the exact
 payload length. Old zero-length headers and missing or truncated cluster
-fields reject before learning or response, so Ethernet padding cannot synthesize
+fields reject before learning or response, so Ethernet padding cannot synthesise
 them. All nodes must rebuild together. The current wire contract is documented
 in \path{docs/reference/discovery-protocol.md}.
 
@@ -187,7 +187,7 @@ records every discovered identity-to-MAC route in its relmsg transport. Among
 fresh singletons, only the lexicographically larger identity applies to the
 smaller anchor. Before sending the request it durably enters a non-voting
 joining posture, then the anchor then commits \texttt{JOIN}, catches the node up,
-commits the joint configuration, and finalizes it.
+commits the joint configuration, and finalises it.
 
 \subsection{Pre-shared cluster capability (small kernel change)}
 
@@ -205,7 +205,7 @@ without any seed configuration.
 
 \subsection{Distributed name service (implemented)}
 
-The \texttt{dns} service realizes this end state: its \texttt{CatalogMachine}
+The \texttt{dns} service realises this end state: its \texttt{CatalogMachine}
 implements \texttt{StateMachine} and runs on the shared Raft implementation. A new
 node needs only a single seed to discover all peers through the consistent
 name registry. There remains one process-facing name-service instance per
@@ -266,7 +266,7 @@ None of these state machines know about sockets, IP addresses, or TCP. They
 implement \texttt{apply()} and \texttt{snapshot()}. The Raft implementation handles
 replication, leader election, and fault tolerance.
 
-Raft RPCs and DNS control messages use one serialized relmsg queue per peer.
+Raft RPCs and DNS control messages use one serialised relmsg queue per peer.
 Because QEMU may acknowledge that queue slowly, consecutive queued
 AppendEntries requests and their serially ordered responses are combined, and
 heartbeats are generated only at a bounded fraction of the election timeout.
@@ -377,13 +377,13 @@ Neither path needs a dedicated sleeping thread or a spinning timeout loop.
         consensus implementation.
 \end{enumerate}
 
-\paragraph{Configuration entries and recovery.}
+\paragraph*{Configuration entries and recovery.}
 Election eligibility is reconstructed from the snapshot and retained configuration
 entries before a restarted node can vote.  Recovering that membership does not
 claim application commitment or application replay.  The joint entry requires both
 old and proposed voter majorities, while proposed voters remain replication targets
 before commitment.  Local peer discovery uses that same replication peer set.
-Finalization keeps the joint-majority requirement until its
+Finalisation keeps the joint-majority requirement until its
 fence commits, including when a later no-op would otherwise cover that fence.
 
 

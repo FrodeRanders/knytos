@@ -170,7 +170,7 @@ until dependencies appear.
 ```mermaid
 flowchart TD
 BOOT["Firmware enters Knytos"]
-INIT["Initialize memory, interrupts,<br/>scheduler and secondary LPs"]
+INIT["Initialise memory, interrupts,<br/>scheduler and secondary LPs"]
 CORE["Start node name service<br/>and observe service"]
 DISCOVER["Discover PCIe devices<br/>and protected DMA paths"]
 LAUNCH["Launch steady-state service domains"]
@@ -664,7 +664,7 @@ participant N as New Service
 participant C as Clients
 
       S->>O: OP_HANDOFF
-      Note over O: drain in-flight work,<br/>serialize state
+      Note over O: drain in-flight work,<br/>serialise state
       O->>S: move_to (state memory objects)
       O->>S: reply "ready"
       Note over O: exit

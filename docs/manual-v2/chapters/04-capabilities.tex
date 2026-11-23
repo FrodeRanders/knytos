@@ -17,7 +17,7 @@ Capabilities have four key properties:
 
 \begin{itemize}
     \item Unforgeable: a process cannot create a capability through
-        computation. The kernel must issue it through an authorized creation,
+        computation. The kernel must issue it through an authorised creation,
         bootstrap, or delegation operation.
     \item Scoped: a capability is valid only in the domain that holds it.
         Capability index 3 in domain A refers to a different object (or nothing)
@@ -44,14 +44,14 @@ capability kind, and timers produce completion capabilities.
 
 \begin{longtable}{|p{2.8cm}|p{3.5cm}|p{5.9cm}|}
 \hline
-\textbf{Family} & \textbf{Checks or operations} & \textbf{What it authorizes} \\
+\textbf{Family} & \textbf{Checks or operations} & \textbf{What it authorises} \\
 \hline
 IPC & SEND, CALL, RECEIVE, MINT\_\allowbreak CONNECTION & Endpoint, connection, pending-call and one-shot reply authority \\
 Memory & MAP\_READ, MAP\_WRITE, TRANSFER & Page-backed objects; transfer mode also checks ownership, mappings and loans \\
 Completion & Poll, wait, cancel, close & Submitted operation, timer or event-watch result \\
 Device & Typed map, bind, acknowledge and DMA operations & MMIO region, interrupt or DMA domain; no general Device reset capability \\
 Mailbox & Typed send or receive & Domain-local LP word queue \\
-SystemObserver & Authorized telemetry read & Non-secret system-wide kernel snapshot \\
+SystemObserver & Authorised telemetry read & Non-secret system-wide kernel snapshot \\
 \hline
 \end{longtable}
 
@@ -98,7 +98,7 @@ family. A removed serial therefore cannot name a later object in that namespace.
 
 Address-space slots have a separate generation. A replacement namespace can reuse
 numeric values, so pending kernel owners capture the original namespace identity
-and root generation. A scalar ASID or handle alone cannot authorize delayed
+and root generation. A scalar ASID or handle alone cannot authorise delayed
 cleanup. These rules are implemented in \repofile|crates/catten/src/capability.rs|
 and its \repofiletext|crates/catten/src/capability/record.rs|{record preparation}.
 
@@ -123,7 +123,7 @@ them as new owners. \autoref{sec:reconnecting-client} shows a complete client.
 
 After bootstrap, additional capabilities arrive through IPC: the name service
 delegates service connections, the supervisor delegates device grants, and other
-services delegate whatever the protocol authorizes.
+services delegate whatever the protocol authorises.
 
 \section{Authority and audit consequences}
 

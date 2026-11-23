@@ -4,10 +4,10 @@
 \section{A mismatch at the operating-system boundary}
 
 Knytos is an attempt to address a particular mismatch. Asynchronous runtimes,
-least-privilege services, and isolated components are often built above interfaces organized
-around blocking calls, ambient namespaces, and machine-wide policy. This manual
-calls the resulting adapters, duplicated concurrency models, and policy layers
-the \textbf{retrofit tax}.
+least-privilege services, and isolated components are often built above interfaces
+organised around blocking calls, ambient namespaces, and machine-wide policy.
+This manual calls the resulting adapters, duplicated concurrency models, and policy
+layers the \textbf{retrofit tax}.
 
 \section{Sources of the retrofit tax}
 
@@ -100,7 +100,7 @@ The design starts with a few requirements:
         completion later. The thread should be able to do other work while it waits.
 
     \item Capability-based, instead of ambient, authority: a process should be
-        able to perform an operation only if it holds a capability authorizing it.
+        able to perform an operation only if it holds a capability authorising it.
         Capabilities are unforgeable and must be explicitly granted.
 
     \item Isolation by default: every protection domain should run in its

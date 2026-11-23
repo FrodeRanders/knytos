@@ -69,7 +69,7 @@ A \textbf{capability} is an unforgeable reference to a kernel object, carrying
 rights. It answers the question: ``May I perform this operation?''
 
 Capabilities are scoped to a protection domain's capability table. A process
-cannot fabricate a capability, because the kernel issues one through an authorized
+cannot fabricate a capability, because the kernel issues one through an authorised
 creation, bootstrap, or delegation operation.
 
 \section{Endpoint}
@@ -129,7 +129,7 @@ call. It is:
 
 \section{Resource capability}
 
-A \textbf{resource capability} authorizes operations on a kernel-managed object
+A \textbf{resource capability} authorises operations on a kernel-managed object
 such as a memory object, endpoint, connection, interrupt, MMIO region, DMA domain,
 or a completion for an operation or timer. The unified namespace also holds
 mailbox and system-observer authority. Completion queue (CQ) identifiers select
@@ -165,7 +165,7 @@ The implementation notes use a few terms with specific meanings:
         Passing an authority check does not mean that capacity is available.
     \item[Backing] The memory allocated for an object's data or bookkeeping,
         as distinct from the handle used to refer to it.
-    \item[Principal] The identity used for authorization and resource accounting.
+    \item[Principal] The identity used for authorisation and resource accounting.
         It is distinct from a process or thread number that can later be reused.
     \item[Fencing] Blocking particular operations to protect a resource. A
         generation check can reject a stale request without granting authority
@@ -195,7 +195,7 @@ architectural mistakes.
 Capability & Unforgeable authority to act & An event, a file descriptor, a handle \\
 Endpoint & Server-side bounded receive queue & A socket, a pipe, a channel \\
 Completion & A result of an async operation & A Waker, a notification \\
-Waker & A hint to repoll a future & A kernel completion record \\
+Waker & A hint to re-poll a future & A kernel completion record \\
 Shard & A userspace ownership domain & An LP, a core, a thread \\
 LP & A schedulable hardware context & A shard \\
 Notification & ``Inspect state'' & A result, a data payload \\

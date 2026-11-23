@@ -9,8 +9,8 @@ Source, tests, and repository history remain authoritative.
 \section{Boot validation and test selection}
 
 Startup memory validation is mandatory and independent of native regressions.
-It checks physical availability, private-frame readback and accounting, heap
-reserve bounds and one aligned 8 KiB heap readback. Actual hardware discovery,
+It checks physical availability, private-frame read-back and accounting, heap
+reserve bounds and one aligned 8 KiB heap read-back. Actual hardware discovery,
 IOMMU initialisation, signatures, admission and service readiness remain normal
 boot requirements. The operational launcher seeds signed bootstrap service
 artefacts before publishing its service set, including when no NVMe verifier
@@ -280,7 +280,7 @@ storage readiness and does not synthesise a self-test verdict. See
         VirtIO block flush and stop/reset their controllers, while VirtIO net and
         E1000E drain transmit descriptors and stop their DMA engines. AArch64
         then selects the FADT-advertised SMC/HVC conduit and boot-validates a
-        terminal PSCI \texttt{SYSTEM\_OFF}, while x86-64 ACPI poweroff remains open.
+        terminal PSCI \texttt{SYSTEM\_OFF}, while x86-64 ACPI power-off remains open.
         Kernel-owned QEMU NVMe reset now precedes first DMA grant and requester
         reassignment. Intel VT-d draining, AMD-Vi strict completion stores and
         Arm SMMUv3 ASID invalidation retain backing on rejection, and the three QEMU

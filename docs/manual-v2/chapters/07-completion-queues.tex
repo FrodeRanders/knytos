@@ -119,7 +119,7 @@ rings} enable targeted wakes:
     \item Only Shard A's executor is woken, while Shard B is undisturbed.
 \end{itemize}
 
-This prevents cross-shard completion stealing (a pathological behavior where one
+This prevents cross-shard completion stealing (a pathological behaviour where one
 busy shard drains entries intended for another) and keeps wakeup latency
 proportional to the number of entries, independently of the number of shards.
 
@@ -242,8 +242,7 @@ An earlier experimental design returned a \texttt{CompletionCap} for every
 submission. The final ABI uses \textbf{operation IDs} for the common path:
 
 \begin{itemize}
-    \item \texttt{submit()} returns an \rustfn{OperationId} (a lightweight
-        identifier).
+    \item \texttt{submit()} returns an \rustfn{OperationId} (a lightweight identifier).
     \item The result arrives in the CQ with the same operation ID.
     \item No capability-table slot is consumed for common operations.
     \item A first-class operation capability is created only when independent
@@ -325,7 +324,7 @@ remain separate, and no physical receipt, retry owner or registry is added.
 Shared observer-entry preparation now retains its exact weak observer and
 original waiter/watch charge outside empty Box allocation. The allocator owns
 no payload, and rejection cancels explicitly after callback return, freeing empty
-backing and weak reference before admission. Private initialization consumes
+backing and weak reference before admission. Private initialisation consumes
 that same storage once without allocation or disposal. Both partial phase
 fallbacks retain every field without cleanup. This is no registered waiter,
 readiness, physical proof or retry owner. Active linked-entry/token/source disposal,
@@ -345,14 +344,14 @@ this creates no physical root lease, quiescence proof or recovery interface.
 \subsection{Publish into the captured namespace}
 
 Publication rechecks the exact namespace and queue captured during preparation.
-Prepared storage is linked into place under serialization. A reused numeric
+Prepared storage is linked into place under serialisation. A reused numeric
 identifier does not make a replacement namespace or queue the original target.
 
 \begin{implementationdetail}{Capability-backed publication}
 Capability-backed completion submission prepares records, waiter lists, optional
 watch admission and shared authority storage outside the completion registry.
 Hidden authority admission and final joint publication each revalidate the exact
-namespace and original accounts under serialization. Timer node and producer
+namespace and original accounts under serialisation. Timer node and producer
 preparation also leave that guard. Ordinary rejection retains the complete owner
 until explicit post-guard disposal, but abandonment retains every field.
 Capability timers capture one absolute deadline before preparation and preserve
@@ -377,7 +376,7 @@ accounts, trusted classification, capacity and CQ source before preparation.
 Record/event admission and timer node/observer allocation run outside the
 completion registry. Borrowed publication rechecks that capture and retirement, so
 a replaced queue rejects even if its numeric ID still exists. Rejected owners
-retain their fields through unlock for unstarted rollback, with no public retry
+retain their fields through unlock for un-started rollback, with no public retry
 owner. Accepted nodes enqueue exactly once afterward, but teardown in between flags
 the retained event and keeps its charge until cancelled insertion is discarded.
 Map/authority metadata, backlog reconciliation, capability-backed construction
@@ -390,7 +389,7 @@ and CQ validation. Terminal removal transfers its owning node to the direct
 receipt or backlog. Explicit namespace close drains all remaining nodes after
 local unlock. Namespace, detached-preparation and terminal-receipt abandonment
 retain their complete fields, accounts and sources, but ordinary rejection uses an
-explicit unstarted finish. Global namespace/account admission and wider caller
+explicit un-started finish. Global namespace/account admission and wider caller
 contexts remain open. None of these owners is a physical completion receipt or
 permission to replay accepted work.
 \end{implementationdetail}
@@ -412,7 +411,7 @@ a delivered result can still leave timer or observer state to be disposed of.
 Backlog-to-ring publication retains delivered detached-record charges in a
 fixed two-class owning batch until the completion registry is unlocked.
 Ordinary/platform charges stay with their original accounts, and no disposal storage
-is allocated. Full FIFO flushing and logical slot updates remain serialized.
+is allocated. Full FIFO flushing and logical slot updates remain serialised.
 The same admitted detached nodes relink into the shared retirement list and
 free after local unlock, before either accounting class refunds.
 Checked batch refunds finish before CQ parking or producer notification, but
@@ -457,7 +456,7 @@ the original payload before uninstalled admission, but completion transfers the
 same event into raw-event or node ownership without changing deadline policy.
 
 Shared charge-holder preparation allocates empty Arc storage without handing
-the allocator an owning charge. Private initialization occurs once, and owning
+the allocator an owning charge. Private initialisation occurs once, and owning
 rejection cancels after callback return, while parent-borrowed rejection retains
 the original reservation for ordered payload disposal. Phase abandonment is
 inert and retains every field. The same primitive serves records, timers and
@@ -466,19 +465,19 @@ accounting.
 
 Shared payload preparation now also retains the complete value and
 original admission outside empty Arc allocation. The allocator owns no payload.
-Private initialization consumes the same storage once, ordinary rejection
+Private initialisation consumes the same storage once, ordinary rejection
 disposes payload before backing and admission after callback return, and phase
 abandonment retains every field without heap work. Published Arc/Weak
-finalization, completed raw-event destruction, outer payload factories and wider
+finalisation, completed raw-event destruction, outer payload factories and wider
 containing contexts remain separate work, and no
 physical proof, retry/custody or new registry is added.
 \end{implementationdetail}
 
 \begin{implementationdetail}{Private timer nodes and unused preparation}
 Timer node construction captures its already charged event/source/callback and
-outside admission before allocating empty uninitialized Box storage. The
+outside admission before allocating empty uninitialised Box storage. The
 allocator receives no payload, so rejection leaves it with the same inert owner
-until explicit cancellation after callback return. Successful storage initializes
+until explicit cancellation after callback return. Successful storage initialises
 once into completed private ownership without allocation or deadline changes.
 Unused empty backing frees before event/source disposal and outside admission, but
 abandonment at either phase retains every field and original charge. The node
@@ -521,7 +520,7 @@ The bare handle has inert abandonment
 and explicit reference-only release, so abandonment does not fabricate cancellation.
 Complete-handback abandonment retains every field and original charge. No new
 allocation, admission, registry, physical proof or replay authority is added.
-Raw Arc/Weak finalization and wider caller/destructor contexts remain separate
+Raw Arc/Weak finalisation and wider caller/destructor contexts remain separate
 qualification work.
 \end{implementationdetail}
 
@@ -561,7 +560,7 @@ the partially mapped domain and any queues already installed.
 
 Preparation is fallible and precedes publication. Replacement must admit
 both old and staged backing, and failure preserves the original queue and its
-pending results. Physical-ring initialization follows admission and allocation,
+pending results. Physical-ring initialisation follows admission and allocation,
 and a frame already registered to another queue is rejected. Reusing the same
 queue's frame requires a quiescent consumer. Successful replacement discards
 undelivered results rather than migrating them.
@@ -590,7 +589,7 @@ CQ map-node, source-list, backlog and heap-ring admission/allocation run outside
 completion registry, including partial-error disposal. Preparation retains the
 exact namespace root, CQ account, submission capacity and trusted classification, and
 publication rechecks identity and retirement. Physical frames remain untouched
-until alias checks and initialization under the same registry hold as queue
+until alias checks and initialisation under the same registry hold as queue
 publication. Rejection retains prepared backing and original charges until
 unlock. Whole-namespace preparation includes its fallibly prepared CQ map node.
 Fresh queue publication relinks admitted storage without allocation. Replacement
@@ -606,7 +605,7 @@ storage, not aggregate metadata bytes.
 Global namespace metadata also uses the shared admitted map. One preparation
 retains its fallibly allocated node and four original accounts with the private
 namespace/default queue before registry access. Captured retirement and physical
-alias validation precede initialization, so no later admission can reject a
+alias validation precede initialisation, so no later admission can reject a
 physical-ring publication. Close/replacement detaches the complete node and
 payload without freeing metadata under the registry. Explicit finish frees that
 global node before payload/source/account disposal, but unpublished and retired
@@ -654,7 +653,7 @@ List destruction is iterative to bound kernel-stack use.
 External thread-exit watches share the namespace and node registration pools
 with endpoint-close watches. Each target thread accepts at most 128 entries.
 Cancelling such a watch removes only the subscription, and the target remains
-alive. Lookup, generation checking and insertion are serialized with thread
+alive. Lookup, generation checking and insertion are serialised with thread
 retirement. An absent or stale target completes immediately, while admission
 failure rolls back the unpublished completion and reports failure rather than
 pretending that the thread exited. Reaping invokes callbacks outside observer
@@ -768,7 +767,7 @@ it holds no lock across a context switch. Watchdog storage still needs admission
 \end{implementationdetail}
 
 \begin{implementationdetail}{Waiter-source and entry preparation}
-Lazy waiter-source initialization retains original sponsor, weak observer,
+Lazy waiter-source initialisation retains original sponsor, weak observer,
 candidate, first published winner and shared waiter child in one inert owner.
 Losing candidate disposal remains after the slot guard and before entry admission.
 Ordinary results finish explicitly, but all six handoff-stage fallbacks retain every

@@ -14,11 +14,11 @@ five voters, and the safety models explore three-node elections and membership
 transitions. Operational QEMU validation ranges from focused two-guest
 scenarios to a three-guest cluster with discovery-driven admission,
 joint-consensus membership, replica placement, and cluster-wide TCP ingress.
-We choose the number of guests to test a particular behavior. Those fixtures
+We choose the number of guests to test a particular behaviour. Those fixtures
 do not establish a cluster-size limit or target.
 
 The implemented system now includes replicated naming and deployment state,
-signed ELF artifacts, central-S3 artifact pickup, per-node deployment agents,
+signed ELF artefacts, central-S3 artefact pickup, per-node deployment agents,
 remote invocation, deterministic replica placement, basic affinity and
 anti-affinity, membership and drain reconciliation, exact-generation
 readiness, and a DSR-backed service VIP. Capacity-aware scheduling, stateful
@@ -294,7 +294,7 @@ The production target is an appliance-like node with no shell, no per-node
 application package manager, and no manually curated repository of installed
 software. Its stable local environment is just enough to boot, establish
 trust and identity, reach storage and the network, join cluster state,
-observe resources, and load assigned artifacts. Application differences
+observe resources, and load assigned artefacts. Application differences
 belong in signed workload objects and replicated cluster policy rather than
 in mutable node configuration.
 
@@ -307,7 +307,7 @@ A target node lifecycle is:
     \item authenticate, learn cluster identity and policy, and join the
         relevant replicated state;
     \item advertise resources and failure-domain properties;
-    \item receive assignments, fetch immutable artifacts, validate them, and
+    \item receive assignments, fetch immutable artefacts, validate them, and
         instantiate only their delegated authority; and
     \item on failure or retirement, surrender ownership under fencing while
         the cluster reconciles desired state elsewhere.
@@ -369,11 +369,11 @@ through cluster transport without changing the caller's authority. When an
 instance is replaced, generation fencing prevents the retiring instance from deleting or
 overwriting its successor's registration.
 
-Stateful migration is explicit. The old instance exports only the
-mutable state it owns. Next, the target accepts that state under a transfer
-protocol, and ownership changes exactly once. After the ownership change, the new endpoint becomes active,
-and stale clients are forced to re-resolve. Every transfer therefore carries a
-consistency and fencing model.
+Stateful migration is explicit. The old instance exports only the mutable state it
+owns. Next, the target accepts that state under a transfer protocol, and ownership
+changes exactly once. After the ownership change, the new endpoint becomes
+active, and stale clients are forced to re-resolve. Every transfer therefore carries
+a consistency and fencing model.
 
 \section{Implemented foundation}
 
@@ -400,12 +400,12 @@ this chapter.
 
     \item \textbf{Persistent per-node object stores.} The NVMe-backed object
         store uses generation-selected directory records and copy-on-write
-        replacement (\autoref{chap:storage}) for service artifacts and persistent Raft
+        replacement (\autoref{chap:storage}) for service artefacts and persistent Raft
         state. The current image producer places the same signed bundle on
         each node for bootstrap. Signed application deployments may instead
         name an opaque key in a centrally managed S3 store, and the assigned node
         pulls through its locally provisioned connector. Repair and
-        cluster-wide artifact replication are not implemented.
+        cluster-wide artefact replication are not implemented.
 
     \item \textbf{Capability-scoped external data planes.} Separately
         provisioned S3 and Kafka services run above the userspace TCP/IP and
@@ -436,10 +436,10 @@ this chapter.
         and non-regular sources before output or ingress connection.
         The leader verifies both authorities and trusted UTC,
         then places only compact references and replay fences in Raft. On the
-        assigned node, the authorized agent retrieves the digest-pinned
+        assigned node, the authorised agent retrieves the digest-pinned
         ciphertext through a bootstrap S3 capability and moves a bounded pickup
-        object to the kernel. The kernel repeats release, descriptor, artifact,
-        envelope, and expiry verification, decrypts into temporary zeroizing
+        object to the kernel. The kernel repeats release, descriptor, artefact,
+        envelope, and expiry verification, decrypts into temporary zeroing
         memory, validates the connector-specific profile, and transfers it as a
         read-only launch capability. Application IPC receives only
         connector endpoints with restricted rights, never infrastructure credentials. Production key
@@ -542,7 +542,7 @@ operations:
 
 The target may allow a node to discover peers and participate in a restricted
 bootstrap before cluster key material is established, but it cannot validate
-executable artifacts without an accepted public key. An authorized
+executable artefacts without an accepted public key. An authorised
 administrative operation would establish or rotate that trust through
 replicated state. The current prototype instead uses a build-time anchor and
 a set-once, idempotent key ceremony.
@@ -560,19 +560,19 @@ intended pipeline is:
     \item evaluate policy and keep provenance, SBOM, test, and attestation
         evidence;
     \item bless and sign the immutable workload identity off-cluster;
-    \item make the signed artifact available to the cluster; and
+    \item make the signed artefact available to the cluster; and
     \item change replicated desired state so the cluster validates, places,
         and runs the accepted version.
 \end{enumerate}
 
 The signing private key remains off-cluster, and placement fetches complete
-artifacts instead of executable dependencies from the Internet. The same
+artefacts instead of executable dependencies from the Internet. The same
 immutable object can consequently run on any eligible node without
 reconstructing a userspace installation there.
 
 \architecturefigure{release-admission-rollout}
     {A signed multi-component release is admitted atomically to desired state, after which
-    artifact retrieval, launch, publication, and readiness then reconcile per
+    artefact retrieval, launch, publication, and readiness then reconcile per
     component.}
     {fig:release-admission-rollout}
 
@@ -582,7 +582,7 @@ The current deployment pipeline has three stages:
 
 \begin{enumerate}
     \item \textbf{Blessing and signing.} Version-controlled policy admits an
-        artifact and the host-side build and \texttt{cluster-}\allowbreak\texttt{sign} tooling
+        artefact and the host-side build and \texttt{cluster-}\allowbreak\texttt{sign} tooling
         sign it with the cluster key. CLS2 metadata binds the logical name,
         class, release, rollback counter, parallel-instance permission, and
         an optional SHA-256 link to saved SBOM/build-provenance evidence.
@@ -593,7 +593,7 @@ The current deployment pipeline has three stages:
         replicated key. The loader, object-store resolver, administration
         ingress, and agent enforce signature, logical-name, and digest checks.
         The present ceremony can distribute only the build-time anchor, but it is
-        not a general enrollment or rotation protocol.
+        not a general enrolment or rotation protocol.
 
     \item \textbf{Assignment.} A Raft-committed record directs a concrete
         replica set to load an exact signed variant per node, including its immutable ELF digest.
@@ -603,15 +603,15 @@ The current deployment pipeline has three stages:
         connector rather than the descriptor or application.
 \end{enumerate}
 
-The replicated catalog records a sorted concrete node set and variant pins per artifact and an
-independently generation-fenced readiness registration for each active owner.
-The leader resolves \emph{somewhere}, fixed replicas, and
+The replicated catalog records a sorted concrete node set and variant pins per
+artefact and an independently generation-fenced readiness registration for each
+active owner. The leader resolves \emph{somewhere}, fixed replicas, and
 \emph{every eligible node} against admitted, non-draining voters and
 reconciles the assignments when that set changes. DSR routes new cluster-VIP
 flows across the ready subset. The boundary between this management loop and
 the DSR packet path is shown in
 Figure~\ref{fig:cluster-management-dsr}: placement and readiness determine the
-eligible set, while each packet uses an already materialized snapshot.
+eligible set, while each packet uses an already materialised snapshot.
 
 \section{Placement: contract, observation, and movement}
 
@@ -690,7 +690,7 @@ generation-fenced reassignment, so replacement readiness and DSR eligibility
 advance together rather than following an uncommitted local judgment.
 
 The policy does not yet express heap, processor, or storage requests, labels,
-named failure domains, or more than one instance of an artifact on a node.
+named failure domains, or more than one instance of an artefact on a node.
 Reassignment advances the whole deployment generation, so even replicas assigned
 to the same nodes restart. There is no rolling surge/unavailability protocol.
 
@@ -700,7 +700,7 @@ Declared relationships are guesses. Shard-level message counts, byte flow,
 queue depth, and task snapshots are already observable inside a node
 (\autoref{chap:sitas-executor}), and the distributed name service can identify which components
 call which. The target controller should aggregate these signals across
-nodes and base placement changes on sustained behavior.
+nodes and base placement changes on sustained behaviour.
 
 The node-capacity path is the first cluster-wide feedback loop, deliberately
 limited to slow memory and CPU pressure. Detailed executor and communication
@@ -722,7 +722,7 @@ versioned as \texttt{knytos.cluster.v2}.
 
 DNS constructs the underlying, bounded \texttt{CLOBSV2} record from one
 locally applied catalog view. It serves the record only while the same
-bounded-read lease used by DSR is valid, and httpd decodes it and returns HTTP 503
+bounded-read lease used by DSR is valid, and texttt{httpd} decodes it and returns HTTP 503
 when no fresh record is available. Raw one-second observations remain in the
 node's memory history and optional diagnostic archive. The cluster view instead exposes the slower signals and
 decisions that drive placement, while keeping a per-node freshness marker
@@ -754,17 +754,17 @@ behind the same policy as the cluster view.
 
 The current native adapter requires mutual TLS on port 443 for both direct
 node and VIP access. Its signed, encrypted boot resource supplies the server
-identity, client roots and exact leaf/role enrollments, and neither credentials nor
+identity, client roots and exact leaf/role enrolments, and neither credentials nor
 private keys belong in the application descriptor or Raft log. A browser
 uses an operations-issued PKCS\#12 client identity with \texttt{clientAuth},
 not the cluster signing key. The complete boundary and browser setup are
 documented in \repofile|docs/architecture/cluster-observability.md|. Public
-development trust is not protected enrollment, so live-session retirement,
+development trust is not protected enrolment, so live-session retirement,
 protected custody and broad pressure remain separately unqualified.
 
 \subsection{Focused stateless-handoff validation}
 
-The focused two-guest fixture starts the signed \texttt{greet} artifact on one
+The focused two-guest fixture starts the signed \texttt{greet} artefact on one
 node, verifies exact-generation readiness and the selected architecture variant,
 reassigns it, and checks cooperative and forced retirement. An identical signed
 submission through the follower preserves its generation. Legacy DNS proxy
@@ -796,12 +796,12 @@ Generation tracking, endpoint invalidation, name-service re-registration,
 and local memory-object state transfer are verified primitives. Network
 transport and ownership fencing for mutable service state are not
 implemented. The demonstrated cluster handoff starts the same immutable
-artifact with fresh state.
+artefact with fresh state.
 
 \section{Deployment, rollout, and reassignment}
 
 The deployment-test QEMU flow uses two guests to isolate one source-to-target
-handoff. A signed artifact is assigned through replicated state. The remote
+handoff. A signed artefact is assigned through replicated state. The remote
 agent obtains and verifies it, and the service is invoked across the network, and
 the assignment moves without losing the logical name. Both guests complete
 with zero failed or pending self-tests. The operational membership, replica,
@@ -832,7 +832,7 @@ state. Packed deploy/query operations and the redundant named admission envelope
 The signed descriptor alone supplies object keys, digests and requested placement.
 Queries use the tagged \texttt{CDEPQR01} record with exact replica variant pins.
 
-The signed descriptor authorizes the deployment decision and binds artifact
+The signed descriptor authorises the deployment decision and binds artefact
 identity, placement policy, and resource limits. Raft orders and replicates the
 result. Production ingress still needs a separately delegated online
 administrator identity and audit policy in addition to the offline signature.
@@ -873,9 +873,9 @@ deployment. See \path{docs/reference/scoped-deployment-launch.md}.
 
 The kernel snapshots and revalidates the exact ELF and descriptor, maps the
 ELF into a fresh address space, gives the application only the grant controller
-and its immutable descriptor, and starts it. A descriptor-authorized service
+and its immutable descriptor, and starts it. A descriptor-authorised service
 publishes its endpoint through \texttt{grantctl}, while the agent supervises the
-assignment. When the manifest assigns the artifact elsewhere, the agent
+assignment. When the manifest assigns the artefact elsewhere, the agent
 retires the service and causes its address space to exit. Endpoint closure is
 observed by \texttt{dns}, whose generation check prevents a stale unregister.
 
@@ -890,10 +890,10 @@ coordination concern.
 wraps the DNS manifest operations and object store behind:
 
 \begin{itemize}
-    \item \texttt{upload}, which stores a note-signed artifact under its
+    \item \texttt{upload}, which stores a note-signed artefact under its
         derived cluster-wide id after checking that CLS2 blesses the requested
         name;
-    \item \texttt{status}, which carries a full artifact name in moved memory
+    \item \texttt{status}, which carries a full artefact name in moved memory
         and returns the complete committed descriptor and replica variant pins;
         and
     \item \texttt{notify}, which verifies a signed \texttt{CDEPLOY6}
@@ -921,7 +921,7 @@ The normal service set also starts \texttt{deployd}. Its bounded, mutually
 authenticated TLS endpoint accepts a \texttt{POST} to
 \texttt{/v1/deployments} on guest port 7444 with exactly one signed descriptor
 as the body. The client must be an enrolled administrator before controller
-dispatch, while the signature remains the descriptor's authorization and integrity
+dispatch, while the signature remains the descriptor's authorisation and integrity
 envelope. Readers can observe status but cannot mutate. Missing management
 credentials disable network admission without a plaintext fallback. See
 Chapter~\ref{chap:configuration}. Lower sequences
@@ -1029,7 +1029,7 @@ Unavailable (1) scalar receipt without attachments, under one original five-seco
 Only queue-full rejection permits 50~ms admission backoff and another submission.
 Accepted close is never replayed. Deadline, binding/wait rejection or uncertain
 observation retains the whole scope through domain abort, and incomplete close Drop
-also aborts before field cleanup. Unavailable concerns an absent, nonreused
+also aborts before field cleanup. Unavailable concerns an absent, non-reused
 full ID within the captured service instance. It proves neither former
 ownership nor peer delivery or physical release. Foreign live entries and
 unreserved IDs reject, and exhausted ID reservation rejects before backend allocation.
@@ -1045,8 +1045,8 @@ serving remains serial. See
 \subsection{Apply independently signed descriptors}
 
 For a release made from several independently signed components,
-\texttt{cluster-sign deployment-apply} prevalidates all descriptor files,
-rejects duplicate artifact names and records the positive generation returned
+\texttt{cluster-sign deployment-apply} pre-validates all descriptor files,
+rejects duplicate artefact names and records the positive generation returned
 for each admitted descriptor. A complete ready record must match that exact
 generation, so older observations remain pending, while a newer generation reports
 supersession. Malformed acknowledgement or readiness records stop observation
@@ -1057,7 +1057,7 @@ the polling interval is shortened to the time left. Ingress endpoints must use
 numeric \texttt{IPv4:port} or \texttt{[IPv6]:port} with a nonzero port, and hostnames
 and URLs reject before network access. Zero apply timeouts and values outside the
 clock range reject. Blocking host file I/O and stdout are not preempted, and
-readiness still uses status polling. Artifacts must already be signed and uploaded, and object-store
+readiness still uses status polling. Artefacts must already be signed and uploaded, and object-store
 credentials remain outside the generated application and its descriptors.
 
 \texttt{deployment-apply} orchestrates independent descriptor admissions.
@@ -1083,7 +1083,7 @@ a positive wait requires validated readiness. Missing, duplicate, nested,
 trailing or inconsistent records reject immediately. The shared status reader
 preserves the complete declared body after the first HTTP separator and trims
 only JSON whitespace. Extra separators and Unicode whitespace cannot hide
-invalid data from status or apply. Invalid artifact names reject before waiting
+invalid data from status or apply. Invalid artefact names reject before waiting
 or connecting. Named status observes the current record, which may change while
 it waits, so it supplies no binding to an earlier admission.
 \end{implementationdetail}
@@ -1162,14 +1162,14 @@ when that node is draining, while fixed replica counts and
 leader continuously reconciles that set after membership changes. A nonzero
 key remains an explicit singleton pin. Replica policy is admitted through a
 \texttt{CRELEASE}, giving affinity decisions the complete component context.
-Full signed artifact names
+Full signed artefact names
 up to the 48-byte CLS2 limit travel in memory-backed catalog operations rather
 than the historical eight-byte scalar encoding.
 
 The node agent now reconciles the complete replicated deployment-name set,
 rather than polling only \texttt{greet}. A node can own up to 64 independently
 named application domains. Each domain is fenced by the principal derived from
-its signed artifact name, so a generation change retires only the matching
+its signed artefact name, so a generation change retires only the matching
 application even if address-space identifiers have been reused. This bound is
 kernel admission policy, rather than a naming or descriptor-format limit.
 
@@ -1359,7 +1359,7 @@ that DMA stopped.
 After verified device quiescence, AArch64 selects the FADT-advertised PSCI SMC
 or HVC conduit, masks interrupts, and invokes \texttt{SYSTEM\_OFF}. It must not
 return: scheduling cannot resume past terminal drain. The fixture accepts QEMU
-exit only after the authoritative success and poweroff records.
+exit only after the authoritative success and power-off records.
 
 \subsection{Artifact naming}
 
@@ -1374,19 +1374,19 @@ bundle. Production should replace the truncated 48-bit name hash with a
 collision-resolving or fully content-addressed namespace.
 
 \architecturewidefigure{role-separated-deployment-trust}
-    {Independent artifact, deployment, operations, and recipient-key roles
+    {Independent artefact, deployment, operations, and recipient-key roles
     converge only at cluster admission and the privileged connector launch
     gate.}
     {fig:role-separated-deployment-trust}
 
 \subsection{Cryptographic boundary}
 
-Artifact validation uses Ed25519 signatures embedded in the ELF. The private
+Artefact validation uses Ed25519 signatures embedded in the ELF. The private
 cluster key remains off-cluster in the
 \repodir|tools/cluster-sign| host tool. The signature is stored in a standard
 ELF \texttt{SHT\_NOTE} section named
 \path{.note.knytos-sig}, with note type \texttt{"CLS2"}. Its descriptor
-contains the logical name, artifact class and flags, release, rollback
+contains the logical name, artefact class and flags, release, rollback
 counter, signing-key id, optional provenance digest, and the 64-byte
 signature.
 
@@ -1407,7 +1407,7 @@ runtime scoped launch gate rejects failed preparation, but mandatory boot-fixtur
 launch may still panic.
 
 By default the build signs staged services using the
-version-controlled development keypair at
+version-controlled development key-pair at
 \repofile|tools/cluster-sign/dev-key.hex|, whose public half is the embedded
 \texttt{CLUSTER\_PUBLIC\_KEY}. A different key can be supplied through
 \texttt{CLUSTER\_SIGN\_KEY\_FILE}, and its value is a restricted key-file path,
@@ -1415,12 +1415,12 @@ never the private bytes. Changing the signing file does not change the
 kernel's bootstrap root.
 
 Signing commands read private files through bounded,
-zeroizing buffers and enforce owner-only Unix permissions, except for the
+zeroing buffers and enforce owner-only Unix permissions, except for the
 exact publicly known fixtures. Key generation writes a new mode-0600 file
 without printing private material. Hexadecimal key text and its trailing newline
 share one reserved erasing buffer through file writing. Private-key input
 keeps an erasing vector through partial reads and errors, and its full capacity
-is cleared on ordinary Drop. Normalized key text returns with its own erasing
+is cleared on ordinary Drop. Normalised key text returns with its own erasing
 owner through permission checks and decoding. Source files, OS buffers and
 forced termination have separate lifetimes.
 
@@ -1433,11 +1433,11 @@ Structured deployment and release files are bounded to 3,584 bytes, shutdown
 files to 144 bytes and ingress policies to 1,184 bytes before verification,
 notification or apply. Release signing checks its one-to-sixteen descriptor
 references before reading those files. Unix opens reject final-component
-symlinks and non-regular sources. Artifact sign/verify and deployment image
+symlinks and non-regular sources. Artefact sign/verify and deployment image
 inputs use the launch ABI's 4 MiB maximum, so adding a note must keep the output
 within that bound. Deployment signing checks its one-to-eight variants before
 image reads. The host file-hash command streams regular files through a 16 KiB
-erasing buffer, with no artifact-size cap.
+erasing buffer, with no artefact-size cap.
 
 ELF signing keeps one read/write
 file owner and prepared image through a consuming rewrite. It writes the opened
@@ -1469,9 +1469,9 @@ and the descriptor pins each variant's full ELF SHA-256. The demonstrated
 \texttt{greet} service is a signed architecture-specific binary fetched from
 S3 or the validated local fixture cache, mapped, launched and reassigned.
 Exact-generation readiness and retirement are verified. Legacy DNS proxying of
-this policy-published service remains denied, and authorized remote invocation is
+this policy-published service remains denied, and authorised remote invocation is
 separate work. Public echo fixtures provide positive cross-node RPC coverage.
-Raft orders assignment, while signed admission authorizes deployment.
+Raft orders assignment, while signed admission authorises deployment.
 
 The local fixture helper closes a complete staging bundle in its fresh private
 run directory before replacing the named output. Link targets and earlier open
@@ -1501,8 +1501,8 @@ Separate multi-guest fixtures validate dynamic DNS/Raft admission, replica
 placement, and DSR failover. Capacity-aware admission has unit and protocol
 coverage, but multi-node pressure and freshness scenarios still need a dedicated
 fixture. Evidence is also required for rolling replacement, stateful cross-node
-migration, artifact-store recovery, production key establishment and rotation,
-and production administrative authorization.
+migration, artefact-store recovery, production key establishment and rotation,
+and production administrative authorisation.
 
 \section{Remaining implementation boundary}
 
@@ -1512,7 +1512,7 @@ system contains the following substantial coordination and trust work:
 \begin{itemize}
     \item \textbf{Dynamic membership recovery.} Discovery-bridged admission
         performs replicated \texttt{JOIN}, joint consensus, and
-        \texttt{FINALIZE} in the durable DNS-owned group. Partition behavior,
+        \texttt{FINALIZE} in the durable DNS-owned group. Partition behaviour,
         restart and rejoin within a live quorum, automatic failed-voter
         removal, and longer-running fault injection remain.
 
@@ -1521,8 +1521,8 @@ system contains the following substantial coordination and trust work:
         anchor. Authenticated blank-start establishment, overlapping
         rotation, revocation, and recovery remain.
 
-    \item \textbf{Durable artifact availability.} Signed descriptor deployment
-        pulls digest-pinned artifacts through a separately provisioned S3
+    \item \textbf{Durable artefact availability.} Signed descriptor deployment
+        pulls digest-pinned artefacts through a separately provisioned S3
         connector, while the legacy path uses per-node NVMe staging. Production work
         includes integrity-checked repair, retention, garbage collection,
         connector bootstrap recovery, and replication policy.
@@ -1552,7 +1552,7 @@ system contains the following substantial coordination and trust work:
         \texttt{clusterctl} protocol exists, but the raw mutation endpoint
         and kernel serial shim do not enforce the intended separately
         delegated cluster-administrator capability. Authentication,
-        authorization, audit, and safe concurrent administration remain.
+        authorisation, audit, and safe concurrent administration remain.
 
     \item \textbf{Operational cluster services.} Production health
         management, upgrades, resource accounting, persistent storage
@@ -1564,13 +1564,13 @@ system contains the following substantial coordination and trust work:
 Most of this belongs in userspace coordination over the existing capability,
 messaging, storage, and consensus primitives. Future work must follow the
 discipline of the current mechanisms: explicit ownership, bounded
-communication, immutable artifact identity, generation fencing, and
+communication, immutable artefact identity, generation fencing, and
 replicated decisions instead of per-machine mutation.
 
 \section{Related work}
 
 The vision combines ideas from distributed operating systems, capability
-systems, cluster schedulers, immutable software stores, and artifact-trust
+systems, cluster schedulers, immutable software stores, and artefact-trust
 systems. The comparisons below identify intellectual neighbours, but they are
 not claims of equivalent guarantees or implementation maturity.
 
@@ -1585,7 +1585,7 @@ not claims of equivalent guarantees or implementation maturity.
         extension in the Knytos target.
 
     \item \textbf{Plan 9} (Bell Labs) separates terminals, CPU servers, and
-        file servers, and centralizes authentication and key handling in
+        file servers, and centralises authentication and key handling in
         \texttt{factotum}. Its machine roles and network-transparent names
         challenge the assumption that every node is an independent Unix
         installation.
@@ -1646,7 +1646,7 @@ explicit reference that confers authority and inheriting a broad machine
 environment whose authority must be denied by policy. Capability systems,
 microkernels, language sandboxes, WebAssembly runtimes, and unikernels make
 different trade-offs along this boundary. Knytos combines a
-capability-constrained service model with signed native artifacts and a
+capability-constrained service model with signed native artefacts and a
 cluster-level placement objective, but similarity in one dimension does not
 imply identical isolation or compatibility guarantees in the others.
 
@@ -1662,15 +1662,15 @@ imply identical isolation or compatibility guarantees in the others.
         setting and illustrates offline and provisioned-key patterns.
 
     \item \textbf{Sigstore/Cosign and Notary} provide related approaches to
-        signing, identity, provenance, and policy for deployable artifacts.
+        signing, identity, provenance, and policy for deployable artefacts.
 
     \item \textbf{Measured boot and remote attestation}, including TPM-,
         ARM CCA-, and confidential-VM-based mechanisms, can complement
-        artifact validation by establishing properties of the node on which
-        the artifact will run.
+        artefact validation by establishing properties of the node on which
+        the artefact will run.
 \end{itemize}
 
-\subsection{Membership and artifact stores}
+\subsection{Membership and artefact stores}
 
 \begin{itemize}
     \item \textbf{SWIM} (Gupta, Birman, and van Renesse, DSN 2002) and
@@ -1686,20 +1686,20 @@ imply identical isolation or compatibility guarantees in the others.
 
     \item \textbf{OCI registries with signed manifests} demonstrate
         content-addressed distribution and integrity for today's container
-        delivery model. A Knytos artifact service needs analogous
+        delivery model. A Knytos artefact service needs analogous
         availability and lifecycle properties even if it does not store OCI
         filesystem images.
 \end{itemize}
 
 \section{Research test}
 
-The cluster vision can be summarized as the following proposition:
+The cluster vision can be summarised as the following proposition:
 
 \begin{quote}
-    Containers are partly an artifact of retrofitting isolation,
+    Containers are partly an artefact of retrofitting isolation,
     reproducibility, software distribution, and workload mobility onto
     general-purpose operating systems whose primary administrative boundary
-    remains the machine. If immutable artifact identity, capability-based
+    remains the machine. If immutable artefact identity, capability-based
     authority, constrained execution, cluster-wide naming, and placement were
     native operating-system abstractions, much of the contemporary container
     execution stack could become unnecessary, while the essential
@@ -1709,7 +1709,7 @@ The cluster vision can be summarized as the following proposition:
 Knytos is an experimental vehicle for testing that proposition. Evidence
 now spans signed and name-bound loading, capability-separated services,
 replicated naming and deployment state, dynamic membership, deterministic
-replica placement, central artifact pickup, remote invocation,
+replica placement, central artefact pickup, remote invocation,
 generation-safe stateless handoff, and cluster-wide TCP ingress. Focused
 two-guest tests isolate particular transitions, while three-guest fixtures exercise
 membership, placement, and failover, and generic tests and safety models cover

@@ -1,7 +1,7 @@
 \chapter{Programming Model}
 \label{chap:programming-model}
 
-This chapter summarizes the kernel and userspace rules for the asynchronous,
+This chapter summarises the kernel and userspace rules for the asynchronous,
 shard-per-core model. Short kernel listings explain the model and omit setup, while
 \autoref{sec:reconnecting-client} provides the compiled userspace starting point.
 
@@ -51,7 +51,7 @@ Lock-wrapped per-LP container. Use for data accessed from interrupt handlers,
 IPI handlers, or multiple LPs:
 
 \begin{lstlisting}[style=rustCode]
-// Initialize after the LP count is available.
+// Initialise after the LP count is available.
 let counters = PerLp::new(|| 0u64);
 {
     let mut counter = counters.get_mut();
@@ -67,8 +67,9 @@ require it.
 Lock-free per-LP container for single-LP, thread-only data:
 
 \begin{lstlisting}[style=rustCode]
-// One value per LP, initialized after topology discovery.
+// One value per LP, initialised after topology discovery.
 let counters = ShardLocal::new(|| 0u64);
+
 // Access from the owning LP's thread context only.
 counters.with(|counter| {
     *counter += 1;
@@ -87,6 +88,7 @@ one \texttt{ShardReceiver<M>} consumer per LP. The kernel-side
 let mailboxes = ShardMailboxSet::<Command>::new(256);
 let sender = mailboxes.sender_to(target_lp);
 let mut receiver = mailboxes.receiver_for_current_lp();
+
 // Returns Err(data) if full.
 sender.try_send(Command::Process { data })?;
 \end{lstlisting}
@@ -101,7 +103,7 @@ record counts do not account for the separate 256-word-per-LP queue backing.
 That backing has its own captured-generation queue-set and requested-byte
 admission in the same mailbox family account. See
 \repofile|docs/reference/mailbox-capability-budgets.md|.
-Opens are serialized with domain retirement and checked against the exact
+Opens are serialised with domain retirement and checked against the exact
 generation, so a delayed open cannot publish into a reused ASID.
 
 The unified capability namespace accounts for every object kind. Mailbox,
@@ -128,10 +130,10 @@ Individual loan revocation remains fallible, so this publication contract does
 not provide atomic rollback of unmap or TLB-shootdown work.
 
 The unbounded allocation bridge and policy bypass have been removed. Device
-grants serialize with domain teardown and reserve authority before DMA-domain
+grants serialise with domain teardown and reserve authority before DMA-domain
 creation. An owner destroys unpublished hardware on failure, but unsuccessful
 hardware rollback quarantines reachable backing instead of freeing it.
-Observer startup owns an unstarted domain and a cancellable startup claim,
+Observer startup owns an un-started domain and a cancellable startup claim,
 reclaiming delegated authority if preparation fails. These record limits do
 not provide complete aggregate byte protection.
 
@@ -188,6 +190,7 @@ let cap = submit_worker(|| {
     // Worker thread: do async work, then exit.
     // Completion fires automatically on exit.
 });
+
 let result = wait(cap)?; // Block until worker exits.
 \end{lstlisting}
 
@@ -215,6 +218,7 @@ fn main(ctx: Context) -> ! {
     // The launch environment owns this bootstrap connection.
     let _controller = ctx.bootstrap_connection()
         .unwrap_or_else(|| knytos_rt::domain_abort());
+        
     // A deployed application also borrows ctx.profile_memory().
     // See the complete client in Section 5's discovery discussion.
     unsafe { knytos_syscall::thread_exit() }
@@ -238,7 +242,7 @@ state or a userspace lock has been left inconsistent.
 
 The register-level syscall ABI deliberately exposes capability handles as
 integers. Application code should use the linear wrappers in
-\texttt{catten\_rt::owned}:
+\texttt{knytos\_rt::owned}:
 
 \begin{itemize}
     \item \texttt{OwnedMemory} closes its capability on drop and is neither
@@ -279,7 +283,7 @@ integers. Application code should use the linear wrappers in
 
 The raw \texttt{knytos-syscall} interface remains available to runtimes and
 drivers. Coherent \texttt{dma\_map} is explicitly unsafe because the driver
-must synchronize CPU references and device access itself. Mixing raw
+must synchronise CPU references and device access itself. Mixing raw
 operations with an adopted ownership wrapper violates the wrapper's safety
 contract.
 
@@ -310,7 +314,7 @@ at startup. There is no ambient authority, no global filesystem, no
 
 Syscalls derive the caller's address space from trusted thread and trap context.
 Userspace cannot select another domain's address space or capability table.
-The signed loader also installs a stable artifact principal, exact address-space
+The signed loader also installs a stable artefact principal, exact address-space
 generation, and deployment roles in a kernel-only table. IPC enqueue snapshots
 that authentication data, so every current receive operation returns it
 alongside the numeric sender ASID, so a delayed message cannot inherit the
@@ -318,10 +322,11 @@ identity of a later occupant of the same slot. Runtime ABI 4 uses the twelve-reg
 envelope for scalar, blocking and vector receives (syscalls 71--73), and the old
 nine-register syscalls 22, 27 and 53 are retired. The current runtime methods
 are \texttt{Endpoint::receive} and \texttt{try\_receive}. Error returns clear all
-eleven payload/identity registers, while queued attachments remain owned until delivery. Checked CQ wait 88 uses an explicit timed flag, and 12/42 are retired.
+eleven payload/identity registers, while queued attachments remain owned until
+delivery. Checked CQ wait 88 uses an explicit timed flag, and 12/42 are retired.
 The safe runtime returns typed readiness/deadline or admission/invalid-request
 errors. Ordinary service reactors abort on rejected waits rather than spin or
-advance protocol time, but specialized recovery retains the original pending owners
+advance protocol time, but specialised recovery retains the original pending owners
 and deadlines. Timer-backed admission pauses likewise abort if timer
 submission or successful completion is rejected.
 
@@ -401,7 +406,7 @@ Application code uses typed owners over the syscall boundary:
     \item[\texttt{Completion::poll} and \texttt{wait\_timeout}]
         Observe the exact operation. A timeout or rejected wait admission retains
         the owner, because neither is a terminal result.
-    \item[\texttt{catten\_rt::cq::wait}]
+    \item[\texttt{knytos\_rt::cq::wait}]
         Waits on one CQ with an optional millisecond budget. It returns readiness
         or deadline, or an explicit wait error, but it returns no vector of entries.
         Drain the mapped ring separately and observe resources through their owners.
@@ -452,7 +457,7 @@ the broader design history.
 
     \item \textbf{The programming model is testable.} Self-tests exercise
         owner checks, re-entrancy guards, selected backpressure paths, and
-        cancellation behavior. Coverage is substantial but not exhaustive.
+        cancellation behaviour. Coverage is substantial but not exhaustive.
 \end{enumerate}
 
 \section{Application helpers}
@@ -465,7 +470,7 @@ wrapper performs the terminal action after the application scope has released
 its owners.
 
 \texttt{OwnedPayload} prepares bounded, length-bearing request memory using
-the existing mapping owner. \texttt{Admission} retries only unstarted queue
+the existing mapping owner. \texttt{Admission} retries only un-started queue
 pressure within one deadline, while \texttt{CallObservation} retains the pending
 owner on deadline or rejected wait admission. The explicit
 \texttt{cancel\_on\_failure} convenience policy uses the existing fail-closed

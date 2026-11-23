@@ -150,7 +150,7 @@ The RPC layer provides request/reply semantics over the reliable message layer:
     \item Object references: the target architecture can represent delegated
         remote authority, but general remote capability delegation remains future
         work.
-    \item Serialization: typed protocol crates encode and decode Rust values
+    \item Serialisation: typed protocol crates encode and decode Rust values
         on the wire.
 \end{itemize}
 
@@ -255,7 +255,7 @@ its persistent endpoint-death completion together, admitting the watch before
 policy mutation. It binds request intake to the same default CQ signaled by
 the kernel watches and waits event-only, rechecking lifecycle requests. A CQ
 entry is only a hint: NS confirms its retained watch's exact endpoint-close
-result before internally unpublishing the current full name and generation.
+result before internally un-publishing the current full name and generation.
 Replaced watches cannot clear a new generation, and caller registrar/manager
 checks remain. Cancellation precedes source disposal. Unexpected watch results
 or rejected CQ waits retain the registry through terminal abort, without
@@ -361,14 +361,14 @@ TCP/IP connects to this service.
 
 TCP/IP obtains fresh entropy before creating its interface and rejects startup
 if that entropy is unavailable. Ephemeral-port selection uses an independent
-32-byte key, a nonwrapping counter and HMAC-SHA-256 over the fixed domain label
+32-byte key, a non-wrapping counter and HMAC-SHA-256 over the fixed domain label
 and little-endian counter. It selects the same unbiased 49152--65535 range.
 The port helper now uses the shared erasing HMAC: key pads, hash state,
-intermediates and the digest have erasing owners. Initialization also owns its
+intermediates and the digest have erasing owners. Initialisation also owns its
 40-byte entropy scratch before filling. Ordinary Drop erases those named fields, but
 compiler/register copies, forced termination and physical-memory erasure remain
 separate. The change preserves the existing port sequence, and public deterministic
-seeds appear only in opt-in validation, never production initialization. See
+seeds appear only in opt-in validation, never production initialisation. See
 \repofile|docs/reference/secret-state-lifetimes.md|.
 
 \texttt{OP\_ACCEPT} (15) retains the complete request until the listening
@@ -457,7 +457,7 @@ through queue-full accept rejection. Bounded request storage grows fallibly, and
 completed POST bodies transfer their backing without a second body allocation.
 Static 400/503 responses handle framing/allocation rejection. Its five-second
 header and thirty-second total deadlines remain unchanged. Shared node-identity
-initialization writes only after exact successful object creation, and a losing
+initialisation writes only after exact successful object creation, and a losing
 creator waits for complete owner publication without weakening shared-read
 ownership. Scoped readiness observes namespace generation metadata without
 receiving invocation authority, and legacy lookups remain denied. The bootstrap
@@ -495,7 +495,7 @@ than from a second hard-coded limit.
 
 Every request is received through the
 authenticated IPC envelope, and each socket is owned by the sender's
-address-space generation and artifact principal. Other domains cannot operate
+address-space generation and artefact principal. Other domains cannot operate
 the socket, and their socket and buffer allocations cannot exhaust a neighbour's
 quota. These are service-side quotas, and the backing pages remain part of the
 TCP/IP domain's memory accounting until the socket is released. The status
@@ -521,7 +521,7 @@ workloads and result reporting, but they do not enable the runtime services.
 \section{Cluster-wide TCP ingress and direct server return}
 \label{sec:distributed-l2-ingress}
 
-Knytos can expose a bounded table of launch-authorized IPv4 TCP services as
+Knytos can expose a bounded table of launch-authorised IPv4 TCP services as
 cluster \texttt{VIP:port} identities. This gives clients two complementary
 addressing modes. A node's DHCP or static address names that machine and suits
 intentionally node-specific traffic. A VIP names a service in the cluster, so
@@ -554,11 +554,11 @@ backend smoltcp instance owns the only TCP state and sends its VIP response
 directly to the client.
 
 Eligibility comes from the DNS-owned Raft member's committed configuration,
-with discovery supplying the associated MAC routes. DNS materializes an
+with discovery supplying the associated MAC routes. DNS materialises an
 immutable snapshot that distinguishes admitted members from those eligible for
 new flows. The router refreshes this snapshot asynchronously, so consensus never
 runs on the packet path. During joint consensus, only voters common to the old
-and new sets accept new flows. A joiner therefore waits for finalization, while
+and new sets accept new flows. A joiner therefore waits for finalisation, while
 a departing node is removed from the committed projection promptly. The router
 adopts the change after a successful refresh.
 
@@ -580,7 +580,7 @@ incomplete refresh may leave the last complete snapshot available to existing
 bindings, but lease expiry suppresses ARP replies and rejects unbound traffic.
 DNS answers a refresh only while the local Raft state has current cluster
 evidence: a leader has recent quorum contact, or a follower matched and applied
-its recognized leader's log within the previous second. Rejected replication
+its recognised leader's log within the previous second. Rejected replication
 does not renew this witness. Source evidence therefore expires within one
 second of lost contact, followed by at most the router's five-second admission
 lease.
@@ -685,8 +685,8 @@ service lifetime, and persists calibration in the object store for holdover.
 
 Applications do not speak NTP. They resolve \texttt{"time"} through the local
 name service and call its endpoint protocol for a full snapshot, scalar Unix
-seconds, or a fixed-width UTC ISO 8601 value. Synchronization state and
-uncertainty are explicit so callers can reject unsynchronized or weak holdover
+seconds, or a fixed-width UTC ISO 8601 value. Synchronisation state and
+uncertainty are explicit so callers can reject unsynchronised or weak holdover
 time. This service starts during an ordinary networked boot, and no test option is
 required. The detailed wire contract and security limitations are recorded in
 \repofile|docs/reference/time-service.md|.
@@ -715,7 +715,7 @@ An application receives neither a generic network capability nor the remote
 credentials and protocol state. Each service instance is provisioned with one
 bounded profile, and its connection grants only that profile's endpoint,
 namespace, and operation rights. Application-side helpers build on
-\texttt{catten\_rt::owned}: moved memory pages carry payloads, and every remote
+\texttt{knytos\_rt::owned}: moved memory pages carry payloads, and every remote
 stream, delivery, consumer, or transaction has an explicit consuming teardown
 with a best-effort \texttt{Drop} fallback.
 
@@ -741,15 +741,15 @@ The data plane provides streaming GET and PUT, HEAD, DELETE, ranged GET, and
 create-only PUT. Object bodies cross the application boundary as moved,
 bounded memory chunks, while response metadata includes length, ETag, version ID,
 and request ID. The HTTP/1.1 adapter accepts fixed-length and chunked
-responses. Bucket listing, multipart upload, presigned URLs, automatic region
+responses. Bucket listing, multipart upload, pre-signed URLs, automatic region
 discovery, and a general AWS API are outside the current scope. The profile
 format reserves a LIST right, but no LIST operation exists yet.
 
 TLS profiles require an explicit DER trust anchor, a matching server name,
-system entropy, and synchronized UTC from the time service. Certificate
+system entropy, and synchronised UTC from the time service. Certificate
 verification or entropy failure aborts the connection, and there is no downgrade
-to plaintext. The S3 request date also comes from synchronized UTC, so a TLS
-or signed request fails closed while the clock is unsynchronized.
+to plaintext. The S3 request date also comes from synchronised UTC, so a TLS
+or signed request fails closed while the clock is unsynchronised.
 
 The AArch64 integration test starts RustFS behind verified TLS and performs a
 PUT/HEAD/GET/DELETE round trip. The same client API is intended for
@@ -777,7 +777,7 @@ consumer at the group's committed offset (or the earliest retained offset),
 poll with \texttt{read\_committed} isolation, commit or release a delivery, and
 close the consumer.
 
-The complete version-7 broker profile is serialized into one immutable object,
+The complete version-7 broker profile is serialised into one immutable object,
 covered by a SHA-256 integrity digest, and transferred to \texttt{kafka} with a
 kernel-enforced \texttt{MAP\_READ}-only launch capability. Typed capability
 metadata carries the exact meaningful byte length rather than overloading a
@@ -812,7 +812,7 @@ The profile has no optional authentication sections or compatibility fallback.
 Kernel operational launch validates through the shared borrowed profile parser,
 using 3840 bytes of fixed list scratch with a 4096-byte compile-time ceiling
 and no heap allocation. Credential bytes remain borrowed. Userspace decoding
-materializes its three vectors only after complete validation. The full 64\,KiB
+materialises its three vectors only after complete validation. The full 64\,KiB
 frame and existing route, broker, and authority limits remain unchanged.
 
 The same digest covers a non-empty printable-ASCII instance name and a bounded
@@ -830,7 +830,7 @@ Only the broker-facing service receives this profile. Producer, consumer, and
 transactional-step logic receives a connection capability to one provisioned
 authority endpoint, never its broker address, trust material, SASL/SCRAM
 credentials, or mTLS identity. Credential rotation can therefore replace the
-connector profile without rebuilding application or procedure artifacts.
+connector profile without rebuilding application or procedure artefacts.
 
 The transaction owner supports the consume--transform--produce path. An
 application can produce records, move one consumed delivery's next group
@@ -843,14 +843,14 @@ Kafka part of an exactly-once transaction.
 
 The connector joins its configured group with the bounded
 \texttt{knytos-fixed-v1} assignor. Each member advertises exactly the
-topic/partition authorized by its immutable profile. The group leader assigns
-each partition once, while duplicate connectors remain heartbeating standbys with an
+topic/partition authorised by its immutable profile. The group leader assigns
+each partition once, while duplicate connectors remain heart-beating standbys with an
 empty assignment and can take ownership after membership changes. One connector
 admits one local consumer because it owns one membership. Ordinary offset
 commits carry the active generation and member ID. Transactional offset commits
 use Kafka's flexible version-3 schema and carry the same fencing identity. A
 rebalance revokes outstanding deliveries, aborts a touched transaction,
-synchronizes the new assignment, and reloads its committed offset before
+synchronises the new assignment, and reloads its committed offset before
 polling resumes. The service loop uses monotonic deadlines to heartbeat even
 without application calls. Conventional consumers that do not advertise this
 assignor cannot share the group.
@@ -860,7 +860,7 @@ reconnects, retries, terminal failures, fences, group state, consumer lag, and
 cumulative records per route. Monitoring derives throughput by sampling these
 counters, but ordinary application capabilities do not expose the operational view.
 
-For procedures that only implement business behavior, the generic
+For procedures that only implement business behaviour, the generic
 \texttt{kafka\_step} service owns that lifecycle instead. Its separate,
 read-only profile names one connector and one procedure endpoint, admits only
 specific output-route indices, identifies the DLQ route, and bounds output
@@ -878,8 +878,8 @@ cleanup follow the owned-resource rules rather than a manual cleanup ladder.
 The wire crate negotiates \texttt{ApiVersions} and implements a deliberately
 small set of stable Kafka request versions. Metadata selects partition leaders
 and group/transaction coordinators only from the profile's hostname/port and
-IPv4 allow-list. Authorized endpoints are alternate metadata seeds, and
-retriable produce/fetch failures refresh leader metadata before retry.
+IPv4 allow-list. Authorised endpoints are alternate metadata seeds, and
+retryable produce/fetch failures refresh leader metadata before retry.
 Group and transactional operations rediscover a moved coordinator within a
 bounded retry budget. The service does not implement topic-pattern
 subscriptions, cooperative assignor interoperability, client-certificate
@@ -887,13 +887,13 @@ chains, record compression, topic administration, or arbitrary partition
 assignment. Records and the number of simultaneous consumers, deliveries,
 and transactions are bounded.
 
-TLS uses the same explicit trust-anchor, synchronized-time, and entropy path as
+TLS uses the same explicit trust-anchor, synchronised-time, and entropy path as
 S3. Optional SCRAM-SHA-256 authenticates \texttt{kafka} to every selected broker
 after TLS establishment. Optional mTLS uses one DER X.509 client certificate
 and an ECDSA P-256 private key, and both mechanisms may be required together. The
 bounded SCRAM exchange validates broker challenges, minimum and maximum
 iteration counts, and the server signature. Passwords, client private keys,
-and derived keys use zeroizing owners and remain outside the application ABI.
+and derived keys use zeroing owners and remain outside the application ABI.
 
 The shared transport now uses pinned Embassy-based TLS and crypto-driver
 revisions. Startup transfers its dedicated owned entropy connection into a
@@ -918,7 +918,7 @@ returns that object, and no producer-allocated reply fallback remains, and retir
 scalar opcode 1 rejects. Returned or unobserved backing keeps its original
 caller charge through sponsor retirement. The shared server transaction ends
 mapping access before reply or loan cancellation. Dependency lookup, kernel
-cleanup latency, queue/metadata pressure and authorized flooding remain separate
+cleanup latency, queue/metadata pressure and authorised flooding remain separate
 audit work. The bounded DNS boot-nonce collection also uses this client, with
 one 100 ms deadline for lookup and fill. See
 \repofiletext|docs/reference/entropy.md|{the entropy protocol reference}.
@@ -944,7 +944,7 @@ qualification. See \repofiletext|docs/reference/entropy.md|{the descriptor contr
 One nonblocking handshake admission owns the static verification clock through
 completion. Overlap rejects before changing the clock, and completion clears
 it. mTLS retains typed P-256 SEC1 validation and constructs its Embassy signing
-key from a zeroizing scalar temporary. A missing source rejects before the
+key from a zeroing scalar temporary. A missing source rejects before the
 handshake, but failure inside the infallible RNG callback stops the domain rather
 than inventing bytes or replaying an accepted entropy request. Host randomness
 exists only in the unit-test source. Exact revisions and contracts are in
@@ -984,7 +984,7 @@ consumption, atomic production plus
 generation-fenced group-offset commit, group generation advance and heartbeat,
 transaction abort, filtering of the aborted record, and
 the generic step runner's success, retry, timeout, and terminal-DLQ paths. It
-also checks metadata refreshes, terminal authorization errors, output-route
+also checks metadata refreshes, terminal authorisation errors, output-route
 production, coordinator refreshes, and non-negative consumer lag in the
 bounded status page.
 
@@ -998,7 +998,7 @@ transactional identifiers coordinated away from the killed broker, isolating
 partition-leader recovery from the separate coordinator-migration case.
 
 Because broker exchanges are currently synchronous, the connector requests a
-45-second group session while heartbeating every two seconds. The membership
+45-second group session while heart-beating every two seconds. The membership
 lease therefore exceeds bounded dead-peer detection and route refresh, so
 recovering a partition leader does not by itself expire and fence the
 transaction's group generation.
@@ -1049,7 +1049,7 @@ The intended network stack avoids copying whenever practical:
     \item Receive path: the NIC driver receives a buffer from hardware.
         That buffer (a memory object) is passed up the stack by transferring
         ownership: first to the message layer (for reassembly), then to the
-        RPC layer (for deserialization), then to the application. No intermediate
+        RPC layer (for deserialisation), then to the application. No intermediate
         copies.
     \item Transmit path: the application creates a buffer. It is passed
         down by moving ownership. The NIC driver DMA's it directly from the

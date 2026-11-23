@@ -94,7 +94,7 @@ coalescing:
         a single thread. Re-waking that thread is harmless.
 \end{itemize}
 
-The rule is: \textbf{enqueue before signaling.} The work is placed in a queue
+The rule is: \textbf{enqueue before signalling.} The work is placed in a queue
 (CQ ring, endpoint queue, timer queue) first, and then a wake is delivered. The
 woken thread finds the work when it drains the queue.
 
@@ -145,7 +145,7 @@ x87, XMM0--15 and MXCSR image on an aligned kernel stack before calling Rust.
 Kernel work uses default FP controls; return restores the interrupted image.
 Nested interrupts and blocked handlers retain separate images. The kernel
 also uses SysV/SSE2, with its own kernel code model and static relocation.
-Raw BSP/AP entries initialize FP controls before compiled Rust; regression
+Raw BSP/AP entries initialise FP controls before compiled Rust; regression
 builds deliberately disable FP first to check that boundary on every LP.
 AVX remains unavailable because OSXSAVE is disabled; FXSAVE/FXRSTOR covers
 the currently admitted state, and the kernel build rejects AVX code generation.
@@ -166,7 +166,7 @@ By default, threads are pinned to their affinity LP. Migration is opt-in:
 This conservative approach preserves cache warmth and eliminates migration races
 (observer-not-found when a completion is posted on a different LP than the one
 where the waiter was registered). Stable affinity is the correctness default, while
-migration is an opt-in optimization.
+migration is an opt-in optimisation.
 
 \subsection{Protected-domain resource feedback}
 
@@ -175,7 +175,7 @@ slow resource feedback. The versioned \texttt{CCOSTAT} record reports
 generation-qualified domain frame ownership, live and high-water thread and
 stack use, heap capacity and allocation peaks, node free/usable frames, online
 logical processors, and a monotonic machine-wide CPU-busy counter. Retired
-threads contribute permanently to that counter, so interval utilization does
+threads contribute permanently to that counter, so interval utilisation does
 not fall when a short-lived worker exits. The \texttt{observe} service samples
 the aggregate once per second into a bounded in-memory history and writes the
 same resource fields asynchronously to a bounded object-store ring.
@@ -234,7 +234,7 @@ The kernel half of each pair now carries a non-copyable \texttt{KernelStack}
 owner with the exact base, page count and one-shot release fence. Teardown
 borrows that owner, and no numeric base/length adoption is exposed. Its unmapped
 guard pages need no registry entries, eliminating the former guard-map
-allocations beneath stack-arena serialization. Failure retains the containing
+allocations beneath stack-arena serialisation. Failure retains the containing
 pair's root and original admission, and dropping the range owner performs no
 physical cleanup.
 \end{implementationdetail}
@@ -302,7 +302,7 @@ Pending and reply-token nodes likewise prepare outside IPC
 with original call/reply counts and a retained caller-root lease. Their complete
 containing owner explicitly finishes ordinary outcomes, but abandonment retains all
 fields, and detached node disposal precedes count refund. Reply/cancellation
-owners retain token nodes through post-IPC disposal, and serialized close reuses
+owners retain token nodes through post-IPC disposal, and serialised close reuses
 those nodes as its bounded retirement list, while scalar completion fallback
 retains the node and detached notifications together.
 
@@ -336,7 +336,7 @@ deliver detached callbacks after guards leave. An owned generation-bound subscri
 and a durable readiness recheck prevent lost publication. Failed stack pairs
 remain fenced and do not keep the worker runnable. Only rejected waiter
 admission uses the recorded 10\,ms backoff, but readiness does not prove quiescence
-or authorize physical retry.
+or authorise physical retry.
 
 \begin{implementationdetail}{Deliver callbacks before parking}
 Guard-free park setup drains the producer LP's pending deferred callbacks
@@ -377,15 +377,15 @@ is a separate episode. Owned endpoint front waiting borrows its existing server
 lease and retains its interest with that owner. Completion, ordinary rejection
 and failure close the exact source through producer-LP deferred notification and
 metadata disposal. Rejected wait admission preserves authority and loan fences, and
-abandonment supplies no wake or physical retry. The serialized namespace/fixture
+abandonment supplies no wake or physical retry. The serialised namespace/fixture
 adapter returns Pending on an unexpected claim instead of parking beneath
 lifecycle. Namespace and operation-lease drains retain separate notification
 work. See \repofile|docs/reference/ipc-record-budgets.md|.
 \end{implementationdetail}
 
-\section{Synchronization and lock ordering}
+\section{Synchronisation and lock ordering}
 
-Shared kernel state is synchronized by a small, deliberate set of primitives.
+Shared kernel state is synchronised by a small, deliberate set of primitives.
 Their full semantics and the cross-subsystem ordering rules are maintained in
 \repofile|docs/reference/locking.md|, which is authoritative over this
 overview.
@@ -581,7 +581,7 @@ The \texttt{THREAD\_STATISTICS} syscall is address-space-scoped by default:
 callers see only their own threads and receive the snapshot as a memory-object
 capability. At boot the supervisor starts exactly one \texttt{observe} EL0
 service and delegates a typed system-observer capability through its launch
-vector. Presenting that capability authorizes a machine-wide snapshot, but a
+vector. Presenting that capability authorises a machine-wide snapshot, but a
 fabricated or wrong-type handle fails closed. The service publishes snapshots
 through endpoint IPC and registers itself with the node name service.
 Machine-wide observation is therefore explicit authority rather than an

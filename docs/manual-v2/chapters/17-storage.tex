@@ -19,7 +19,7 @@ that can be used after reboot.
 The architectural consequence is that each service can define what its
 committed state means, instead of requiring a consistent checkpoint of all
 running processes and their capabilities. The corresponding burden falls on
-the service protocol: it must serialize state, order data and metadata writes,
+the service protocol: it must serialise state, order data and metadata writes,
 validate recovery input and reacquire live authority after restart. The
 \repofiletext|docs/architecture/persistent-storage.md|{storage architecture}
 and the durability section below describe that boundary. Crash safety depends
@@ -66,9 +66,9 @@ controller's PCI requester ID. Queue and data memory are mapped with
 addresses. The kernel pins the backing frames and removes each translation
 with a synchronous SMMU invalidation before unpinning.
 
-\subsection{Initialization}
+\subsection{Initialisation}
 
-The driver follows the standard NVMe initialization sequence:
+The driver follows the standard NVMe initialisation sequence:
 
 \begin{enumerate}
     \item Controller reset: disable CC.EN, wait for CSTS.RDY = 0.
@@ -93,7 +93,7 @@ The driver follows the standard NVMe initialization sequence:
         previous step.
 \end{enumerate}
 
-After initialization the driver registers \texttt{"blk0"} with the name service
+After initialisation the driver registers \texttt{"blk0"} with the name service
 and enters its main loop, blocking on \texttt{cq\_wait} for endpoint messages
 and I/O completions.
 
@@ -221,7 +221,7 @@ Directory records are checksummed and mirrored. Each update goes to the
 generation-selected bank, and mount chooses the newest valid copy per record, and
 versioned tombstones prevent deleted records from reappearing. This recovers
 from one torn directory-sector write. Full device-level sudden-power-loss
-guarantees still depend on truthful flush/FUA behavior. FNV-1a detects
+guarantees still depend on truthful flush/FUA behaviour. FNV-1a detects
 accidental corruption, but is not cryptographic authentication.
 
 \subsection{Operations}
@@ -246,25 +246,25 @@ The store authenticates each sender through the kernel IPC envelope and records
 the creating principal in the object header. Ordinary objects are private to
 that principal and the kernel, including across service replacement. Shared-read
 objects permit other authenticated readers while keeping owner-only mutation.
-Reserved artifact and executable namespaces are publicly readable but mutable
+Reserved artefact and executable namespaces are publicly readable but mutable
 only by the kernel and the signed \texttt{clusterctl} administration service.
 A persisted operator table admits at most 64 principal/range grants for read or
 write access, but grants cannot extend the reserved mutation allowlist. Node/operator
-enrollment and management-channel authentication remain separate requirements.
+enrolment and management-channel authentication remain separate requirements.
 
-Authorization and data access consume one validated locator/header snapshot.
+Authorisation and data access consume one validated locator/header snapshot.
 Missing objects return NotFound, but metadata I/O or validation failure returns an
 error rather than adopting public ownership defaults. Automatic creation searches
 for an unused positive scalar ID with a directory-sized bound, preserving
 explicitly created objects. Mount rejects duplicate live IDs. Current format
 v4 uses COBJSTR4 superblocks and fixed 384-byte CCOBJHD4 headers with explicit
 nonzero owners, known attributes and zero reserved/unused fields. Host-staged
-artifacts use the kernel principal. Owner-zero metadata and older stores reject
+artefacts use the kernel principal. Owner-zero metadata and older stores reject
 before mutation, and deployed format changes will require explicit migration.
 See \repofile|docs/reference/security-remediation.md| for current disposition
 and validation limits.
 
-\subsection{The initial service-artifact store}
+\subsection{The initial service-artefact store}
 
 The host build produces an architecture-qualified service bundle and blesses
 every ELF according to
@@ -275,18 +275,18 @@ are listed in \autoref{chap:cluster-vision} and
 \repofile|crates/catten/src/service/store.rs|, and
 \repofile|scripts/make-nvme-image.py| writes the remaining
 services into an initial version-4 object-store image. The QEMU x86-64 runner
-can use the same host-preseeded model.
+can use the same host-pre-seeded model.
 
 The x86-64 kernel also carries an immutable signed installation bundle for the
 blank-disk appliance path. Once NVMe and the object store are available, it
 checks the stable object ID for every bundled logical name. A valid stored
-artifact is kept, including a newer deployed version, but a missing artifact
+artefact is kept, including a newer deployed version, but a missing artefact
 or one that fails identity and signature verification is replaced from the
 bundle. The installer flushes the store before dependent services start, so
 the operation is idempotent across reboot. Services are subsequently resolved
 by logical name, read through the object-store protocol, identity-checked, and
 cached for the boot. Denied, malformed or unreadable responses stop seeding, so
-they cannot authorize replacement. The cache reserves fixed publication entries
+they cannot authorise replacement. The cache reserves fixed publication entries
 before I/O, owns immutable admitted vectors for the kernel lifetime, and has a
 separate 16 MiB/64-entry image budget. It does not consume temporary snapshot
 headroom. The ordinary loader independently enforces ELF and signature policy
@@ -294,27 +294,27 @@ before mapping. See
 \repofile|docs/reference/service-launch-ownership.md|.
 
 The signature record is CLS2, an identity-bearing ELF note. Besides signing
-the complete bytes, it binds the logical service name, artifact class, release
+the complete bytes, it binds the logical service name, artefact class, release
 and rollback counter, policy flags, signing-key id, and an optional provenance
 digest. Consequently a validly signed \texttt{dns} ELF cannot occupy the
 \texttt{raft} slot. A deployment generation also carries the complete ELF
 SHA-256, preventing an object replaced under the same logical name from
 changing already-committed code.
 
-For preseeded QEMU images, the runner fingerprints the whole blessed bundle.
+For pre-seeded QEMU images, the runner fingerprints the whole blessed bundle.
 It rebuilds an instance's initial NVMe image when that fingerprint changes,
 while \texttt{--reuse-storage} deliberately keeps an older store and emits a
 staleness warning. \texttt{--fresh-storage} always recreates it. The image
 producer refuses an object-id collision rather than silently replacing an
 earlier service. The x86-64 options \texttt{--blank-storage} and
 \texttt{--build-only} instead support guest-side installation and appliance
-packaging without constructing a preseeded store.
+packaging without constructing a pre-seeded store.
 
 \section{Managed object storage through S3}
 
 The local \texttt{objstore} and the S3 client service solve different
 problems. The local store is part of node bootstrap and supplies service
-artifacts, Raft persistence, and the native filesystem without depending on a
+artefacts, Raft persistence, and the native filesystem without depending on a
 working network or external credentials. The \texttt{s3} service is an
 application-facing compatibility adapter for centrally managed object stores.
 It runs above TCP/IP and, when configured, verified TLS, and it is described in
@@ -329,7 +329,7 @@ without handing each application general socket access or raw S3 credentials.
 Static provisioning and operational pickup both supply the complete immutable
 \texttt{CHS3PF1} profile through read-only launch memory. The service rejects
 missing or malformed profiles, and it no longer reads per-field manifest aliases
-or synthesizes region and port defaults. The shared profile codec is the single
+or synthesises region and port defaults. The shared profile codec is the single
 validation boundary. Encoded profiles and the service's local profile snapshot
 use erasing owners. The original read-only launch memory follows the kernel's
 separate teardown policy.
@@ -337,7 +337,7 @@ separate teardown policy.
 RustFS is the current integration fixture. Dell EMC ECS is an intended managed
 store and the adapter can emit its namespace header, but it has not yet been
 qualified against an ECS installation. The cluster deployment agent can use a
-separately provisioned S3 connector as an artifact source: it reads the opaque
+separately provisioned S3 connector as an artefact source: it reads the opaque
 key from a signed deployment descriptor, streams the ELF, checks its pinned
 SHA-256 and name-bound CLS2 signature, and transfers both ELF and descriptor to
 the scoped kernel launch gate. Credentials, endpoint, bucket, prefix, and TLS
@@ -353,7 +353,7 @@ persistence (\texttt{storage=2}), and retired mode 1 and malformed policy values
 reject. Required mode waits for \texttt{"obj"} through the name service.
 One jointly validated two-object pair holds \texttt{CRFTSTA4}
 term/vote/join-admission state and \texttt{CRFTLOG4} snapshot/log state.
-Only two absent records authorize initialization, but existing empty, incomplete,
+Only two absent records authorise initialisation, but existing empty, incomplete,
 corrupt or unsupported records reject without reset or a memory fallback.
 Older decoders and split-store migration are removed. Each mutation writes
 the complete object and flushes the underlying NVMe device before returning.
@@ -364,7 +364,7 @@ require an explicit version-directed migration. See
 \path{docs/reference/raft-persistence.md}.
 
 The focused local election fixture runs two in-process Raft members with memory
-stores, keeping consensus behavior testable on a multicore machine without
+stores, keeping consensus behaviour testable on a multicore machine without
 NVMe. We chose its peer count for the fixture, but Raft is not limited to that count.
 A separate storage test starts a single voter with required persistence,
 records its elected term, tears down that process, restarts the same identity,
@@ -427,8 +427,9 @@ scripts/fs-inspect.py <image> cat /raft/state
 
 Metadata output includes numeric and symbolic object/filesystem flags,
 generation, header location, logical and allocated lengths, integrity hash, and
-every extent. Filesystem flag bits remain visible, but unsupported object-store flags reject validation. The \texttt{format} command
-creates a blank v4 store and destructively replaces the image contents.
+every extent. Filesystem flag bits remain visible, but unsupported object-store flags
+reject validation. The \texttt{format} command creates a blank v4 store and
+destructively replaces the image contents.
 
 \section{Isolation and durability limits}
 

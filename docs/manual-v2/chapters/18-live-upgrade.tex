@@ -12,7 +12,7 @@ still lose every client's session state. It separates and protects
 client-related service state, granting a server access when processing that
 client's request so state can survive a server restart \cite{prior:curios}.
 Knytos shares the containment goal, but its demonstrated upgrade uses a
-cooperating old service to serialize state and move it to a fresh generation.
+cooperating old service to serialise state and move it to a fresh generation.
 
 This makes the handoff format and replacement boundary explicit, without
 requiring a general OS-managed store of every service's client state. It also
@@ -21,7 +21,7 @@ valid state, the replacement must understand it, and clients must handle the
 availability gap and uncertain outcomes. An upgrade handoff is therefore not
 automatic recovery of state destroyed by a crash. The protocol below and the
 \repofiletext|docs/guides/reconnecting-clients.md|{reconnecting-client guide}
-define the supported behavior, but arbitrary services, device state and external
+define the supported behaviour, but arbitrary services, device state and external
 side effects need their own recovery protocol.
 \end{architecturalcomparison}
 
@@ -65,7 +65,7 @@ service:
     {fig:handoff-protocol}
 
 The reference echo service receives \texttt{OP\_HANDOFF} from the userspace
-service manager. Its single serving loop serializes its counter into an unmapped
+service manager. Its single serving loop serialises its counter into an unmapped
 memory object and returns that object through a consuming moved-memory reply
 before exiting. The manager unregisters the old publication before requesting
 replacement launch. A general service needs its own admission/drain protocol, because
@@ -73,7 +73,7 @@ this counter handoff does not establish that arbitrary in-flight work is drained
 
 The supervisor then spawns the new service instance with an extended bootstrap
 contract containing the name service connection and handoff state. The new
-service deserializes the state, creates a fresh endpoint, and re-registers under
+service deserialises the state, creates a fresh endpoint, and re-registers under
 the same service name. The name service publishes this replacement registration
 with a higher generation. Teardown of the stopped old domain invalidates its
 stale client connections.
@@ -95,12 +95,12 @@ overflow, and whether the entry point lies in an executable load segment.
 This prevents a mutable userspace image from changing between validation and 
 mapping.
 
-Executable artifacts carry an Ed25519 CLS2 note that binds the complete ELF to
-its logical service name, artifact class, release metadata, rollback counter,
+Executable artefacts carry an Ed25519 CLS2 note that binds the complete ELF to
+its logical service name, artefact class, release metadata, rollback counter,
 policy flags, and signing-key identifier. The loader snapshots the bytes and
 verifies the note before mapping. The FNV-1a object checksum remains corruption
-detection, while the CLS2 signature supplies executable authority. Rollback policy, key rotation, and measured
-boot remain future policy work.
+detection, while the CLS2 signature supplies executable authority. Rollback policy,
+key rotation, and measured boot remain future policy work.
 
 \section{Shared Kernel Preparation}
 
@@ -118,7 +118,7 @@ pub(crate) fn try_spawn_upgrade_from(
 \end{lstlisting}
 
 \texttt{UpgradeGrant} borrows source IDs from the captured namespace. The
-syscall supplies its authorized manager and at most one state object, while the old
+syscall supplies its authorised manager and at most one state object, while the old
 endpoint's exact root generation supplies replacement classification before
 loading. Naming, source, old-service and replacement roots remain retained.
 
@@ -144,7 +144,7 @@ The old service must handle \texttt{OP\_HANDOFF}:
 \begin{lstlisting}[style=rustCode]
 OP_HANDOFF => {
     // Stop accepting new work.
-    // Serialize all mutable state into memory objects.
+    // Serialise all mutable state into memory objects.
     // Unmap the state before transferring it.
     // Consume reply authority with reply_move(state, result).
     // Leave the owning serving scope, then exit.
@@ -162,7 +162,7 @@ fn main(ctx: Context) -> ! {
     let state_count = ctx.handoff_count();
     let state = ctx.handoff_state_cap();
 
-    // Deserialize state, create and register a fresh endpoint
+    // Deserialise state, create and register a fresh endpoint
     // under the same name (NS bumps generation), start serving.
 }
 \end{lstlisting}
@@ -181,7 +181,7 @@ restart decision, and preserves one operation deadline across reconnection.
 It stops on an uncertain accepted call. Its read-only business operation can be
 repeated safely, but a mutating protocol needs durable request identity, duplicate
 suppression and outcome reconciliation before replay. Grant-mediated discovery
-must also authorize the replacement publication.
+must also authorise the replacement publication.
 
 \section{Restart-with-state vs.\ zero-downtime}
 
@@ -219,10 +219,10 @@ instance exits, rather than starting the new instance from scratch.
     \item The reference path transfers service state: the self-test
         demonstrates handoff for the reference service. Filesystems, network
         stacks, and consensus nodes would each need protocol-specific
-        serialization, compatibility, and recovery work.
+        serialisation, compatibility, and recovery work.
 
     \item The upgrade sequence is explicit: the old service drains
-        in-flight work, serializes state, and exits. The new service starts
+        in-flight work, serialises state, and exits. The new service starts
         and registers. Clients reconcile failed work. A hard time bound is not currently
         enforced or benchmarked.
 

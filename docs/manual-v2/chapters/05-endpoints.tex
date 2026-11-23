@@ -325,7 +325,7 @@ runs after IPC unlock, notifies before completing the roots, and restores an
 unpublished source or releases private copy backing on ordinary rejection.
 Complete single/vector-send and claimed-reply parents retain all fields on
 abandonment, including returned-memory escrow and work capacity. Explicit known
-unstarted rejection still restores its preparation. Other active transfer
+un-started rejection still restores its preparation. Other active transfer
 parents and enclosing IRQ contexts require separate qualification.
 
 \section{Message envelope}
@@ -446,7 +446,7 @@ client API is shown in \autoref{sec:reconnecting-client}:
 let source = registration_connection.as_ref();
 // Ordinary lookup returns SEND | CALL and cannot supply this source.
 
-// After authorizing the client, attenuate its reply:
+// After authorising the client, attenuate its reply:
 reply.reply_connection_ref(
     source, IpcRights::SEND | IpcRights::CALL, generation,
 )?;
@@ -456,7 +456,7 @@ reply.reply_connection_ref(
 The kernel mediates. The name service never sees raw endpoint identities, because it
 holds the publisher's mintable connection grant. Ordinary lookup removes
 minting authority, so a client cannot re-delegate that returned connection.
-Each authorized delegation step can only reduce rights. DNS placement lookup
+Each authorised delegation step can only reduce rights. DNS placement lookup
 returns catalog metadata, while application authority comes from the local name or
 policy grant path.
 
@@ -474,7 +474,7 @@ maps human-readable names to re-delegable connection capabilities:
         original endpoint, so re-registration alone does not revoke it or
         redirect it to a replacement.
         Endpoint death closes that instance's communication path.
-    \item Authorization: policy-published services use default-deny rules
+    \item Authorisation: policy-published services use default-deny rules
         checked against the kernel-authenticated caller identity. Ordinary
         applications acquire a connection through the capability-grant controller
         using their signed deployment descriptor. Bearer access-key lookup is
@@ -531,10 +531,10 @@ owners still in place, as shown below.
 session's lifetime. When the session reports endpoint loss,
 \texttt{continue} drops that old connection before discovery acquires another.
 To bound recovery, the example allows at most three acquired sessions. Exhausting
-this limit is distinct from an unstarted operation exhausting its deadline.
+this limit is distinct from an un-started operation exhausting its deadline.
 Because that deadline belongs to the current business operation and survives
 reconnection, repeated discovery cannot renew its budget.
-Authorization, resource and malformed-request errors return to application policy.
+Authorisation, resource and malformed-request errors return to application policy.
 There is no fallback to public lookup.
 
 \lstinputlisting[style=rustCode,linerange={DISCOVERYBEGIN-DISCOVERYEND},rangeprefix={//},includerangemarker=false]{../../crates/knytos-app/examples/reconnecting_client.rs}
@@ -547,7 +547,7 @@ the endpoint does not establish that a replacement is available, and all other
 failures return to application policy.
 
 Progress advances and a new deadline begins only after a validated reply. Until
-then, shared \texttt{Admission} retries only unstarted queue pressure within the
+then, shared \texttt{Admission} retries only un-started queue pressure within the
 same deadline, checking lifecycle between attempts. An accepted timeout never
 enters that admission retry path.
 
@@ -580,7 +580,7 @@ interests to one CQ and continue serving them. For the waiting contract, see
 \repofile{docs/reference/cq-wait.md}. Shutdown is checked between acquisitions
 and calls, so an accepted RPC may occupy the observation budget before that check.
 Grant acquisition still uses bounded availability backoff because applications
-have no publication-readiness subscription. It returns authorization and other
+have no publication-readiness subscription. It returns authorisation and other
 rejections immediately. This example demonstrates ownership and recovery policy, but
 it does not establish production readiness of the operating system.
 
@@ -605,15 +605,15 @@ Service $\rightarrow$ name service & Waiting for thread/process exit \\
 A userspace driver may compose both: receive an endpoint message (data path), then
 submit a hardware operation and await a CQ entry (control path). The endpoint
 message and the hardware completion are related \emph{in the service's logic}, but
-they are different kernel abstractions with different behavior.
+they are different kernel abstractions with different behaviour.
 
 \section{Authority, concurrency, and restart}
 
 \begin{enumerate}
     \item Communication carries authority: a client that
-        holds a connection capability was authorized (at grant time, by the name
+        holds a connection capability was authorised (at grant time, by the name
         service or policy service) to communicate with the target. Every message
-        is authorized by possession of a kernel-mediated capability rather than
+        is authorised by possession of a kernel-mediated capability rather than
         by an address or UID alone.
 
     \item Scalar and memory messages are distinct: the kernel does not

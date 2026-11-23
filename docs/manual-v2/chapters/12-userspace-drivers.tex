@@ -19,7 +19,7 @@ kernel.
 
 \begin{architecturalcomparison}{Arrakis and who receives the device queue}
 Arrakis separates the OS control plane from the I/O data plane. Applications
-receive protected virtualized device interfaces and can perform ordinary I/O
+receive protected virtualised device interfaces and can perform ordinary I/O
 without kernel mediation on each operation \cite{prior:arrakis}. This is
 protected direct access, not unrestricted access to physical hardware.
 
@@ -69,7 +69,7 @@ vectors it needs. It cannot:
 
 An \texttt{MmioRegion} capability represents a page-granular device register
 window. The driver maps it into its address space as Device-nGnRnE memory
-(user-accessible, execute-never, strongly ordered on AArch64; uncacheable on
+(user-accessible, execute-never, strongly ordered on AArch64; un-cacheable on
 x86-64).
 
 The mapping is a kernel-mediated operation: the driver calls
@@ -97,7 +97,7 @@ When the interrupt fires:
     \item It masks the source at the interrupt controller (GICv3 on AArch64,
         x2APIC on x86-64).
     \item It atomically bumps a coalescing counter.
-    \item It marks the route's statically initialized readiness mailbox.
+    \item It marks the route's statically initialised readiness mailbox.
         Repeated deliveries coalesce without consuming another route's slot.
         Thread context in \texttt{yield\_lp} and the LP idle loop performs
         the deferred CQ publication.
@@ -122,7 +122,7 @@ supervisor retains each loaded driver root and its exact operation lease in a
 consuming \texttt{PreparedDriver}. Storage, entropy and network grants finish
 before any sibling driver can submit DMA and own the shared IOMMU engine.
 ARM embeds signed RNG and NIC images in the hardware bootstrap set so batch
-preparation cannot wait for its own unstarted storage driver to serve the store.
+preparation cannot wait for its own un-started storage driver to serve the store.
 The owner starts its thread and then completes its lease, but fallback retains all
 fields without physical cleanup. This ordering needs no polling or grant replay.
 Independent dynamic creation still rejects busy admission. Per-return creation
@@ -146,7 +146,7 @@ The PL011 UART driver demonstrates the full lifecycle:
         teardown path:
         \begin{enumerate}
             \item Reclaims the MMIO region (unmaps it, returns to the kernel).
-            \item Unroutes the interrupt.
+            \item Un-routes the interrupt.
             \item Reconciles outstanding operations: any pending reply tokens
                 are invalidated, and any borrowed memory is returned to lenders.
             \item Resets the device hardware.
@@ -171,7 +171,7 @@ HVF compatibility boot omits storage rather than weakening DMA isolation.
 A DMA-domain capability binds the device to its requester-specific translation
 table. The driver maps explicitly owned memory through that domain, and the kernel
 checks the capability and retains a backing pin. Isolation still depends on the
-backend, firmware topology and actual hardware honoring those translations.
+backend, firmware topology and actual hardware honouring those translations.
 
 On the implemented AArch64 ACPI path, \texttt{dma\_map(domain, memory,
 direction)} returns an IOVA and \texttt{dma\_unmap(domain, iova)}
@@ -200,11 +200,11 @@ restoration signals through producer-LP deferred delivery only when the actual
 engine and all domain cells are present. Admission rechecks and transfers the
 domain, engine, and pin together, then mapping work runs once. Waiting requires
 an already interrupt-enabled scheduled context, so masked or nonscheduled busy
-callers reject explicitly, and serialized kernel fixtures keep the rejecting
+callers reject explicitly, and serialised kernel fixtures keep the rejecting
 path. No adapter enables interrupts beneath an inherited mask. Admission failure
-releases only the unstarted preparation, but hardware or physical uncertainty keeps
+releases only the un-started preparation, but hardware or physical uncertainty keeps
 its existing retention policy. Map readiness does not change unmap's separate
-admission/completion distinction or authorize hardware or physical cleanup
+admission/completion distinction or authorise hardware or physical cleanup
 replay. See \texttt{docs/reference/dma-map-readiness.md}.
 
 \section{Driver service layering}
@@ -229,7 +229,7 @@ Complex I/O stacks decompose into separate failure and authority domains:
 The NIC driver knows about hardware registers and descriptor rings, the network
 service knows about protocols and sockets, and the application knows about its
 business logic. When a driver's endpoint closes, the network service can discard
-its old session and discover a replacement. Endpoint loss alone cannot authorize
+its old session and discover a replacement. Endpoint loss alone cannot authorise
 replaying an uncertain device command or reclaiming DMA backing. The client
 recovery scopes in \autoref{sec:reconnecting-client} show that distinction for a
 read-only operation.
