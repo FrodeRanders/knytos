@@ -10,8 +10,16 @@
 #include "knytos.h"
 #include "package.h"
 
+#ifdef AVM_KNYTOS_SCHEDULERS
+void knytos_schedulers_prepare(GlobalContext *global);
+void knytos_schedulers_join(void);
+#else
+#define AVM_KNYTOS_SCHEDULERS 1
+#endif
+
 int main(void) {
-    puts("[atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes");
+    printf("[atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=%d interpreter=yes\n",
+        AVM_KNYTOS_SCHEDULERS);
     printf("[atomvm] package_sha256=%s bytes=%zu\n", package_sha256, sizeof(application_package));
     /* Exercise a real wake published before the sole consumer parks. No
      * producer thread, timer polling or foreign CQ consumer is introduced. */
@@ -38,7 +46,13 @@ int main(void) {
     Context *context = context_new(global);
     if (!context) { globalcontext_destroy(global); return 1; }
     context->leader = 1;
+#ifndef AVM_NO_SMP
+    knytos_schedulers_prepare(global);
+#endif
     context_execute_loop(context, module, "start", 0);
+#ifndef AVM_NO_SMP
+    knytos_schedulers_join();
+#endif
     term result = context->x[0];
     fputs("[atomvm] return=", stdout);
     term_display(stdout, result, context);

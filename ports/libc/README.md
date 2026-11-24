@@ -139,9 +139,16 @@ its private queue is distinct from the application reactor on CQ zero.
 Publish an application predicate with appropriate synchronization before
 `knytos_thread_signal` and recheck it after `knytos_thread_wait`. A wake can
 arrive early, coalesce, or survive slot reuse. It carries no payload or exit
-authority. Private waits are finite and check lifecycle before and after
-the wait. Lifecycle wakes presently target CQ zero, so a private waiter can
-remain asleep until its deadline in the absence of a peer wake.
+authority. Private waits check lifecycle before and after the wait.
+Lifecycle wakes target CQ zero. A finite private waiter can remain
+asleep until its deadline in the absence of a peer wake. Use
+`knytos_thread_wait_event` only when the application has an explicit
+terminal path for the event-only private waiter.
+
+`knytos_event_wait` remains startup-only. A registered participant elected
+as the application reactor can use `knytos_worker_event_wait` on CQ zero.
+An overlapping borrow through either API returns `KNYTOS_BUSY`. The
+application must publish poller handoff after the current wait returns.
 
 Join admission rejection retains the worker and returns
 `KNYTOS_WAIT_REJECTED`. C must hold its borrow and observe the same worker
@@ -170,11 +177,11 @@ the mutex even when the wait reports success.
 
 Only `KNYTOS_OK` means the condition waiter reacquired the mutex. A deadline
 or wait rejection after registration leaves the mutex released and removes
-the waiter's registration. The same timeout budget covers waiting and
-reacquisition. Keep both objects live until the operation returns, including
-while reacquisition is pending. This is a bounded runtime C ABI. An adapter
-for a library with different timeout or mutex ownership rules must account
-for those differences.
+the waiter's registration. The timed API shares one timeout budget across
+waiting and reacquisition. For a caller that provides a terminal path,
+`knytos_condition_wait_event` waits for selection without a deadline and
+starts its reacquisition timeout after selection. Keep both objects live
+until the operation returns, including while reacquisition is pending.
 
 Read/write locks use the same object lifetime rules. Shared acquisition can
 nest within a participant, with one unlock required for each acquisition.

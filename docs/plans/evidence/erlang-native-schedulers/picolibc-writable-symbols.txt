@@ -1,0 +1,9 @@
+Writable Picolibc entries from the four-scheduler linker map
+environ.c.obj .data.environ
+tzvars.c.obj .data.__tzname_std
+tzvars.c.obj .data.__tzname_dst
+_findenv.c.obj .bss.__environ_sequence
+setenv.c.obj .bss.setenv_alloced
+tzvars.c.obj .bss.daylight
+tzvars.c.obj .bss.timezone
+tzvars.c.obj .bss.__tzinfo

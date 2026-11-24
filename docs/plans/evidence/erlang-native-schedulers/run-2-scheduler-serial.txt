@@ -1,0 +1,43 @@
+[+    17.723588] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-schedulers-1" generation=1 asid=31 principal=0x83a01dea46b32baa
+[+    17.709842] [EL0 LOG] lp=0 asid=31 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+    17.710434] [EL0 LOG] lp=0 asid=31 [atomvm] package_sha256=7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794 bytes=22708
+[+    17.710886] [EL0 LOG] lp=0 asid=31 [atomvm] wake-before-wait passed
+[+    17.718166] [EL0 LOG] lp=0 asid=31 {schedulers,1}
+[+    17.723588] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-schedulers-1" generation=1 asid=31 principal=0x83a01dea46b32baa
+[+    17.830682] [EL0 LOG] lp=0 asid=31 {smp,pass}
+[+    17.830921] [EL0 LOG] lp=0 asid=31 [atomvm] return=ok
+[+    17.831096] [EL0 LOG] lp=0 asid=31 [atomvm] reactor waits=3 deadlines=3
+[+    17.831362] [EL0 LOG] lp=0 asid=31 [atomvm] completed status=0
+[+    17.832088] [EL0 LOG] lp=0 asid=31 [c-runtime] exit=0 released_blocks=22 remaining_blocks=0 heap_peak=18040 sampled_stack=1424
+
+[+    18.385509] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-schedulers-2" generation=1 asid=32 principal=0xa97b60f10fb8c096
+[+    18.373109] [EL0 LOG] lp=0 asid=32 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=2 interpreter=yes
+[+    18.373954] [EL0 LOG] lp=0 asid=32 [atomvm] package_sha256=7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794 bytes=22708
+[+    18.374511] [EL0 LOG] lp=0 asid=32 [atomvm] wake-before-wait passed
+[+    18.385509] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-schedulers-2" generation=1 asid=32 principal=0xa97b60f10fb8c096
+[+    18.386632] [EL0 LOG] lp=0 asid=32 {schedulers,2}
+[+    18.388899] [EL0 LOG] lp=1 asid=32 [atomvm] scheduler entered slot=1
+[+    18.468438] [EL0 LOG] lp=1 asid=32 {smp,pass}
+[+    18.470158] [EL0 LOG] lp=0 asid=32 [atomvm] schedulers joined=1 activated=1
+[+    18.470537] [EL0 LOG] lp=0 asid=32 [atomvm] return=ok
+[+    18.470869] [EL0 LOG] lp=0 asid=32 [atomvm] reactor waits=14 deadlines=3
+[+    18.471133] [EL0 LOG] lp=0 asid=32 [atomvm] reactor worker_waits=3
+[+    18.471684] [EL0 LOG] lp=0 asid=32 [atomvm] completed status=0
+[+    18.472407] [EL0 LOG] lp=0 asid=32 [c-runtime] exit=0 released_blocks=24 remaining_blocks=0 heap_peak=20758 sampled_stack=1440
+
+[+    19.058844] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-schedulers-4" generation=1 asid=33 principal=0xe52af89c92826715
+[+    19.046996] [EL0 LOG] lp=0 asid=33 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    19.047834] [EL0 LOG] lp=0 asid=33 [atomvm] package_sha256=7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794 bytes=22708
+[+    19.048378] [EL0 LOG] lp=0 asid=33 [atomvm] wake-before-wait passed
+[+    19.058844] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-schedulers-4" generation=1 asid=33 principal=0xe52af89c92826715
+[+    19.060748] [EL0 LOG] lp=0 asid=33 {schedulers,4}
+[+    19.062962] [EL0 LOG] lp=1 asid=33 [atomvm] scheduler entered slot=1
+[+    19.063667] [EL0 LOG] lp=2 asid=33 [atomvm] scheduler entered slot=2
+[+    19.064770] [EL0 LOG] lp=3 asid=33 [atomvm] scheduler entered slot=3
+[+    19.128519] [EL0 LOG] lp=1 asid=33 {smp,pass}
+[+    19.130548] [EL0 LOG] lp=0 asid=33 [atomvm] schedulers joined=3 activated=3
+[+    19.131219] [EL0 LOG] lp=0 asid=33 [atomvm] return=ok
+[+    19.131603] [EL0 LOG] lp=0 asid=33 [atomvm] reactor waits=21 deadlines=3
+[+    19.131917] [EL0 LOG] lp=0 asid=33 [atomvm] reactor worker_waits=16
+[+    19.132498] [EL0 LOG] lp=0 asid=33 [atomvm] completed status=0
+[+    19.133294] [EL0 LOG] lp=0 asid=33 [c-runtime] exit=0 released_blocks=24 remaining_blocks=0 heap_peak=20758 sampled_stack=1440

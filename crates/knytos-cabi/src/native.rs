@@ -16,6 +16,8 @@ static HEAP: knytos_rt::HeapLock = knytos_rt::heap();
 static EXITING: AtomicBool = AtomicBool::new(false);
 static ENTRY_SP: AtomicUsize = AtomicUsize::new(0);
 static LOW_SP: AtomicUsize = AtomicUsize::new(usize::MAX);
+#[cfg(feature = "native-workers")]
+static REACTOR_WAITING: AtomicBool = AtomicBool::new(false);
 
 struct Console {
     bytes: [u8; 256],
@@ -149,11 +151,36 @@ pub extern "C" fn knytos_event_wait(timeout_ms: i64) -> i32 {
     if !crate::workers::is_main() {
         return INVALID;
     }
+    wait_for_event(timeout_ms)
+}
+
+/// Electing a reactor is the caller's responsibility. Reject an overlapping
+/// borrow of the shared CQ zero cursor, even from the startup-only API.
+#[cfg(feature = "native-workers")]
+#[unsafe(no_mangle)]
+pub extern "C" fn knytos_worker_event_wait(timeout_ms: i64) -> i32 {
+    if crate::workers::participant().is_none() {
+        return INVALID;
+    }
+    wait_for_event(timeout_ms)
+}
+
+fn wait_for_event(timeout_ms: i64) -> i32 {
     let timeout = match timeout_ms {
         -1 => None,
         0.. => Some(timeout_ms as u64),
         _ => return INVALID,
     };
+    #[cfg(feature = "native-workers")]
+    {
+        if REACTOR_WAITING.swap(true, Ordering::Acquire) {
+            return BUSY;
+        }
+        let result = wait_on_queue(timeout, 0);
+        REACTOR_WAITING.store(false, Ordering::Release);
+        result
+    }
+    #[cfg(not(feature = "native-workers"))]
     wait_on_queue(timeout, 0)
 }
 

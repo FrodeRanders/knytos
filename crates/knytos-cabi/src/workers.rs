@@ -218,6 +218,17 @@ pub extern "C" fn knytos_thread_wait(timeout_ms: u32) -> i32 {
 }
 
 #[unsafe(no_mangle)]
+pub extern "C" fn knytos_thread_is_startup() -> bool {
+    is_main()
+}
+
+/// Event-only private wait. The caller must arrange a terminal wake path.
+#[unsafe(no_mangle)]
+pub extern "C" fn knytos_thread_wait_event() -> i32 {
+    participant().map_or(INVALID, |caller| park_event(caller, None))
+}
+
+#[unsafe(no_mangle)]
 pub extern "C" fn knytos_thread_signal(slot: u32) -> i32 {
     if participant().is_none() {
         return INVALID;
@@ -236,10 +247,14 @@ pub extern "C" fn knytos_thread_signal(slot: u32) -> i32 {
 }
 
 pub(crate) fn park(caller: Participant, timeout_ms: u64) -> i32 {
+    park_event(caller, Some(timeout_ms))
+}
+
+pub(crate) fn park_event(caller: Participant, timeout: Option<u64>) -> i32 {
     if WORKER_LIMIT.load(Ordering::Relaxed) == 0 {
         return INVALID;
     }
-    wait_on_queue(Some(timeout_ms), caller.slot + 1)
+    wait_on_queue(timeout, caller.slot + 1)
 }
 
 /// Signal slots captured from a synchronization object's exact waiter set.

@@ -23,6 +23,48 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def replace_pinned(text, old, new):
+    if text.count(old) != 1:
+        raise SystemExit("Unexpected source for the pinned AtomVM SMP adaptation")
+    return text.replace(old, new)
+
+
+def configure_smp(core, generated):
+    # The signed roster is fixed. Keep the upstream badarg path for
+    # system_flag/2 while retaining SMP synchronization in this translation unit.
+    nifs = replace_pinned((core / "nifs.c").read_text(),
+        "#ifndef AVM_NO_SMP\n    if (key == SCHEDULERS_ONLINE_ATOM)",
+        "#if !defined(AVM_NO_SMP) && !defined(AVM_KNYTOS_SCHEDULERS)\n"
+        "    if (key == SCHEDULERS_ONLINE_ATOM)")
+    (generated / "nifs.c").write_text(nifs)
+
+    # Reserve the VM's count under its scheduler lock, then wake a prepared
+    # thread after releasing the scheduler and ready-list producer locks.
+    scheduler = replace_pinned((core / "scheduler.c").read_text(),
+        "list_remove(&ctx->processes_list_head);\n#ifndef AVM_NO_SMP\n    if (SMP_MUTEX_TRYLOCK",
+        "list_remove(&ctx->processes_list_head);\n#ifndef AVM_NO_SMP\n"
+        "    bool start_scheduler = false;\n    if (SMP_MUTEX_TRYLOCK")
+    scheduler = replace_pinned(scheduler, "            smp_scheduler_start(global);",
+        "            start_scheduler = true;")
+    scheduler = replace_pinned(scheduler,
+        "list_append(&global->ready_processes, &ctx->processes_list_head);\n"
+        "    SMP_SPINLOCK_UNLOCK(&global->processes_spinlock);\n#ifndef AVM_NO_SMP\n"
+        "    if (SMP_MUTEX_TRYLOCK",
+        "list_append(&global->ready_processes, &ctx->processes_list_head);\n"
+        "    SMP_SPINLOCK_UNLOCK(&global->processes_spinlock);\n#ifndef AVM_NO_SMP\n"
+        "    if (start_scheduler) {\n        smp_scheduler_start(global);\n    }\n"
+        "    if (SMP_MUTEX_TRYLOCK")
+    (generated / "scheduler.c").write_text(scheduler)
+
+    # Only the embedded, authenticated pack supplies modules in this profile.
+    # Upstream read_priv mutates pin metadata under a shared lock.
+    nifs_gperf = (core / "nifs.gperf").read_text()
+    for name in ("add_avm_pack_binary/2", "add_avm_pack_file/2", "close_avm_pack/2", "read_priv/2"):
+        entry = next(line for line in nifs_gperf.splitlines() if line.startswith(f"atomvm:{name},"))
+        nifs_gperf = replace_pinned(nifs_gperf, entry + "\n", "")
+    (generated / "nifs.gperf").write_text(nifs_gperf)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--atomvm-source", required=True, type=Path)
@@ -30,11 +72,15 @@ def main():
     parser.add_argument("--picolibc-source", required=True, type=Path)
     parser.add_argument("--worker-libc", action="store_true",
                         help="qualify the worker libc closure with the single-scheduler interpreter")
+    parser.add_argument("--schedulers", type=int, choices=(1, 2, 4), default=1,
+                        help="build a fixed native scheduler roster (2 or 4 implies worker libc)")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--application", type=Path, default=ROOT / "ports/atomvm/tests/hello.erl")
     parser.add_argument("--otp-behaviours", action="store_true",
                         help="include the pinned erlang wrappers, gen_server and supervisor")
     args = parser.parse_args()
+    smp = args.schedulers > 1
+    worker_libc = args.worker_libc or smp
     atomvm, otp = args.atomvm_source.resolve(), args.otp_source.resolve()
     for source, pin in ((atomvm, ATOMVM_PIN), (otp, OTP_PIN)):
         if subprocess.check_output(["git", "-C", source, "rev-parse", "HEAD"], text=True).strip() != pin:
@@ -87,26 +133,38 @@ def main():
         '#define SYSTEM_NAME "Knytos"\n#define SYSTEM_VERSION "1"\n'
         '#define SYSTEM_ARCHITECTURE "aarch64"\n#define ATOMVM_VERSION "0.6.6"\n')
     core = atomvm / "src/libAtomVM"
+    if smp:
+        configure_smp(core, generated)
     for kind in ("bifs", "nifs"):
+        definition = (generated if smp and kind == "nifs" else core) / (kind + ".gperf")
         with (generated / (kind + "_hash.h")).open("w") as target:
-            run("gperf", "-t", core / (kind + ".gperf"), stdout=target)
+            run("gperf", "-t", definition, stdout=target)
     # Reuse the M1 runtime/toolchain and its libc configuration.
-    libc_profile = ["--worker-libc"] if args.worker_libc else []
-    libc_dir = "picolibc-aarch64-workers-v1" if args.worker_libc else "picolibc-aarch64-v1"
+    libc_profile = ["--worker-libc"] if worker_libc else []
+    libc_dir = "picolibc-aarch64-workers-v1" if worker_libc else "picolibc-aarch64-v1"
     run("python3", ROOT / "ports/libc/build.py", ROOT / "ports/libc/tests/empty.c",
         "--output", work / "libc-probe.elf", "--picolibc-source", args.picolibc_source, *libc_profile)
     flags = ["--target=aarch64-none-elf", "-std=c11", "-ffreestanding", "-fno-builtin",
         "-fno-stack-protector", "-fno-pic", "-fno-pie", "-mno-outline-atomics", "-Os",
         "-ffunction-sections", "-fdata-sections", "-fstack-usage", "-Wall", "-Wextra",
-        "-DAVM_NO_SMP", "-DAVM_CREATE_STACKTRACES", "-DAVM_VERBOSE_ABORT", "-D_POSIX_C_SOURCE=200809L",
+        "-DAVM_CREATE_STACKTRACES", "-DAVM_VERBOSE_ABORT", "-D_POSIX_C_SOURCE=200809L",
         "-isystem", str(ROOT / "target/c-runtime" / libc_dir / "picolibc/include"),
         "-I", str(core), "-I", str(generated), "-I", str(ROOT / "ports/libc/include")]
-    if args.worker_libc:
+    defines = ["HAVE_ATOMIC", f"AVM_KNYTOS_SCHEDULERS={args.schedulers}"] if smp else ["AVM_NO_SMP"]
+    flags.extend("-D" + define for define in defines)
+    if worker_libc:
         flags.append("-D__STDIO_LOCKING")
+    if smp:
+        flags.append("-DKNYTOS_NATIVE_WORKERS")
     # Mirror the exact release's upstream core source list, without POSIX
     # feature probes that could incorrectly succeed for static try-compiles.
     match = re.search(r"set\(SOURCE_FILES\s+(.*?)\)", (core / "CMakeLists.txt").read_text(), re.S)
     sources = [core / name for name in match[1].split()] + [ROOT / "ports/atomvm/sys.c"]
+    upstream_sources = sources.copy()
+    if smp:
+        sources = [generated / path.name if path.name in ("scheduler.c", "nifs.c") else path
+                   for path in sources]
+        sources.append(ROOT / "ports/atomvm/smp.c")
     def compile_source(source):
         obj = work / (source.stem + ".o")
         run("clang", *flags, "-c", source, "-o", obj)
@@ -121,16 +179,21 @@ def main():
     run(llvm / "llvm-ar", "rcs", archive, *objects)
     run("python3", ROOT / "ports/libc/build.py", ROOT / "ports/atomvm/main.c",
         "--output", output, "--picolibc-source", args.picolibc_source,
-        "--include", core, "--include", generated, "--define", "AVM_NO_SMP",
+        "--include", core, "--include", generated,
+        *[arg for define in defines for arg in ("--define", define)],
         "--library", archive, *libc_profile)
     shutil.copyfile(atomvm / "LICENSE", output.parent / "AtomVM-LICENSE.txt")
     shutil.copyfile(atomvm / "LICENSES/Apache-2.0.txt", output.parent / "AtomVM-Apache-2.0.txt")
-    inputs = [ROOT / "ports/atomvm/build.py", ROOT / "ports/atomvm/main.c", args.application.resolve(), *sources, *libraries]
+    inputs = [ROOT / "ports/atomvm/build.py", ROOT / "ports/atomvm/main.c", args.application.resolve(),
+              *upstream_sources, *sources, *libraries]
+    if smp:
+        inputs.extend((core / "nifs.gperf", generated / "nifs.gperf"))
+    profile = "fixed-smp" if smp else "single-scheduler"
     manifest = {"atomvm_revision": ATOMVM_PIN, "otp_revision": OTP_PIN,
         "otp_version": "27.3.4.19", "package_sha256": sha(package), "package_bytes": len(data),
         "unsigned_elf_sha256": sha(output), "unsigned_elf_bytes": output.stat().st_size,
-        "profile": "interpreter-single-scheduler-no-tls-no-posix",
-        "worker_libc": args.worker_libc,
+        "profile": f"interpreter-{profile}-no-tls-no-posix",
+        "schedulers": args.schedulers, "worker_libc": worker_libc,
         "inputs_sha256": {str(p): sha(p) for p in inputs},
         "core_flags": flags, "host_reference": str(host / "src/AtomVM")}
     output.with_suffix(".atomvm.json").write_text(json.dumps(manifest, indent=2) + "\n")

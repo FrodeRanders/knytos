@@ -1,8 +1,8 @@
 # AtomVM on Knytos
 
 M2 runs the AtomVM 0.6.6 interpreter as an ordinary signed AArch64 EL0
-application over the [C runtime](../libc/README.md). The platform adapter has
-one scheduler and one native thread. Its immutable AVM package is compiled
+application over the [C runtime](../libc/README.md). The default platform
+adapter has one scheduler and one native thread. Its immutable AVM package is compiled
 into the executable's read-only LOAD memory and covered by its artifact
 signature. There is no external module directory or package download.
 
@@ -56,7 +56,7 @@ array, host tools, compiler stack-usage files and license notices. Retain
 AtomVM and Picolibc notices with distributions and consult the pinned source
 for individual file notices. Signing remains an explicit separate step.
 
-## Platform behavior
+## Default platform behavior
 
 The adapter uses the C runtime allocator and console and implements the pinned
 release's actual `sys.h` hooks. `atomvm:platform/0` is registered as a static
@@ -152,13 +152,66 @@ own library modules. Both comparisons expect all four stage markers,
 for two Erlang processes. The supervision check requires the replacement
 worker to serve a request within the same native domain.
 
-The signed VM descriptor permits one native thread. The runner's `--smp` flag
-sets the guest CPU count. AtomVM SMP, TLS, general native-service NIFs, external
-networking, ERTS and multi-node distribution require further work. See the
-[remaining scheduler requirements](../../docs/plans/erlang-m3-multicore.md).
+The semantic fixture's descriptor permits one native thread. The runner's
+`--smp` flag sets the guest CPU count. TLS, general native-service NIFs,
+external networking, ERTS and multi-node distribution require further work.
 
 Pass `--worker-libc` to the AtomVM builder to link the separate Picolibc
 worker profile. Use the same semantics fixture and
 `--atomvm-semantics-elf` runner argument to verify that linked closure.
 This build still uses `AVM_NO_SMP`. The profile's concurrent C fixture
 qualifies fixed streams and errno independently of the VM.
+
+## Fixed native schedulers
+
+Pass `--schedulers 2` or `--schedulers 4` to enable AtomVM SMP and the
+worker libc profile. Startup creates all worker threads before entering
+the VM. Each thread parks on its private CQ. When AtomVM reserves another
+scheduler, the adapter releases a prepared worker after the ready-list
+and scheduler locks have been released. The configured roster is fixed.
+Changing `schedulers_online` through `erlang:system_flag/2` returns
+`badarg`.
+
+The elected AtomVM poller borrows CQ zero. The Rust adapter rejects
+overlapping waits on its shared cursor. Other schedulers use event-only
+condition waits on their private CQs. The runtime registers a condition
+waiter before releasing its mutex and returns success after reacquiring
+that mutex. Lock acquisition and condition reacquisition each have a
+five-second budget. Any failed wait or acquisition aborts the domain.
+During idle operation the poller observes shutdown requests on CQ zero.
+Normal VM completion stops the interpreter schedulers and wakes unused
+workers. Startup joins every exact native worker before releasing VM state.
+
+The build generates target-only adaptations from the clean pinned source.
+The SMP NIF lookup excludes dynamic package add/close and `read_priv/2`.
+The embedded package remains signed and the worker profile still aborts
+when the VM calls the unavailable wall-clock hook. This excludes the
+mutable environment and timezone paths behind that hook.
+
+Build the variants in sequence because they share one Picolibc build cache.
+
+```sh
+for count in 1 2 4; do
+  python3 ports/atomvm/build.py --atomvm-source /path/to/AtomVM \
+    --otp-source .dependencies/otp-27 --picolibc-source /path/to/picolibc \
+    --application ports/atomvm/tests/schedulers.erl --schedulers "$count" \
+    --output "target/atomvm/schedulers-$count.elf"
+done
+python3 ports/atomvm/build.py --atomvm-source /path/to/AtomVM \
+  --otp-source .dependencies/otp-27 --picolibc-source /path/to/picolibc \
+  --schedulers 4 --output target/atomvm/schedulers-idle-4.elf
+python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
+  --atomvm-scheduler-elf target/atomvm/schedulers-1.elf \
+  --atomvm-scheduler-elf target/atomvm/schedulers-2.elf \
+  --atomvm-scheduler-elf target/atomvm/schedulers-4.elf \
+  --atomvm-idle-scheduler-elf target/atomvm/schedulers-idle-4.elf \
+  --smp 4 --output target/atomvm/scheduler-validation
+```
+
+The runner checks the adjacent build manifest and signs each descriptor
+with the configured thread count and 64 stack pages per thread. The
+workload checks the native scheduler entry markers, two rounds of Erlang
+message exchange, idle timer deadlines and exact worker joins. The idle
+fixture runs the hello package and checks joins for workers that never
+entered the interpreter. See the
+[remaining scheduler requirements](../../docs/plans/erlang-m3-multicore.md).

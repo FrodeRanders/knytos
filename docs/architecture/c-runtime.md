@@ -1,12 +1,14 @@
 # Native C execution environment
 
-Status: initial single-threaded profile implemented, 2026-11-24. Build and
-runtime contracts are in the [C application guide](../../ports/libc/README.md);
-the [M1 report](../reports/milestones/2026-11-24-c-runtime.md) records native qualification.
+The default C profile is single-threaded. The
+[C application guide](../../ports/libc/README.md) also defines the opt-in
+worker roster and worker libc profile. The
+[M1 report](../reports/milestones/2026-11-24-c-runtime.md) records native qualification.
 The [M2 AtomVM adapter](../../ports/atomvm/README.md) adds a single-scheduler
 reactor over launch CQ zero; the [M2 report](../reports/milestones/2026-11-24-atomvm.md)
-records signed execution and resource observations. Resource tokens, service reactors, TLS and threads
-below remain future requirements. The
+records signed execution and resource observations. AtomVM can also use the
+[fixed native scheduler profile](../../ports/atomvm/README.md#fixed-native-schedulers).
+General C resource tokens, service reactors and ELF TLS remain future requirements. The
 [M0 discovery report](../plans/erlang-m0-discovery.md) records inspected sources,
 executed probes, resource limits and outstanding qualification. The
 [Erlang programme](../plans/erlang-runtime-port.md) supplies milestone gates.
@@ -63,19 +65,19 @@ Returning from C `main` enters Rust-controlled cleanup and records the
 application result. This must distinguish:
 
 - Normal main return after all application owners are disposed.
-- An individual worker's terminal exit, once workers are supported.
+- An individual worker's terminal exit through the worker trampoline.
 - Authenticated cooperative shutdown after operations and workers are drained.
 - Fatal application/runtime failure using the existing domain-abort policy.
 
 `thread_exit` does not unwind C or Rust frames or join other threads.
 `exit(status)` must not be implemented as a blind alias for that syscall.
-The initial profile has no workers, but its API must not promise whole-domain
-cleanup from a thread-only observation. Blocking or fallible remote teardown
-uses explicit close; a destructor cannot manufacture successful cancellation.
+The worker profile requires startup to join every exact thread before C
+finalizers or heap disposal. Blocking or fallible remote teardown uses
+explicit close. A destructor cannot manufacture successful cancellation.
 
 ## Allocator and libc profile
 
-Picolibc 1.8.12 is cross-built with single-thread mode, TLS disabled and its
+The default Picolibc 1.8.12 profile is cross-built with single-thread mode, TLS disabled and its
 malloc implementation disabled. The Knytos C allocator facade uses the runtime
 allocator, with no second `sbrk` heap over the Rust arena.
 
@@ -96,7 +98,8 @@ not return successful dummy results.
 Disabling TLS allows process-global libc state only because this profile has
 exactly one native thread. It must not later be linked into an SMP VM with
 global errno/reentrancy state. The libc and compiler-runtime closure must be
-requalified before enabling threads.
+requalified before enabling threads. The worker libc profile uses
+participant-local errno and locks its fixed console streams.
 
 ## C-facing ownership
 
@@ -164,11 +167,12 @@ wake-before-wait path. This does not qualify future service-operation or SMP
 notification ownership. The void upstream realtime hook explicitly aborts
 with an unavailable diagnostic until an authorized UTC policy is implemented.
 
-Before SMP, specify per-scheduler queue ownership, cross-thread notification,
-condition-variable publication and shutdown fanout. There are four private
-shard CQs, not one per possible native thread; CQ zero also receives lifecycle
-wakes. The existing shared-parker backstop in Sitas is a recorded limitation,
-not proof of a general condition-variable contract.
+The fixed AtomVM roster borrows one private shard CQ per participant for
+worker gates and condition waits. The elected poller alone waits on CQ zero,
+which also receives lifecycle wakes. All private event waits need an explicit
+terminal path. During ordinary VM completion the adapter wakes unused workers
+and joins the full roster before C allocation disposal. External shutdown
+while schedulers are active or parked remains a qualification gate.
 
 ## TLS and future thread profile
 

@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 #include <limits.h>
+#include <stdatomic.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,8 +10,16 @@
 #include "sys.h"
 #include "knytos.h"
 
-static uint64_t waits;
-static uint64_t deadlines;
+static _Atomic uint64_t waits;
+static _Atomic uint64_t deadlines;
+#ifndef AVM_NO_SMP
+static _Atomic uint64_t worker_waits;
+
+void sys_signal(GlobalContext *global) {
+    (void)global;
+    knytos_event_signal();
+}
+#endif
 
 static _Noreturn void unsupported(const char *operation) {
     fprintf(stderr, "[atomvm] unsupported: %s\n", operation);
@@ -21,16 +30,29 @@ void sys_init_platform(GlobalContext *global) { global->platform_data = NULL; }
 void sys_free_platform(GlobalContext *global) {
     (void)global;
     printf("[atomvm] reactor waits=%llu deadlines=%llu\n",
-        (unsigned long long)waits, (unsigned long long)deadlines);
+        (unsigned long long)atomic_load_explicit(&waits, memory_order_relaxed),
+        (unsigned long long)atomic_load_explicit(&deadlines, memory_order_relaxed));
+#ifndef AVM_NO_SMP
+    printf("[atomvm] reactor worker_waits=%llu\n",
+        (unsigned long long)atomic_load_explicit(&worker_waits, memory_order_relaxed));
+#endif
 }
 void platform_defaultatoms_init(GlobalContext *global) { (void)global; }
 
 void sys_poll_events(GlobalContext *global, int timeout_ms) {
     (void)global;
     if (timeout_ms == SYS_POLL_EVENTS_DO_NOT_WAIT) return;
-    ++waits;
+    atomic_fetch_add_explicit(&waits, 1, memory_order_relaxed);
+#ifndef AVM_NO_SMP
+    // AtomVM serializes this role with its scheduler mutex and publishes the
+    // handoff only after returning from the wait. Private waiters use their
+    // own CQs. At idle, the elected poller also observes lifecycle on CQ 0.
+    if (!knytos_thread_is_startup()) atomic_fetch_add_explicit(&worker_waits, 1, memory_order_relaxed);
+    int status = knytos_worker_event_wait(timeout_ms);
+#else
     int status = knytos_event_wait(timeout_ms);
-    if (status == KNYTOS_DEADLINE) ++deadlines;
+#endif
+    if (status == KNYTOS_DEADLINE) atomic_fetch_add_explicit(&deadlines, 1, memory_order_relaxed);
     else if (status != KNYTOS_OK) {
         fprintf(stderr, "[atomvm] reactor wait failed status=%d\n", status);
         abort();
@@ -78,7 +100,7 @@ Module *sys_load_module_from_file(GlobalContext *global, const char *path) {
 Module *sys_load_module(GlobalContext *global, const char *name) {
     const void *beam = NULL;
     uint32_t size = 0;
-    struct ListHead *packs = synclist_rdlock(&global->avmpack_data);
+    struct ListHead *packs = synclist_wrlock(&global->avmpack_data);
     struct ListHead *item;
     LIST_FOR_EACH(item, packs) {
         struct AVMPackData *pack = GET_LIST_ENTRY(item, struct AVMPackData, avmpack_head);

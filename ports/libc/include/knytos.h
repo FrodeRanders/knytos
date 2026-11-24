@@ -1,5 +1,6 @@
 #ifndef KNYTOS_C_ABI_H
 #define KNYTOS_C_ABI_H
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #ifdef __cplusplus
@@ -13,8 +14,14 @@ enum { KNYTOS_BUSY = 7 };
 typedef void (*knytos_thread_entry)(void *);
 int32_t knytos_thread_start(uint32_t slot, uint32_t lp, knytos_thread_entry entry, void *argument);
 int32_t knytos_thread_join(uint32_t slot);
+bool knytos_thread_is_startup(void);
 int32_t knytos_thread_wait(uint32_t timeout_ms);
+/* Arrange an explicit terminal path before using an event-only private wait. */
+int32_t knytos_thread_wait_event(void);
 int32_t knytos_thread_signal(uint32_t slot);
+/* The elected registered participant may borrow the sole CQ zero cursor.
+ * An overlapping wait returns KNYTOS_BUSY. Same timeout units as event_wait. */
+int32_t knytos_worker_event_wait(int64_t timeout_ms);
 
 struct knytos_mutex;
 struct knytos_condition;
@@ -30,6 +37,10 @@ int32_t knytos_condition_destroy(struct knytos_condition *condition);
  * timeout budget covers the condition wait and the subsequent lock. */
 int32_t knytos_condition_wait(const struct knytos_condition *condition,
                              const struct knytos_mutex *mutex, uint32_t timeout_ms);
+/* Event-only condition phase with explicit terminal path. Reacquisition uses
+ * its own timeout after selection. As above, only OK guarantees ownership. */
+int32_t knytos_condition_wait_event(const struct knytos_condition *condition,
+                                   const struct knytos_mutex *mutex, uint32_t reacquire_ms);
 /* all == 0 selects one registered waiter. Nonzero selects all. */
 int32_t knytos_condition_signal(const struct knytos_condition *condition, uint32_t all);
 

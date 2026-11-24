@@ -1,0 +1,195 @@
+{
+  "baseline_commit": "106061cbc7baed5ce8dcab61baf49fe1c77c2480",
+  "outcome": "passed",
+  "earlier_campaign": {
+    "outcome": "passed",
+    "cases": 24,
+    "serial_excerpt": "run-2-scheduler-serial.txt",
+    "kernel_sha256": "fffbf0e79984a6e456c068f1a1cdb6ebb466e832e5f60fb65bfac794049b4d74",
+    "scheduler_signed_elf_sha256": {
+      "avm-schedulers-1": "a54bb9db6cfede13218c0d39f30e5764f3840fabdc92bb3b8cbe2d759cc21ce3",
+      "avm-schedulers-2": "c3224a8724be000abf18fe58dce7a42f9e94a3e889c6252bc03d27eb73bbd135",
+      "avm-schedulers-4": "dc68f53575f2dcb644156dd0ae7da8563fcc8e61dafde06f9b7d977f55bf6cfd"
+    }
+  },
+  "final_campaign": {
+    "guest_cpus": 4,
+    "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+    "kernel_sha256": "1126664ae9fb6d44931ac2f6ea6b6c44f87e1d0c942520543e868cd1e3a18a1f",
+    "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+    "cases": [
+      {
+        "name": "c-hello",
+        "passed": true
+      },
+      {
+        "name": "c-memory",
+        "passed": true
+      },
+      {
+        "name": "c-format",
+        "passed": true
+      },
+      {
+        "name": "c-clock",
+        "passed": true
+      },
+      {
+        "name": "c-startup",
+        "passed": true
+      },
+      {
+        "name": "c-exit",
+        "passed": true
+      },
+      {
+        "name": "c-error",
+        "passed": true
+      },
+      {
+        "name": "c-abort",
+        "passed": true
+      },
+      {
+        "name": "c-empty",
+        "passed": true
+      },
+      {
+        "name": "avm-hello",
+        "passed": true
+      },
+      {
+        "name": "avm-utc",
+        "passed": true
+      },
+      {
+        "name": "avm-semantics",
+        "passed": true
+      },
+      {
+        "name": "avm-overflow",
+        "passed": true
+      },
+      {
+        "name": "avm-schedulers-1",
+        "passed": true
+      },
+      {
+        "name": "avm-schedulers-2",
+        "passed": true
+      },
+      {
+        "name": "avm-schedulers-4",
+        "passed": true
+      },
+      {
+        "name": "avm-idle-schedulers",
+        "passed": true
+      },
+      {
+        "name": "c-workers",
+        "passed": true
+      },
+      {
+        "name": "c-unjoined",
+        "passed": true
+      },
+      {
+        "name": "c-worker-reuse",
+        "passed": true
+      },
+      {
+        "name": "c-sync",
+        "passed": true
+      },
+      {
+        "name": "c-rwlock",
+        "passed": true
+      },
+      {
+        "name": "c-worker-libc",
+        "passed": true
+      },
+      {
+        "name": "c-worker-libc-close",
+        "passed": true
+      },
+      {
+        "name": "c-survivor",
+        "passed": true
+      }
+    ],
+    "negative_controls": [
+      {
+        "name": "tls-rejected",
+        "expected_diagnostic": "TLS is unsupported",
+        "passed": true
+      },
+      {
+        "name": "unsupported-rejected",
+        "expected_diagnostic": "undefined symbol: open",
+        "passed": true
+      },
+      {
+        "name": "signature-rejected",
+        "passed": true
+      }
+    ],
+    "serial_excerpt": "run-3-scheduler-serial.txt",
+    "scheduler_artifacts": {
+      "avm-schedulers-1": {
+        "threads": 1,
+        "stack_pages_per_thread": 64,
+        "profile": "interpreter-single-scheduler-no-tls-no-posix",
+        "unsigned_elf_sha256": "3bb1772ff00cc8036e67df54a66639812ea45d2490a9d122f854654c6785f33a",
+        "signed_elf_sha256": "7ad2ccfbe5f07ce8f768fbeba40b0e8ade47481c2001ffc40ae8a1af50408318",
+        "signed_elf_bytes": 719960,
+        "package_sha256": "7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794",
+        "package_bytes": 22708
+      },
+      "avm-schedulers-2": {
+        "threads": 2,
+        "stack_pages_per_thread": 64,
+        "profile": "interpreter-fixed-smp-no-tls-no-posix",
+        "unsigned_elf_sha256": "3ea661effe8a9d2660283d64e6d3898087bca1eacd6727fad28bd4aa2c3d4fda",
+        "signed_elf_sha256": "f03cbf79612be728c18ed1c427c1692e14b0cca361eb590a964e083a988a0d69",
+        "signed_elf_bytes": 754576,
+        "package_sha256": "7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794",
+        "package_bytes": 22708,
+        "link_map_sha256": "76386cbe17e4422d01babbc31a3d0f590586ee383f53a00048c10f584434b875"
+      },
+      "avm-schedulers-4": {
+        "threads": 4,
+        "stack_pages_per_thread": 64,
+        "profile": "interpreter-fixed-smp-no-tls-no-posix",
+        "unsigned_elf_sha256": "be8de9c080664a377918e13e634f9b29cecbf58ed15375ebe42bf071a8f48b04",
+        "signed_elf_sha256": "9a16bd99eb4f665a14835356c32509e6fb6c2c72ee23d7d9dc012ca6cfa26439",
+        "signed_elf_bytes": 754576,
+        "package_sha256": "7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794",
+        "package_bytes": 22708,
+        "link_map_sha256": "514e8c53e8afc2a39458431933182ef774911bd65a7de0e115b8339ba87196b4"
+      },
+      "avm-idle-schedulers": {
+        "threads": 4,
+        "stack_pages_per_thread": 64,
+        "profile": "interpreter-fixed-smp-no-tls-no-posix",
+        "unsigned_elf_sha256": "f7601e57254c36cd74b3adcebacddc6288960dfc9b3606f9df7864ce72935c1a",
+        "signed_elf_sha256": "9250124c1b4c73356b741efb66a169d7a9cc7607e651491cde5ce0bcdce4ddc3",
+        "signed_elf_bytes": 754576,
+        "package_sha256": "0a624bbb1ff591fdccda0f03a8079ff700eaaaac859937ba73fa009f573ac87b",
+        "package_bytes": 22024,
+        "link_map_sha256": "6f26760a5f0699a1ff92c871286692f01bbe1df2b23a17e7872e145848105f58"
+      }
+    }
+  },
+  "host_rust_tests": 89,
+  "host_script_checks": 15,
+  "kernel_selftests": {
+    "kernel_sha256": "47287f3a4956fe7c6a901ca5d76604c7c82d6cad06b0a3dc27e741d54bc98251",
+    "result": "SELFTEST COMPLETE: passed=19 failed=0 pending=0 passed_bitmap=0x2003ffff failed_bitmap=0x0 pending_bitmap=0x0"
+  },
+  "atomvm_revision": "ff993a80963298b532c1e573f883951ecaac9fef",
+  "otp_revision": "fc7e10af595f3ffd2c25c84c253a4d042734cfed",
+  "picolibc_revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff",
+  "harness_sha256": "92e7253b3073efac7b87d4c01bfaff751e01fd145e1c234890ff0696f9ff7d8f"
+}

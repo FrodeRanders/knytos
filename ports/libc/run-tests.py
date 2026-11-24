@@ -31,6 +31,10 @@ def main():
     parser.add_argument("--atomvm-utc-elf", type=Path)
     parser.add_argument("--atomvm-semantics-elf", type=Path)
     parser.add_argument("--atomvm-overflow-elf", type=Path)
+    parser.add_argument("--atomvm-scheduler-elf", action="append", type=Path, default=[],
+                        help="add an AtomVM scheduler workload using its adjacent build manifest")
+    parser.add_argument("--atomvm-idle-scheduler-elf", type=Path,
+                        help="add the AtomVM hello fixture with prepared but unused workers")
     parser.add_argument("--native-workers", action="store_true")
     parser.add_argument("--worker-libc", action="store_true")
     parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
@@ -42,6 +46,27 @@ def main():
         12: ("avm-semantics", args.atomvm_semantics_elf, "[atomvm] completed status=0"),
         13: ("avm-overflow", args.atomvm_overflow_elf, "[atomvm] unsupported: timer deadline overflow"),
     }
+    def scheduler_count(image):
+        manifest = json.loads(image.with_suffix(".atomvm.json").read_text())
+        count = manifest["schedulers"]
+        if count not in (1, 2, 4) or count > args.smp or digest(image) != manifest["unsigned_elf_sha256"]:
+            parser.error(f"Scheduler image does not match its manifest or guest CPU count: {image}")
+        return count
+    scheduler_cases = {}
+    for image in args.atomvm_scheduler_elf:
+        count = scheduler_count(image)
+        number = 20 + count
+        if number in scheduler_cases:
+            parser.error(f"Duplicate scheduler count: {count}")
+        scheduler_cases[number] = count
+        vm_cases[number] = (f"avm-schedulers-{count}", image, "[atomvm] completed status=0")
+    idle_case = 25
+    if args.atomvm_idle_scheduler_elf:
+        count = scheduler_count(args.atomvm_idle_scheduler_elf)
+        if count == 1:
+            parser.error("The idle scheduler fixture requires worker threads")
+        scheduler_cases[idle_case] = count
+        vm_cases[idle_case] = ("avm-idle-schedulers", args.atomvm_idle_scheduler_elf, "[atomvm] completed status=0")
     cases.extend((name, number) for number, (name, path, _) in vm_cases.items() if path)
     worker_cases = {
         14: ("c-workers", 2, "WORKER PASS"),
@@ -111,7 +136,7 @@ def main():
         for name, number in cases:
             image = images / (name + ".elf")
             command([signer, "elf-sign", image, name, key, "service", "1", "1", "0x7", "-"], name + "-sign")
-            thread_limit = worker_cases[number][1] if number in worker_cases else 1
+            thread_limit = worker_cases[number][1] if number in worker_cases else scheduler_cases.get(number, 1)
             command([signer, "deployment-sign", output / (name + ".cdep"), name, "fixture/" + name,
                      image, "0", "1", "64" if number in vm_cases else "16",
                      thread_limit, "5000", key], name + "-descriptor")
@@ -229,7 +254,7 @@ def main():
                             assert "released_blocks=1" in text, name
                         if number in (4, 5):
                             assert text.index("CABI ATEXIT") < text.index("CABI FINI"), name
-                        if number == 10:
+                        if number in (10, idle_case):
                             assert "[atomvm] wake-before-wait passed" in text, name
                             assert "ATOMVM platform=knytos" in text, name
                             assert "ATOMVM PASS elapsed_ms=" in text, name
@@ -241,6 +266,19 @@ def main():
                             assert "{m3,pass}" in text and "[atomvm] return=ok" in text, name
                             reactor = re.search(r'\[atomvm\] reactor waits=(\d+) deadlines=(\d+)', text)
                             assert reactor and int(reactor[2]) >= 6, name
+                        if number in scheduler_cases:
+                            count = scheduler_cases[number]
+                            assert f" schedulers={count} interpreter=yes" in text, name
+                            activated = 0 if number == idle_case else count - 1
+                            if number != idle_case:
+                                assert f"{{schedulers,{count}}}" in text and "{smp,pass}" in text, name
+                            assert "[atomvm] return=ok" in text, name
+                            assert re.search(r"\[atomvm\] reactor waits=[1-9]\d* deadlines=[1-9]\d*", text), name
+                            if count > 1:
+                                assert f"[atomvm] schedulers joined={count - 1} activated={activated}" in text, name
+                                for slot in range(1, activated + 1):
+                                    assert re.search(rf"\[EL0 LOG\] lp={slot} asid=\d+ \[atomvm\] scheduler entered slot={slot}$",
+                                                     text, re.MULTILINE), name
                         if number == 14:
                             assert re.search(r'\[EL0 LOG\] lp=1 asid=\d+ WORKER private queue entry', text), name
                             assert "WORKER cross-CPU handshake and admission" in text, name

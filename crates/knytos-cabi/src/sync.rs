@@ -20,6 +20,7 @@ use crate::{
     workers::{
         Participant,
         park,
+        park_event,
         participant,
         wake_waiters,
     },
@@ -124,7 +125,13 @@ struct ConditionState {
 pub struct Condition(Mutex<CountingMutex, ConditionState>);
 
 impl Condition {
-    fn wait(&self, mutex: &NativeMutex, caller: Participant, deadline: &Deadline) -> i32 {
+    fn wait(
+        &self,
+        mutex: &NativeMutex,
+        caller: Participant,
+        deadline: Option<&Deadline>,
+        reacquire_ms: u32,
+    ) -> i32 {
         let bit = caller.bit();
         let waiting = {
             // Register while still owning the application mutex. This is
@@ -143,19 +150,19 @@ impl Condition {
         wake_waiters(waiting);
 
         loop {
-            let remaining = deadline.remaining_ms();
+            let remaining = deadline.map(Deadline::remaining_ms);
             {
                 let mut state = self.0.lock();
                 if state.signaled & bit != 0 {
                     state.signaled &= !bit;
                     break;
                 }
-                if remaining == 0 {
+                if remaining == Some(0) {
                     state.pending &= !bit;
                     return DEADLINE;
                 }
             }
-            let status = park(caller, remaining);
+            let status = park_event(caller, remaining);
             if status != OK && status != DEADLINE {
                 let mut state = self.0.lock();
                 state.pending &= !bit;
@@ -163,8 +170,16 @@ impl Condition {
                 return status;
             }
         }
-        // Use the same deadline for reacquisition. The mutex is owned again
-        // only if this succeeds.
+        // Timed callers share their original budget with reacquisition.
+        // Event-only callers start a separate lock budget upon selection.
+        let lock_deadline;
+        let deadline = match deadline {
+            Some(deadline) => deadline,
+            None => {
+                lock_deadline = Deadline::after(u64::from(reacquire_ms));
+                &lock_deadline
+            }
+        };
         mutex.lock(caller, deadline)
     }
 
@@ -278,7 +293,23 @@ pub unsafe extern "C" fn knytos_condition_wait(
     else {
         return INVALID;
     };
-    condition.wait(mutex, caller, &Deadline::after(u64::from(timeout_ms)))
+    condition.wait(mutex, caller, Some(&Deadline::after(u64::from(timeout_ms))), 0)
+}
+
+/// Safety: both objects stay live through the wait and mutex reacquisition.
+/// The caller provides a shutdown path for this event-only private wait.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn knytos_condition_wait_event(
+    condition: *const Condition,
+    mutex: *const NativeMutex,
+    reacquire_ms: u32,
+) -> i32 {
+    let (Some(condition), Some(mutex), Some(caller)) =
+        (unsafe { condition.as_ref() }, unsafe { mutex.as_ref() }, participant())
+    else {
+        return INVALID;
+    };
+    condition.wait(mutex, caller, None, reacquire_ms)
 }
 
 /// Safety: unless null, the pointer names a live object throughout the call.
