@@ -93,6 +93,13 @@ reacquisition. The C waiter keeps the synchronization objects live through
 both phases. The checked status describes completion of that bounded
 operation and carries no kernel capability.
 
+C read/write locks keep separate reader and writer waiter sets on those
+same private queues. A final reader release can wake queued writers. The
+last writer's timeout or admission rejection can wake blocked readers
+while another reader still holds the lock. Both transitions publish under
+the metadata guard and notify after dropping it. The waiter rechecks its
+mode and participant identity after readiness.
+
 Object storage binds its public endpoint before registration, drains requests,
 then waits event-only on that same default CQ. An arrival between draining and
 parking leaves an unconsumed work generation; shutdown publication wakes the

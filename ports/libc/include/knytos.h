@@ -32,6 +32,16 @@ int32_t knytos_condition_wait(const struct knytos_condition *condition,
                              const struct knytos_mutex *mutex, uint32_t timeout_ms);
 /* all == 0 selects one registered waiter. Nonzero selects all. */
 int32_t knytos_condition_signal(const struct knytos_condition *condition, uint32_t all);
+
+struct knytos_rwlock;
+struct knytos_rwlock *knytos_rwlock_create(void);
+int32_t knytos_rwlock_destroy(struct knytos_rwlock *lock);
+/* Shared acquisition may nest for the same participant. A queued writer
+ * blocks new readers. Exclusive acquisition cannot nest or upgrade. */
+int32_t knytos_rwlock_try_read(const struct knytos_rwlock *lock);
+int32_t knytos_rwlock_read(const struct knytos_rwlock *lock, uint32_t timeout_ms);
+int32_t knytos_rwlock_write(const struct knytos_rwlock *lock, uint32_t timeout_ms);
+int32_t knytos_rwlock_unlock(const struct knytos_rwlock *lock);
 #endif
 struct knytos_allocation_stats { uint64_t blocks, requested_bytes, peak_requested_bytes; };
 struct knytos_abi_pair { uint64_t unsigned_value; int64_t signed_value; double floating_value; };

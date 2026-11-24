@@ -25,6 +25,7 @@ use crate::{
 };
 
 const MAX_WORKERS: usize = 3;
+pub(crate) const PARTICIPANT_COUNT: usize = MAX_WORKERS + 1;
 static MAIN_TID: AtomicU64 = AtomicU64::new(u64::MAX);
 static WORKER_LIMIT: AtomicUsize = AtomicUsize::new(0);
 static STARTS_CLOSED: AtomicBool = AtomicBool::new(false);

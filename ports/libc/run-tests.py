@@ -47,6 +47,7 @@ def main():
         15: ("c-unjoined", 2, "WORKER expected unjoined exit"),
         16: ("c-worker-reuse", 9, "WORKER exact join and slot reuse"),
         17: ("c-sync", 9, "SYNC PASS"),
+        18: ("c-rwlock", 5, "RWLOCK PASS"),
     }
     if args.native_workers:
         if args.smp < 2:
@@ -78,7 +79,7 @@ def main():
                 shutil.copyfile(vm_cases[number][1], images / (name + ".elf"))
                 continue
             if number in worker_cases:
-                source = "sync.c" if number == 17 else "workers.c"
+                source = {17: "sync.c", 18: "rwlock.c"}.get(number, "workers.c")
                 command(["python3", ROOT / "ports/libc/build.py", ROOT / "ports/libc/tests" / source,
                          "--native-workers", "--define", f"CASE={number}",
                          "--picolibc-source", args.picolibc_source,
@@ -239,6 +240,10 @@ def main():
                         if number == 17:
                             assert "SYNC one deadline through reacquisition" in text, name
                             assert "SYNC previous slot owner fenced" in text and "released_blocks=1" in text, name
+                        if number == 18:
+                            for marker in ("shared and nested readers", "writer timeout wakes readers",
+                                           "last reader releases writer"):
+                                assert "RWLOCK " + marker in text, name
                         record["cases"].append({"name": name, "case": number, "passed": True,
                                                 "observation": serial_text[before:]})
                         save()

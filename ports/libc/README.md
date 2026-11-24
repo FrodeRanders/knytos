@@ -176,6 +176,22 @@ while reacquisition is pending. This is a bounded runtime C ABI. An adapter
 for a library with different timeout or mutex ownership rules must account
 for those differences.
 
+Read/write locks use the same object lifetime rules. Shared acquisition can
+nest within a participant, with one unlock required for each acquisition.
+An exclusive owner blocks all other participants. A queued writer blocks
+new readers while allowing an existing reader to nest. Upgrading a shared
+lock or acquiring again while holding it exclusively returns
+`KNYTOS_INVALID`. The lock allows competing writers to race for ownership
+after a wake. It provides no FIFO order.
+
+The finite read and write calls carry one monotonic budget through every
+recheck. If the last queued writer times out or its wait is rejected, the
+runtime withdraws that registration and wakes any readers that are now
+eligible, even while an earlier reader is still active. The try-read call
+returns `KNYTOS_BUSY` immediately when it would have to wait. A lock stays
+live through all calls and can be destroyed only after every owner and
+waiter has left and the caller has excluded further access.
+
 ```sh
 python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
   --native-workers --smp 2 --output target/c-runtime/worker-validation

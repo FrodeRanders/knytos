@@ -1,5 +1,7 @@
 //! Bounded synchronization for the opt-in C worker roster. Internal locks
 //! serialize only plain metadata. Kernel waits and wakes run outside them.
+mod rwlock;
+
 use knytos_rt::{
     CountingMutex,
     deadline::Deadline,

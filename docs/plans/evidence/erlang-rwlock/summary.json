@@ -1,0 +1,15 @@
+{
+  "baseline_commit": "06eeb8fe453ec1dd0bcd5b00a341d0791b6f0151",
+  "outcome": "passed",
+  "guest_cpus": 4,
+  "cases": 15,
+  "negative_controls": 3,
+  "host_tests": 89,
+  "host_script_checks": 30,
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "kernel_sha256": "3575b3ce349c0b78d18ac474caa30c18d9e1181c5c54806163119d9af4396cba",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "signed_elf_sha256": "0074a1d46940172912624413f7cdfe8d062e9cb6b29aa580ad8635cb65d12712",
+  "signed_elf_bytes": 131376,
+  "harness_sha256": "0bd78c9451262b2dc70136bf985c21942108c4ce9207467ebb42a0e03b6910d4"
+}
