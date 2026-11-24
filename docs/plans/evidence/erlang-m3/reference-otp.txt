@@ -1,0 +1,44 @@
+{m3,values,ok}
+{m3,processes,ok}
+{m3,timers,ok}
+=ERROR REPORT==== 24-Nov-2026::22:13:57.298606 ===
+** Generic server <0.91.0> terminating
+** Last message in was {'$gen_cast',fail}
+** When Server state == worker
+** Reason for termination ==
+** fixture_failure
+
+=CRASH REPORT==== 24-Nov-2026::22:13:57.305624 ===
+  crasher:
+    initial call: semantics:init/1
+    pid: <0.91.0>
+    registered_name: []
+    exception exit: fixture_failure
+      in function  gen_server:handle_common_reply/8 (gen_server.erl, line 2476)
+    ancestors: [<0.90.0>,<0.10.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.90.0>]
+    dictionary: []
+    trap_exit: false
+    status: running
+    heap_size: 1598
+    stack_size: 29
+    reductions: 3812
+  neighbours:
+
+{m3,supervision,ok}
+{m3,pass}
+=SUPERVISOR REPORT==== 24-Nov-2026::22:13:57.306453 ===
+    supervisor: {<0.90.0>,semantics}
+    errorContext: child_terminated
+    reason: fixture_failure
+    offender: [{pid,<0.91.0>},
+               {id,worker},
+               {mfargs,{semantics,start_worker,[<0.10.0>]}},
+               {restart_type,transient},
+               {significant,false},
+               {shutdown,brutal_kill},
+               {child_type,worker}]
+
+{otp,ets_and_cancel_timer,ok}

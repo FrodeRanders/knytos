@@ -50,7 +50,11 @@ void sys_monotonic_time(struct timespec *time) {
     time->tv_nsec = now % 1000000000;
 }
 uint64_t sys_monotonic_time_ms_to_u64(uint64_t ms) {
-    if (ms > UINT64_MAX / 1000000) unsupported("timer conversion overflow");
+    /* The pinned scheduler samples native_now before calling this hook and
+     * then adds the returned duration. A later monotonic sample bounds both
+     * the conversion and that addition without patching upstream code. */
+    uint64_t now = sys_monotonic_time_u64();
+    if (ms > (UINT64_MAX - now) / 1000000) unsupported("timer deadline overflow");
     return ms * 1000000;
 }
 uint64_t sys_monotonic_time_u64_to_ms(uint64_t time) {

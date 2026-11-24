@@ -30,6 +30,8 @@ def main():
     parser.add_argument("--picolibc-source", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--application", type=Path, default=ROOT / "ports/atomvm/tests/hello.erl")
+    parser.add_argument("--otp-behaviours", action="store_true",
+                        help="include the pinned erlang wrappers, gen_server and supervisor")
     args = parser.parse_args()
     atomvm, otp = args.atomvm_source.resolve(), args.otp_source.resolve()
     for source, pin in ((atomvm, ATOMVM_PIN), (otp, OTP_PIN)):
@@ -60,6 +62,9 @@ def main():
     libraries = [atomvm / "libs/estdlib/src" / (name + ".erl")
                  for name in ("io", "io_lib", "lists", "string", "unicode", "proplists")]
     libraries += [atomvm / "libs/eavmlib/src/console.erl", atomvm / "libs/eavmlib/src/atomvm.erl"]
+    if args.otp_behaviours:
+        libraries += [atomvm / "libs/estdlib/src" / (name + ".erl")
+                      for name in ("erlang", "gen_server", "supervisor")]
     run(erlc, "+no_debug_info", "-o", beams, args.application.resolve(), *libraries)
     package = work / "application.avm"
     # PackBEAM refuses an existing output: unlink only this reproducible build

@@ -1,0 +1,4 @@
+ports/atomvm/tests/semantics.erl:8:10: ambiguous call of overridden pre Erlang/OTP R14 auto-imported BIF processes/0 --
+use erlang:processes/0 or \"-compile({no_auto_import,[processes/0]}).\" to resolve name clash
+%    8|     ok = processes(),
+%     |          ^

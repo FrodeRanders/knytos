@@ -69,6 +69,12 @@ generation posted before waiting and Erlang queued-message/timed-receive tests
 qualify this single-scheduler scope, without supplying SMP or remote cleanup
 guarantees.
 
+The AtomVM adapter bounds the proposed relative duration against a fresh
+monotonic sample before returning nanoseconds to the VM. The pinned scheduler
+adds that duration to its earlier sample, so a successful conversion also
+ensures the absolute expiry fits. The adapter aborts on overflow before the
+timer is queued.
+
 Object storage binds its public endpoint before registration, drains requests,
 then waits event-only on that same default CQ. An arrival between draining and
 parking leaves an unconsumed work generation; shutdown publication wakes the

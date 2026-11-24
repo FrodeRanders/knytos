@@ -1,0 +1,37 @@
+Unable to open erlang.beam
+Warning: module erlang cannot be resolved.
+CRASH
+======
+pid: <0.1.0>
+
+Stacktrace:
+[{semantics,process_semantics,0,[]},{semantics,start,0,[]}]
+
+cp: #CP<module: 0, label: 2, offset: 23>
+
+x[0]: error
+x[1]: undef
+x[2]: {2,0,0,0,[{0,33},{0,668}],error}
+
+Stack
+-----
+
+[]
+[]
+[]
+false
+#CP<module: 0, label: 2, offset: 23>
+#CP<module: 0, label: 117, offset: 0>
+
+
+Mailbox
+-------
+
+
+Monitors
+--------
+
+
+**End Of Crash Report**
+Return value: error
+{m3,values,ok}

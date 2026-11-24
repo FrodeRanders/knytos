@@ -1,0 +1,64 @@
+{
+  "baseline_commit": "d3e857be9e055c5167d4e11739cc9c6db001bf2e",
+  "package_bytes": 37884,
+  "package_sha256": "f16cdf0d6eaecf2d72b8053c84b60ae5035cbb23beedde2f3b424e56198d868f",
+  "kernel_self_tests_passed": 17,
+  "host_script_checks_passed": 30,
+  "reference_atomvm": "passed",
+  "reference_otp": "passed",
+  "native_matrix": [
+    {
+      "guest_cpus": 1,
+      "vm_schedulers": 1,
+      "passed_cases": 14,
+      "negative_controls": 3,
+      "kernel_sha256": "21717f8273e60dd7042ea46e6abf11cb8e9d4dc66481ddf4038e7376ae4d2b23",
+      "signed_elf_sha256": "1223fa15fffc68057f525f40cd7ab4cab7942a8f9847de2bd278bac28ddaa1bf",
+      "signed_elf_bytes": 736344,
+      "waits": 7,
+      "deadlines": 7,
+      "released_blocks": 59,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 32344,
+      "sampled_stack_bytes": 1808
+    },
+    {
+      "guest_cpus": 2,
+      "vm_schedulers": 1,
+      "passed_cases": 14,
+      "negative_controls": 3,
+      "kernel_sha256": "c86024237d42a2a1dc8bce48720f4df3b8df2b585d3f7ec34a8c49eb78f920f4",
+      "signed_elf_sha256": "1223fa15fffc68057f525f40cd7ab4cab7942a8f9847de2bd278bac28ddaa1bf",
+      "signed_elf_bytes": 736344,
+      "waits": 7,
+      "deadlines": 7,
+      "released_blocks": 59,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 32344,
+      "sampled_stack_bytes": 1808
+    },
+    {
+      "guest_cpus": 4,
+      "vm_schedulers": 1,
+      "passed_cases": 14,
+      "negative_controls": 3,
+      "kernel_sha256": "9390e296c75ffe3caf4a23d4c51e1253354b004004f09f3b8a32a83cd8da5e18",
+      "signed_elf_sha256": "1223fa15fffc68057f525f40cd7ab4cab7942a8f9847de2bd278bac28ddaa1bf",
+      "signed_elf_bytes": 736344,
+      "waits": 7,
+      "deadlines": 7,
+      "released_blocks": 59,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 32344,
+      "sampled_stack_bytes": 1808
+    }
+  ],
+  "scope": "one native AtomVM scheduler",
+  "implementation_sha256": {
+    "ports/atomvm/build.py": "36d5bc701770dca740cbbbd8c9ac0cf833c73b5e388bac8789da9ecc83bb8e15",
+    "ports/atomvm/sys.c": "ed99a9d0bb706ea139951b1483d4c11357a9b31410dd287d65806b49c8982abc",
+    "ports/atomvm/tests/semantics.erl": "5186c5231f9b947ee421c729a0ac4fbc2ac4a64517f0337041dc3511017489ac",
+    "ports/atomvm/tests/deadline_overflow.erl": "85138160d104f27f1dc7c585d265dae9652089bf3c40410af3b9dcd342d2a3bf",
+    "ports/libc/run-tests.py": "7bf98d3c4c648138d66088b058dcf6a7c25d27d7cc2c56610fa1db6752eca410"
+  }
+}

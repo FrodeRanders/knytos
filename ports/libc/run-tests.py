@@ -29,12 +29,19 @@ def main():
     parser.add_argument("--firmware", type=Path)
     parser.add_argument("--atomvm-elf", type=Path)
     parser.add_argument("--atomvm-utc-elf", type=Path)
+    parser.add_argument("--atomvm-semantics-elf", type=Path)
+    parser.add_argument("--atomvm-overflow-elf", type=Path)
+    parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
     args = parser.parse_args()
     cases = CASES[:-1].copy()
-    if args.atomvm_elf:
-        cases.append(("avm-hello", 10))
-    if args.atomvm_utc_elf:
-        cases.append(("avm-utc", 11))
+    vm_cases = {
+        10: ("avm-hello", args.atomvm_elf, "[atomvm] completed status=0"),
+        11: ("avm-utc", args.atomvm_utc_elf, "[atomvm] unsupported: wall clock unavailable"),
+        12: ("avm-semantics", args.atomvm_semantics_elf, "[atomvm] completed status=0"),
+        13: ("avm-overflow", args.atomvm_overflow_elf, "[atomvm] unsupported: timer deadline overflow"),
+    }
+    cases.extend((name, number) for number, (name, path, _) in vm_cases.items() if path)
+    abort_cases = (7, 11, 13)
     cases += CASES[-1:]
     def interrupted(_signal, _frame):
         raise SystemExit("C runtime campaign interrupted")
@@ -56,8 +63,8 @@ def main():
         images = output / "bundle"
         images.mkdir()
         for name, number in cases:
-            if number in (10, 11):
-                shutil.copyfile(args.atomvm_elf if number == 10 else args.atomvm_utc_elf, images / (name + ".elf"))
+            if number in vm_cases:
+                shutil.copyfile(vm_cases[number][1], images / (name + ".elf"))
                 continue
             command(["python3", ROOT / "ports/libc/build.py", ROOT / ("ports/libc/tests/empty.c" if number == 8 else "ports/libc/tests/suite.c"),
                      "--define", f"CASE={number}", "--picolibc-source", args.picolibc_source,
@@ -77,7 +84,7 @@ def main():
             image = images / (name + ".elf")
             command([signer, "elf-sign", image, name, key, "service", "1", "1", "0x7", "-"], name + "-sign")
             command([signer, "deployment-sign", output / (name + ".cdep"), name, "fixture/" + name,
-                     image, "0", "1", "64" if number in (10, 11) else "16", "1", "5000", key], name + "-descriptor")
+                     image, "0", "1", "64" if number in vm_cases else "16", "1", "5000", key], name + "-descriptor")
         tampered = bytearray((images / "c-hello.elf").read_bytes())
         command([signer, "elf-verify", images / "c-hello.elf", "c-hello",
                  "3ddc95c26bd5f4022d95a4c6c8d074f577f11af7873e527b018b21be2c035463"], "signature-accepted")
@@ -123,7 +130,7 @@ def main():
         with tempfile.TemporaryDirectory(prefix="cabi-qmp-", dir="/tmp") as transport:
             serial = output / "serial.txt"
             options = ["-M", "virt,gic-version=3,msi=gicv2m,iommu=smmuv3,default-bus-bypass-iommu=off",
-                       "-m", "512M", "-bios", str(firmware), "-cpu", "cortex-a710", "-smp", "4",
+                       "-m", "512M", "-bios", str(firmware), "-cpu", "cortex-a710", "-smp", str(args.smp),
                        "-drive", f"file={output / 'boot.img'},format=raw,if=none,id=boot0",
                        "-device", "virtio-blk-pci,drive=boot0,addr=3,bootindex=1",
                        "-object", "rng-random,filename=/dev/urandom,id=knytos-rng",
@@ -158,20 +165,24 @@ def main():
                         before = len(serial.read_text(errors="replace"))
                         command([signer, "deployment-notify", output / (name + ".cdep"), "127.0.0.1:28081"], name + "-admission", env=environment, timeout=40)
                         expected = "CABI expected abort" if number == 7 else "CABI expected nonzero" if number == 6 else "CABI explicit exit" if number == 5 else f"CABI PASS case={number}"
-                        if number == 10: expected = "[atomvm] completed status=0"
-                        if number == 11: expected = "[atomvm] unsupported: wall clock unavailable"
-                        def complete(text):
+                        if number in vm_cases:
+                            expected = vm_cases[number][2]
+                        def observation(text):
                             tail = text[before:]
                             launch = re.search(r'\[agent\] launched "' + re.escape(name) + r'" generation=\d+ asid=(\d+)', tail)
                             if not launch:
-                                return False
-                            domain_lines = "\n".join(line for line in tail.splitlines() if re.search(r'asid=' + launch[1] + r'\b', line))
-                            terminal = "[c-runtime] abort" if number in (7, 11) else f"[c-runtime] exit={17 if number == 6 else 0} "
+                                return ""
+                            return "\n".join(line for line in tail.splitlines()
+                                             if re.search(r'\[EL0 LOG\] lp=\d+ asid=' + launch[1] + r' ', line))
+                        def complete(text):
+                            domain_lines = observation(text)
+                            terminal = "[c-runtime] abort" if number in abort_cases else f"[c-runtime] exit={17 if number == 6 else 0} "
                             return expected in domain_lines and terminal in domain_lines
-                        text = wait_for(complete, 60)[before:]
-                        if number not in (7, 8, 10, 11):
+                        serial_text = wait_for(complete, 60)
+                        text = observation(serial_text)
+                        if number not in (7, 8) and number not in vm_cases:
                             assert "CABI FINI" in text, name
-                        if number not in (7, 11):
+                        if number not in abort_cases:
                             assert "remaining_blocks=0" in text, name
                         if number in (4, 5, 6):
                             assert "released_blocks=1" in text, name
@@ -183,11 +194,18 @@ def main():
                             assert "ATOMVM PASS elapsed_ms=" in text, name
                             assert "[atomvm] return=ok" in text, name
                             assert re.search(r'\[atomvm\] reactor waits=[1-9]\d* deadlines=[1-9]\d*', text), name
-                        record["cases"].append({"name": name, "case": number, "passed": True, "observation": text})
+                        if number == 12:
+                            for stage in ("values", "processes", "timers", "supervision"):
+                                assert f"{{m3,{stage},ok}}" in text, stage
+                            assert "{m3,pass}" in text and "[atomvm] return=ok" in text, name
+                            reactor = re.search(r'\[atomvm\] reactor waits=(\d+) deadlines=(\d+)', text)
+                            assert reactor and int(reactor[2]) >= 6, name
+                        record["cases"].append({"name": name, "case": number, "passed": True,
+                                                "observation": serial_text[before:]})
                         save()
                     record["outcome"] = "passed"
                 except BaseException:
-                    record["snapshot"] = diagnostic.capture(output, {"serial_log": str(serial), "transport": transport, "cpus": 4}, "C-runtime-fixture-failure")
+                    record["snapshot"] = diagnostic.capture(output, {"serial_log": str(serial), "transport": transport, "cpus": args.smp}, "C-runtime-fixture-failure")
                     raise
                 finally:
                     if process.poll() is None:

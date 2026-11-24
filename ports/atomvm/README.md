@@ -120,5 +120,39 @@ Run the same package on the reference interpreter with
 `generic_unix` rather than `knytos`, hello, a receive timeout of at least 25 ms,
 and `Return value: ok`. The native harness requires the Knytos identity.
 
-M3 semantic coverage, TLS/SMP, general native-service NIFs, network access,
-ERTS, state recovery and multi-node distribution remain outside this profile.
+## Erlang semantics and worker recovery
+
+To build the semantic fixture, pass
+`--application ports/atomvm/tests/semantics.erl --otp-behaviours` to
+`build.py` and write it to `target/atomvm/atomvm-semantics.elf`. The flag adds
+the pinned `erlang` wrappers, `gen_server` and `supervisor` to the embedded
+package. Build a second image with
+`--application ports/atomvm/tests/deadline_overflow.erl` and write it to
+`target/atomvm/atomvm-overflow.elf`. This fixture requests a duration whose
+nanosecond conversion fits but whose absolute expiry would overflow. The
+adapter aborts with `unsupported: timer deadline overflow` before scheduling
+that timer.
+
+```sh
+python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
+  --atomvm-elf target/atomvm/atomvm-hello.elf \
+  --atomvm-utc-elf target/atomvm/atomvm-utc.elf \
+  --atomvm-semantics-elf target/atomvm/atomvm-semantics.elf \
+  --atomvm-overflow-elf target/atomvm/atomvm-overflow.elf \
+  --smp 4 --output target/atomvm/semantic-validation
+```
+
+The semantic fixture verifies Erlang values, garbage collection, process
+links and monitors, selective receive, timer cancellation by message and
+`one_for_one` worker recovery. Run the same package on the host reference
+interpreter in `atomvm-semantics.atomvm-build/host/src/AtomVM`. To compare
+against OTP, compile and run only `semantics.erl` using the pinned host OTP's
+own library modules. Both comparisons expect all four stage markers,
+`{m3,pass}`, and an `ok` result. The fixture produces expected crash reports
+for two Erlang processes. The supervision check requires the replacement
+worker to serve a request within the same native domain.
+
+The signed VM descriptor permits one native thread. The runner's `--smp` flag
+sets the guest CPU count. AtomVM SMP, TLS, general native-service NIFs, external
+networking, ERTS and multi-node distribution require further work. See the
+[remaining scheduler requirements](../../docs/plans/erlang-m3-multicore.md).

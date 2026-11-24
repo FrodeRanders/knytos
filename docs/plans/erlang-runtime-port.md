@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope; later milestones proposed\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -18,7 +18,9 @@ AtomVM execution, timers, resource observations and unsupported facilities.
 The C runtime design is in
 [Native C execution environment](../architecture/c-runtime.md). These documents
 distinguish inspected interfaces and executed probes from unimplemented port
-features. M3 remains subject to the next milestone review.
+features. The [M3 results](../reports/milestones/2026-11-24-atomvm-semantics.md)
+record Erlang semantics and worker recovery. The [multicore plan](erlang-m3-multicore.md)
+tracks the native scheduler and C library contracts still needed for AtomVM SMP.
 
 ---
 
@@ -1017,6 +1019,10 @@ Where possible, integrate diagnostics with existing Knytos logging rather than i
 ---
 
 ## 10. Milestone M3 — Erlang execution semantics and SMP validation
+
+The single-scheduler fixture covers values, Erlang processes, receive timers
+and supervisor recovery. Its [qualification record](../reports/milestones/2026-11-24-atomvm-semantics.md)
+includes the AtomVM and OTP comparisons. Native AtomVM SMP remains open.
 
 ### 10.1. Objective
 

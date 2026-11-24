@@ -1,0 +1,69 @@
+CRASH
+======
+pid: <0.2.0>
+
+Stacktrace:
+[{semantics,-process_semantics/0-fun-0-,1,[]}]
+
+cp: #CP<module: 0, label: 118, offset: 0>
+
+x[0]: exit
+x[1]: fixture_exit
+x[2]: {1,0,0,0,[{0,2723}],exit}
+
+Stack
+-----
+
+#CP<module: 0, label: 118, offset: 0>
+
+
+Mailbox
+-------
+
+
+Monitors
+--------
+link to <0.1.0>
+monitored by <0.1.0> ref=1
+
+
+**End Of Crash Report**
+CRASH
+======
+pid: <0.8.0>
+
+Stacktrace:
+[{gen_server,do_terminate,3,[]}]
+
+cp: #CP<module: 3, label: 138, offset: 0>
+
+x[0]: exit
+x[1]: fixture_failure
+x[2]: {1,0,0,0,[{3,3574}],exit}
+
+Stack
+-----
+
+semantics
+worker
+fixture_failure
+#CP<module: 3, label: 138, offset: 0>
+
+
+Mailbox
+-------
+
+
+Monitors
+--------
+link to <0.7.0>
+monitored by <0.1.0> ref=5
+
+
+**End Of Crash Report**
+Return value: ok
+{m3,values,ok}
+{m3,processes,ok}
+{m3,timers,ok}
+{m3,supervision,ok}
+{m3,pass}
