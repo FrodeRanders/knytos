@@ -196,3 +196,32 @@ waiter has left and the caller has excluded further access.
 python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
   --native-workers --smp 2 --output target/c-runtime/worker-validation
 ```
+
+## Picolibc profile for worker calls
+
+`build.py --worker-libc` builds a separate Picolibc archive with stdio
+locking and the runtime's participant-local errno hook. It includes the
+worker APIs. Errno storage belongs to one live participant, starts at zero
+for each new worker generation, and stays valid only for that
+participant's lifetime. Pointers returned by the errno hook stay within
+their owning callback.
+
+The bridge installs locks on stdin and on the shared stdout and stderr
+stream before C startup. Recursive acquisition is keyed to the exact
+participant. Contention uses the same private CQ waits as the bounded
+mutex. The Picolibc lock hook has no error return, so it aborts the
+domain if acquisition rejects or exceeds its five-second budget.
+The exit path checks that startup has joined all workers before it
+enters C finalizers or frees C allocations.
+
+The qualified worker calls cover allocation and free, errno, numeric
+conversion, formatting into private buffers, and output to the fixed
+streams. Dynamic stream locking and fixed-stream close abort explicitly.
+Close the worker group by joining every callback and returning from the
+startup thread. The configuration uses no ELF TLS. Stateful libc routines
+outside the qualified set still need their own concurrency audit.
+
+```sh
+python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
+  --worker-libc --smp 4 --output target/c-runtime/worker-libc-validation
+```

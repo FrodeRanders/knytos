@@ -1,0 +1,1 @@
+VERIFY OK: /Users/froran/Projects/private/knytos/target/c-runtime/worker-libc-run-1/bundle/c-hello.elf is blessed as "c-hello", class=Service, version=1, rollback=1, flags=0x7, provenance=0000000000000000000000000000000000000000000000000000000000000000

@@ -1,0 +1,22 @@
+{
+  "atomvm-libc-writable-symbols.txt": "371aabf8e64ddd5ceea081d9e61569b2f80dc2e03559662058968fe5553e962c",
+  "clippy.txt": "c319ddd3aa22515022469e28e19b047b434eeb7e761950afb6d4dbf16b8f8910",
+  "compile-preparation-errors.txt": "5d2903f483dc106b39126dc5c64fb166383a6411c920acbe5546e8394998113e",
+  "host-tests.txt": "d19279e3f547d336ec801fb0189adcaf789843c6aeedffa1e2f6a4269d8c282e",
+  "link-preparation-errors.txt": "3f2f9430fd53cbde59c61182ee1028bfcff1a8c2c5530f0141ae028681fdc743",
+  "picolibc-config-excerpt.txt": "50c1cb4723611822d0a8ddf23869c4dd4bb74828d50b142ee8ba3c86c9422385",
+  "run-1/atomvm-worker-libc.atomvm.json": "a0fd216127396ba6529fed019ea93255a9783e6563b0e2b97f2373876462839a",
+  "run-1/atomvm-worker-libc.build.json": "01581c8d6b6753cd5471ddbac5688513844d4cbb0c5ca459eb7b48542694f3d6",
+  "run-1/avm-semantics-symbols.txt": "490297cc28cdda5d7148cc2161682c28874b9e7296d733b3af128a1db4ba0208",
+  "run-1/c-worker-libc-close-symbols.txt": "ff67f6dc326cfb896a7164c7c7c65c4ef2e040acb976541fd0d8abb45afb51f0",
+  "run-1/c-worker-libc-close.build.json": "4dfdac3c2e9c7ce8400ca764b0db0e74bc0111c4f64352765eb67332f3f8ed75",
+  "run-1/c-worker-libc-symbols.txt": "29da37790af4d85c167e7265178dc367ddc68aa3ff2d861789c5d7dfd1e9ae16",
+  "run-1/c-worker-libc.build.json": "492ca4e3845a60be62a7fa131ea41e1801107744a3a9b443f56d446cec0c6528",
+  "run-1/result.json": "e46903692a0d232c2a9a29c0c9c9e056195098a315d689c01f23bcd3f4dd7b80",
+  "run-1/serial.txt": "c49e673de5ede7fcf5a195d538b9a4df1f507dc4565bc0c3bb2842c1eb07957a",
+  "run-1/signature-accepted.txt": "43dab72fd0d57f13f02cba5026c9400c0304bd37f9db4b4746689d7fd64ab334",
+  "run-1/signature-rejected.txt": "c21c3f1e3272f1313ec8a2eaed646eb9dd2e5ff2db4e28fc7ddd702854c7e8fc",
+  "run-1/tls-rejected.txt": "7d498b53dca78adee8e2d373632df32b2f449d7e353156d75e98ef3091be6d0f",
+  "run-1/unsupported-rejected.txt": "1bc2937525505d74c36894730849bfb4f82d5637230ae355cebf092b6dbf1a03",
+  "summary.json": "35daf7d3dfa68a9d61df1c2c1cd5da29d256caa3f76c4c864db7b00af2e1022f"
+}

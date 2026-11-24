@@ -1,0 +1,6 @@
+0000000000021338 T __flockfile_init
+0000000000021348 T __retarget_lock_acquire_recursive
+0000000000021350 T __retarget_lock_release
+00000000000214d0 T __retarget_lock_release_recursive
+0000000000021bd0 T knytos_errno_location
+000000000002b118 B knytos_stdio_output_lock

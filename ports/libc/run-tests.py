@@ -32,6 +32,7 @@ def main():
     parser.add_argument("--atomvm-semantics-elf", type=Path)
     parser.add_argument("--atomvm-overflow-elf", type=Path)
     parser.add_argument("--native-workers", action="store_true")
+    parser.add_argument("--worker-libc", action="store_true")
     parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
     args = parser.parse_args()
     cases = CASES[:-1].copy()
@@ -49,11 +50,16 @@ def main():
         17: ("c-sync", 9, "SYNC PASS"),
         18: ("c-rwlock", 5, "RWLOCK PASS"),
     }
-    if args.native_workers:
+    libc_cases = {
+        19: ("c-worker-libc", 3, "WORKER LIBC PASS"),
+        20: ("c-worker-libc-close", 1, "WORKER LIBC expected fixed-stream close rejection"),
+    } if args.worker_libc else {}
+    worker_cases.update(libc_cases)
+    if args.native_workers or args.worker_libc:
         if args.smp < 2:
-            parser.error("--native-workers needs at least two guest CPUs")
+            parser.error("worker fixtures need at least two guest CPUs")
         cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
-    abort_cases = (7, 11, 13, 15)
+    abort_cases = (7, 11, 13, 15, 20)
     cases += CASES[-1:]
     def interrupted(_signal, _frame):
         raise SystemExit("C runtime campaign interrupted")
@@ -80,8 +86,11 @@ def main():
                 continue
             if number in worker_cases:
                 source = {17: "sync.c", 18: "rwlock.c"}.get(number, "workers.c")
+                profile = "--native-workers"
+                if number in libc_cases:
+                    source, profile = "worker-libc.c", "--worker-libc"
                 command(["python3", ROOT / "ports/libc/build.py", ROOT / "ports/libc/tests" / source,
-                         "--native-workers", "--define", f"CASE={number}",
+                         profile, "--define", f"CASE={number}",
                          "--picolibc-source", args.picolibc_source,
                          "--output", images / (name + ".elf")], name + "-build")
                 continue
@@ -202,9 +211,11 @@ def main():
                             terminal = "[c-runtime] abort" if number in abort_cases else f"[c-runtime] exit={17 if number == 6 else 0} "
                             if number == 15:
                                 terminal = "[c-runtime] exit with an unjoined worker"
+                            if number == 20:
+                                terminal = "[worker-libc] libc lock close is unsupported"
                             if expected not in domain_lines or terminal not in domain_lines:
                                 return False
-                            if number == 15:
+                            if number in (15, 20):
                                 asid = re.search(r'\[EL0 LOG\] lp=\d+ asid=(\d+) ', domain_lines)[1]
                                 return re.search(r'Aborting user address space ' + asid + r'\b', text[before:]) is not None
                             return True
@@ -244,6 +255,12 @@ def main():
                             for marker in ("shared and nested readers", "writer timeout wakes readers",
                                            "last reader releases writer"):
                                 assert "RWLOCK " + marker in text, name
+                        if number == 19:
+                            assert text.index("WORKER LIBC held record") < text.index("WORKER LIBC worker acquired stream")
+                            for role in ("worker", "startup"):
+                                for row in range(8):
+                                    line = f"WORKER LIBC {role} row={row} text=clear"
+                                    assert sum(entry.endswith(line) for entry in text.splitlines()) == 1, line
                         record["cases"].append({"name": name, "case": number, "passed": True,
                                                 "observation": serial_text[before:]})
                         save()

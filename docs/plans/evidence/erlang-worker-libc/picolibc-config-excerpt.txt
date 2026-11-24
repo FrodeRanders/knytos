@@ -1,0 +1,7 @@
+/* #undef __GLOBAL_ERRNO */
+#define __PICOLIBC_ERRNO_FUNCTION knytos_errno_location
+/* #undef __THREAD_LOCAL_STORAGE */
+/* #undef __THREAD_LOCAL_STORAGE_STACK_GUARD */
+/* #undef __THREAD_LOCAL_STORAGE_API */
+/* #undef __SINGLE_THREAD */
+FLAGS = -ffreestanding -fno-stack-protector -fno-pic -fno-pie -mno-outline-atomics -ffunction-sections -fdata-sections -D__STDIO_LOCKING -Os -DNDEBUG -nostdlib -D_LIBC -fno-common -fno-stack-protector -ffunction-sections -fdata-sections -Wall -Wextra -Werror=implicit-function-declaration -Werror=vla -Warray-bounds -Wold-style-definition -frounding-math

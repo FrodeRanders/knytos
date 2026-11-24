@@ -1,0 +1,8 @@
+           a9108            a9108        8     8         /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-workers-v1/libc.a(environ.c.obj):(.data.environ)
+           a9110            a9110        c     1         /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-workers-v1/libc.a(tzvars.c.obj):(.data.__tzname_std)
+           a911c            a911c        c     1         /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-workers-v1/libc.a(tzvars.c.obj):(.data.__tzname_dst)
+           a9358            a9358        4     4         /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-workers-v1/libc.a(_findenv.c.obj):(.bss.__environ_sequence)
+           a935c            a935c        1     1         /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-workers-v1/libc.a(setenv.c.obj):(.bss.setenv_alloced)
+           a9360            a9360        4     4         /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-workers-v1/libc.a(tzvars.c.obj):(.bss.daylight)
+           a9368            a9368        8     8         /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-workers-v1/libc.a(tzvars.c.obj):(.bss.timezone)
+           a9370            a9370       58     8         /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-workers-v1/libc.a(tzvars.c.obj):(.bss.__tzinfo)

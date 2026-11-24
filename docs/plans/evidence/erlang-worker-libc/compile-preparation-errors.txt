@@ -1,0 +1,2 @@
+/Users/froran/Projects/private/knytos/ports/libc/tests/worker-libc.c:85:5: error: call to undeclared function 'flockfile'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+/Users/froran/Projects/private/knytos/ports/libc/tests/worker-libc.c:92:5: error: call to undeclared function 'funlockfile'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]

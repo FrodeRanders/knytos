@@ -156,3 +156,9 @@ The signed VM descriptor permits one native thread. The runner's `--smp` flag
 sets the guest CPU count. AtomVM SMP, TLS, general native-service NIFs, external
 networking, ERTS and multi-node distribution require further work. See the
 [remaining scheduler requirements](../../docs/plans/erlang-m3-multicore.md).
+
+Pass `--worker-libc` to the AtomVM builder to link the separate Picolibc
+worker profile. Use the same semantics fixture and
+`--atomvm-semantics-elf` runner argument to verify that linked closure.
+This build still uses `AVM_NO_SMP`. The profile's concurrent C fixture
+qualifies fixed streams and errno independently of the VM.

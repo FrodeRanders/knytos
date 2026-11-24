@@ -1,0 +1,18 @@
+-- Configuring done (2.7s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-v1
+ninja: no work to do.
+    Finished `release` profile [optimized] target(s) in 0.10s
+rust-lld: error: undefined symbol: open
+>>> referenced by unsupported-rejected.c
+>>>               /Users/froran/Projects/private/knytos/target/c-runtime/worker-libc-run-1/unsupported-rejected.build/application.o:(knytos_c_main)
+Traceback (most recent call last):
+  File "/Users/froran/Projects/private/knytos/ports/libc/build.py", line 164, in <module>
+    main()
+  File "/Users/froran/Projects/private/knytos/ports/libc/build.py", line 132, in main
+    run(llvm / "rust-lld", "-flavor", "gnu", "-m", "aarch64elf", "--gc-sections", "--entry=_start", *link_map,
+  File "/Users/froran/Projects/private/knytos/ports/libc/build.py", line 16, in run
+    subprocess.run([str(a) for a in args], check=True, **kwargs)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Users/froran/.rustup/toolchains/nightly-2026-11-14-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/bin/rust-lld', '-flavor', 'gnu', '-m', 'aarch64elf', '--gc-sections', '--entry=_start', '-T', '/Users/froran/Projects/private/knytos/target/c-runtime/worker-libc-run-1/unsupported-rejected.build/link.x', '-o', '/Users/froran/Projects/private/knytos/target/c-runtime/worker-libc-run-1/unsupported-rejected.elf', '--start-group', '/Users/froran/Projects/private/knytos/target/c-runtime/worker-libc-run-1/unsupported-rejected.build/application.o', '/Users/froran/Projects/private/knytos/target/c-runtime/worker-libc-run-1/unsupported-rejected.build/bridge.o', '/Users/froran/Projects/private/knytos/target/aarch64-unknown-none/release/libknytos_cabi.a', '/Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-v1/libc.a', '--end-group']' returned non-zero exit status 1.

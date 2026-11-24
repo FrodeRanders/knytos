@@ -26,16 +26,38 @@ static int put_character(char c, FILE *stream) {
 }
 static int flush_stream(FILE *stream) { (void)stream; knytos_console_flush(); return 0; }
 static int unavailable_input(FILE *stream) { (void)stream; errno = ENOSYS; return EOF; }
+#ifdef KNYTOS_WORKER_LIBC
+/* Publish the fixed streams with their locks installed. The profile never
+ * exposes Picolibc's lazy stream-lock creation to a second worker. */
+extern struct __lock knytos_stdio_output_lock;
+extern struct __lock knytos_stdio_input_lock;
+static FILE console = {
+    .flags = _FDEV_SETUP_WRITE,
+    .put = put_character,
+    .flush = flush_stream,
+    .lock = &knytos_stdio_output_lock,
+};
+static FILE input = {
+    .flags = _FDEV_SETUP_READ,
+    .get = unavailable_input,
+    .lock = &knytos_stdio_input_lock,
+};
+#else
 static FILE console = FDEV_SETUP_STREAM(put_character, NULL, flush_stream, _FDEV_SETUP_WRITE);
 static FILE input = FDEV_SETUP_STREAM(NULL, unavailable_input, NULL, _FDEV_SETUP_READ);
+#endif
 FILE *const stdout = &console;
 FILE *const stderr = &console;
 /* Input is unavailable; this profile supplies no fake successful read. */
 FILE *const stdin = &input;
 
 _Noreturn void exit(int status) {
+#ifndef KNYTOS_WORKER_LIBC
     fflush(stdout);
     fflush(stderr);
+#endif
+    /* The worker path checks join custody before finalizers and flushes
+     * the Rust console buffer at the terminal boundary. */
     knytos_c_terminate(status, 1);
 }
 _Noreturn void _Exit(int status) { knytos_c_terminate(status, 0); }

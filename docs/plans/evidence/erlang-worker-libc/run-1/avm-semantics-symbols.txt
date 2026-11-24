@@ -1,0 +1,7 @@
+0000000000087688 T __flockfile_init
+00000000000a9148 B __lock___libc_recursive_mutex
+0000000000087698 T __retarget_lock_acquire_recursive
+00000000000876a0 T __retarget_lock_release
+0000000000087820 T __retarget_lock_release_recursive
+0000000000087eb4 T knytos_errno_location
+00000000000a9170 B knytos_stdio_output_lock

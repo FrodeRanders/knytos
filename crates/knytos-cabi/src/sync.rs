@@ -1,5 +1,7 @@
 //! Bounded synchronization for the opt-in C worker roster. Internal locks
 //! serialize only plain metadata. Kernel waits and wakes run outside them.
+#[cfg(feature = "worker-libc")]
+pub(crate) mod libc;
 mod rwlock;
 
 use knytos_rt::{
@@ -14,6 +16,7 @@ use crate::{
     DEADLINE,
     INVALID,
     OK,
+    OVERFLOW,
     workers::{
         Participant,
         park,
@@ -22,20 +25,29 @@ use crate::{
     },
 };
 
-#[derive(Default)]
 struct LockState {
     owner: Option<Participant>,
+    depth: u32,
     waiting: u8,
 }
 
 pub struct NativeMutex(Mutex<CountingMutex, LockState>);
 
 impl NativeMutex {
+    const fn new() -> Self {
+        Self(Mutex::new(LockState {
+            owner: None,
+            depth: 0,
+            waiting: 0,
+        }))
+    }
+
     fn try_lock(&self, caller: Participant) -> i32 {
         let mut state = self.0.lock();
         match state.owner {
             None => {
                 state.owner = Some(caller);
+                state.depth = 1;
                 OK
             }
             Some(owner) if owner == caller => INVALID,
@@ -44,6 +56,10 @@ impl NativeMutex {
     }
 
     fn lock(&self, caller: Participant, deadline: &Deadline) -> i32 {
+        self.lock_inner(caller, deadline, false)
+    }
+
+    fn lock_inner(&self, caller: Participant, deadline: &Deadline, recursive: bool) -> i32 {
         let bit = caller.bit();
         loop {
             let remaining = deadline.remaining_ms();
@@ -53,6 +69,14 @@ impl NativeMutex {
                     None => {
                         state.waiting &= !bit;
                         state.owner = Some(caller);
+                        state.depth = 1;
+                        return OK;
+                    }
+                    Some(owner) if owner == caller && recursive => {
+                        let Some(depth) = state.depth.checked_add(1) else {
+                            return OVERFLOW;
+                        };
+                        state.depth = depth;
                         return OK;
                     }
                     Some(owner) if owner == caller => return INVALID,
@@ -79,6 +103,10 @@ impl NativeMutex {
             if state.owner != Some(caller) {
                 return INVALID;
             }
+            state.depth -= 1;
+            if state.depth != 0 {
+                return OK;
+            }
             state.owner = None;
             state.waiting
         };
@@ -102,13 +130,14 @@ impl Condition {
             // Register while still owning the application mutex. This is
             // the only operation taking both guards, mutex then condition.
             let mut held = mutex.0.lock();
-            if held.owner != Some(caller) {
+            if held.owner != Some(caller) || held.depth != 1 {
                 return INVALID;
             }
             let mut state = self.0.lock();
             assert_eq!((state.pending | state.signaled) & bit, 0);
             state.pending |= bit;
             held.owner = None;
+            held.depth = 0;
             held.waiting
         };
         wake_waiters(waiting);
@@ -169,7 +198,7 @@ fn publish<T>(value: T) -> *mut T {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn knytos_mutex_create() -> *mut NativeMutex {
-    publish(NativeMutex(Mutex::new(LockState::default())))
+    publish(NativeMutex::new())
 }
 
 #[unsafe(no_mangle)]

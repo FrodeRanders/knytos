@@ -28,6 +28,8 @@ def main():
     parser.add_argument("--atomvm-source", required=True, type=Path)
     parser.add_argument("--otp-source", required=True, type=Path)
     parser.add_argument("--picolibc-source", required=True, type=Path)
+    parser.add_argument("--worker-libc", action="store_true",
+                        help="qualify the worker libc closure with the single-scheduler interpreter")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--application", type=Path, default=ROOT / "ports/atomvm/tests/hello.erl")
     parser.add_argument("--otp-behaviours", action="store_true",
@@ -89,14 +91,18 @@ def main():
         with (generated / (kind + "_hash.h")).open("w") as target:
             run("gperf", "-t", core / (kind + ".gperf"), stdout=target)
     # Reuse the M1 runtime/toolchain and its libc configuration.
+    libc_profile = ["--worker-libc"] if args.worker_libc else []
+    libc_dir = "picolibc-aarch64-workers-v1" if args.worker_libc else "picolibc-aarch64-v1"
     run("python3", ROOT / "ports/libc/build.py", ROOT / "ports/libc/tests/empty.c",
-        "--output", work / "libc-probe.elf", "--picolibc-source", args.picolibc_source)
+        "--output", work / "libc-probe.elf", "--picolibc-source", args.picolibc_source, *libc_profile)
     flags = ["--target=aarch64-none-elf", "-std=c11", "-ffreestanding", "-fno-builtin",
         "-fno-stack-protector", "-fno-pic", "-fno-pie", "-mno-outline-atomics", "-Os",
         "-ffunction-sections", "-fdata-sections", "-fstack-usage", "-Wall", "-Wextra",
         "-DAVM_NO_SMP", "-DAVM_CREATE_STACKTRACES", "-DAVM_VERBOSE_ABORT", "-D_POSIX_C_SOURCE=200809L",
-        "-isystem", str(ROOT / "target/c-runtime/picolibc-aarch64-v1/picolibc/include"),
+        "-isystem", str(ROOT / "target/c-runtime" / libc_dir / "picolibc/include"),
         "-I", str(core), "-I", str(generated), "-I", str(ROOT / "ports/libc/include")]
+    if args.worker_libc:
+        flags.append("-D__STDIO_LOCKING")
     # Mirror the exact release's upstream core source list, without POSIX
     # feature probes that could incorrectly succeed for static try-compiles.
     match = re.search(r"set\(SOURCE_FILES\s+(.*?)\)", (core / "CMakeLists.txt").read_text(), re.S)
@@ -116,7 +122,7 @@ def main():
     run("python3", ROOT / "ports/libc/build.py", ROOT / "ports/atomvm/main.c",
         "--output", output, "--picolibc-source", args.picolibc_source,
         "--include", core, "--include", generated, "--define", "AVM_NO_SMP",
-        "--library", archive)
+        "--library", archive, *libc_profile)
     shutil.copyfile(atomvm / "LICENSE", output.parent / "AtomVM-LICENSE.txt")
     shutil.copyfile(atomvm / "LICENSES/Apache-2.0.txt", output.parent / "AtomVM-Apache-2.0.txt")
     inputs = [ROOT / "ports/atomvm/build.py", ROOT / "ports/atomvm/main.c", args.application.resolve(), *sources, *libraries]
@@ -124,6 +130,7 @@ def main():
         "otp_version": "27.3.4.19", "package_sha256": sha(package), "package_bytes": len(data),
         "unsigned_elf_sha256": sha(output), "unsigned_elf_bytes": output.stat().st_size,
         "profile": "interpreter-single-scheduler-no-tls-no-posix",
+        "worker_libc": args.worker_libc,
         "inputs_sha256": {str(p): sha(p) for p in inputs},
         "core_flags": flags, "host_reference": str(host / "src/AtomVM")}
     output.with_suffix(".atomvm.json").write_text(json.dumps(manifest, indent=2) + "\n")

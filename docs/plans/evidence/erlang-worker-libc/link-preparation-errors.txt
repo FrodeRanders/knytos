@@ -1,0 +1,1 @@
+rust-lld: error: undefined symbol: __flockfile_init

@@ -107,6 +107,12 @@ extern "C" fn worker_entry<const INDEX: usize>() {
         assert!(worker.tid.replace(tid).is_none());
         worker.start
     };
+    #[cfg(feature = "worker-libc")]
+    // This worker owns the slot. Startup confirmed the previous generation's
+    // exit before making it available, and this callback has not begun.
+    unsafe {
+        crate::sync::libc::reset_errno(INDEX + 1)
+    };
     // SAFETY: the startup thread published Start before spawning and must
     // retain the callback's argument until this exact thread has exited.
     unsafe { (start.entry)(start.argument) };
