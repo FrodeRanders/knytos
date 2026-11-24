@@ -1,0 +1,31 @@
+{
+  "baseline_commit": "3150fb40e3669ed33f5ce4db7ee8271904f77915",
+  "outcome": "passed",
+  "host_tests": 89,
+  "host_script_checks": 30,
+  "runs": [
+    {
+      "guest_cpus": 2,
+      "cases": 14,
+      "negative_controls": 3,
+      "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+      "kernel_sha256": "86c5127310cdd4afa8b4284f6e6d2b57e21c1a936fb7cb292631a88e3e4fcc3d",
+      "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+      "signed_elf_sha256": "209f9beb275ef9c56f1a23c79f531a443c0fbc824882a3ebdec54208114ee68e",
+      "signed_elf_bytes": 136056,
+      "expanded_deadline_and_generation_tests": false
+    },
+    {
+      "guest_cpus": 4,
+      "cases": 14,
+      "negative_controls": 3,
+      "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+      "kernel_sha256": "dd3a895ad6ff450185e308068f9655e0ea9e361ff8fde588e335cb6ffbecf3fb",
+      "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+      "signed_elf_sha256": "82eb98ec26fe67bb98096ac882ffddbe4dd014e1dd0306eecb038a9ab0bd2a56",
+      "signed_elf_bytes": 136256,
+      "expanded_deadline_and_generation_tests": true
+    }
+  ],
+  "final_harness_sha256": "678ef8b1e9ab095c0a66289686708fef3c102e54e6e7ae981aca38a3ba4a8565"
+}

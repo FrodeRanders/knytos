@@ -15,6 +15,23 @@ int32_t knytos_thread_start(uint32_t slot, uint32_t lp, knytos_thread_entry entr
 int32_t knytos_thread_join(uint32_t slot);
 int32_t knytos_thread_wait(uint32_t timeout_ms);
 int32_t knytos_thread_signal(uint32_t slot);
+
+struct knytos_mutex;
+struct knytos_condition;
+struct knytos_mutex *knytos_mutex_create(void);
+int32_t knytos_mutex_destroy(struct knytos_mutex *mutex);
+int32_t knytos_mutex_try_lock(const struct knytos_mutex *mutex);
+int32_t knytos_mutex_lock(const struct knytos_mutex *mutex, uint32_t timeout_ms);
+int32_t knytos_mutex_unlock(const struct knytos_mutex *mutex);
+
+struct knytos_condition *knytos_condition_create(void);
+int32_t knytos_condition_destroy(struct knytos_condition *condition);
+/* The caller owns mutex on entry. Only KNYTOS_OK reacquires it. The same
+ * timeout budget covers the condition wait and the subsequent lock. */
+int32_t knytos_condition_wait(const struct knytos_condition *condition,
+                             const struct knytos_mutex *mutex, uint32_t timeout_ms);
+/* all == 0 selects one registered waiter. Nonzero selects all. */
+int32_t knytos_condition_signal(const struct knytos_condition *condition, uint32_t all);
 #endif
 struct knytos_allocation_stats { uint64_t blocks, requested_bytes, peak_requested_bytes; };
 struct knytos_abi_pair { uint64_t unsigned_value; int64_t signed_value; double floating_value; };

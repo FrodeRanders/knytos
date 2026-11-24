@@ -17,6 +17,7 @@ use crate::{
     BUSY,
     INVALID,
     OK,
+    OVERFLOW,
     SHUTDOWN,
     UNAVAILABLE,
     WAIT_REJECTED,
@@ -27,6 +28,20 @@ const MAX_WORKERS: usize = 3;
 static MAIN_TID: AtomicU64 = AtomicU64::new(u64::MAX);
 static WORKER_LIMIT: AtomicUsize = AtomicUsize::new(0);
 static STARTS_CLOSED: AtomicBool = AtomicBool::new(false);
+static NEXT_GENERATION: AtomicU64 = AtomicU64::new(1);
+
+/// Runtime-local participant identity. Neither part is a kernel handle.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) struct Participant {
+    pub(crate) slot: u32,
+    generation: u64,
+}
+
+impl Participant {
+    pub(crate) const fn bit(self) -> u8 {
+        1 << self.slot
+    }
+}
 
 #[derive(Clone, Copy)]
 struct Start {
@@ -40,6 +55,7 @@ unsafe impl Send for Start {}
 
 struct Worker {
     start: Start,
+    generation: u64,
     tid: Option<u64>,
     handle: Option<ThreadHandle>,
 }
@@ -60,16 +76,21 @@ pub(crate) fn is_main() -> bool {
     knytos_rt::abi::get_tid() == MAIN_TID.load(Ordering::Relaxed)
 }
 
-fn current_slot() -> Option<usize> {
+pub(crate) fn participant() -> Option<Participant> {
     let tid = knytos_rt::abi::get_tid();
     if tid == MAIN_TID.load(Ordering::Relaxed) {
-        return Some(0);
+        return Some(Participant {
+            slot: 0,
+            generation: 0,
+        });
     }
-    WORKERS
-        .lock()
-        .iter()
-        .position(|worker| worker.as_ref().is_some_and(|worker| worker.tid == Some(tid)))
-        .map(|index| index + 1)
+    WORKERS.lock().iter().enumerate().find_map(|(index, worker)| {
+        let worker = worker.as_ref()?;
+        (worker.tid == Some(tid)).then_some(Participant {
+            slot: index as u32 + 1,
+            generation: worker.generation,
+        })
+    })
 }
 
 fn worker_index(slot: u32) -> Option<usize> {
@@ -118,11 +139,18 @@ pub unsafe extern "C" fn knytos_thread_start(
         if workers[index].is_some() {
             return BUSY;
         }
+        let Ok(generation) =
+            NEXT_GENERATION
+                .try_update(Ordering::Relaxed, Ordering::Relaxed, |value| value.checked_add(1))
+        else {
+            return OVERFLOW;
+        };
         workers[index] = Some(Worker {
             start: Start {
                 entry,
                 argument,
             },
+            generation,
             tid: None,
             handle: None,
         });
@@ -179,18 +207,12 @@ pub extern "C" fn knytos_thread_join(slot: u32) -> i32 {
 /// Private CQ readiness is only a hint. Callers recheck their own predicate.
 #[unsafe(no_mangle)]
 pub extern "C" fn knytos_thread_wait(timeout_ms: u32) -> i32 {
-    if let Some(slot) = current_slot()
-        && (slot != 0 || WORKER_LIMIT.load(Ordering::Relaxed) != 0)
-    {
-        wait_on_queue(Some(u64::from(timeout_ms)), (slot + 1) as u32)
-    } else {
-        INVALID
-    }
+    participant().map_or(INVALID, |caller| park(caller, u64::from(timeout_ms)))
 }
 
 #[unsafe(no_mangle)]
 pub extern "C" fn knytos_thread_signal(slot: u32) -> i32 {
-    if current_slot().is_none() {
+    if participant().is_none() {
         return INVALID;
     }
     if slot == 0 {
@@ -204,6 +226,23 @@ pub extern "C" fn knytos_thread_signal(slot: u32) -> i32 {
     // delayed hint during slot reuse cannot prove the new predicate is true.
     knytos_rt::abi::cq_wake(slot + 1);
     OK
+}
+
+pub(crate) fn park(caller: Participant, timeout_ms: u64) -> i32 {
+    if WORKER_LIMIT.load(Ordering::Relaxed) == 0 {
+        return INVALID;
+    }
+    wait_on_queue(Some(timeout_ms), caller.slot + 1)
+}
+
+/// Signal slots captured from a synchronization object's exact waiter set.
+/// The producer has already released the object's metadata guard.
+pub(crate) fn wake_waiters(mut waiters: u8) {
+    while waiters != 0 {
+        let slot = waiters.trailing_zeros();
+        knytos_rt::abi::cq_wake(slot + 1);
+        waiters &= waiters - 1;
+    }
 }
 
 pub(crate) fn require_joined() {

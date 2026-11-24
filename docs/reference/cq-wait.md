@@ -83,6 +83,16 @@ keeps CQ zero. The worker API uses finite waits because lifecycle currently
 wakes only the default queue. Observing readiness never substitutes for
 joining the retained thread generation.
 
+A C mutex registers contention while observing the owner under its state
+guard. Condition wait registers the participant under the condition guard
+before releasing the application mutex. Unlock and condition signal release
+their metadata guards before issuing CQ wake. Wakes may coalesce, so the
+mutex rechecks ownership and the condition consumes only its own selected
+waiter bit. One monotonic deadline spans condition waiting and mutex
+reacquisition. The C waiter keeps the synchronization objects live through
+both phases. The checked status describes completion of that bounded
+operation and carries no kernel capability.
+
 Object storage binds its public endpoint before registration, drains requests,
 then waits event-only on that same default CQ. An arrival between draining and
 parking leaves an unconsumed work generation; shutdown publication wakes the

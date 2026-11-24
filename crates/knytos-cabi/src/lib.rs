@@ -8,6 +8,8 @@ mod allocation;
 #[cfg(target_os = "none")]
 mod native;
 #[cfg(all(target_os = "none", feature = "native-workers"))]
+mod sync;
+#[cfg(all(target_os = "none", feature = "native-workers"))]
 mod workers;
 
 use core::ptr;

@@ -150,6 +150,32 @@ finalizers. A return to exit with any unjoined worker aborts the domain before
 finalizers or allocation cleanup. Worker callbacks return to the Rust
 trampoline, which performs the thread exit.
 
+The same profile exposes opaque C mutex and condition objects. Constructors
+return null on allocation failure. Destroy them through the corresponding
+destroy call after excluding concurrent access. Destruction returns
+`KNYTOS_BUSY` while the object still has a lock owner or waiter. The runtime
+tracks these as local heap metadata. They contain no kernel handles.
+
+Mutexes are nonrecursive. Try-lock returns `KNYTOS_BUSY` for contention.
+Timed lock returns `KNYTOS_DEADLINE` if the mutex remains held at the deadline.
+Unlock verifies the runtime participant generation, so a replacement worker
+in the same slot cannot unlock its predecessor's mutex. A callback must
+release its mutexes before it returns.
+
+A condition wait takes a mutex currently owned by the caller. It registers
+the waiter before releasing the mutex. A signal selects one pending waiter,
+or all pending waiters when its `all` argument is nonzero. A signal with no
+waiter leaves no token. Publish and recheck the application predicate under
+the mutex even when the wait reports success.
+
+Only `KNYTOS_OK` means the condition waiter reacquired the mutex. A deadline
+or wait rejection after registration leaves the mutex released and removes
+the waiter's registration. The same timeout budget covers waiting and
+reacquisition. Keep both objects live until the operation returns, including
+while reacquisition is pending. This is a bounded runtime C ABI. An adapter
+for a library with different timeout or mutex ownership rules must account
+for those differences.
+
 ```sh
 python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
   --native-workers --smp 2 --output target/c-runtime/worker-validation

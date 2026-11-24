@@ -39,6 +39,7 @@ execution records. For current knowledge and work, use:
 
 ## Milestone records
 
+- [C mutex and condition qualification](milestones/2026-11-24-c-native-sync.md)
 - [Restricted C worker qualification](milestones/2026-11-24-c-native-workers.md)
 - [AtomVM single-scheduler semantic qualification](milestones/2026-11-24-atomvm-semantics.md)
 - [AtomVM M2 qualification](milestones/2026-11-24-atomvm.md)
