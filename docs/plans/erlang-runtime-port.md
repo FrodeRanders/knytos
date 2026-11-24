@@ -1024,8 +1024,9 @@ The single-scheduler fixture covers values, Erlang processes, receive timers
 and supervisor recovery. Its [qualification record](../reports/milestones/2026-11-24-atomvm-semantics.md)
 includes the AtomVM and OTP comparisons. The fixed native profile runs the
 same message and timer workload with 1, 2 and 4 schedulers on a four-CPU
-guest. Performance, sustained load and externally requested shutdown remain
-part of the [multicore qualification](erlang-m3-multicore.md).
+guest. [Signed deployment retirement](../reports/milestones/2026-11-24-atomvm-deployment-retirement.md)
+also passed with busy and parked schedulers. Performance, sustained load and
+whole-node shutdown remain part of the [multicore qualification](erlang-m3-multicore.md).
 
 ### 10.1. Objective
 

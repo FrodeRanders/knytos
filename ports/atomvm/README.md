@@ -179,8 +179,12 @@ waiter before releasing its mutex and returns success after reacquiring
 that mutex. Lock acquisition and condition reacquisition each have a
 five-second budget. Any failed wait or acquisition aborts the domain.
 During idle operation the poller observes shutdown requests on CQ zero.
-Normal VM completion stops the interpreter schedulers and wakes unused
-workers. Startup joins every exact native worker before releasing VM state.
+When the ready queue keeps the VM out of CQ waits, the elected scheduler
+observes lifecycle at its nonblocking scheduling checkpoint. A private
+synchronization wait can also observe the request. Those paths log through
+the Rust console and abort the domain. The deployment supervisor retains
+retirement ownership. On normal VM completion, startup wakes unused workers
+and joins every exact native worker before releasing VM state.
 
 The build generates target-only adaptations from the clean pinned source.
 The SMP NIF lookup excludes dynamic package add/close and `read_priv/2`.
@@ -215,3 +219,26 @@ message exchange, idle timer deadlines and exact worker joins. The idle
 fixture runs the hello package and checks joins for workers that never
 entered the interpreter. See the
 [remaining scheduler requirements](../../docs/plans/erlang-m3-multicore.md).
+
+## Signed deployment retirement
+
+Build `tests/shutdown_busy.erl` with one and four schedulers and
+`tests/shutdown_parked.erl` with four. Use the same pinned source arguments
+as above and set `--application` to the fixture path. Give the outputs to
+the signed runner on a four-CPU guest.
+
+```sh
+python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
+  --atomvm-shutdown-parked-elf target/atomvm/shutdown-parked-4.elf \
+  --atomvm-shutdown-busy-elf target/atomvm/shutdown-busy-1.elf \
+  --atomvm-shutdown-busy-elf target/atomvm/shutdown-busy-4.elf \
+  --smp 4 --output target/atomvm/retirement-validation
+```
+
+After the original VM reaches its workload marker, the runner submits one
+signed replacement of that deployment with sequence two. It checks the
+original domain's shutdown observation, terminal abort and the succeeding
+generation's workload marker. The signed grace period is five seconds.
+The fixture covers domain retirement through deployment replacement.
+Cooperative VM state disposal during retirement and whole-node shutdown
+remain separate qualification.

@@ -65,6 +65,8 @@ void knytos_console_flush(void);
  * Readiness is a hint, not completion or ownership transfer. */
 int32_t knytos_event_wait(int64_t timeout_ms);
 void knytos_event_signal(void);
+/* Read the authenticated lifecycle request and mark it seen when present. */
+bool knytos_shutdown_requested(void);
 int32_t knytos_allocation_stats(struct knytos_allocation_stats *result);
 struct knytos_abi_pair knytos_abi_transform(struct knytos_abi_pair value, uint64_t delta);
 /* Ordinary C pointer validity applies. No kernel capability is exposed. */

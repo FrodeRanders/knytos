@@ -39,6 +39,7 @@ execution records. For current knowledge and work, use:
 
 ## Milestone records
 
+- [AtomVM deployment retirement](milestones/2026-11-24-atomvm-deployment-retirement.md)
 - [AtomVM fixed native schedulers](milestones/2026-11-24-atomvm-native-schedulers.md)
 - [Picolibc worker profile](milestones/2026-11-24-c-worker-libc.md)
 - [C read/write lock qualification](milestones/2026-11-24-c-native-rwlock.md)

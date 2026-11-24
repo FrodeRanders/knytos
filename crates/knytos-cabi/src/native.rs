@@ -184,12 +184,18 @@ fn wait_for_event(timeout_ms: i64) -> i32 {
     wait_on_queue(timeout, 0)
 }
 
+/// Observe the authenticated lifecycle request at an application checkpoint.
+#[unsafe(no_mangle)]
+pub extern "C" fn knytos_shutdown_requested() -> bool {
+    knytos_rt::Context.lifecycle().shutdown_requested().is_some()
+}
+
 pub(crate) fn wait_on_queue(timeout: Option<u64>, queue: u32) -> i32 {
-    if knytos_rt::Context.lifecycle().shutdown_requested().is_some() {
+    if knytos_shutdown_requested() {
         return SHUTDOWN;
     }
     let result = knytos_rt::cq::wait(timeout, queue);
-    if knytos_rt::Context.lifecycle().shutdown_requested().is_some() {
+    if knytos_shutdown_requested() {
         return SHUTDOWN;
     }
     match result {

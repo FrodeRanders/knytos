@@ -22,6 +22,27 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def domain_logs(text, asid):
+    prefix = re.compile(rf"\[EL0 LOG\] lp=\d+ asid={asid} ")
+    return "\n".join(line for line in text.splitlines() if prefix.search(line))
+
+
+def retirement_instance(text, name, generation, mode, schedulers):
+    launch = re.search(
+        rf'\[agent\] launched "{re.escape(name)}" generation={generation} asid=(\d+)', text)
+    if launch is None:
+        return None
+    lines = domain_logs(text, launch[1])
+    if f"{{m3_shutdown,{mode}}}" not in lines:
+        return None
+    if mode == "busy" and any(
+        not re.search(rf"\[EL0 LOG\] lp={slot} asid={launch[1]} \[atomvm\] scheduler entered slot={slot}$",
+                      lines, re.MULTILINE) for slot in range(1, schedulers)
+    ):
+        return None
+    return launch[1]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--picolibc-source", required=True, type=Path)
@@ -35,6 +56,10 @@ def main():
                         help="add an AtomVM scheduler workload using its adjacent build manifest")
     parser.add_argument("--atomvm-idle-scheduler-elf", type=Path,
                         help="add the AtomVM hello fixture with prepared but unused workers")
+    parser.add_argument("--atomvm-shutdown-busy-elf", action="append", type=Path, default=[],
+                        help="retire an AtomVM VM running continuous Erlang work (one or four schedulers)")
+    parser.add_argument("--atomvm-shutdown-parked-elf", type=Path,
+                        help="retire an AtomVM VM with unused native workers and no timers")
     parser.add_argument("--native-workers", action="store_true")
     parser.add_argument("--worker-libc", action="store_true")
     parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
@@ -86,6 +111,26 @@ def main():
         cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
     abort_cases = (7, 11, 13, 15, 20)
     cases += CASES[-1:]
+    retirement_cases = {}
+    retirement_images = [("parked", args.atomvm_shutdown_parked_elf)]
+    retirement_images.extend(("busy", path) for path in args.atomvm_shutdown_busy_elf)
+    for mode, image in retirement_images:
+        if image is None:
+            continue
+        count = scheduler_count(image)
+        if count not in ((1, 4) if mode == "busy" else (4,)):
+            parser.error(f"Unsupported scheduler count for the {mode} retirement fixture: {count}")
+        name, number = {
+            ("busy", 4): ("avm-shutdown-busy", 26),
+            ("parked", 4): ("avm-shutdown-parked", 27),
+            ("busy", 1): ("avm-shutdown-busy-1", 28),
+        }[mode, count]
+        if number in retirement_cases:
+            parser.error(f"Duplicate retirement fixture: {name}")
+        scheduler_cases[number] = count
+        retirement_cases[number] = mode
+        vm_cases[number] = (name, image, f"{{m3_shutdown,{mode}}}")
+        cases.append((name, number))
     def interrupted(_signal, _frame):
         raise SystemExit("C runtime campaign interrupted")
     signal.signal(signal.SIGTERM, interrupted)
@@ -140,6 +185,10 @@ def main():
             command([signer, "deployment-sign", output / (name + ".cdep"), name, "fixture/" + name,
                      image, "0", "1", "64" if number in vm_cases else "16",
                      thread_limit, "5000", key], name + "-descriptor")
+            if number in retirement_cases:
+                command([signer, "deployment-sign", output / (name + "-replacement.cdep"),
+                         name, "fixture/" + name, image, "0", "2", "64", thread_limit, "5000", key],
+                        name + "-replacement-descriptor")
         tampered = bytearray((images / "c-hello.elf").read_bytes())
         command([signer, "elf-verify", images / "c-hello.elf", "c-hello",
                  "3ddc95c26bd5f4022d95a4c6c8d074f577f11af7873e527b018b21be2c035463"], "signature-accepted")
@@ -219,6 +268,43 @@ def main():
                     for name, number in cases:
                         before = len(serial.read_text(errors="replace"))
                         command([signer, "deployment-notify", output / (name + ".cdep"), "127.0.0.1:28081"], name + "-admission", env=environment, timeout=40)
+                        if number in retirement_cases:
+                            mode = retirement_cases[number]
+                            count = scheduler_cases[number]
+                            assert json.loads((output / (name + "-admission.txt")).read_text())["generation"] == 1
+                            initial = wait_for(lambda s: retirement_instance(s[before:], name, 1, mode, count), 60)
+                            asid = retirement_instance(initial[before:], name, 1, mode, count)
+                            replacement_start = len(initial)
+                            command([signer, "deployment-notify", output / (name + "-replacement.cdep"),
+                                     "127.0.0.1:28081"], name + "-replacement-admission",
+                                    env=environment, timeout=40)
+                            assert json.loads((output / (name + "-replacement-admission.txt")).read_text())["generation"] == 2
+                            serial_text = wait_for(
+                                lambda s: retirement_instance(s[replacement_start:], name, 2, mode, count), 60)
+                            successor = retirement_instance(serial_text[replacement_start:], name, 2, mode, count)
+                            retiring = serial_text[replacement_start:].split(
+                                f'[agent] launched "{name}" generation=2 asid=', 1)[0]
+                            abort = re.search(rf"Aborting user address space {asid}\b", retiring)
+                            assert abort, (name, domain_logs(retiring, asid))
+                            old_lines = domain_logs(retiring[:abort.start()], asid)
+                            assert "[atomvm] runtime=" not in old_lines, name
+                            sources = re.findall(r"\[atomvm\] (?:reactor|scheduler) shutdown source=([\w-]+)",
+                                                 old_lines)
+                            expected_sources = ("cq-wait",) if mode == "parked" else ("nonblocking",)
+                            if mode == "busy" and count > 1:
+                                expected_sources += ("cq-wait", "private-wait")
+                            assert sources and all(source in expected_sources for source in sources), (name, old_lines)
+                            assert "[c-runtime] abort" in old_lines and "[c-runtime] exit=" not in old_lines, old_lines
+                            if mode == "parked":
+                                assert "scheduler entered slot=" not in domain_logs(initial[before:], asid), name
+                                assert "scheduler entered slot=" not in old_lines, name
+                            record["cases"].append({
+                                "name": name, "case": number, "passed": True, "shutdown_sources": sources,
+                                "retired_asid": int(asid), "successor_asid": int(successor),
+                                "observation": serial_text[before:],
+                            })
+                            save()
+                            continue
                         expected = "CABI expected abort" if number == 7 else "CABI expected nonzero" if number == 6 else "CABI explicit exit" if number == 5 else f"CABI PASS case={number}"
                         if number in vm_cases:
                             expected = vm_cases[number][2]

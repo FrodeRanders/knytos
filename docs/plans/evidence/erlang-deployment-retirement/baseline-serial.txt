@@ -1,0 +1,23 @@
+[+    14.918308] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy" generation=1 asid=27 principal=0xe998b4f07d2af16f
+[+    14.920312] [EL0 LOG] lp=0 asid=27 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    14.921214] [EL0 LOG] lp=0 asid=27 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    14.921862] [EL0 LOG] lp=0 asid=27 [atomvm] wake-before-wait passed
+[+    14.933984] [EL0 LOG] lp=1 asid=27 [atomvm] scheduler entered slot=1
+[+    14.934758] [EL0 LOG] lp=2 asid=27 [atomvm] scheduler entered slot=2
+[+    14.936140] [EL0 LOG] lp=3 asid=27 [atomvm] scheduler entered slot=3
+[+    14.945372] [EL0 LOG] lp=2 asid=27 {m3_shutdown,busy}
+[+    15.772046] [EL0 LOG] lp=2 asid=27 [atomvm] condition wait failed status=6
+[+    15.772664] [EL0 LOG] lp=0 asid=27 [worker-libc] libc lock acquisition failed
+[+    15.772870] [EL0 LOG] lp=1 asid=27 [worker-libc] libc lock acquisition failed
+[+    15.773124] [EL0 LOG] lp=2 asid=27 [c-runtime] abort
+[+    15.773506] Aborting user address space 27
+[+    15.773746] Aborting user address space 27
+[+    15.773936] Aborting user address space 27
+[+    15.939126] [EL0 LOG] lp=0 asid=27 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    15.939984] [EL0 LOG] lp=0 asid=27 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    15.940562] [EL0 LOG] lp=0 asid=27 [atomvm] wake-before-wait passed
+[+    15.950822] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy" generation=2 asid=27 principal=0xe998b4f07d2af16f
+[+    15.953726] [EL0 LOG] lp=1 asid=27 [atomvm] scheduler entered slot=1
+[+    15.954496] [EL0 LOG] lp=2 asid=27 [atomvm] scheduler entered slot=2
+[+    15.955666] [EL0 LOG] lp=3 asid=27 [atomvm] scheduler entered slot=3
+[+    15.964524] [EL0 LOG] lp=1 asid=27 {m3_shutdown,busy}

@@ -150,6 +150,12 @@ as the application reactor can use `knytos_worker_event_wait` on CQ zero.
 An overlapping borrow through either API returns `KNYTOS_BUSY`. The
 application must publish poller handoff after the current wait returns.
 
+`knytos_shutdown_requested()` checks the authenticated lifecycle state at an
+application checkpoint and marks a pending request as seen. Runnable work
+can keep a reactor from entering `knytos_event_wait`. The checkpoint borrows
+launch state and leaves CQ readiness for the elected poller. Seeing the
+request leaves the terminal cleanup transition pending.
+
 Join admission rejection retains the worker and returns
 `KNYTOS_WAIT_REJECTED`. C must hold its borrow and observe the same worker
 again or terminate the domain. C exit closes start admission before

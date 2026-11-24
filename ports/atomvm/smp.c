@@ -20,6 +20,13 @@ static atomic_uint scheduled_workers;
 
 static void require_ok(const char *operation, int status)
 {
+    if (status == KNYTOS_SHUTDOWN) {
+        static const char message[] = "[atomvm] scheduler shutdown source=private-wait\n";
+        // The failed wait can have released its mutex. Terminate the domain
+        // without entering Picolibc or attempting to continue the VM.
+        knytos_console_write(message, sizeof(message) - 1);
+        abort();
+    }
     if (status != KNYTOS_OK) {
         fprintf(stderr, "[atomvm] %s failed status=%d\n", operation, status);
         abort();

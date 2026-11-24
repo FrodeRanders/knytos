@@ -26,6 +26,13 @@ static _Noreturn void unsupported(const char *operation) {
     abort();
 }
 
+static _Noreturn void reactor_shutdown(const char *message) {
+    // Emit one record through the runtime console without acquiring a C
+    // stream lock that another scheduler might hold when shutdown arrives.
+    knytos_console_write(message, strlen(message));
+    abort();
+}
+
 void sys_init_platform(GlobalContext *global) { global->platform_data = NULL; }
 void sys_free_platform(GlobalContext *global) {
     (void)global;
@@ -41,7 +48,15 @@ void platform_defaultatoms_init(GlobalContext *global) { (void)global; }
 
 void sys_poll_events(GlobalContext *global, int timeout_ms) {
     (void)global;
-    if (timeout_ms == SYS_POLL_EVENTS_DO_NOT_WAIT) return;
+    if (timeout_ms == SYS_POLL_EVENTS_DO_NOT_WAIT) {
+        // Continually runnable processes can keep the elected scheduler out
+        // of CQ waits. This is an existing scheduling checkpoint outside the
+        // VM's ready-list and scheduler locks.
+        if (knytos_shutdown_requested()) {
+            reactor_shutdown("[atomvm] reactor shutdown source=nonblocking\n");
+        }
+        return;
+    }
     atomic_fetch_add_explicit(&waits, 1, memory_order_relaxed);
 #ifndef AVM_NO_SMP
     // AtomVM serializes this role with its scheduler mutex and publishes the
@@ -52,6 +67,9 @@ void sys_poll_events(GlobalContext *global, int timeout_ms) {
 #else
     int status = knytos_event_wait(timeout_ms);
 #endif
+    if (status == KNYTOS_SHUTDOWN) {
+        reactor_shutdown("[atomvm] reactor shutdown source=cq-wait\n");
+    }
     if (status == KNYTOS_DEADLINE) atomic_fetch_add_explicit(&deadlines, 1, memory_order_relaxed);
     else if (status != KNYTOS_OK) {
         fprintf(stderr, "[atomvm] reactor wait failed status=%d\n", status);

@@ -1,0 +1,52 @@
+[+    26.804096] [EL0 LOG] lp=0 asid=43 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    26.804938] [EL0 LOG] lp=0 asid=43 [atomvm] package_sha256=f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612 bytes=21660
+[+    26.805482] [EL0 LOG] lp=0 asid=43 [atomvm] wake-before-wait passed
+[+    26.814586] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-parked" generation=1 asid=43 principal=0xb83ba1c706cf8ffb
+[+    26.816184] [EL0 LOG] lp=0 asid=43 {m3_shutdown,parked}
+[+    27.405806] [EL0 LOG] lp=0 asid=43 [atomvm] reactor shutdown source=cq-wait
+[+    27.406122] [EL0 LOG] lp=0 asid=43 [c-runtime] abort
+[+    27.406280] Aborting user address space 43
+[+    27.580124] [EL0 LOG] lp=0 asid=43 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    27.580974] [EL0 LOG] lp=0 asid=43 [atomvm] package_sha256=f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612 bytes=21660
+[+    27.581538] [EL0 LOG] lp=0 asid=43 [atomvm] wake-before-wait passed
+[+    27.590950] [EL0 LOG] lp=0 asid=43 {m3_shutdown,parked}
+[+    27.592058] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-parked" generation=2 asid=43 principal=0xb83ba1c706cf8ffb
+
+[+    28.272634] [EL0 LOG] lp=0 asid=44 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+    28.273228] [EL0 LOG] lp=0 asid=44 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    28.273676] [EL0 LOG] lp=0 asid=44 [atomvm] wake-before-wait passed
+[+    28.285646] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy-1" generation=1 asid=44 principal=0xe670475d1c3ee286
+[+    28.299604] [EL0 LOG] lp=0 asid=44 {m3_shutdown,busy}
+[+    30.342770] [EL0 LOG] lp=0 asid=44 [atomvm] reactor shutdown source=nonblocking
+[+    30.343090] [EL0 LOG] lp=0 asid=44 [c-runtime] abort
+[+    30.343234] Aborting user address space 44
+[+    30.504258] [EL0 LOG] lp=0 asid=44 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+    30.504862] [EL0 LOG] lp=0 asid=44 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    30.505356] [EL0 LOG] lp=0 asid=44 [atomvm] wake-before-wait passed
+[+    30.516592] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy-1" generation=2 asid=44 principal=0xe670475d1c3ee286
+[+    30.531124] [EL0 LOG] lp=0 asid=44 {m3_shutdown,busy}
+
+[+    32.781310] [EL0 LOG] lp=0 asid=45 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    32.782172] [EL0 LOG] lp=0 asid=45 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    32.782744] [EL0 LOG] lp=0 asid=45 [atomvm] wake-before-wait passed
+[+    32.803866] [EL0 LOG] lp=1 asid=45 [atomvm] scheduler entered slot=1
+[+    32.804968] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy" generation=1 asid=45 principal=0xe998b4f07d2af16f
+[+    32.810320] [EL0 LOG] lp=2 asid=45 [atomvm] scheduler entered slot=2
+[+    32.811242] [EL0 LOG] lp=3 asid=45 [atomvm] scheduler entered slot=3
+[+    32.839752] [EL0 LOG] lp=1 asid=45 {m3_shutdown,busy}
+[+    35.785422] [EL0 LOG] lp=2 asid=45 [atomvm] reactor shutdown source=nonblocking
+[+    35.785760] [EL0 LOG] lp=1 asid=45 [atomvm] scheduler shutdown source=private-wait
+[+    35.785994] [EL0 LOG] lp=2 asid=45 [c-runtime] abort
+[+    35.786132] [EL0 LOG] lp=3 asid=45 [atomvm] scheduler shutdown source=private-wait
+[+    35.786366] Aborting user address space 45
+[+    35.786480] [EL0 LOG] lp=3 asid=45 [c-runtime] abort
+[+    35.786636] [EL0 LOG] lp=1 asid=45 [c-runtime] abort
+[+    35.786854] Aborting user address space 45
+[+    36.824086] [EL0 LOG] lp=0 asid=45 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    36.824946] [EL0 LOG] lp=0 asid=45 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    36.825508] [EL0 LOG] lp=0 asid=45 [atomvm] wake-before-wait passed
+[+    36.836258] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy" generation=2 asid=45 principal=0xe998b4f07d2af16f
+[+    36.849170] [EL0 LOG] lp=1 asid=45 [atomvm] scheduler entered slot=1
+[+    36.849880] [EL0 LOG] lp=2 asid=45 [atomvm] scheduler entered slot=2
+[+    36.861018] [EL0 LOG] lp=3 asid=45 [atomvm] scheduler entered slot=3
+[+    36.904062] [EL0 LOG] lp=1 asid=45 {m3_shutdown,busy}

@@ -1,0 +1,150 @@
+{
+  "baseline_commit": "49811ef0ff3c84a701e2094451f99dc902b77428",
+  "atomvm_revision": "ff993a80963298b532c1e573f883951ecaac9fef",
+  "otp_revision": "fc7e10af595f3ffd2c25c84c253a4d042734cfed",
+  "picolibc_revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff",
+  "guest_cpus": 4,
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "baseline": {
+    "outcome": "failed",
+    "failed_gate": "explicit AtomVM shutdown-path assertion",
+    "kernel_sha256": "243540ba2d3245768f406a06c3847e8d46eec777e549795f1905c64384cf03da",
+    "artifact": {
+      "native_threads": 4,
+      "stack_pages_per_thread": 64,
+      "shutdown_grace_ms": 5000,
+      "unsigned_elf_sha256": "dd82202f2bac51c1ddf151b320b7797509e6b794c58cb044eebb454959a97db9",
+      "signed_elf_sha256": "cb9c792a8ee13a8ce24b66ba2c202e22cc187520ad251e7363109938b2d504b9",
+      "signed_elf_bytes": 754576,
+      "signed_descriptor_sha256": "dd3ce9926200663ea239158d627f49bf152e409a904291bc3b58c1f1664cb0de",
+      "replacement_descriptor_sha256": "64d75eb6f7ac59ed5703383ea13dd6c12a4b421c9d6eb190770bea2e3fca8b8d",
+      "package_sha256": "cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b",
+      "package_bytes": 22136,
+      "admitted_generations": [
+        1,
+        2
+      ]
+    }
+  },
+  "qualified": {
+    "outcome": "passed",
+    "kernel_sha256": "aaeef78dc71c81a7de18ebbd9e85b72f3b6a9d153aee3357d7055930ba5bde64",
+    "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+    "retirement_cases": {
+      "avm-shutdown-parked": {
+        "native_threads": 4,
+        "stack_pages_per_thread": 64,
+        "shutdown_grace_ms": 5000,
+        "unsigned_elf_sha256": "807ef9af4c44588323ab638859f95a31133f002e47c44a804a3dffee34b0ebfc",
+        "signed_elf_sha256": "c6f16fdfd8bcef521ea8d15535e587bf2a18e0f256ddd78aaf5154cb00c9cdaa",
+        "signed_elf_bytes": 754784,
+        "signed_descriptor_sha256": "45d529f1b608d06aa6f4801232469b72848fb01b10b7c0abd5606796b54eefd3",
+        "replacement_descriptor_sha256": "31b5cef1a4e5e766f27d891ddf05c0308e0a0e512f37e1b223e64ecbf6de2d18",
+        "package_sha256": "f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612",
+        "package_bytes": 21660,
+        "admitted_generations": [
+          1,
+          2
+        ],
+        "shutdown_sources": [
+          "cq-wait"
+        ],
+        "retired_asid": 43,
+        "successor_asid": 43
+      },
+      "avm-shutdown-busy-1": {
+        "native_threads": 1,
+        "stack_pages_per_thread": 64,
+        "shutdown_grace_ms": 5000,
+        "unsigned_elf_sha256": "8108219c3c4be7a6e1c6f46a17274c02d3082d6ca295574e1ea2feb93f68d403",
+        "signed_elf_sha256": "c29769f27df772aa68b15bbc394f29708e295900cab1f8aab8d1f80b32da0311",
+        "signed_elf_bytes": 720096,
+        "signed_descriptor_sha256": "02db331c2da1ddf819bb1c4ca28e81b8ecaf097628bd1b40740755a17f474ac6",
+        "replacement_descriptor_sha256": "10991fc5652857c11ada90d999d1c8410dab4e5beae2edffd1f90fbf4bab087f",
+        "package_sha256": "cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b",
+        "package_bytes": 22136,
+        "admitted_generations": [
+          1,
+          2
+        ],
+        "shutdown_sources": [
+          "nonblocking"
+        ],
+        "retired_asid": 44,
+        "successor_asid": 44
+      },
+      "avm-shutdown-busy": {
+        "native_threads": 4,
+        "stack_pages_per_thread": 64,
+        "shutdown_grace_ms": 5000,
+        "unsigned_elf_sha256": "a4635f138c9859e2f43f03d666e4d3813f14e536d9cdecd0fe55cddc14845e76",
+        "signed_elf_sha256": "365a3ebd4a1ccfeb59746448b0a043099ca128eca1c1f656433bd913e6d82f5d",
+        "signed_elf_bytes": 754784,
+        "signed_descriptor_sha256": "b85179110cd535e51461976bc6821a9365aa6b21b42dba4d74dc563646c36f83",
+        "replacement_descriptor_sha256": "0fddd732836c33642921c201044c2f40f090f03c51760db4dee74b25375237df",
+        "package_sha256": "cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b",
+        "package_bytes": 22136,
+        "admitted_generations": [
+          1,
+          2
+        ],
+        "shutdown_sources": [
+          "nonblocking",
+          "private-wait",
+          "private-wait"
+        ],
+        "retired_asid": 45,
+        "successor_asid": 45
+      }
+    },
+    "passed_cases": [
+      "c-hello",
+      "c-memory",
+      "c-format",
+      "c-clock",
+      "c-startup",
+      "c-exit",
+      "c-error",
+      "c-abort",
+      "c-empty",
+      "avm-hello",
+      "avm-utc",
+      "avm-semantics",
+      "avm-overflow",
+      "avm-schedulers-1",
+      "avm-schedulers-2",
+      "avm-schedulers-4",
+      "avm-idle-schedulers",
+      "c-workers",
+      "c-unjoined",
+      "c-worker-reuse",
+      "c-sync",
+      "c-rwlock",
+      "c-worker-libc",
+      "c-worker-libc-close",
+      "c-survivor",
+      "avm-shutdown-parked",
+      "avm-shutdown-busy-1",
+      "avm-shutdown-busy"
+    ],
+    "negative_controls": [
+      {
+        "name": "tls-rejected",
+        "expected_diagnostic": "TLS is unsupported",
+        "passed": true
+      },
+      {
+        "name": "unsupported-rejected",
+        "expected_diagnostic": "undefined symbol: open",
+        "passed": true
+      },
+      {
+        "name": "signature-rejected",
+        "passed": true
+      }
+    ]
+  },
+  "host_rust_tests": 89,
+  "host_script_checks": 24,
+  "harness_sha256": "fc59dcf3235ef47f91567061595ea4c6ba2234ace6ce46935462f0171369cfcd"
+}
