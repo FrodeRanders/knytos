@@ -1,0 +1,6 @@
+..../Users/froran/Projects/private/knytos/.dependencies/sitas
+..
+----------------------------------------------------------------------
+Ran 6 tests in 0.078s
+
+OK

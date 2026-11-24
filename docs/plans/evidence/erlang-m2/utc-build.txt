@@ -1,0 +1,224 @@
+-- The C compiler identification is AppleClang 21.0.0.21000334
+-- The CXX compiler identification is AppleClang 21.0.0.21000334
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test HAVE_SIGNAL
+-- Performing Test HAVE_SIGNAL - Success
+-- Performing Test HAVE_SERVBYNAME
+-- Performing Test HAVE_SERVBYNAME - Success
+-- Looking for MBEDTLS_VERSION_NUMBER
+-- Looking for MBEDTLS_VERSION_NUMBER - not found
+WARNING:  Could NOT find MbedTLS, ssl and crypto modules will not be supported. Install MbedTLS 3.x or try to set MBEDTLS_ROOT_DIR to installation prefix of MbedTLS 2.x
+-- Looking for eventfd
+-- Looking for eventfd - not found
+-- Looking for kqueue
+-- Looking for kqueue - found
+-- Looking for EVFILT_USER
+-- Looking for EVFILT_USER - found
+-- Looking for NOTE_TRIGGER
+-- Looking for NOTE_TRIGGER - found
+-- Looking for EAI_BADHINTS
+-- Looking for EAI_BADHINTS - found
+-- Looking for EAI_OVERFLOW
+-- Looking for EAI_OVERFLOW - found
+-- Performing Test HAVE_PRAGMA_STDC_FENV_ACCESS
+-- Performing Test HAVE_PRAGMA_STDC_FENV_ACCESS - Failed
+-- Looking for stdatomic.h
+-- Looking for stdatomic.h - found
+-- Performing Test ATOMIC_POINTER_LOCK_FREE_IS_TWO
+-- Performing Test ATOMIC_POINTER_LOCK_FREE_IS_TWO - Success
+-- Performing Test HAVE_OPEN
+-- Performing Test HAVE_OPEN - Success
+-- Performing Test HAVE_OPENDIR
+-- Performing Test HAVE_OPENDIR - Success
+-- Performing Test HAVE_CLOSE
+-- Performing Test HAVE_CLOSE - Success
+-- Performing Test HAVE_CLOSEDIR
+-- Performing Test HAVE_CLOSEDIR - Success
+-- Performing Test HAVE_MKFIFO
+-- Performing Test HAVE_MKFIFO - Success
+-- Performing Test HAVE_READDIR
+-- Performing Test HAVE_READDIR - Success
+-- Performing Test HAVE_UNLINK
+-- Performing Test HAVE_UNLINK - Success
+-- Looking for O_CLOEXEC
+-- Looking for O_CLOEXEC - found
+-- Looking for O_DIRECTORY
+-- Looking for O_DIRECTORY - found
+-- Looking for O_DSYNC
+-- Looking for O_DSYNC - found
+-- Looking for O_EXEC
+-- Looking for O_EXEC - found
+-- Looking for O_NOFOLLOW
+-- Looking for O_NOFOLLOW - found
+-- Looking for O_RSYNC
+-- Looking for O_RSYNC - not found
+-- Looking for O_SEARCH
+-- Looking for O_SEARCH - found
+-- Looking for O_TTY_INIT
+-- Looking for O_TTY_INIT - not found
+-- Looking for clock_settime
+-- Looking for clock_settime - found
+-- Looking for settimeofday
+-- Looking for settimeofday - found
+-- Looking for socket
+-- Looking for socket - found
+-- Looking for select
+-- Looking for select - found
+-- Found ZLIB: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib/libz.tbd (found version "1.2.12")
+Unable to find elixirc -- skipping Elixir tests
+Unable to find elixirc -- skipping Elixir libs
+Unable to find elixirc -- skipping Elixir examples
+Local documentation test build on feature/erlang-runtime
+Graphiz found
+Unable to find Sphinx -- no Sphinx documentation will be generated
+-- Configuring done (3.9s)
+-- Generating done (0.1s)
+CMake Warning (unused-cli):
+  Manually-specified variables were not used by the project:
+
+    AVM_BUILD_TESTS
+
+
+-- Build files have been written to: /Users/froran/Projects/private/knytos/target/atomvm/atomvm-utc.atomvm-build/host
+[1/46] Hashing /private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/bifs.gperf
+[2/46] Hashing /private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/nifs.gperf
+[3/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/atomshashtable.c.o
+[4/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/atom.c.o
+[5/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/avmpack.c.o
+[6/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/atom_table.c.o
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/atom_table.c:283:53: warning: unused parameter 'table' [-Wunused-parameter]
+  283 | bool atom_table_is_atom_ref_ascii(struct AtomTable *table, atom_ref_t atom)
+      |                                                     ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/atom_table.c:297:47: warning: unused parameter 'table' [-Wunused-parameter]
+  297 | void atom_table_write_bytes(struct AtomTable *table, atom_ref_t atom, size_t buf_len, void *outbuf)
+      |                                               ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/atom_table.c:313:23: warning: unused parameter 'table' [-Wunused-parameter]
+  313 |     struct AtomTable *table, atom_ref_t atom, size_t buf_len, char *outbuf)
+      |                       ^
+3 warnings generated.
+[7/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/bitstring.c.o
+[8/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/debug.c.o
+[9/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/dictionary.c.o
+[10/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/defaultatoms.c.o
+[11/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/bif.c.o
+In file included from /private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/bif.c:37:
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/bifs.gperf:53:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+   53 | hash (str, len)
+      | ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/bifs.gperf:118:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+  118 | in_word_set (str, len)
+      | ^
+2 warnings generated.
+[12/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/iff.c.o
+[13/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/externalterm.c.o
+[14/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/globalcontext.c.o
+[15/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/mailbox.c.o
+[16/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/interop.c.o
+[17/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/memory.c.o
+[18/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/port.c.o
+[19/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/refc_binary.c.o
+[20/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/resources.c.o
+[21/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/posix_nifs.c.o
+[22/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/scheduler.c.o
+[23/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/timer_list.c.o
+[24/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/stacktrace.c.o
+[25/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/unicode.c.o
+[26/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/term.c.o
+[27/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/valueshashtable.c.o
+[28/46] Building C object src/platforms/generic_unix/lib/CMakeFiles/libAtomVMDarwin-arm64.dir/otp_socket_platform.c.o
+[29/46] Building C object src/platforms/generic_unix/lib/CMakeFiles/libAtomVMDarwin-arm64.dir/mapped_file.c.o
+[30/46] Building C object src/platforms/generic_unix/lib/CMakeFiles/libAtomVMDarwin-arm64.dir/platform_defaultatoms.c.o
+[31/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/nifs.c.o
+In file included from /private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/nifs.c:807:
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/nifs.gperf:49:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+   49 | hash (str, len)
+      | ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/nifs.gperf:114:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+  114 | nif_in_word_set (str, len)
+      | ^
+2 warnings generated.
+[32/46] Building C object src/platforms/generic_unix/lib/CMakeFiles/libAtomVMDarwin-arm64.dir/smp.c.o
+[33/46] Building C object src/platforms/generic_unix/lib/CMakeFiles/libAtomVMDarwin-arm64.dir/platform_nifs.c.o
+[34/46] Building C object src/platforms/generic_unix/lib/CMakeFiles/libAtomVMDarwin-arm64.dir/sys.c.o
+/private/tmp/knytos-erlang-m0-atomvm/src/platforms/generic_unix/lib/sys.c:528:40: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+  528 |             char port_driver_name[64 + strlen("avm_"
+      |                                   ~~~~~^~~~~~~~~~~~~
+  529 |                                               "_port_driver.so")
+      |                                               ~~~~~~~~~~~~~~~~~~
+  530 |                 + 1];
+      |                 ~~~
+/private/tmp/knytos-erlang-m0-atomvm/src/platforms/generic_unix/lib/sys.c:537:41: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+  537 |         char port_driver_func_name[64 + strlen("_create_port") + 1];
+      |                                    ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+2 warnings generated.
+[35/46] Building C object src/platforms/generic_unix/lib/CMakeFiles/libAtomVMDarwin-arm64.dir/__/__/__/libAtomVM/inet.c.o
+[36/46] Building C object src/platforms/generic_unix/lib/CMakeFiles/libAtomVMDarwin-arm64.dir/__/__/__/libAtomVM/otp_net.c.o
+[37/46] Building C object src/platforms/generic_unix/lib/CMakeFiles/libAtomVMDarwin-arm64.dir/socket_driver.c.o
+[38/46] Building C object src/platforms/generic_unix/CMakeFiles/AtomVM.dir/main.c.o
+[39/46] Building C object tools/packbeam/CMakeFiles/PackBEAM.dir/packbeam.c.o
+[40/46] Building C object src/platforms/generic_unix/lib/CMakeFiles/libAtomVMDarwin-arm64.dir/__/__/__/libAtomVM/otp_socket.c.o
+[41/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/module.c.o
+[42/46] Building C object src/platforms/generic_unix/libAtomVM/CMakeFiles/libAtomVM.dir/context.c.o
+[43/46] Linking C static library src/platforms/generic_unix/libAtomVM/liblibAtomVM.a
+[44/46] Linking C static library src/platforms/generic_unix/lib/liblibAtomVMDarwin-arm64.a
+[45/46] Linking C executable src/AtomVM
+ld: warning: ignoring duplicate libraries: 'src/platforms/generic_unix/lib/liblibAtomVMDarwin-arm64.a', 'src/platforms/generic_unix/libAtomVM/liblibAtomVM.a'
+[46/46] Linking C executable tools/packbeam/PackBEAM
+ld: warning: ignoring duplicate libraries: 'src/platforms/generic_unix/lib/liblibAtomVMDarwin-arm64.a', 'src/platforms/generic_unix/libAtomVM/liblibAtomVM.a'
+utc_unavailable.beam *
+io.beam
+io_lib.beam
+lists.beam
+string.beam
+unicode.beam
+proplists.beam
+console.beam
+atomvm.beam
+-- Configuring done (2.7s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-v1
+ninja: no work to do.
+    Finished `release` profile [optimized] target(s) in 0.11s
+Built /Users/froran/Projects/private/knytos/target/atomvm/atomvm-utc.atomvm-build/libc-probe.elf; signing is a separate step
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/atom_table.c:283:53: warning: unused parameter 'table' [-Wunused-parameter]
+  283 | bool atom_table_is_atom_ref_ascii(struct AtomTable *table, atom_ref_t atom)
+      |                                                     ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/atom_table.c:297:47: warning: unused parameter 'table' [-Wunused-parameter]
+  297 | void atom_table_write_bytes(struct AtomTable *table, atom_ref_t atom, size_t buf_len, void *outbuf)
+      |                                               ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/atom_table.c:313:23: warning: unused parameter 'table' [-Wunused-parameter]
+  313 |     struct AtomTable *table, atom_ref_t atom, size_t buf_len, char *outbuf)
+      |                       ^
+In file included from /private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/bif.c:37:
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/bifs.gperf:53:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+   53 | hash (str, len)
+      | ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/bifs.gperf:118:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+  118 | in_word_set (str, len)
+      | ^
+3 warnings generated.
+2 warnings generated.
+In file included from /private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/nifs.c:807:
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/nifs.gperf:49:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+   49 | hash (str, len)
+      | ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/nifs.gperf:114:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+  114 | nif_in_word_set (str, len)
+      | ^
+2 warnings generated.
+-- Configuring done (2.6s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-v1
+ninja: no work to do.
+    Finished `release` profile [optimized] target(s) in 0.11s
+Built /Users/froran/Projects/private/knytos/target/atomvm/atomvm-utc.elf; signing is a separate step
+Built /Users/froran/Projects/private/knytos/target/atomvm/atomvm-utc.elf

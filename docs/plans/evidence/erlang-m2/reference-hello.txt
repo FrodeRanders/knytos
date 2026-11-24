@@ -1,0 +1,4 @@
+ATOMVM platform=generic_unix
+Hello from Erlang on Knytos
+ATOMVM PASS elapsed_ms=26
+Return value: ok

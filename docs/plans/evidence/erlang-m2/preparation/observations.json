@@ -1,0 +1,5 @@
+{
+  "failed_reference_package_sha256": "4af10470e338f47fdbf3e0a3c800e7e48ba6fa80dc0b1bd680b4bf6634249719",
+  "limitation": "Original package bytes were overwritten by the corrected rebuild; the crash log and observed hash remain.",
+  "cause": "Fixture required knytos while generic Unix correctly returned generic_unix."
+}

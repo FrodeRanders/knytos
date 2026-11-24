@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0 complete; M1 initial C profile implemented; later milestones proposed\
+**Status:** M0–M2 complete within qualified scope; later milestones proposed\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -12,10 +12,13 @@
 M0 findings are recorded in [Architecture discovery](erlang-m0-discovery.md).
 The user reviewed M0 and authorized the [M1 implementation scope](erlang-m1-implementation.md).
 The [M1 results](../reports/milestones/2026-11-24-c-runtime.md) record qualification and remaining limits.
+The user authorized [M2](erlang-m2-implementation.md) after M1 was committed and
+pushed. [M2 results](../reports/milestones/2026-11-24-atomvm.md) record signed
+AtomVM execution, timers, resource observations and unsupported facilities.
 The C runtime design is in
 [Native C execution environment](../architecture/c-runtime.md). These documents
 distinguish inspected interfaces and executed probes from unimplemented port
-features. M2 AtomVM integration remains subject to the next milestone review.
+features. M3 remains subject to the next milestone review.
 
 ---
 

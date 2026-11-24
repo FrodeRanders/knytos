@@ -39,6 +39,7 @@ execution records. For current knowledge and work, use:
 
 ## Milestone records
 
+- [AtomVM M2 qualification](milestones/2026-11-24-atomvm.md)
 - [Native C runtime M1 qualification](milestones/2026-11-24-c-runtime.md)
 
 - [Async-syscall demonstration](milestones/async-syscall-demo.md)

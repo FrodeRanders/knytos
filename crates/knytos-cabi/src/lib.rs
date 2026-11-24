@@ -16,6 +16,9 @@ pub const OK: i32 = 0;
 pub const INVALID: i32 = 1;
 pub const UNAVAILABLE: i32 = 2;
 pub const OVERFLOW: i32 = 3;
+pub const DEADLINE: i32 = 4;
+pub const WAIT_REJECTED: i32 = 5;
+pub const SHUTDOWN: i32 = 6;
 
 pub(crate) static ALLOCATIONS: allocation::Allocations = allocation::Allocations::new();
 

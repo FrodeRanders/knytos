@@ -1,0 +1,8 @@
+{
+  "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+  "cmake": "cmake version 4.5.1\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).",
+  "ninja": "1.13.2",
+  "gperf": "GNU gperf 3.0.3\nCopyright (C) 1989-1998, 2000-2004, 2006-2007 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\nWritten by Douglas C. Schmidt and Bruno Haible.",
+  "rustc": "rustc 1.102.0-nightly (5f4effd57 2026-11-13)\nbinary: rustc\ncommit-hash: 5f4effd579500175af844241eb179e756190f1e7\ncommit-date: 2026-11-13\nhost: aarch64-apple-darwin\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "otp": "Erlang/OTP 27 [erts-15.2.7.14] [source] [64-bit] [smp:1:1] [ds:1:1:10] [async-threads:1]"
+}

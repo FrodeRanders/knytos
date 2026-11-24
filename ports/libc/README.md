@@ -65,6 +65,16 @@ status. Monotonic time uses checked counter/frequency conversion. Realtime
 always returns `KNYTOS_UNAVAILABLE` without changing the output: this profile
 does not connect to the authorized time service. Uptime is never Unix time.
 
+The single-threaded reactor API borrows launch CQ zero: `knytos_event_signal`
+posts a retained work generation, and `knytos_event_wait` accepts -1 for an
+indefinite wait or nonnegative milliseconds. It returns distinct readiness,
+deadline, waiter rejection, invalid request and authenticated shutdown statuses.
+It checks lifecycle before and after waiting. The caller must be the sole CQ
+consumer, retain any accepted operation across all outcomes, and carry its
+own absolute deadline across unrelated readiness. No capability is adopted or
+result observed by this wait. The [AtomVM adapter](../atomvm/README.md) uses
+it with no outstanding native service operations and aborts on wait errors.
+
 Returning from `main` calls `exit`. Exit callbacks registered with `atexit`
 run before destructors, then destructors run in reverse priority. Rust flushes
 output, releases all remaining C heap blocks and logs the C result, released

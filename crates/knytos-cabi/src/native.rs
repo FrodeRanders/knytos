@@ -136,6 +136,36 @@ fn flush(console: &mut Console) {
     }
 }
 
+/// Single-threaded C reactor borrows launch CQ zero. No resource is adopted.
+#[unsafe(no_mangle)]
+pub extern "C" fn knytos_event_wait(timeout_ms: i64) -> i32 {
+    let timeout = match timeout_ms {
+        -1 => None,
+        0.. => Some(timeout_ms as u64),
+        _ => return INVALID,
+    };
+    if knytos_rt::Context.lifecycle().shutdown_requested().is_some() {
+        return SHUTDOWN;
+    }
+    let result = knytos_rt::cq::wait(timeout, 0);
+    if knytos_rt::Context.lifecycle().shutdown_requested().is_some() {
+        return SHUTDOWN;
+    }
+    match result {
+        Ok(knytos_rt::cq::WaitOutcome::Ready) => OK,
+        Ok(knytos_rt::cq::WaitOutcome::Deadline) => DEADLINE,
+        Err(knytos_rt::cq::WaitError::AdmissionRejected) => WAIT_REJECTED,
+        Err(_) => INVALID,
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn knytos_event_signal() {
+    // CQ access has no closeable owner; the kernel retains a work generation
+    // even if the sole reactor has not entered its wait yet.
+    knytos_rt::abi::cq_wake(0);
+}
+
 #[unsafe(no_mangle)]
 pub extern "C" fn knytos_console_flush() {
     flush(&mut CONSOLE.lock());

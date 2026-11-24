@@ -68,6 +68,8 @@ def main():
     parser.add_argument("--picolibc-source", type=Path, default=ROOT / ".dependencies/picolibc")
     parser.add_argument("--fetch", action="store_true")
     parser.add_argument("--define", action="append", default=[])
+    parser.add_argument("--include", action="append", default=[], type=Path)
+    parser.add_argument("--library", action="append", default=[], type=Path)
     args = parser.parse_args()
     source = args.picolibc_source.resolve()
     if not source.exists() and args.fetch:
@@ -99,6 +101,7 @@ def main():
               "-fno-stack-protector", "-fno-pic", "-fno-pie", "-mno-outline-atomics",
               "-ffunction-sections", "-fdata-sections", "-fstack-usage", "-Os", "-Wall", "-Wextra", "-Werror",
               "-isystem", str(libc / "picolibc/include"), "-I", str(ROOT / "ports/libc/include")]
+    common.extend(flag for directory in args.include for flag in ("-I", str(directory.resolve())))
     run(*common, *["-D" + d for d in args.define], "-Dmain=knytos_c_main", "-c", args.source.resolve(), "-o", objects / "application.o")
     check_elf(objects / "application.o", relocatable=True)
     run(*common, "-c", ROOT / "ports/libc/bridge.c", "-o", objects / "bridge.o")
@@ -111,6 +114,7 @@ def main():
     (objects / "link.x").write_text(linker)
     run(llvm / "rust-lld", "-flavor", "gnu", "-m", "aarch64elf", "--gc-sections", "--entry=_start",
         "-T", objects / "link.x", "-o", output, "--start-group", objects / "application.o", objects / "bridge.o",
+        *[p.resolve() for p in args.library],
         ROOT / "target/aarch64-unknown-none/release/libknytos_cabi.a", libc / "libc.a", "--end-group")
     check_elf(output)
     run(llvm / "llvm-strip", "--strip-debug", output)
@@ -122,6 +126,7 @@ def main():
                 "sha256": hashlib.sha256(output.read_bytes()).hexdigest(), "bytes": output.stat().st_size,
                 "source_sha256": hashlib.sha256(args.source.read_bytes()).hexdigest(),
                 "defines": args.define, "profile": "aarch64-static-c11-single-thread-no-tls", "signed": False}
+    evidence["libraries_sha256"] = {str(p.resolve()): hashlib.sha256(p.read_bytes()).hexdigest() for p in args.library}
     inputs = [ROOT / "Cargo.lock", ROOT / "Cargo.toml", ROOT / "ports/libc/build.py",
               ROOT / "ports/libc/bridge.c", ROOT / "ports/libc/include/knytos.h",
               ROOT / "ports/libc/aarch64-clang.cmake", ROOT / "crates/knytos-services/link.x",

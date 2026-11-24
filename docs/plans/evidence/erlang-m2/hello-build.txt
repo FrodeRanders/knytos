@@ -1,0 +1,59 @@
+WARNING:  Could NOT find MbedTLS, ssl and crypto modules will not be supported. Install MbedTLS 3.x or try to set MBEDTLS_ROOT_DIR to installation prefix of MbedTLS 2.x
+Unable to find elixirc -- skipping Elixir tests
+Unable to find elixirc -- skipping Elixir libs
+Unable to find elixirc -- skipping Elixir examples
+Local documentation test build on feature/erlang-runtime
+Graphiz found
+Unable to find Sphinx -- no Sphinx documentation will be generated
+-- Configuring done (0.2s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/froran/Projects/private/knytos/target/atomvm/atomvm-hello.atomvm-build/host
+ninja: no work to do.
+hello.beam *
+io.beam
+io_lib.beam
+lists.beam
+string.beam
+unicode.beam
+proplists.beam
+console.beam
+atomvm.beam
+-- Configuring done (2.8s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-v1
+ninja: no work to do.
+    Finished `release` profile [optimized] target(s) in 0.11s
+Built /Users/froran/Projects/private/knytos/target/atomvm/atomvm-hello.atomvm-build/libc-probe.elf; signing is a separate step
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/atom_table.c:283:53: warning: unused parameter 'table' [-Wunused-parameter]
+  283 | bool atom_table_is_atom_ref_ascii(struct AtomTable *table, atom_ref_t atom)
+      |                                                     ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/atom_table.c:297:47: warning: unused parameter 'table' [-Wunused-parameter]
+  297 | void atom_table_write_bytes(struct AtomTable *table, atom_ref_t atom, size_t buf_len, void *outbuf)
+      |                                               ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/atom_table.c:313:23: warning: unused parameter 'table' [-Wunused-parameter]
+  313 |     struct AtomTable *table, atom_ref_t atom, size_t buf_len, char *outbuf)
+      |                       ^
+In file included from /private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/bif.c:37:
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/bifs.gperf:53:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+   53 | hash (str, len)
+      | ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/bifs.gperf:118:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+  118 | in_word_set (str, len)
+      | ^
+3 warnings generated.
+2 warnings generated.
+In file included from /private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/nifs.c:807:
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/nifs.gperf:49:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+   49 | hash (str, len)
+      | ^
+/private/tmp/knytos-erlang-m0-atomvm/src/libAtomVM/nifs.gperf:114:1: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+  114 | nif_in_word_set (str, len)
+      | ^
+2 warnings generated.
+-- Configuring done (2.7s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-v1
+ninja: no work to do.
+    Finished `release` profile [optimized] target(s) in 0.11s
+Built /Users/froran/Projects/private/knytos/target/atomvm/atomvm-hello.elf; signing is a separate step
+Built /Users/froran/Projects/private/knytos/target/atomvm/atomvm-hello.elf

@@ -3,7 +3,10 @@
 Status: initial single-threaded profile implemented, 2026-11-24. Build and
 runtime contracts are in the [C application guide](../../ports/libc/README.md);
 the [M1 report](../reports/milestones/2026-11-24-c-runtime.md) records native qualification.
-Resource tokens, reactors, TLS and threads below remain future requirements. The
+The [M2 AtomVM adapter](../../ports/atomvm/README.md) adds a single-scheduler
+reactor over launch CQ zero; the [M2 report](../reports/milestones/2026-11-24-atomvm.md)
+records signed execution and resource observations. Resource tokens, service reactors, TLS and threads
+below remain future requirements. The
 [M0 discovery report](../plans/erlang-m0-discovery.md) records inspected sources,
 executed probes, resource limits and outstanding qualification. The
 [Erlang programme](../plans/erlang-runtime-port.md) supplies milestone gates.
@@ -151,6 +154,16 @@ distinct. Use the shared fail-closed policy unless a separately reviewed
 owner-preserving admission-recovery contract exists. Do not duplicate Sitas's
 ring consumer or poll replies using an unrelated queue.
 
+The initial AtomVM adapter has no service calls or native workers. Its sole
+reactor uses `knytos_event_wait` over `knytos_rt::cq::wait` on launch CQ zero,
+with lifecycle checks before and after waiting. The C API distinguishes
+readiness, deadline, rejected admission, invalid request and shutdown. The VM
+retains absolute timer expiry across readiness; rejected waits abort instead
+of restarting timers or polling. A self-posted CQ generation tests the
+wake-before-wait path. This does not qualify future service-operation or SMP
+notification ownership. The void upstream realtime hook explicitly aborts
+with an unavailable diagnostic until an authorized UTC policy is implemented.
+
 Before SMP, specify per-scheduler queue ownership, cross-thread notification,
 condition-variable publication and shutdown fanout. There are four private
 shard CQs, not one per possible native thread; CQ zero also receives lifecycle
@@ -188,8 +201,8 @@ observations within the existing layout and signed limits. M1 reports sampled
 stack depth as a lower bound; full stack high-water and VM stack budgeting
 remain unqualified. No kernel layout or resource limit was increased.
 
-M2 adds a pinned compatible Erlang compiler, actual AtomVM platform hooks and
-authenticated module closure. M3 adds qualified synchronization/TLS/SMP where
+M2 implements the pinned compatible Erlang compiler, AtomVM platform hooks and
+authenticated module closure in the documented single-scheduler scope. M3 adds qualified synchronization/TLS/SMP where
 required. M4 adds asynchronous service resources and bounded finalizer custody.
 M5 requires an independently reviewed ERTS allocator, thread, image, I/O and
 bootstrap design. None of these later features is implied by a successful

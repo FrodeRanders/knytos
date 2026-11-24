@@ -1,0 +1,13 @@
+-- Configuring done (2.6s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-v1
+ninja: no work to do.
+    Finished `release` profile [optimized] target(s) in 0.10s
+Traceback (most recent call last):
+  File "/Users/froran/Projects/private/knytos/ports/libc/build.py", line 142, in <module>
+    main()
+  File "/Users/froran/Projects/private/knytos/ports/libc/build.py", line 106, in main
+    check_elf(objects / "application.o", relocatable=True)
+  File "/Users/froran/Projects/private/knytos/ports/libc/build.py", line 34, in check_elf
+    raise ValueError("TLS is unsupported by the single-threaded C profile")
+ValueError: TLS is unsupported by the single-threaded C profile

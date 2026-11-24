@@ -1,0 +1,22 @@
+{
+  "crates/knytos-cabi/Cargo.toml": "7eca66546f6dab85a00b24b46412ed64655f573af4cdcbed4a06fc175c34fa10",
+  "crates/knytos-cabi/src/allocation.rs": "3d1d9d3685ddc890609abb4395227fb6c8ef9255ee2fdcb1f1cb5c9a18ea035a",
+  "crates/knytos-cabi/src/lib.rs": "f71db0c395a32e6ba5d3c6f2e8b2b981bbcb158ef78611a68b11e1cd8ff2d365",
+  "crates/knytos-cabi/src/native.rs": "bec936bcdc9ae59c9f30f0c9248817a0f5de49fefe2d5e5147cf45e064ec11c5",
+  "ports/atomvm/README.md": "dae1326d65d174d4a473b908ad284437d7465127e3f42cdc80491804a57e788b",
+  "ports/atomvm/build.py": "61d74a3e3b61d75d14b19a6529698dc89dc1fbc8056651af95f42d2c0fe14597",
+  "ports/atomvm/main.c": "328744737490a83761c5b1befeef8e429a6476a07055d8b8270964b017058e8e",
+  "ports/atomvm/sys.c": "d4bdd4488ed25a71941eef77a3e24a5832d7c539c4b586d2772cf139e5db2fc7",
+  "ports/atomvm/tests/hello.erl": "0abdb4b60892913c73c651ea7afce2e1ed674b7f7035f47675008ef5bb0dc4d6",
+  "ports/atomvm/tests/utc_unavailable.erl": "44b5b992f6320e9d959b30b3b1514117aa3e18f29c4ae80505defcbfe06e1eb6",
+  "ports/libc/README.md": "04b1098d5328cca60a9a8be255a7768cf599dc36442cc28365c09c0a5920fea4",
+  "ports/libc/aarch64-clang.cmake": "7a83f05beb6f351ad0c90ab50a6251f6fb991eccfec23c62ea55c366e2c79fb9",
+  "ports/libc/bridge.c": "3dceb15b078b9ebef5f60dff146ec80a37875a1b8fd818f75d86b2f75e0cc887",
+  "ports/libc/build.py": "8929e4d71c63923410e6af1e6ca6a84b6f0d551a0500c7e7406a94c48c458f66",
+  "ports/libc/include/knytos.h": "5ac66f2c0c857231be5efd050aefd8524d0f8abf1e8a2ff4023f3f26b2439baf",
+  "ports/libc/run-tests.py": "acdc0c2bdec00a7547c91caf18bde3f86997d35a7b012f5a4c2e188983a1608b",
+  "ports/libc/tests/empty.c": "be66a796c42fdbf6b4cb7fab59d09471849354d10f91ae2749e7ae91752a510b",
+  "ports/libc/tests/suite.c": "f7b86849a5ca752626a2db4f8946aa9be17c28862a4dfad65994b13cc83530b5",
+  "ports/libc/tests/tls-rejected.c": "d171185fbb48f40c6b34ed7d6fe4acab0c176c7b1ae991a1fe406a6155b282ae",
+  "ports/libc/tests/unsupported-rejected.c": "9690f3da5478a8f63ced99b5a845a1c3e2971c95feedfb5fab37dda537cb1360"
+}

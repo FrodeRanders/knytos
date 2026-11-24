@@ -1,0 +1,125 @@
+{
+  "date": "2026-11-24",
+  "pushed_baseline_commit": "53b253a7b5b806577012ca460ba81fd9481e0748",
+  "outcome": "passed",
+  "native_cases": 12,
+  "host_tests": 89,
+  "ci_input_tests": 6,
+  "resources": [
+    {
+      "name": "c-hello",
+      "signed_elf_bytes": 103120,
+      "sha256": "2dd980cc28adfc6336b8c23192bf985a18d6b3d6ee4e23962650e48d57a890c3",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 0,
+      "sampled_stack_bytes": 672
+    },
+    {
+      "name": "c-memory",
+      "signed_elf_bytes": 112664,
+      "sha256": "99791dc6eb1974e69c5e8f9b5286de0981e3b7e159de5e12953bef3baedbb288",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 4133241,
+      "sampled_stack_bytes": 1456
+    },
+    {
+      "name": "c-format",
+      "signed_elf_bytes": 107424,
+      "sha256": "4d873008ef005e67393fd766ebb70f27e6d45743fd2d68b3c979d1cf9a3e2204",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 0,
+      "sampled_stack_bytes": 768
+    },
+    {
+      "name": "c-clock",
+      "signed_elf_bytes": 107464,
+      "sha256": "6940bb925dc6f449902d5e6ffd8bfb3726daea77078316d90714896ec9387eef",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 0,
+      "sampled_stack_bytes": 672
+    },
+    {
+      "name": "c-startup",
+      "signed_elf_bytes": 108456,
+      "sha256": "f8dd23fa6b77f10f5a72ef39e764db03db7b0fa59e603ba3d0a04aaa8e364be6",
+      "exit": 0,
+      "released_blocks": 1,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 135,
+      "sampled_stack_bytes": 736
+    },
+    {
+      "name": "c-exit",
+      "signed_elf_bytes": 108384,
+      "sha256": "7e0207d0d91ae50990768f44a1068f46a5e346d50c9e37da31e97f98b69d49c3",
+      "exit": 0,
+      "released_blocks": 1,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 103,
+      "sampled_stack_bytes": 768
+    },
+    {
+      "name": "c-error",
+      "signed_elf_bytes": 107976,
+      "sha256": "61c27b132b9107e25beaf65b7d3cef6863c976b877a1b18d90f69bbab4a7bad3",
+      "exit": 17,
+      "released_blocks": 1,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 135,
+      "sampled_stack_bytes": 672
+    },
+    {
+      "name": "c-abort",
+      "signed_elf_bytes": 102960,
+      "sha256": "05f1ee8c46a449bc773d1ac244079c6a7d071a1f67375753144539572e1acb02",
+      "termination": "expected abort"
+    },
+    {
+      "name": "c-empty",
+      "signed_elf_bytes": 96832,
+      "sha256": "8ae9c04cd87c25d2205a13fe3ae1f995c16a0669e750e20ebb002b776687b72c",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 0,
+      "sampled_stack_bytes": 560
+    },
+    {
+      "name": "avm-hello",
+      "signed_elf_bytes": 719960,
+      "sha256": "eb9e40775f85f6ed97e44009db94d44c8dabc02dcb8f7e66f3fd020613d5abef",
+      "exit": 0,
+      "released_blocks": 43,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 24377,
+      "sampled_stack_bytes": 1312
+    },
+    {
+      "name": "avm-utc",
+      "signed_elf_bytes": 719960,
+      "sha256": "3285b1cf0e495acf5462f52f90affd2ead4fd4db4bd0200934a3fd6fe6a9388c",
+      "termination": "expected abort"
+    },
+    {
+      "name": "c-survivor",
+      "signed_elf_bytes": 103120,
+      "sha256": "d2893e3f0395ddddbdaaac22f437bb7831304caa5c37f02a2e741d0ceb3657ac",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 0,
+      "sampled_stack_bytes": 672
+    }
+  ],
+  "kernel_sha256": "6f3ed15ecedb21b1258335a32a84a047c6ca1559fda4baeecc9561c90299d966",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "source_inputs_match_executed_builds": true
+}

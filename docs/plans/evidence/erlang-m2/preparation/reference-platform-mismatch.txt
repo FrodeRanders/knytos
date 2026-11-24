@@ -1,0 +1,30 @@
+CRASH
+======
+pid: <0.1.0>
+
+Stacktrace:
+[{hello,start,0,[]}]
+
+cp: #CP<module: 0, label: 13, offset: 0>
+
+x[0]: error
+x[1]: {badmatch,generic_unix}
+x[2]: {1,0,0,0,[{0,152}],error}
+
+Stack
+-----
+
+[]
+#CP<module: 0, label: 13, offset: 0>
+
+
+Mailbox
+-------
+
+
+Monitors
+--------
+
+
+**End Of Crash Report**
+Return value: error

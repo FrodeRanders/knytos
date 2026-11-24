@@ -58,6 +58,17 @@ policy, and the caller's pending transaction remains live through domain abort.
 Controller idle waits are event-only: both bound endpoints and kernel lifecycle
 publication signal their default CQ.
 
+The [C runtime](../../ports/libc/README.md) exposes a single-consumer borrowed
+CQ-zero wait and explicit wake. Its C statuses retain deadline, admission,
+invalid request and lifecycle shutdown separately; it checks lifecycle before
+and after the checked wait. The [AtomVM adapter](../../ports/atomvm/README.md)
+has no native workers or asynchronous service operations, keeps its absolute
+VM timer expiry across readiness, and aborts on rejected wait admission. It
+rounds fractional remaining milliseconds up instead of busy-polling. A wake
+generation posted before waiting and Erlang queued-message/timed-receive tests
+qualify this single-scheduler scope, without supplying SMP or remote cleanup
+guarantees.
+
 Object storage binds its public endpoint before registration, drains requests,
 then waits event-only on that same default CQ. An arrival between draining and
 parking leaves an unconsumed work generation; shutdown publication wakes the

@@ -27,7 +27,15 @@ def main():
     parser.add_argument("--picolibc-source", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--firmware", type=Path)
+    parser.add_argument("--atomvm-elf", type=Path)
+    parser.add_argument("--atomvm-utc-elf", type=Path)
     args = parser.parse_args()
+    cases = CASES[:-1].copy()
+    if args.atomvm_elf:
+        cases.append(("avm-hello", 10))
+    if args.atomvm_utc_elf:
+        cases.append(("avm-utc", 11))
+    cases += CASES[-1:]
     def interrupted(_signal, _frame):
         raise SystemExit("C runtime campaign interrupted")
     signal.signal(signal.SIGTERM, interrupted)
@@ -47,7 +55,10 @@ def main():
     try:
         images = output / "bundle"
         images.mkdir()
-        for name, number in CASES:
+        for name, number in cases:
+            if number in (10, 11):
+                shutil.copyfile(args.atomvm_elf if number == 10 else args.atomvm_utc_elf, images / (name + ".elf"))
+                continue
             command(["python3", ROOT / "ports/libc/build.py", ROOT / ("ports/libc/tests/empty.c" if number == 8 else "ports/libc/tests/suite.c"),
                      "--define", f"CASE={number}", "--picolibc-source", args.picolibc_source,
                      "--output", images / (name + ".elf")], name + "-build")
@@ -62,11 +73,11 @@ def main():
         command([ROOT / "scripts/run-aarch64.sh", "release", "--minimal", "--build-only", "--instance", "cabi-m1"], "baseline-build")
         signer = ROOT / "target/debug/cluster-sign"
         key = ROOT / "tools/cluster-sign/dev-key.hex"
-        for name, _ in CASES:
+        for name, number in cases:
             image = images / (name + ".elf")
             command([signer, "elf-sign", image, name, key, "service", "1", "1", "0x7", "-"], name + "-sign")
             command([signer, "deployment-sign", output / (name + ".cdep"), name, "fixture/" + name,
-                     image, "0", "1", "16", "1", "5000", key], name + "-descriptor")
+                     image, "0", "1", "64" if number in (10, 11) else "16", "1", "5000", key], name + "-descriptor")
         tampered = bytearray((images / "c-hello.elf").read_bytes())
         command([signer, "elf-verify", images / "c-hello.elf", "c-hello",
                  "3ddc95c26bd5f4022d95a4c6c8d074f577f11af7873e527b018b21be2c035463"], "signature-accepted")
@@ -143,27 +154,35 @@ def main():
                 try:
                     wait_for(lambda s: "BOOT COMPLETE:" in s and "[deployd] listening" in s
                              and "[time] synchronized" in s and "[dns] proposed filtered capacity" in s, 180)
-                    for name, number in CASES:
+                    for name, number in cases:
                         before = len(serial.read_text(errors="replace"))
                         command([signer, "deployment-notify", output / (name + ".cdep"), "127.0.0.1:28081"], name + "-admission", env=environment, timeout=40)
                         expected = "CABI expected abort" if number == 7 else "CABI expected nonzero" if number == 6 else "CABI explicit exit" if number == 5 else f"CABI PASS case={number}"
+                        if number == 10: expected = "[atomvm] completed status=0"
+                        if number == 11: expected = "[atomvm] unsupported: wall clock unavailable"
                         def complete(text):
                             tail = text[before:]
                             launch = re.search(r'\[agent\] launched "' + re.escape(name) + r'" generation=\d+ asid=(\d+)', tail)
                             if not launch:
                                 return False
                             domain_lines = "\n".join(line for line in tail.splitlines() if re.search(r'asid=' + launch[1] + r'\b', line))
-                            terminal = "[c-runtime] abort" if number == 7 else f"[c-runtime] exit={17 if number == 6 else 0} "
+                            terminal = "[c-runtime] abort" if number in (7, 11) else f"[c-runtime] exit={17 if number == 6 else 0} "
                             return expected in domain_lines and terminal in domain_lines
                         text = wait_for(complete, 60)[before:]
-                        if number not in (7, 8):
+                        if number not in (7, 8, 10, 11):
                             assert "CABI FINI" in text, name
-                        if number != 7:
+                        if number not in (7, 11):
                             assert "remaining_blocks=0" in text, name
                         if number in (4, 5, 6):
                             assert "released_blocks=1" in text, name
                         if number in (4, 5):
                             assert text.index("CABI ATEXIT") < text.index("CABI FINI"), name
+                        if number == 10:
+                            assert "[atomvm] wake-before-wait passed" in text, name
+                            assert "ATOMVM platform=knytos" in text, name
+                            assert "ATOMVM PASS elapsed_ms=" in text, name
+                            assert "[atomvm] return=ok" in text, name
+                            assert re.search(r'\[atomvm\] reactor waits=[1-9]\d* deadlines=[1-9]\d*', text), name
                         record["cases"].append({"name": name, "case": number, "passed": True, "observation": text})
                         save()
                     record["outcome"] = "passed"
