@@ -1,0 +1,16 @@
+{
+  "crates/knytos-cabi/Cargo.toml": "7eca66546f6dab85a00b24b46412ed64655f573af4cdcbed4a06fc175c34fa10",
+  "crates/knytos-cabi/src/allocation.rs": "3d1d9d3685ddc890609abb4395227fb6c8ef9255ee2fdcb1f1cb5c9a18ea035a",
+  "crates/knytos-cabi/src/lib.rs": "a7ba4024702e880199aefbc47db0e7deee709b55032cd73ee0379677dc879daf",
+  "crates/knytos-cabi/src/native.rs": "fe819b81842020166d58a5ce54706241b6e8c5e754e5987e9ede8e7d2d8cb573",
+  "ports/libc/README.md": "1356afb35ef2b2213e29c659fcbc9d411a3093e13de66cb6bd2458d92d6807bb",
+  "ports/libc/aarch64-clang.cmake": "7a83f05beb6f351ad0c90ab50a6251f6fb991eccfec23c62ea55c366e2c79fb9",
+  "ports/libc/bridge.c": "3dceb15b078b9ebef5f60dff146ec80a37875a1b8fd818f75d86b2f75e0cc887",
+  "ports/libc/build.py": "05ea3125b54f041cae07805c2145f198b335e97e5468c4b77d6af682e12e3e5b",
+  "ports/libc/include/knytos.h": "cb1dba5fe81a8551a0a156555b49c9852a5059a0e2673b85db8afc3778bdaf6c",
+  "ports/libc/run-tests.py": "d9ec4ecc49215edc1614781d8716d1f701f77a6db60c7a65457feabcb7f0f37a",
+  "ports/libc/tests/empty.c": "be66a796c42fdbf6b4cb7fab59d09471849354d10f91ae2749e7ae91752a510b",
+  "ports/libc/tests/suite.c": "f7b86849a5ca752626a2db4f8946aa9be17c28862a4dfad65994b13cc83530b5",
+  "ports/libc/tests/tls-rejected.c": "d171185fbb48f40c6b34ed7d6fe4acab0c176c7b1ae991a1fe406a6155b282ae",
+  "ports/libc/tests/unsupported-rejected.c": "9690f3da5478a8f63ced99b5a845a1c3e2971c95feedfb5fab37dda537cb1360"
+}

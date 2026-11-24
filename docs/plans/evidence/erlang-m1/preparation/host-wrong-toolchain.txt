@@ -1,0 +1,36 @@
+   Compiling spin v0.12.3
+   Compiling spin v0.9.9
+   Compiling knytos-protocol-s3 v0.1.0 (/Users/froran/Projects/private/knytos/crates/knytos-protocol-s3)
+   Compiling knytos-protocol-kafka v0.1.0 (/Users/froran/Projects/private/knytos/crates/knytos-protocol-kafka)
+   Compiling knytos-protocol-grant v0.1.0 (/Users/froran/Projects/private/knytos/crates/knytos-protocol-grant)
+   Compiling knytos-rt v0.1.0 (/Users/froran/Projects/private/knytos/crates/knytos-rt)
+   Compiling knytos-cabi v0.1.0 (/Users/froran/Projects/private/knytos/crates/knytos-cabi)
+   Compiling sitas-core v0.2.1 (/Users/froran/Projects/private/knytos/.dependencies/sitas/crates/sitas-core)
+   Compiling knytos-app v0.1.0 (/Users/froran/Projects/private/knytos/crates/knytos-app)
+   Compiling knytos-app-sitas v0.1.0 (/Users/froran/Projects/private/knytos/crates/knytos-app-sitas)
+error[E0635]: unknown feature `allocator_ext`
+ --> crates/knytos-app-sitas/src/lib.rs:8:12
+  |
+8 | #![feature(allocator_ext)]
+  |            ^^^^^^^^^^^^^
+  |
+help: there is a feature with a similar name: `allocator_api`
+  |
+8 - #![feature(allocator_ext)]
+8 + #![feature(allocator_api)]
+  |
+
+error[E0658]: use of unstable library feature `allocator_api`
+   --> crates/knytos-app-sitas/src/lib.rs:165:24
+    |
+165 |         let registry = Arc::try_new(Registry {
+    |                        ^^^^^^^^^^^^
+    |
+    = note: see issue #32838 <https://github.com/rust-lang/rust/issues/32838> for more information
+    = help: add `#![feature(allocator_api)]` to the crate attributes to enable
+    = note: this compiler was built on 2026-08-22; consider upgrading it if it is out of date
+
+Some errors have detailed explanations: E0635, E0658.
+For more information about an error, try `rustc --explain E0635`.
+error: could not compile `knytos-app-sitas` (lib test) due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...

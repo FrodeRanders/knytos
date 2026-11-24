@@ -1,0 +1,15 @@
+version=17.0.3
+release=29
+thread_pool=1
+schedulers=1
+dirty_cpu=1
+dirty_io=1
+memory=[{total,28503288},
+        {processes,13041120},
+        {processes_used,13038768},
+        {system,15462168},
+        {atom,297053},
+        {atom_used,297053},
+        {binary,31576},
+        {code,5568783},
+        {ets,486720}]

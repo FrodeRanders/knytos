@@ -1,0 +1,6 @@
+     Running unittests src/lib.rs (/Users/froran/Projects/private/knytos/target/debug/build/knytos-app/9b0fc0a9bd091906/out/knytos_app-9b0fc0a9bd091906)
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests src/lib.rs (/Users/froran/Projects/private/knytos/target/debug/build/knytos-app-sitas/a3717cc36ec7a54b/out/knytos_app_sitas-a3717cc36ec7a54b)
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests src/lib.rs (/Users/froran/Projects/private/knytos/target/debug/build/knytos-rt/7245ed350b87b557/out/knytos_rt-7245ed350b87b557)
+test result: ok. 66 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

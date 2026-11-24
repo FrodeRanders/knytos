@@ -898,6 +898,15 @@ name = "knytos-authorization"
 version = "0.1.0"
 
 [[package]]
+name = "knytos-cabi"
+version = "0.1.0"
+dependencies = [
+ "knytos-launch",
+ "knytos-rt",
+ "lock_api",
+]
+
+[[package]]
 name = "knytos-graft"
 version = "0.1.0"
 dependencies = [

@@ -1,0 +1,29 @@
+-- The C compiler identification is Clang 21.0.0
+-- The ASM compiler identification is AppleClang
+-- Found assembler: /usr/bin/clang
+-- Detecting C compiler ABI info
+CMake Error at /Users/froran/Projects/private/knytos/ports/libc/aarch64-clang.cmake:9 (message):
+  Pass the pinned Rust toolchain's KNYTOS_LLVM_AR
+Call Stack (most recent call first):
+  /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-v1/CMakeFiles/4.5.1/CMakeSystem.cmake:8 (include)
+  /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-v1/CMakeFiles/CMakeScratch/TryCompile-29HcPY/CMakeLists.txt:6 (project)
+
+
+CMake Error at /opt/homebrew/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:123 (try_compile):
+  Failed to configure test project build system.
+Call Stack (most recent call first):
+  /opt/homebrew/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)
+  CMakeLists.txt:38 (project)
+
+
+-- Configuring incomplete, errors occurred!
+Traceback (most recent call last):
+  File "/Users/froran/Projects/private/knytos/ports/libc/build.py", line 130, in <module>
+    main()
+  File "/Users/froran/Projects/private/knytos/ports/libc/build.py", line 90, in main
+    run("cmake", "-S", source, "-B", libc, "-G", "Ninja",
+  File "/Users/froran/Projects/private/knytos/ports/libc/build.py", line 17, in run
+    subprocess.run([str(a) for a in args], check=True, **kwargs)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['cmake', '-S', '/private/tmp/knytos-erlang-m0-picolibc', '-B', '/Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-v1', '-G', 'Ninja', '-DCMAKE_TOOLCHAIN_FILE=/Users/froran/Projects/private/knytos/ports/libc/aarch64-clang.cmake', '-DCMAKE_BUILD_TYPE=MinSizeRel', '-DKNYTOS_LLVM_AR=/Users/froran/.rustup/toolchains/nightly-2026-11-14-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/bin/llvm-ar', '-D__THREAD_LOCAL_STORAGE=OFF', '-D__SINGLE_THREAD=ON', '-D__GLOBAL_ERRNO=ON', '-DENABLE_MALLOC=OFF', '-DTESTS=OFF', '-DPOSIX_CONSOLE=OFF']' returned non-zero exit status 1.

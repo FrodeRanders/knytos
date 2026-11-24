@@ -1,0 +1,196 @@
+# Native C execution environment
+
+Status: initial single-threaded profile implemented, 2026-11-24. Build and
+runtime contracts are in the [C application guide](../../ports/libc/README.md);
+the [M1 report](../reports/milestones/2026-11-24-c-runtime.md) records native qualification.
+Resource tokens, reactors, TLS and threads below remain future requirements. The
+[M0 discovery report](../plans/erlang-m0-discovery.md) records inspected sources,
+executed probes, resource limits and outstanding qualification. The
+[Erlang programme](../plans/erlang-runtime-port.md) supplies milestone gates.
+
+## Scope and layering
+
+The first supported profile is static AArch64 C11, one native thread,
+no ELF TLS, no dynamic loader and no POSIX process/filesystem environment.
+C applications remain ordinary authenticated EL0 domains under runtime ABI 4.
+The existing kernel ELF loader, deployment descriptor, grant controller and
+resource accounting remain authoritative.
+
+```text
+C application / native VM
+        |
+        +-- Picolibc string, math and console formatting subset
+        |
+        +-- versioned Knytos C API
+                    |
+                    +-- Rust startup, allocator and owner custody
+                    +-- knytos-rt / knytos-app clients
+                                  |
+                                  +-- existing kernel ABI and services
+```
+
+The root-workspace `knytos-cabi` crate and `ports/libc` build tooling implement
+the profile over Rust runtime ownership. AtomVM and later ERTS adapters can share this C API,
+but their scheduler, package-loader and NIF implementations remain separate.
+
+## Startup, image and termination
+
+Keep one Rust-owned `_start`. It establishes the existing `Context`/allocator
+and invokes the C application entry through an explicit C ABI. Startup may
+construct bounded `argc`/`argv` from authenticated input; it does not synthesize
+a global Unix environment. The C library must not install a second `_start`,
+initialize an independent heap over the same arena, or clear mapped memory
+using bare-metal RAM/stack linker symbols.
+
+The generated linker script retains explicit constructor/finalizer ranges.
+The C wrapper invokes constructors in ascending priority, then runs `main`
+with one fixed program argument. Exit invokes `atexit` before reverse-priority
+destructors. Empty linker ranges use zero-sized Rust boundary symbols, since
+their addresses may coincide. Loader mapping already copies initialized LOAD bytes
+and zeroes BSS, so do not overwrite the immutable launch/configuration pages.
+
+Final output is a fixed-address little-endian ELF64 `ET_EXEC`, starting at the
+reviewed application address, with separate page-aligned executable/read-only
+and writable loads. The loader does not relocate a shared object or initialize
+`PT_TLS`. Reject unsupported TLS/dynamic-link imports in build validation.
+Use the existing signature note and signed descriptor; C API versioning does
+not replace the kernel's exact runtime ABI requirement.
+
+Returning from C `main` enters Rust-controlled cleanup and records the
+application result. This must distinguish:
+
+- Normal main return after all application owners are disposed.
+- An individual worker's terminal exit, once workers are supported.
+- Authenticated cooperative shutdown after operations and workers are drained.
+- Fatal application/runtime failure using the existing domain-abort policy.
+
+`thread_exit` does not unwind C or Rust frames or join other threads.
+`exit(status)` must not be implemented as a blind alias for that syscall.
+The initial profile has no workers, but its API must not promise whole-domain
+cleanup from a thread-only observation. Blocking or fallible remote teardown
+uses explicit close; a destructor cannot manufacture successful cancellation.
+
+## Allocator and libc profile
+
+Picolibc 1.8.12 is cross-built with single-thread mode, TLS disabled and its
+malloc implementation disabled. The Knytos C allocator facade uses the runtime
+allocator, with no second `sbrk` heap over the Rust arena.
+
+The C allocation ABI needs its own private layout metadata because `free(p)`
+does not supply Rust's allocation layout. Retain requested size, actual layout
+and alignment through `realloc` and release. Check arithmetic before allocation;
+preserve the old block on realloc failure; define zero-size behavior and
+`aligned_alloc` restrictions; free through the same allocator that created the
+block. Do not allow a generic C free to destroy capability/mapping owners.
+
+Picolibc's console `FILE` callbacks can feed bounded Knytos logging. An opaque
+console object is not a global descriptor namespace. Include the required
+string/conversion/formatting/math functions from the maintained library.
+Unavailable file, signal and process interfaces either remain unresolved at
+build time or fail through explicitly documented public operations. They may
+not return successful dummy results.
+
+Disabling TLS allows process-global libc state only because this profile has
+exactly one native thread. It must not later be linked into an SMP VM with
+global errno/reentrancy state. The libc and compiler-runtime closure must be
+requalified before enabling threads.
+
+## C-facing ownership
+
+Publish C-compatible fixed-width types, lengths, status codes and versioned
+structures. Avoid Rust references, enum layouts and collections in the ABI.
+Treat pointer validity as a caller precondition inside the same native trust
+domain, with checked sizes/alignment at the FFI boundary; it is not a proof
+that arbitrary C is memory-safe. Never unwind through C frames.
+
+M1 exposes no resource tokens or asynchronous operations. Future resource
+tokens must refer to entries holding actual `knytos_rt::owned` owners or
+protocol owners such as `OwnedSocket`. Generation and kind checks reject stale
+or mismatched tokens. A copied numeric token does not create another Rust
+owner, and it must not expose a raw kernel capability for adoption.
+
+Specify borrowed access, logical shared references and consuming transfer
+separately. Use `call_move`, `send_move` and `reply_move` to transfer the owner;
+on rejected submission preserve the original owner when the existing API
+supports it. Borrow bootstrap resources through `Context`. `from_raw` remains
+restricted to documented, exactly-once ABI adoption.
+
+The initial C profile need not expose general asynchronous IPC. When added,
+one native operation record must retain its pending call, mapped/borrowed
+buffers, exact identities, deadline, authority, result attachments and all
+delivery/cleanup reservations. Prepare those reservations before accepting
+work. Timeout and wait-admission failure preserve the complete record. A CQ
+notification is only a reason to observe the retained owner.
+
+For a VM, the lifetime of an Erlang reference differs from the lifetime of the
+native request. A resource finalizer/process-down callback relinquishes delivery
+interest and marks the operation for already-admitted cleanup custody. It must
+not allocate a cleanup worker or synchronously drop a blocking owner beneath
+VM/GC locks. Only confirmed completion/cancellation authorizes physical release;
+uncertain cleanup retains the owner under the existing fail-closed policy.
+Dropping a reference does not undo remote effects or authorize replay.
+
+## Clocks and events
+
+Monotonic time is a checked conversion from the kernel counter/frequency.
+Carry one absolute deadline through preparation, unrelated wakes and phase
+changes. Overflow, zero frequency and unavailable clocks return explicit status.
+
+UTC is provided by the authorized `time` service, not a realtime syscall.
+Return unavailable/unsynchronized honestly. A VM hook that cannot return an
+error, such as the selected AtomVM `sys_time`, needs a reviewed startup/caching
+policy before it is enabled. Do not map uptime to Unix time. Cached extrapolated
+UTC must retain its quality/age limitations and must not be used as a claim of
+authenticated security time.
+
+The future VM reactor must own one CQ consumer and bind all relevant pending calls
+and endpoints to it. It drains observations, checks lifecycle, registers/rechecks
+interest and waits with the earliest remaining monotonic deadline using
+`knytos_rt::cq::wait`. Readiness, deadline and rejected waiter admission remain
+distinct. Use the shared fail-closed policy unless a separately reviewed
+owner-preserving admission-recovery contract exists. Do not duplicate Sitas's
+ring consumer or poll replies using an unrelated queue.
+
+Before SMP, specify per-scheduler queue ownership, cross-thread notification,
+condition-variable publication and shutdown fanout. There are four private
+shard CQs, not one per possible native thread; CQ zero also receives lifecycle
+wakes. The existing shared-parker backstop in Sitas is a recorded limitation,
+not proof of a general condition-variable contract.
+
+## TLS and future thread profile
+
+The current loader has no TLS template/TCB initialization. The AArch64 context
+does not establish or preserve a per-thread user `TPIDR_EL0` value. LP-base
+helper definitions use that register, but their presence alone does not prove
+active use. This requires a deliberate kernel/runtime ownership decision and
+per-thread save/restore qualification before using compiler-generated TLS.
+
+A future generic TLS design must cover all thread creation paths, initial
+template copying/zeroing, alignment, TCB ABI, errno/libc data, context switching,
+preemption/migration, cancellation and final thread retirement. Test initialized
+and zero TLS in simultaneous threads before requalifying libc or either VM.
+Do not use a single global TLS block or a fake successful `pthread_key` API.
+
+Thread creation currently accepts an entry and LP, without a C argument or
+caller-selected stack/TLS pointer. A C trampoline needs one prepared start
+record retained across publication and failure, with a generation-bound
+`ThreadHandle`. Thread join rejection must retain that exact handle.
+Mutex/condvar/address-wait semantics are not supplied by naming a userspace
+spin lock; establish a real wake producer and the readiness recheck.
+
+## Acceptance boundaries
+
+M1 acceptance requires native signed C execution and C↔Rust ABI tests,
+constructor order, output/formatting, allocator failure paths, clocks and
+normal/error termination. TLS use is an expected build rejection in this
+profile. Native probes must measure ELF/package size, heap peak and stack
+observations within the existing layout and signed limits. M1 reports sampled
+stack depth as a lower bound; full stack high-water and VM stack budgeting
+remain unqualified. No kernel layout or resource limit was increased.
+
+M2 adds a pinned compatible Erlang compiler, actual AtomVM platform hooks and
+authenticated module closure. M3 adds qualified synchronization/TLS/SMP where
+required. M4 adds asynchronous service resources and bounded finalizer custody.
+M5 requires an independently reviewed ERTS allocator, thread, image, I/O and
+bootstrap design. None of these later features is implied by a successful
+freestanding C link or a host VM build.

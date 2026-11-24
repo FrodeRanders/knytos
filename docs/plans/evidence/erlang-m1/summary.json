@@ -1,0 +1,110 @@
+{
+  "date": "2026-11-24",
+  "native_outcome": "passed",
+  "native_cases": 10,
+  "host_tests": 89,
+  "ci_runtime_input_tests": 6,
+  "resources": [
+    {
+      "name": "c-hello",
+      "signed_elf_bytes": 103120,
+      "signed_elf_sha256": "5da1b810c8e113bf7b9c8a76f4ff66937fc2e0dd0c91ddce8f62ca037ade572e",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 0,
+      "sampled_stack_bytes": 672
+    },
+    {
+      "name": "c-memory",
+      "signed_elf_bytes": 112664,
+      "signed_elf_sha256": "55e9c4ce1d1e31d9c8e8a084d303e25530d058fd6d6b7a14994f30d5e8154d2d",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 4133241,
+      "sampled_stack_bytes": 1456
+    },
+    {
+      "name": "c-format",
+      "signed_elf_bytes": 107424,
+      "signed_elf_sha256": "1d1965c531315b66671da4928051d4b98608cc7738be47e29e296f7c3ebf52b0",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 0,
+      "sampled_stack_bytes": 768
+    },
+    {
+      "name": "c-clock",
+      "signed_elf_bytes": 107464,
+      "signed_elf_sha256": "c47d2383f382b2e45d81a1bf3faf4d6a93ecc5cbd58aa940de99f0363a63d78e",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 0,
+      "sampled_stack_bytes": 672
+    },
+    {
+      "name": "c-startup",
+      "signed_elf_bytes": 108456,
+      "signed_elf_sha256": "bfd5f4ac3db8389bfe46fd05140c07253250bb4f898d19d757a5b9cfccc31b82",
+      "exit": 0,
+      "released_blocks": 1,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 135,
+      "sampled_stack_bytes": 736
+    },
+    {
+      "name": "c-exit",
+      "signed_elf_bytes": 108384,
+      "signed_elf_sha256": "00fb330d078a393cce51487558058050923c511b2acb7a2c6134e08205c8df01",
+      "exit": 0,
+      "released_blocks": 1,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 103,
+      "sampled_stack_bytes": 768
+    },
+    {
+      "name": "c-error",
+      "signed_elf_bytes": 107976,
+      "signed_elf_sha256": "8576391dca5ccceef326688a3842b93af2966c52a17637d218cc6f7a9cb02409",
+      "exit": 17,
+      "released_blocks": 1,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 135,
+      "sampled_stack_bytes": 672
+    },
+    {
+      "name": "c-abort",
+      "signed_elf_bytes": 102960,
+      "signed_elf_sha256": "2739143730898677b078fbbac4fc3d8e5830b341553d37fbc3b2419caeaed406",
+      "termination": "abort"
+    },
+    {
+      "name": "c-empty",
+      "signed_elf_bytes": 96832,
+      "signed_elf_sha256": "298cc34e738d719bfd10c5d99b72550ce5a4e4533cec6f3844dd493587bd17f1",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 0,
+      "sampled_stack_bytes": 560
+    },
+    {
+      "name": "c-survivor",
+      "signed_elf_bytes": 103120,
+      "signed_elf_sha256": "4722414a0ac7a7809cc091842d4d8c2ffa1e83ad7f817c0ac4be7169b2cb908f",
+      "exit": 0,
+      "released_blocks": 0,
+      "remaining_blocks": 0,
+      "heap_peak_bytes": 0,
+      "sampled_stack_bytes": 672
+    }
+  ],
+  "source_inputs_match_executed_builds": true,
+  "stack_measurement": "sampled lower bound; full high-water unqualified",
+  "kernel_sha256": "00dd4a8e278e4058cbd47942172a18e52d1c740d6f7e75e0ab26ca8a34a5a6e0",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "picolibc_revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff"
+}

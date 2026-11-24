@@ -1,0 +1,5 @@
+(lldb) target create "/Users/froran/Projects/private/knytos/target/c-runtime/native-run-1/kernel.elf"
+Current executable set to '/Users/froran/Projects/private/knytos/target/c-runtime/native-run-1/kernel.elf' (aarch64).
+(lldb) settings set interpreter.stop-command-source-on-error false
+(lldb) process connect --plugin gdb-remote unix-connect:///tmp/cabi-qmp-l34782jx/gdb.sock
+error: No such file or directory

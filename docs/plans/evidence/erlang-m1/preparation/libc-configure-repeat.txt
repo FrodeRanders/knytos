@@ -1,0 +1,3 @@
+-- Configuring done (2.8s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/froran/Projects/private/knytos/target/c-runtime/picolibc

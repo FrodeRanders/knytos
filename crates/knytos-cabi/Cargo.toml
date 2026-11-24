@@ -1,0 +1,14 @@
+[package]
+name = "knytos-cabi"
+version = "0.1.0"
+edition = "2024"
+description = "Single-threaded C application ABI over the owned Knytos runtime"
+
+[lib]
+crate-type = ["rlib", "staticlib"]
+bench = false
+
+[dependencies]
+knytos-rt = { path = "../knytos-rt" }
+knytos-launch = { path = "../knytos-launch" }
+lock_api = "0.4"

@@ -39,6 +39,8 @@ execution records. For current knowledge and work, use:
 
 ## Milestone records
 
+- [Native C runtime M1 qualification](milestones/2026-11-24-c-runtime.md)
+
 - [Async-syscall demonstration](milestones/async-syscall-demo.md)
 
 When a report produces a durable invariant, copy that invariant into the

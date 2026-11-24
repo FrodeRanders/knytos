@@ -20,6 +20,8 @@ logic, and external managed infrastructure at explicit boundaries.
 - [Userspace development ergonomics](userspace-ergonomics.md) — proposed
   application/client packaging, bounded operations, serving scopes, Sitas
   adapters, SDK distribution and host testing, grounded in the existing owners.
+- [Native C execution environment](c-runtime.md) — implemented single-threaded
+  C ABI, libc and startup profile, with future ownership and threading rules.
 - [Networking](networking.md) — native message-oriented distributed services,
   transport layering, discovery, and compatibility networking.
 - [Distributed L2 ingress](distributed-l2-ingress.md) — a cluster-level TCP

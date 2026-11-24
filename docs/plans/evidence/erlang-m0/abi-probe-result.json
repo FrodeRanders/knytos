@@ -1,0 +1,73 @@
+{
+  "commands": [
+    [
+      "clang",
+      "--target=aarch64-none-elf",
+      "-std=c11",
+      "-ffreestanding",
+      "-fno-stack-protector",
+      "-fno-pic",
+      "-fno-pie",
+      "-mno-outline-atomics",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Os",
+      "-c",
+      "/tmp/knytos-erlang-m0-probes/abi-probe.c",
+      "-o",
+      "/tmp/knytos-erlang-m0-probes/abi-probe.o"
+    ],
+    [
+      "/Users/froran/.rustup/toolchains/nightly-2026-11-14-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/bin/rust-lld",
+      "-flavor",
+      "gnu",
+      "-m",
+      "aarch64elf",
+      "-T",
+      "crates/knytos-services/link.x",
+      "--entry=_start",
+      "/tmp/knytos-erlang-m0-probes/abi-probe.o",
+      "-o",
+      "/tmp/knytos-erlang-m0-probes/abi-probe.elf"
+    ],
+    [
+      "clang",
+      "--target=aarch64-none-elf",
+      "-std=c11",
+      "-ffreestanding",
+      "-ftls-model=local-exec",
+      "-Os",
+      "-S",
+      "/tmp/knytos-erlang-m0-probes/tls-probe.c",
+      "-o",
+      "/tmp/knytos-erlang-m0-probes/tls-probe.s"
+    ]
+  ],
+  "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+  "elf_type": 2,
+  "elf_machine": 183,
+  "entry": "0x20000",
+  "file_bytes": 70496,
+  "sha256": "2acc396f871ebf6b5c41de50c7c4dd1f66f72c0e2ec30ed67d006db38ca537d6",
+  "program_headers": [
+    {
+      "type": 1,
+      "flags": 5,
+      "vaddr": "0x20000",
+      "file_bytes": 20,
+      "memory_bytes": 20,
+      "alignment": 65536
+    },
+    {
+      "type": 1,
+      "flags": 6,
+      "vaddr": "0x21000",
+      "file_bytes": 0,
+      "memory_bytes": 8,
+      "alignment": 65536
+    }
+  ],
+  "tls_uses_tpidr_el0": true,
+  "qualification": "compile/link/ELF inspection only; not signed or executed"
+}

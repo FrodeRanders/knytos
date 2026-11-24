@@ -1,0 +1,28 @@
+
+/Users/froran/Projects/private/knytos/target/c-runtime/native-run-3/bundle/c-hello.elf:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000202cc <_RNvNtCs8EGfTEQD79b_11knytos_cabi6native9callbacks>:
+   202cc: f81e0ffe     	str	x30, [sp, #-0x20]!
+   202d0: d503201f     	nop
+   202d4: 1002b628     	adr	x8, 0x25998 <__init_array_start>
+   202d8: d503201f     	nop
+   202dc: 1002b5e9     	adr	x9, 0x25998 <__init_array_start>
+   202e0: a9014ff4     	stp	x20, x19, [sp, #0x10]
+   202e4: eb08013f     	cmp	x9, x8
+   202e8: 540001e3     	b.lo	0x20324 <_RNvNtCs8EGfTEQD79b_11knytos_cabi6native9callbacks+0x58>
+   202ec: d503201f     	nop
+   202f0: 1002b553     	adr	x19, 0x25998 <__init_array_start>
+   202f4: 4b080268     	sub	w8, w19, w8
+   202f8: f240091f     	tst	x8, #0x7
+   202fc: 54000201     	b.ne	0x2033c <_RNvNtCs8EGfTEQD79b_11knytos_cabi6native9callbacks+0x70>
+   20300: d503201f     	nop
+   20304: 1002b4b4     	adr	x20, 0x25998 <__init_array_start>
+   20308: f8408688     	ldr	x8, [x20], #0x8
+   2030c: d63f0100     	blr	x8
+   20310: eb13029f     	cmp	x20, x19
+   20314: 54ffffa1     	b.ne	0x20308 <_RNvNtCs8EGfTEQD79b_11knytos_cabi6native9callbacks+0x3c>
+   20318: a9414ff4     	ldp	x20, x19, [sp, #0x10]
+   2031c: f84207fe     	ldr	x30, [sp], #0x20
+   20320: d65f03c0     	ret

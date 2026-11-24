@@ -1,0 +1,2 @@
+[1/1] Linking C static library libc.a
+ranlib: warning: archive member 'interrupt.c.obj' not a mach-o file

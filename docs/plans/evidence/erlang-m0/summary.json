@@ -1,0 +1,228 @@
+{
+  "schema": "knytos.erlang-m0.v1",
+  "date": "2026-11-24",
+  "branch": "feature/erlang-runtime",
+  "knytos_revision": "19cff1ad94722cbabd3b5ccfbc543f5df70751c1",
+  "sitas_revision": "0b2a85c144f178dd85992e42889464937a498f74",
+  "upstreams": {
+    "atomvm": {
+      "repository": "https://github.com/atomvm/AtomVM.git",
+      "revision": "ff993a80963298b532c1e573f883951ecaac9fef",
+      "files_sha256": {
+        "CMakeLists.txt": "642be3aff2ab8af5bf221c65612e0f3d9bbd6b1e09a50152dfc2aa6da67fad51",
+        "src/libAtomVM/CMakeLists.txt": "c30338e0a160557809db0f8151d750d9132386c8fa561743ace3ee4348be4791",
+        "src/libAtomVM/sys.h": "95e5d0883bfae5f4f20de79b2bc022671f4d2819d3f80e05622f1fdc047d051d",
+        "src/libAtomVM/smp.h": "5d432548d024dfd5b43fb7feb58789b2ed0129a8113ad10135e25f84f9941f44",
+        "src/libAtomVM/scheduler.c": "dda65590c5cb121197ad1acc4e3e4a21afcf05f55b6f6f5b1754db8ca90af976",
+        "src/platforms/generic_unix/lib/CMakeLists.txt": "60ac7accf39d9ab73009dd26bc3e15e5a83602086d760fc6e2ba8f845f1df347",
+        "src/platforms/stm32/src/lib/sys.c": "acc8ce8a67ed46caf122ff589036875a77bb2d8a34e5cf9faa1f09964e83533b",
+        "src/platforms/esp32/components/avm_sys/sys.c": "d384f8c8a49c22e67a0a7260fc57a2dc286cef3bfe5ce7e0c8e52870313ed673"
+      }
+    },
+    "otp": {
+      "repository": "https://github.com/erlang/otp.git",
+      "revision": "d199a49a01a2079afb6f2c5c9ae047cd4555e68d",
+      "files_sha256": {
+        "erts/configure.ac": "87ddd1951c5ba0074858f26c74f8f1fe312c73a90cf247c6a3286b1576bb7695",
+        "erts/lib_src/pthread/ethread.c": "cffbb2b86da168007e72f7fa2620d7a00ebdd3de1aabf62f1c65650b369450f2",
+        "erts/lib_src/common/ethr_aux.c": "ed365695300a6b53c51335f795973428cfd8b3ebf670244f72d48522764875f6",
+        "erts/emulator/sys/common/erl_mmap.c": "e687742750b62b4e2a8219181403a400359e3e71811844c0847b1f96f5a9bc4c",
+        "erts/emulator/sys/common/erl_poll.c": "7a13b121f902a4c21fef17467c794049ce2e439d3322c54c9683d736af85c703",
+        "erts/doc/references/erl_cmd.md": "0fc081a469a2101b91f07cf7304091209a8e7f387d7ac98a969c0a4648746ea8"
+      }
+    },
+    "picolibc": {
+      "repository": "https://github.com/picolibc/picolibc.git",
+      "revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff",
+      "files_sha256": {
+        "doc/os.md": "00241100a573b9db1c030b63ab16ef19068c5062bdc588ebd4dca40fc0189f75",
+        "doc/tls.md": "69e52f8b4e067c541b1945d7179398279a82928bea094d95ea6ec7b4a049dc00",
+        "meson_options.txt": "f53b1b45151aa8548e6f7bc9b4e9146a7ef14ff75a2b766aa8d9b65f4e4468ee",
+        "meson.build": "40cf88123f8b2bf65907818f10e00136d845a87b853070dbf3f4aca2ff6a31fa"
+      }
+    },
+    "ose": {
+      "repository": "https://github.com/erlang/otp.git",
+      "revision": "5e1b5ef47f3f2b898d30e0425823835bd9a574d4",
+      "files_sha256": {
+        "erts/emulator/sys/ose/erl_poll.c": "b8b0c72959686d5288ccb46bacdda99a96911fe8924281401afa98100b5f21fe",
+        "erts/lib_src/ose/ethread.c": "045ce4de76ad0c78ca8c5185190cc2796512a34e5cf28a16f639d13557d867f5"
+      }
+    }
+  },
+  "host_tests": [
+    "     Running unittests src/lib.rs (/Users/froran/Projects/private/knytos/target/debug/build/knytos-app/9b0fc0a9bd091906/out/knytos_app-9b0fc0a9bd091906)",
+    "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+    "     Running unittests src/lib.rs (/Users/froran/Projects/private/knytos/target/debug/build/knytos-app-sitas/a3717cc36ec7a54b/out/knytos_app_sitas-a3717cc36ec7a54b)",
+    "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+    "     Running unittests src/lib.rs (/Users/froran/Projects/private/knytos/target/debug/build/knytos-rt/7245ed350b87b557/out/knytos_rt-7245ed350b87b557)",
+    "test result: ok. 66 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+  ],
+  "ci_input_tests": {
+    "count": 6,
+    "outcome": "passed"
+  },
+  "baseline_boot": {
+    "manifest": {
+      "schema": "knytos.boot-diagnostics.v1",
+      "arch": "aarch64",
+      "instance": "erlang-m0-minimal",
+      "cpus": 4,
+      "revision": "19cff1ad94722cbabd3b5ccfbc543f5df70751c1",
+      "dirty_paths": [
+        "?? docs/plans/"
+      ],
+      "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel_source": "/Users/froran/Projects/private/knytos/target/aarch64-unknown-none-knytos/release/knytos",
+      "kernel_sha256": "519062f699e54bff0423a8db73aa0647e3520f493786a0b3b50916b83aca9de7",
+      "bundle_sha256": {
+        "agent.elf": "0adbab02cb285b42462ab4cc461a8f6aaab07ce3fb3aca7f61e829cd7a81ad11",
+        "clusterctl.elf": "ddd12e83fcb0b580f2127aedcf6d195855c643961426d297f533f9d38869a7bd",
+        "deployd.elf": "d456a942a5ad3f57a542b685225893c3db754170a44fe21973e86feb646924bb",
+        "disco.elf": "2769018f366f563ee17f22b76ed6a3de8d1d3ac47c3a77c66057281e0e4dafc5",
+        "dns.elf": "191d99ae409b3af6f9d3caf335f816fbb3bb05dc899028033b10a2589060e17c",
+        "frouter.elf": "d902e460528a0a7ad8d374bc2bde30db08a969863d935c702e196f1cc4278460",
+        "fs.elf": "d0f3ae24e65f2e26c6e9b25658d6b7adb7e10b0a7d62c759ed1f41de8fb44abe",
+        "grantctl.elf": "a5c9d8350f756ba97e169e172bc45949bada53846d151f87829ebac84f74df33",
+        "httpd.elf": "547583e5aa9d4c6b8eb93ba6a1fe5ef552e0380ee93bf83c5bbc20f091034e6a",
+        "kafka.elf": "5f0944a6ae6d00fa022879508d4c41db5fb0fade4bdaac7a2938123920b13bb1",
+        "kafka_step.elf": "9c71631f12f0bf5fe7f8953965879ede759353fab163e0a31592b38f049e367a",
+        "net.elf": "ca5166fd447886efa50af861ad289a702d80a29dfeb5d02e3cff7d7868c85d29",
+        "ns.elf": "f7ea75b4f9e5020db3fe8e3e2bb075a5cbea7bd1789a2196e97f7173da9cd0a5",
+        "nvme.elf": "e269b810ea670c7b18678dcec5aa78ac68260da655c1ba9e79eba3b49de9e3b3",
+        "objstore.elf": "b2c6787f3be95dcfed1d02e29c859df91fbfed90404565fa013c6c1880d3f0dc",
+        "observe.elf": "13e5af5762cebfe619feec0309c3e9639ef65e55956fb928d1e45cd542d54ee1",
+        "otlp.elf": "33d11ff68641681f0ad73a8a77032704e03329e551e35432367f1f9375cc846a",
+        "relmsg.elf": "4932aa3981162c51e196904ae58c1eaada54058db7844055c0cfa687e9141b0b",
+        "rng.elf": "3ca39f1ac0ae83dfd2d4ce61ad546b1c70bba25abd6f466f533a0a8311f67594",
+        "s3.elf": "c83759968791ac2cc3954e432f1909788c73acb9098628f6ed60c363b9f58b79",
+        "tcpip.elf": "8e585fa2da64c448e3f1335c16b299a3e0b645f39dea29ef03ca7f2c33fb6bb3",
+        "time.elf": "616cfe43e704b1b98e53324984e68ec7bd091e4c00671b17bd1cbf4f2b6fc482",
+        "uart.elf": "75de2ade744710dec08a06eb919adcd8f4f40308bf71eee921de159876aac8ae"
+      },
+      "boot_image": "/Users/froran/Projects/private/knytos/os-images/knytos-aarch64-release-erlang-m0-minimal.img",
+      "boot_image_sha256": "6ed38218be1a252d5a1e063ca094dbb0b31ccbbeef2a2f29fbbc723789af2bb8",
+      "disk": "/Users/froran/Projects/private/knytos/os-images/nvme-disk-erlang-m0-minimal.img",
+      "initial_disk_sha256": "9fc3ced268a174fcc57b6b168a71833d79e94513d7b2316c8f5d324c23a47ba5",
+      "serial_log": "/private/tmp/knytos-erlang-m0-minimal-serial.log",
+      "timeout_seconds": 180,
+      "prepared_utc": "2026-11-24T19:50:04Z",
+      "tooling_sha256": {
+        "scripts/boot-diagnostics.py": "14c3b581bc24144e7f1ce104abaf56b6f50133a66b3f0044386a99c7dec0f797",
+        "scripts/lib/boot-common.sh": "81c9a134e57dc33d52060f29daa9774598dcca7c689f7c37b709c5b59f627d6f",
+        "scripts/run-aarch64.sh": "cfafe8a1ce02f15bc9ee0f5ee98051cc1277ea157202a1b496bfdb50b2fe6f44"
+      },
+      "transport": "/tmp/ctdiag-0fdyh5mg",
+      "qemu_pid": 24936,
+      "qemu_arguments": [
+        "-M",
+        "virt,gic-version=3,msi=gicv2m,iommu=smmuv3,default-bus-bypass-iommu=off",
+        "-m",
+        "512M",
+        "-bios",
+        "/opt/homebrew/share/qemu/edk2-aarch64-code.fd",
+        "-drive",
+        "file=./os-images/knytos-aarch64-release-erlang-m0-minimal.img,format=raw,if=none,id=boot0",
+        "-device",
+        "virtio-blk-pci,drive=boot0,addr=3,bootindex=1",
+        "-cpu",
+        "cortex-a710",
+        "-object",
+        "rng-random,filename=/dev/urandom,id=knytos-rng",
+        "-device",
+        "virtio-rng-pci,rng=knytos-rng,disable-legacy=on,iommu_platform=on,addr=4",
+        "-smp",
+        "4",
+        "-drive",
+        "if=none,file=./os-images/nvme-disk-erlang-m0-minimal.img,format=raw,id=nvme0",
+        "-device",
+        "nvme,drive=nvme0,serial=cat0,max_ioqpairs=4,addr=2",
+        "-nic",
+        "none",
+        "-netdev",
+        "user,id=knytos-net,hostfwd=tcp::8080-:443,hostfwd=tcp::8081-:7444",
+        "-device",
+        "virtio-net-pci,netdev=knytos-net,disable-legacy=on,iommu_platform=on,mac=52:54:00:12:34:56,addr=1,romfile=",
+        "-display",
+        "none",
+        "-qmp",
+        "unix:/tmp/ctdiag-0fdyh5mg/qmp.sock,server=on,wait=off",
+        "-gdb",
+        "unix:/tmp/ctdiag-0fdyh5mg/gdb.sock,server=on,wait=off",
+        "-serial",
+        "file:/tmp/knytos-erlang-m0-minimal-serial.log"
+      ]
+    },
+    "result": {
+      "reason": "complete",
+      "snapshot": "not-requested"
+    },
+    "runner_exit_code": 0,
+    "timeout_seconds": 180
+  },
+  "host_atomvm": {
+    "binary_format": "Mach-O arm64, host Darwin adapter",
+    "bytes": 571928,
+    "sha256": "b01ad438f4a08d53d7dbef09deb42e2ab1d7d778eefd45dcbbb550fd19462457",
+    "version": "0.6.6",
+    "config": [
+      "AVM_DISABLE_SMP=ON",
+      "AVM_DISABLE_TASK_DRIVER=ON",
+      "AVM_BUILD_RUNTIME_ONLY=ON",
+      "CMAKE_BUILD_TYPE=MinSizeRel"
+    ],
+    "qualification": "built; -v and -h execute. No Erlang workload or Knytos execution.",
+    "warnings": [
+      "MbedTLS not found: ssl/crypto omitted",
+      "unused parameters",
+      "gperf-generated deprecated non-prototype definitions",
+      "Unix array-size folding extensions",
+      "duplicate linker libraries"
+    ],
+    "warning_clean": false
+  },
+  "host_erts_sample": {
+    "erts_version": "17.0.3",
+    "otp_release": "29",
+    "parameters": [
+      "+S",
+      "1:1",
+      "+SDcpu",
+      "1:1",
+      "+SDio",
+      "1",
+      "+A",
+      "1"
+    ],
+    "reported_memory_bytes": 28503288,
+    "qualification": "installed host runtime; distinct from inspected OTP 29.1.2; not target fit or minimum requirement"
+  },
+  "pre_execution_failures": [
+    {
+      "stage": "source acquisition",
+      "reason": "sandbox DNS unavailable; pinned clones succeeded outside sandbox"
+    },
+    {
+      "stage": "baseline boot reuse",
+      "reason": "runner rejected skip-kernel-build with newly provisioned management inputs; guest never started; ordinary runner passed"
+    }
+  ],
+  "limits": {
+    "default_heap_bytes": 4194304,
+    "heap_va_limit_bytes": 5177344,
+    "max_artifact_elf_bytes": 4194304,
+    "default_stack_bytes": 16384,
+    "max_stack_bytes": 262144,
+    "default_threads": 16,
+    "max_threads": 64,
+    "private_shard_cqs": 4
+  },
+  "scope": "M0 only. No C ABI, libc, native AtomVM or ERTS implementation.",
+  "atomvm_host_compiler": {
+    "repository": "https://github.com/erlang/otp.git",
+    "tag": "OTP-27.3.4.19",
+    "source": "https://github.com/erlang/otp/releases/tag/OTP-27.3.4.19",
+    "status": "selected only; not downloaded, built, installed or executed"
+  },
+  "retained_text_format": "Serial and host text evidence use LF line endings; source/build-input hashes identify original inputs."
+}
