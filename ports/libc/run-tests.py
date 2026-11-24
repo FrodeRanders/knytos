@@ -31,6 +31,7 @@ def main():
     parser.add_argument("--atomvm-utc-elf", type=Path)
     parser.add_argument("--atomvm-semantics-elf", type=Path)
     parser.add_argument("--atomvm-overflow-elf", type=Path)
+    parser.add_argument("--native-workers", action="store_true")
     parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
     args = parser.parse_args()
     cases = CASES[:-1].copy()
@@ -41,7 +42,16 @@ def main():
         13: ("avm-overflow", args.atomvm_overflow_elf, "[atomvm] unsupported: timer deadline overflow"),
     }
     cases.extend((name, number) for number, (name, path, _) in vm_cases.items() if path)
-    abort_cases = (7, 11, 13)
+    worker_cases = {
+        14: ("c-workers", 2, "WORKER PASS"),
+        15: ("c-unjoined", 2, "WORKER expected unjoined exit"),
+        16: ("c-worker-reuse", 9, "WORKER exact join and slot reuse"),
+    }
+    if args.native_workers:
+        if args.smp < 2:
+            parser.error("--native-workers needs at least two guest CPUs")
+        cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
+    abort_cases = (7, 11, 13, 15)
     cases += CASES[-1:]
     def interrupted(_signal, _frame):
         raise SystemExit("C runtime campaign interrupted")
@@ -66,6 +76,12 @@ def main():
             if number in vm_cases:
                 shutil.copyfile(vm_cases[number][1], images / (name + ".elf"))
                 continue
+            if number in worker_cases:
+                command(["python3", ROOT / "ports/libc/build.py", ROOT / "ports/libc/tests/workers.c",
+                         "--native-workers", "--define", f"CASE={number}",
+                         "--picolibc-source", args.picolibc_source,
+                         "--output", images / (name + ".elf")], name + "-build")
+                continue
             command(["python3", ROOT / "ports/libc/build.py", ROOT / ("ports/libc/tests/empty.c" if number == 8 else "ports/libc/tests/suite.c"),
                      "--define", f"CASE={number}", "--picolibc-source", args.picolibc_source,
                      "--output", images / (name + ".elf")], name + "-build")
@@ -83,8 +99,10 @@ def main():
         for name, number in cases:
             image = images / (name + ".elf")
             command([signer, "elf-sign", image, name, key, "service", "1", "1", "0x7", "-"], name + "-sign")
+            thread_limit = worker_cases[number][1] if number in worker_cases else 1
             command([signer, "deployment-sign", output / (name + ".cdep"), name, "fixture/" + name,
-                     image, "0", "1", "64" if number in vm_cases else "16", "1", "5000", key], name + "-descriptor")
+                     image, "0", "1", "64" if number in vm_cases else "16",
+                     thread_limit, "5000", key], name + "-descriptor")
         tampered = bytearray((images / "c-hello.elf").read_bytes())
         command([signer, "elf-verify", images / "c-hello.elf", "c-hello",
                  "3ddc95c26bd5f4022d95a4c6c8d074f577f11af7873e527b018b21be2c035463"], "signature-accepted")
@@ -167,6 +185,8 @@ def main():
                         expected = "CABI expected abort" if number == 7 else "CABI expected nonzero" if number == 6 else "CABI explicit exit" if number == 5 else f"CABI PASS case={number}"
                         if number in vm_cases:
                             expected = vm_cases[number][2]
+                        if number in worker_cases:
+                            expected = worker_cases[number][2]
                         def observation(text):
                             tail = text[before:]
                             launch = re.search(r'\[agent\] launched "' + re.escape(name) + r'" generation=\d+ asid=(\d+)', tail)
@@ -177,10 +197,17 @@ def main():
                         def complete(text):
                             domain_lines = observation(text)
                             terminal = "[c-runtime] abort" if number in abort_cases else f"[c-runtime] exit={17 if number == 6 else 0} "
-                            return expected in domain_lines and terminal in domain_lines
+                            if number == 15:
+                                terminal = "[c-runtime] exit with an unjoined worker"
+                            if expected not in domain_lines or terminal not in domain_lines:
+                                return False
+                            if number == 15:
+                                asid = re.search(r'\[EL0 LOG\] lp=\d+ asid=(\d+) ', domain_lines)[1]
+                                return re.search(r'Aborting user address space ' + asid + r'\b', text[before:]) is not None
+                            return True
                         serial_text = wait_for(complete, 60)
                         text = observation(serial_text)
-                        if number not in (7, 8) and number not in vm_cases:
+                        if number not in (7, 8) and number not in vm_cases and number not in worker_cases:
                             assert "CABI FINI" in text, name
                         if number not in abort_cases:
                             assert "remaining_blocks=0" in text, name
@@ -200,6 +227,13 @@ def main():
                             assert "{m3,pass}" in text and "[atomvm] return=ok" in text, name
                             reactor = re.search(r'\[atomvm\] reactor waits=(\d+) deadlines=(\d+)', text)
                             assert reactor and int(reactor[2]) >= 6, name
+                        if number == 14:
+                            assert re.search(r'\[EL0 LOG\] lp=1 asid=\d+ WORKER private queue entry', text), name
+                            assert "WORKER cross-CPU handshake and admission" in text, name
+                        if number == 15:
+                            assert "[c-runtime] exit=" not in text, name
+                        if number == 16:
+                            assert "WORKER finalizer admission fenced" in text, name
                         record["cases"].append({"name": name, "case": number, "passed": True,
                                                 "observation": serial_text[before:]})
                         save()

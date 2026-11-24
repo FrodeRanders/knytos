@@ -1,0 +1,181 @@
+{
+  "schema": "knytos.c-runtime-m1.v1",
+  "cases": [
+    {
+      "name": "c-hello",
+      "case": 0,
+      "passed": true,
+      "observation": "[+     9.338536] [EL0 LOG] lp=0 asid=17 [management] connection=1 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555780\n[+     9.339732] [EL0 LOG] lp=0 asid=17 [management] connection=1 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555780\n[+     9.794618] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+     9.813326] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+     9.826724] [EL0 LOG] lp=0 asid=18 CABI hello: C on Knytos\n[+     9.827192] [EL0 LOG] lp=0 asid=18 CABI PASS case=0\n[+     9.827446] [EL0 LOG] lp=0 asid=18 CABI FINI\n[+     9.827992] [EL0 LOG] lp=0 asid=18 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=672\n[+     9.828702] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-hello\" generation=1 asid=18 principal=0x9fa51c8c1729c981\n"
+    },
+    {
+      "name": "c-memory",
+      "case": 1,
+      "passed": true,
+      "observation": "[+    10.001824] [EL0 LOG] lp=0 asid=17 [management] connection=2 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555781\n[+    10.002812] [EL0 LOG] lp=0 asid=17 [management] connection=2 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555781\n[+    10.356500] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    10.385310] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    10.410206] [EL0 LOG] lp=0 asid=19 CABI PASS case=1\n[+    10.410648] [EL0 LOG] lp=0 asid=19 CABI FINI\n[+    10.411478] [EL0 LOG] lp=0 asid=19 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=4133241 sampled_stack=1456\n[+    10.412870] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-memory\" generation=1 asid=19 principal=0xdb10e383201b2fdd\n"
+    },
+    {
+      "name": "c-format",
+      "case": 2,
+      "passed": true,
+      "observation": "[+    10.500426] [EL0 LOG] lp=0 asid=17 [management] connection=3 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555781\n[+    10.501062] [EL0 LOG] lp=0 asid=17 [management] connection=3 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555781\n[+    10.936328] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    10.963412] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    10.984112] [EL0 LOG] lp=0 asid=20 CABI formatting: value -42 123456789abcdef0 2.50\n[+    10.984460] [EL0 LOG] lp=0 asid=20 CABI PASS case=2\n[+    10.984844] [EL0 LOG] lp=0 asid=20 CABI FINI\n[+    10.985726] [EL0 LOG] lp=0 asid=20 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=768\n[+    10.987304] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-format\" generation=1 asid=20 principal=0xf7f4c69301d2d5f1\n"
+    },
+    {
+      "name": "c-clock",
+      "case": 3,
+      "passed": true,
+      "observation": "[+    11.100690] [EL0 LOG] lp=0 asid=17 [management] connection=4 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555782\n[+    11.101320] [EL0 LOG] lp=0 asid=17 [management] connection=4 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555782\n[+    11.512556] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    11.528150] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    11.545644] [EL0 LOG] lp=0 asid=21 CABI PASS case=3\n[+    11.546054] [EL0 LOG] lp=0 asid=21 CABI FINI\n[+    11.546828] [EL0 LOG] lp=0 asid=21 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=672\n[+    11.548104] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-clock\" generation=1 asid=21 principal=0xaf4f6db8e06497de\n"
+    },
+    {
+      "name": "c-startup",
+      "case": 4,
+      "passed": true,
+      "observation": "[+    11.725432] [EL0 LOG] lp=0 asid=17 [management] connection=5 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555783\n[+    11.726188] [EL0 LOG] lp=0 asid=17 [management] connection=5 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555783\n[+    12.079806] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    12.099590] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    12.119570] [EL0 LOG] lp=0 asid=22 CABI PASS case=4\n[+    12.120048] [EL0 LOG] lp=0 asid=22 CABI ATEXIT\n[+    12.120268] [EL0 LOG] lp=0 asid=22 CABI FINI\n[+    12.121202] [EL0 LOG] lp=0 asid=22 [c-runtime] exit=0 released_blocks=1 remaining_blocks=0 heap_peak=135 sampled_stack=736\n[+    12.122054] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-startup\" generation=1 asid=22 principal=0xe7ee06b52ba3c6f0\n"
+    },
+    {
+      "name": "c-exit",
+      "case": 5,
+      "passed": true,
+      "observation": "[+    12.207888] [EL0 LOG] lp=0 asid=17 [management] connection=6 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555783\n[+    12.208518] [EL0 LOG] lp=0 asid=17 [management] connection=6 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555783\n[+    12.664288] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    12.681164] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    12.698698] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-exit\" generation=1 asid=23 principal=0xe2a0103d8db38dad\n[+    12.699822] [EL0 LOG] lp=0 asid=23 CABI explicit exit\n[+    12.700196] [EL0 LOG] lp=0 asid=23 CABI ATEXIT\n[+    12.700376] [EL0 LOG] lp=0 asid=23 CABI FINI\n[+    12.701216] [EL0 LOG] lp=0 asid=23 [c-runtime] exit=0 released_blocks=1 remaining_blocks=0 heap_peak=103 sampled_stack=768\n"
+    },
+    {
+      "name": "c-error",
+      "case": 6,
+      "passed": true,
+      "observation": "[+    12.877860] [EL0 LOG] lp=0 asid=17 [management] connection=7 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555784\n[+    12.878638] [EL0 LOG] lp=0 asid=17 [management] connection=7 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555784\n[+    13.232748] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    13.246704] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    13.263194] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-error\" generation=1 asid=24 principal=0xfc308c0aaf227d00\n[+    13.264132] [EL0 LOG] lp=0 asid=24 CABI expected nonzero\n[+    13.264474] [EL0 LOG] lp=0 asid=24 CABI FINI\n[+    13.265346] [EL0 LOG] lp=0 asid=24 [c-runtime] exit=17 released_blocks=1 remaining_blocks=0 heap_peak=135 sampled_stack=672\n[+    13.265786] Aborting user address space 24\n"
+    },
+    {
+      "name": "c-abort",
+      "case": 7,
+      "passed": true,
+      "observation": "[+    13.361004] [EL0 LOG] lp=0 asid=17 [management] connection=8 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555784\n[+    13.361634] [EL0 LOG] lp=0 asid=17 [management] connection=8 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555784\n[+    13.784586] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    13.796128] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    13.807678] [EL0 LOG] lp=0 asid=25 CABI expected abort\n[+    13.808008] [EL0 LOG] lp=0 asid=25 [c-runtime] abort\n[+    13.808156] Aborting user address space 25\n[+    13.808544] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-abort\" generation=1 asid=25 principal=0xcd9ce8ba4aa82ab6\n"
+    },
+    {
+      "name": "c-empty",
+      "case": 8,
+      "passed": true,
+      "observation": "[+    13.912880] [EL0 LOG] lp=0 asid=17 [management] connection=9 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555785\n[+    13.913516] [EL0 LOG] lp=0 asid=17 [management] connection=9 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555785\n[+    14.361444] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    14.374360] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    14.388708] [EL0 LOG] lp=0 asid=26 CABI PASS case=8\n[+    14.389630] [EL0 LOG] lp=0 asid=26 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=560\n[+    14.390824] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-empty\" generation=1 asid=26 principal=0xb1cf7a43eb83ed84\n"
+    },
+    {
+      "name": "c-workers",
+      "case": 14,
+      "passed": true,
+      "observation": "[+    14.520892] [EL0 LOG] lp=0 asid=17 [management] connection=10 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555785\n[+    14.521594] [EL0 LOG] lp=0 asid=17 [management] connection=10 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555785\n[+    14.921846] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    14.929744] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    14.942616] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-workers\" generation=1 asid=27 principal=0xae941eca20f0a13d\n[+    14.947632] [EL0 LOG] lp=0 asid=27 WORKER wake-before-wait and deadline\n[+    14.948742] [EL0 LOG] lp=1 asid=27 WORKER private queue entry\n[+    14.951146] [EL0 LOG] lp=0 asid=27 WORKER cross-CPU handshake and admission\n[+    14.951480] [EL0 LOG] lp=0 asid=27 WORKER PASS\n[+    14.952506] [EL0 LOG] lp=0 asid=27 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=560\n"
+    },
+    {
+      "name": "c-unjoined",
+      "case": 15,
+      "passed": true,
+      "observation": "[+    15.143058] [EL0 LOG] lp=0 asid=17 [management] connection=11 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555786\n[+    15.143872] [EL0 LOG] lp=0 asid=17 [management] connection=11 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555786\n[+    15.495880] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    15.507882] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    15.521816] [EL0 LOG] lp=1 asid=28 WORKER private queue entry\n[+    15.522176] [EL0 LOG] lp=0 asid=28 WORKER expected unjoined exit\n[+    15.522720] [EL0 LOG] lp=0 asid=28 [c-runtime] exit with an unjoined worker\n[+    15.522948] Aborting user address space 28\n[+    15.524206] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-unjoined\" generation=1 asid=28 principal=0xb64b4758fb616923\n"
+    },
+    {
+      "name": "c-worker-reuse",
+      "case": 16,
+      "passed": true,
+      "observation": "[+    15.617506] [EL0 LOG] lp=0 asid=17 [management] connection=12 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555787\n[+    15.618174] [EL0 LOG] lp=0 asid=17 [management] connection=12 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555787\n[+    16.084732] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    16.097288] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    16.114538] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-worker-reuse\" generation=1 asid=29 principal=0x86792345ec499b1b\n[+    16.118302] [EL0 LOG] lp=0 asid=29 WORKER exact join and slot reuse\n[+    16.118838] [EL0 LOG] lp=0 asid=29 WORKER finalizer admission fenced\n[+    16.119492] [EL0 LOG] lp=0 asid=29 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=736\n"
+    },
+    {
+      "name": "c-survivor",
+      "case": 0,
+      "passed": true,
+      "observation": "[+    16.216604] [EL0 LOG] lp=0 asid=17 [management] connection=13 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555787\n[+    16.217204] [EL0 LOG] lp=0 asid=17 [management] connection=13 certificate=881a2886c9745cdc00c038b6976f66654588ebadc0ccc6ae42c638f314507a48 role=Administrator permission=Mutate allowed=true credential_utc=1795555787\n[+    16.666440] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0\n[+    16.677544] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache\n[+    16.690746] [EL0 LOG] lp=0 asid=30 CABI hello: C on Knytos\n[+    16.691330] [EL0 LOG] lp=0 asid=30 CABI PASS case=0\n[+    16.691632] [EL0 LOG] lp=0 asid=30 CABI FINI\n[+    16.692298] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=672\n[+    16.693486] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-survivor\" generation=1 asid=30 principal=0xd9b34b84697e2d4d\n"
+    }
+  ],
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "outcome": "passed",
+  "kernel_sha256": "1b819fe415addcfa71376c29d619e0c4ebcfb3f12d6440342f1e0ba272e88c27",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "initial_disk_sha256": "ac507832213e520cdc2cab8f0321be933ed24713b9b04ef6da6a026935a3a6a8",
+  "boot_image_sha256": "8487d60681d0761acdec5026bbe2d9daacf4f543d83bc4237c9705d05d2762a7",
+  "images_sha256": {
+    "agent.elf": "0adbab02cb285b42462ab4cc461a8f6aaab07ce3fb3aca7f61e829cd7a81ad11",
+    "c-abort.elf": "9b383db75da939598d6ba43b8d0c29d15e84ef7cfe8a5aa7c055621a87073e62",
+    "c-clock.elf": "100952e0a0d3fc390b1d120acc7d361d3b0230ce8154525fbe1d721ee58efed2",
+    "c-empty.elf": "3ef5ad11380eed3313759f8026af6561a8d71e880cc8f033cb1cd0375aedea40",
+    "c-error.elf": "d7a7fa5ee808ddf0ae21137ff1be0c006f6d6d1db73e0b0e1bd43e3e969c6dd3",
+    "c-exit.elf": "e5441cf8eb51049a18afc9ec7fcff9baf43b9633449991bdf89166afb13c5492",
+    "c-format.elf": "8d8057779459cc756718e9d673eb4d5a183825509bef38726e8c8af639015021",
+    "c-hello.elf": "d9e1b07fc22498ffe1aaf38ca21aad288f5a543e3aa9b5e64b21b64fc3b21189",
+    "c-memory.elf": "bc3a4d91444844a76b0e5e3333b58c12fa8a280346f19a1711768e6516a5ff7b",
+    "c-startup.elf": "7d0c4023a974e03cb6d8ac91727a9b5024cd63048b732fd8de34b54a43639860",
+    "c-survivor.elf": "878a42e8cc0209c2f2d2622046f2c0beb994595fae9cc1ec2528ad3699c94cfb",
+    "c-unjoined.elf": "1c922456c1a95c4bf7b6982eba78446f4efb035adbd2ad4af650e40034e8e50d",
+    "c-worker-reuse.elf": "a686185add1a060152827362c3f5a4b88369eac3d5ffaf01960a089de43be9aa",
+    "c-workers.elf": "dbeaf9301cf2f30059f91200859e86991607baf6047caaeccb14ba9ba51868b0",
+    "clusterctl.elf": "ddd12e83fcb0b580f2127aedcf6d195855c643961426d297f533f9d38869a7bd",
+    "deployd.elf": "d456a942a5ad3f57a542b685225893c3db754170a44fe21973e86feb646924bb",
+    "disco.elf": "2769018f366f563ee17f22b76ed6a3de8d1d3ac47c3a77c66057281e0e4dafc5",
+    "dns.elf": "191d99ae409b3af6f9d3caf335f816fbb3bb05dc899028033b10a2589060e17c",
+    "frouter.elf": "d902e460528a0a7ad8d374bc2bde30db08a969863d935c702e196f1cc4278460",
+    "fs.elf": "d0f3ae24e65f2e26c6e9b25658d6b7adb7e10b0a7d62c759ed1f41de8fb44abe",
+    "grantctl.elf": "a5c9d8350f756ba97e169e172bc45949bada53846d151f87829ebac84f74df33",
+    "httpd.elf": "547583e5aa9d4c6b8eb93ba6a1fe5ef552e0380ee93bf83c5bbc20f091034e6a",
+    "kafka.elf": "5f0944a6ae6d00fa022879508d4c41db5fb0fade4bdaac7a2938123920b13bb1",
+    "kafka_step.elf": "9c71631f12f0bf5fe7f8953965879ede759353fab163e0a31592b38f049e367a",
+    "net.elf": "ca5166fd447886efa50af861ad289a702d80a29dfeb5d02e3cff7d7868c85d29",
+    "ns.elf": "f7ea75b4f9e5020db3fe8e3e2bb075a5cbea7bd1789a2196e97f7173da9cd0a5",
+    "nvme.elf": "e269b810ea670c7b18678dcec5aa78ac68260da655c1ba9e79eba3b49de9e3b3",
+    "objstore.elf": "b2c6787f3be95dcfed1d02e29c859df91fbfed90404565fa013c6c1880d3f0dc",
+    "observe.elf": "13e5af5762cebfe619feec0309c3e9639ef65e55956fb928d1e45cd542d54ee1",
+    "otlp.elf": "33d11ff68641681f0ad73a8a77032704e03329e551e35432367f1f9375cc846a",
+    "relmsg.elf": "4932aa3981162c51e196904ae58c1eaada54058db7844055c0cfa687e9141b0b",
+    "rng.elf": "3ca39f1ac0ae83dfd2d4ce61ad546b1c70bba25abd6f466f533a0a8311f67594",
+    "s3.elf": "c83759968791ac2cc3954e432f1909788c73acb9098628f6ed60c363b9f58b79",
+    "tcpip.elf": "8e585fa2da64c448e3f1335c16b299a3e0b645f39dea29ef03ca7f2c33fb6bb3",
+    "time.elf": "616cfe43e704b1b98e53324984e68ec7bd091e4c00671b17bd1cbf4f2b6fc482",
+    "uart.elf": "75de2ade744710dec08a06eb919adcd8f4f40308bf71eee921de159876aac8ae"
+  },
+  "qemu_arguments": [
+    "-M",
+    "virt,gic-version=3,msi=gicv2m,iommu=smmuv3,default-bus-bypass-iommu=off",
+    "-m",
+    "512M",
+    "-bios",
+    "/opt/homebrew/Cellar/qemu/11.1.3/share/qemu/edk2-aarch64-code.fd",
+    "-cpu",
+    "cortex-a710",
+    "-smp",
+    "2",
+    "-drive",
+    "file=/Users/froran/Projects/private/knytos/target/c-runtime/workers-run-2/boot.img,format=raw,if=none,id=boot0",
+    "-device",
+    "virtio-blk-pci,drive=boot0,addr=3,bootindex=1",
+    "-object",
+    "rng-random,filename=/dev/urandom,id=knytos-rng",
+    "-device",
+    "virtio-rng-pci,rng=knytos-rng,disable-legacy=on,iommu_platform=on,addr=4",
+    "-drive",
+    "if=none,file=/Users/froran/Projects/private/knytos/target/c-runtime/workers-run-2/disk.img,format=raw,id=nvme0",
+    "-device",
+    "nvme,drive=nvme0,serial=cat0,max_ioqpairs=4,addr=2",
+    "-nic",
+    "none",
+    "-netdev",
+    "user,id=knytos-net,hostfwd=tcp::28080-:443,hostfwd=tcp::28081-:7444",
+    "-device",
+    "virtio-net-pci,netdev=knytos-net,disable-legacy=on,iommu_platform=on,mac=52:54:00:12:34:56,addr=1,romfile=",
+    "-display",
+    "none",
+    "-serial",
+    "file:/Users/froran/Projects/private/knytos/target/c-runtime/workers-run-2/serial.txt",
+    "-qmp",
+    "unix:/tmp/cabi-qmp-c30jg2dv/qmp.sock,server=on,wait=off",
+    "-gdb",
+    "unix:/tmp/cabi-qmp-c30jg2dv/gdb.sock,server=on,wait=off"
+  ]
+}

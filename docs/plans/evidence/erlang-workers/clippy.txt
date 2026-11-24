@@ -1,0 +1,2 @@
+    Checking knytos-cabi v0.1.0 (/Users/froran/Projects/private/knytos/crates/knytos-cabi)
+    Finished `release` profile [optimized] target(s) in 0.24s

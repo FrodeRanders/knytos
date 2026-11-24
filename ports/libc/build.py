@@ -70,6 +70,8 @@ def main():
     parser.add_argument("--define", action="append", default=[])
     parser.add_argument("--include", action="append", default=[], type=Path)
     parser.add_argument("--library", action="append", default=[], type=Path)
+    parser.add_argument("--native-workers", action="store_true",
+                        help="enable the experimental worker ABI with restricted worker callbacks")
     args = parser.parse_args()
     source = args.picolibc_source.resolve()
     if not source.exists() and args.fetch:
@@ -96,12 +98,15 @@ def main():
     run("cmake", "--build", libc, "-j", "6")
     run("cargo", "build", "--locked", "-p", "knytos-cabi", "--release",
         "--target", ROOT / "crates/knytos-services/aarch64-unknown-none.json",
+        *(["--features", "native-workers"] if args.native_workers else []),
         "-Z", "build-std=core,alloc,compiler_builtins", cwd=ROOT)
     common = ["clang", "--target=aarch64-none-elf", "-std=c11", "-ffreestanding", "-fno-builtin",
               "-fno-stack-protector", "-fno-pic", "-fno-pie", "-mno-outline-atomics",
               "-ffunction-sections", "-fdata-sections", "-fstack-usage", "-Os", "-Wall", "-Wextra", "-Werror",
               "-isystem", str(libc / "picolibc/include"), "-I", str(ROOT / "ports/libc/include")]
     common.extend(flag for directory in args.include for flag in ("-I", str(directory.resolve())))
+    if args.native_workers:
+        common.append("-DKNYTOS_NATIVE_WORKERS")
     run(*common, *["-D" + d for d in args.define], "-Dmain=knytos_c_main", "-c", args.source.resolve(), "-o", objects / "application.o")
     check_elf(objects / "application.o", relocatable=True)
     run(*common, "-c", ROOT / "ports/libc/bridge.c", "-o", objects / "bridge.o")
@@ -126,6 +131,8 @@ def main():
                 "sha256": hashlib.sha256(output.read_bytes()).hexdigest(), "bytes": output.stat().st_size,
                 "source_sha256": hashlib.sha256(args.source.read_bytes()).hexdigest(),
                 "defines": args.define, "profile": "aarch64-static-c11-single-thread-no-tls", "signed": False}
+    if args.native_workers:
+        evidence["profile"] = "aarch64-static-c11-native-workers-restricted-libc-no-tls"
     evidence["libraries_sha256"] = {str(p.resolve()): hashlib.sha256(p.read_bytes()).hexdigest() for p in args.library}
     inputs = [ROOT / "Cargo.lock", ROOT / "Cargo.toml", ROOT / "ports/libc/build.py",
               ROOT / "ports/libc/bridge.c", ROOT / "ports/libc/include/knytos.h",

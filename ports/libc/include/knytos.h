@@ -7,6 +7,15 @@ extern "C" {
 #endif
 enum { KNYTOS_OK = 0, KNYTOS_INVALID = 1, KNYTOS_UNAVAILABLE = 2, KNYTOS_OVERFLOW = 3 };
 enum { KNYTOS_DEADLINE = 4, KNYTOS_WAIT_REJECTED = 5, KNYTOS_SHUTDOWN = 6 };
+#ifdef KNYTOS_NATIVE_WORKERS
+enum { KNYTOS_BUSY = 7 };
+/* Worker slots are 1 through 3. Slot 0 denotes the startup thread. */
+typedef void (*knytos_thread_entry)(void *);
+int32_t knytos_thread_start(uint32_t slot, uint32_t lp, knytos_thread_entry entry, void *argument);
+int32_t knytos_thread_join(uint32_t slot);
+int32_t knytos_thread_wait(uint32_t timeout_ms);
+int32_t knytos_thread_signal(uint32_t slot);
+#endif
 struct knytos_allocation_stats { uint64_t blocks, requested_bytes, peak_requested_bytes; };
 struct knytos_abi_pair { uint64_t unsigned_value; int64_t signed_value; double floating_value; };
 uint32_t knytos_abi_version(void);

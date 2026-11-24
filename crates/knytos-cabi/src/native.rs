@@ -44,6 +44,10 @@ fn panic(info: &core::panic::PanicInfo<'_>) -> ! {
 }
 
 fn sample_stack() {
+    #[cfg(feature = "native-workers")]
+    if !crate::workers::is_main() {
+        return;
+    }
     #[cfg(target_arch = "aarch64")]
     {
         let sp: usize;
@@ -83,6 +87,8 @@ pub extern "C" fn _start() -> ! {
 }
 
 fn run(_context: knytos_rt::Context) -> ! {
+    #[cfg(feature = "native-workers")]
+    crate::workers::initialize(&_context);
     sample_stack();
     ENTRY_SP.store(LOW_SP.load(Ordering::Relaxed), Ordering::Relaxed);
     // No owned launch capability is adopted. argc/argv storage belongs to this
@@ -139,15 +145,23 @@ fn flush(console: &mut Console) {
 /// Single-threaded C reactor borrows launch CQ zero. No resource is adopted.
 #[unsafe(no_mangle)]
 pub extern "C" fn knytos_event_wait(timeout_ms: i64) -> i32 {
+    #[cfg(feature = "native-workers")]
+    if !crate::workers::is_main() {
+        return INVALID;
+    }
     let timeout = match timeout_ms {
         -1 => None,
         0.. => Some(timeout_ms as u64),
         _ => return INVALID,
     };
+    wait_on_queue(timeout, 0)
+}
+
+pub(crate) fn wait_on_queue(timeout: Option<u64>, queue: u32) -> i32 {
     if knytos_rt::Context.lifecycle().shutdown_requested().is_some() {
         return SHUTDOWN;
     }
-    let result = knytos_rt::cq::wait(timeout, 0);
+    let result = knytos_rt::cq::wait(timeout, queue);
     if knytos_rt::Context.lifecycle().shutdown_requested().is_some() {
         return SHUTDOWN;
     }
@@ -205,6 +219,8 @@ pub extern "C" fn knytos_c_abort() -> ! {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn knytos_c_terminate(status: i32, run_finalizers: i32) -> ! {
+    #[cfg(feature = "native-workers")]
+    crate::workers::require_joined();
     if EXITING.swap(true, Ordering::AcqRel) {
         knytos_c_abort();
     }
@@ -220,8 +236,8 @@ pub extern "C" fn knytos_c_terminate(status: i32, run_finalizers: i32) -> ! {
     }
     knytos_console_flush();
     let stats = ALLOCATIONS.stats();
-    // Initial profile: no native workers, asynchronous operations or external
-    // resource tokens exist. C cannot run after this terminal boundary.
+    // The worker profile checks join receipts before reaching this boundary.
+    // No asynchronous operation or external resource token exposes C bytes.
     unsafe { ALLOCATIONS.release_all() };
     let remaining = ALLOCATIONS.stats();
     assert_eq!(remaining.blocks, 0);

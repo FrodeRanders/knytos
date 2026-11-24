@@ -116,5 +116,41 @@ high-water measurement or a VM stack budget. Heap pressure intentionally
 approaches the existing 4 MiB heap limit; it does not establish a VM minimum.
 
 TLS models, pthreads, SMP, POSIX processes/filesystems, general C IPC and JIT
-execution are unsupported. These restrictions must be requalified before a
-native VM or additional threads use this runtime.
+execution are unsupported in the default profile.
+
+## Restricted native worker profile
+
+`build.py --native-workers` enables a separate C ABI for worker fixtures.
+Picolibc still uses single-thread mode and global errno. Keep libc calls on
+the startup thread. Worker callbacks may use C atomics, their own memory and
+the documented Rust-backed clock, console and private wait operations. The
+single-scheduler AtomVM build uses the default profile.
+
+Only startup can start or join workers. It supplies a slot from 1 through 3,
+a logical processor, a callback and an argument. The Rust roster prepares
+the callback before submission and keeps the generation-bound thread handle
+until successful join. C retains the argument and referenced data until
+that join. Join confirms execution has ended. The kernel can still hold a
+stack charge, so a subsequent start may return `KNYTOS_UNAVAILABLE` even
+after the same slot became available.
+
+Each participant has a private launch CQ. Slot zero denotes startup, and
+its private queue is distinct from the application reactor on CQ zero.
+Publish an application predicate with appropriate synchronization before
+`knytos_thread_signal` and recheck it after `knytos_thread_wait`. A wake can
+arrive early, coalesce, or survive slot reuse. It carries no payload or exit
+authority. Private waits are finite and check lifecycle before and after
+the wait. Lifecycle wakes presently target CQ zero, so a private waiter can
+remain asleep until its deadline in the absence of a peer wake.
+
+Join admission rejection retains the worker and returns
+`KNYTOS_WAIT_REJECTED`. C must hold its borrow and observe the same worker
+again or terminate the domain. C exit closes start admission before
+finalizers. A return to exit with any unjoined worker aborts the domain before
+finalizers or allocation cleanup. Worker callbacks return to the Rust
+trampoline, which performs the thread exit.
+
+```sh
+python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
+  --native-workers --smp 2 --output target/c-runtime/worker-validation
+```

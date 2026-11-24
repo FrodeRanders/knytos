@@ -75,6 +75,14 @@ adds that duration to its earlier sample, so a successful conversion also
 ensures the absolute expiry fits. The adapter aborts on overflow before the
 timer is queued.
 
+The opt-in [C worker profile](../../ports/libc/README.md#restricted-native-worker-profile)
+uses one private launch CQ per roster slot. A slot's wake may be observed by
+a later occupant, so callbacks publish and recheck their own synchronized
+predicate and carry one total deadline across hints. The startup reactor
+keeps CQ zero. The worker API uses finite waits because lifecycle currently
+wakes only the default queue. Observing readiness never substitutes for
+joining the retained thread generation.
+
 Object storage binds its public endpoint before registration, drains requests,
 then waits event-only on that same default CQ. An arrival between draining and
 parking leaves an unconsumed work generation; shutdown publication wakes the

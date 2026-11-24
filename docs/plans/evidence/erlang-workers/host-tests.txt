@@ -1,0 +1,114 @@
+   Compiling knytos-cabi v0.1.0 (/Users/froran/Projects/private/knytos/crates/knytos-cabi)
+    Finished `test` profile [optimized + debuginfo] target(s) in 4.47s
+     Running unittests src/lib.rs (/Users/froran/Projects/private/knytos/target/debug/build/knytos-app/9b0fc0a9bd091906/out/knytos_app-9b0fc0a9bd091906)
+
+running 14 tests
+test client::tests::host_script_checks_request_and_preserves_uncertain_outcome_without_retry ... ok
+test socket_close::tests::admission_pause_is_clipped_to_original_window ... ok
+test socket_close::tests::queue_backoff_carries_remaining_budget_into_one_owned_wait ... ok
+test socket_close::tests::admission_window_stops_without_a_second_destructor_attempt ... ok
+test socket_close::tests::non_queue_rejection_returns_once_with_terminal_unsubmitted_retention ... ok
+test socket_close::tests::rejected_slow_submission_never_becomes_accepted_uncertainty ... ok
+test socket_close::tests::rejected_operation_cannot_be_reentered_by_fallback ... ok
+test socket_close::tests::slow_accepted_submission_does_not_restart_the_wait_budget ... ok
+test socket_close::tests::success_submits_once_and_disposes_pending_before_remote_lease ... ok
+test socket_close::tests::accepted_timeout_aborts_without_cancel_reconstruction_or_new_budget ... ok
+test socket_send::tests::enqueue_never_repeats_a_partial_receipt_or_ambiguous_error ... ok
+test socket_send::tests::exact_frame_roundtrips_empty_and_oversized_payloads_reject ... ok
+test socket_close::tests::wait_admission_and_observation_failures_remain_distinct_from_timeout ... ok
+test socket_send::tests::retired_truncated_extended_reserved_and_dirty_tail_frames_reject ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/Users/froran/Projects/private/knytos/target/debug/build/knytos-app-sitas/a3717cc36ec7a54b/out/knytos_app_sitas-a3717cc36ec7a54b)
+
+running 5 tests
+test tests::cancellation_releases_registration_capacity_and_stale_waker ... ok
+test tests::backend_rejection_is_terminal_with_interests_retained_not_a_retry_hint ... ok
+test tests::producer_ready_before_poll_is_observed_after_registration ... ok
+test tests::reactor_clips_waits_without_restarting_deadlines_and_dispatches_wakes ... ok
+test tests::wake_rechecks_owner_and_deadline_returns_complete_pending_owner ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/Users/froran/Projects/private/knytos/target/debug/build/knytos-cabi/863da1a327275553/out/knytos_cabi-863da1a327275553)
+
+running 4 tests
+test allocation::tests::rejected_layout_does_not_publish_or_allocate ... ok
+test allocation::tests::aligned_blocks_realloc_failure_and_unordered_release ... ok
+test allocation::tests::terminal_cleanup_releases_all_retained_blocks ... ok
+test tests::counter_conversion_handles_fraction_zero_and_overflow ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/Users/froran/Projects/private/knytos/target/debug/build/knytos-rt/7245ed350b87b557/out/knytos_rt-7245ed350b87b557)
+
+running 66 tests
+test cq::tests::invalid_queue_and_unknown_status_fail_closed ... ok
+test call::tests::permanent_admission_rejection_is_never_retried ... ok
+test call::tests::queue_backoff_retains_original_deadline_and_stops_without_resubmitting ... ok
+test call::tests::expired_budget_still_observes_reply_and_disposes_returned_owners_once ... ok
+test call::tests::timeout_and_wait_rejection_keep_pending_loan_until_cancellation ... ok
+test cq::tests::admission_rejection_never_becomes_readiness_or_deadline ... ok
+test deadline::tests::invalid_clock_fails_closed_without_arithmetic_overflow ... ok
+test deadline::tests::retries_do_not_restart_the_deadline ... ok
+test deadline::tests::remaining_budget_rounds_up_without_restart_or_overflow ... ok
+test owned::completion::worker_tests::abandoned_group_aborts_instead_of_claiming_worker_exit ... ok
+test owned::completion::worker_tests::rejected_join_retains_original_generation_and_group_capacity ... ok
+test owned::payload::tests::empty_payload_is_an_owned_attachment ... ok
+test owned::tests::completed_deployment_retirement_does_not_force_again ... ok
+test owned::tests::borrowed_connection_watch_owns_only_its_completion ... ok
+test owned::tests::abandoned_timed_reply_wait_cancels_exact_pending_owner ... ok
+test owned::payload::tests::encoded_payload_retains_memory_and_unmaps_before_transfer ... ok
+test owned::tests::completion_cq_hint_preserves_owner_until_terminal_observation ... ok
+test owned::payload::tests::invalid_capacity_allocation_mapping_and_encoding_release_private_owners ... ok
+test owned::tests::completion_timeout_keeps_capability_until_terminal ... ok
+test owned::tests::completion_wait_admission_failure_preserves_drop_cleanup ... ok
+test owned::tests::completion_wait_admission_failure_preserves_owner_for_retry ... ok
+test owned::tests::delegated_admission_rejection_preserves_both_sources ... ok
+test owned::tests::deployed_artifact_polls_cooperatively_then_forces_on_owner_drop ... ok
+test owned::tests::dma_ambiguous_failure_never_resubmits_or_returns_cpu_ownership ... ok
+test owned::tests::dma_drop_after_busy_rejection_attempts_unstarted_work_once ... ok
+test owned::tests::dma_finish_busy_preserves_exclusive_transfer ... ok
+test owned::tests::dropped_read_cancels_waits_then_closes ... ok
+test owned::tests::endpoint_and_connection_close_exactly_once ... ok
+test owned::tests::exclusive_dma_map_failure_preserves_original_diagnostic_and_memory ... ok
+test owned::tests::explicit_endpoint_close_retains_rejected_owner ... ok
+test owned::tests::failed_move_returns_memory_to_the_caller ... ok
+test owned::tests::failed_reply_move_returns_memory_owner ... ok
+test owned::tests::failed_shared_dma_cpu_unmap_rejection_returns_restricted_owner ... ok
+test owned::tests::failed_vector_call_rolls_descriptor_back_and_returns_moves ... ok
+test owned::tests::incoming_message_owns_every_attachment ... ok
+test owned::tests::interrupted_dma_unmap_is_armed_before_kernel_entry ... ok
+test owned::tests::invalid_node_shutdown_request_retains_then_drops_the_envelope ... ok
+test owned::tests::mapping_unmap_failure_preserves_retryable_owner ... ok
+test owned::tests::moved_admission_rejection_returns_exact_page_without_cleanup ... ok
+test owned::tests::mmio_unmap_failure_preserves_retryable_mapping ... ok
+test owned::tests::node_shutdown_request_transfers_the_signed_envelope ... ok
+test owned::tests::node_shutdown_retirement_carries_the_enclosing_deadline ... ok
+test owned::tests::operational_launch_kernel_rejection_consumes_package ... ok
+test owned::tests::operational_launch_rejects_lengths_without_leaking_package ... ok
+test owned::tests::pending_borrow_is_revoked_when_call_is_dropped ... ok
+test owned::tests::pending_call_close_rejection_returns_owner_and_retains_borrow ... ok
+test owned::tests::pending_call_drop_aborts_instead_of_releasing_uncertain_borrow ... ok
+test owned::tests::pending_call_error_wait_cannot_ignore_rejected_close ... ok
+test owned::tests::pending_receive_front_has_no_application_attachment_owners ... ok
+test owned::tests::raw_reply_boundary_has_one_owner_on_drop_success_and_failure ... ok
+test owned::tests::record_limited_reply_cancels_token_but_preserves_grant_source ... ok
+test owned::tests::rejected_moved_page_drop_releases_original_once ... ok
+test owned::tests::rejected_reply_cq_interest_preserves_the_pending_loan_owner ... ok
+test owned::tests::reply_from_connection_borrow_preserves_its_owner ... ok
+test owned::tests::scalar_admission_rejection_keeps_connection_without_a_pending_owner ... ok
+test owned::tests::scoped_launch_drop_forces_only_the_returned_principal ... ok
+test owned::tests::scoped_launch_kernel_rejection_still_consumes_both_inputs ... ok
+test owned::tests::scoped_launch_rejects_lengths_without_leaking_inputs ... ok
+test owned::tests::scoped_launch_transfers_both_inputs_and_retains_the_kernel_principal ... ok
+test owned::tests::shared_dma_ambiguous_failure_never_resubmits ... ok
+test owned::tests::shared_dma_busy_rejection_preserves_both_mappings ... ok
+test owned::tests::shared_dma_cpu_unmap_failure_does_not_repeat_dma_unmap ... ok
+test owned::tests::shared_dma_drop_unmaps_device_before_cpu_and_close ... ok
+test owned::tests::shared_dma_halfwords_check_alignment_bounds_and_little_endian_access ... ok
+test owned::tests::shared_dma_mapping_failure_restores_memory_owner ... ok
+test owned::tests::timed_reply_wait_preserves_loan_on_timeout_and_admission_rejection ... ok
+
+test result: ok. 66 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

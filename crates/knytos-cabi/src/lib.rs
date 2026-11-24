@@ -7,6 +7,8 @@ extern crate alloc;
 mod allocation;
 #[cfg(target_os = "none")]
 mod native;
+#[cfg(all(target_os = "none", feature = "native-workers"))]
+mod workers;
 
 use core::ptr;
 
@@ -19,6 +21,7 @@ pub const OVERFLOW: i32 = 3;
 pub const DEADLINE: i32 = 4;
 pub const WAIT_REJECTED: i32 = 5;
 pub const SHUTDOWN: i32 = 6;
+pub const BUSY: i32 = 7;
 
 pub(crate) static ALLOCATIONS: allocation::Allocations = allocation::Allocations::new();
 

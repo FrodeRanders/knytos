@@ -8,6 +8,9 @@ description = "Single-threaded C application ABI over the owned Knytos runtime"
 crate-type = ["rlib", "staticlib"]
 bench = false
 
+[features]
+native-workers = []
+
 [dependencies]
 knytos-rt = { path = "../knytos-rt" }
 knytos-launch = { path = "../knytos-launch" }
