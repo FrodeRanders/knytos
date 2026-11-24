@@ -191,11 +191,15 @@ pub extern "C" fn knytos_shutdown_requested() -> bool {
 }
 
 pub(crate) fn wait_on_queue(timeout: Option<u64>, queue: u32) -> i32 {
-    if knytos_shutdown_requested() {
+    #[cfg(feature = "native-workers")]
+    let check_shutdown = queue == 0 || !crate::workers::reactor_owns_shutdown();
+    #[cfg(not(feature = "native-workers"))]
+    let check_shutdown = true;
+    if check_shutdown && knytos_shutdown_requested() {
         return SHUTDOWN;
     }
     let result = knytos_rt::cq::wait(timeout, queue);
-    if knytos_shutdown_requested() {
+    if check_shutdown && knytos_shutdown_requested() {
         return SHUTDOWN;
     }
     match result {
@@ -252,13 +256,28 @@ pub extern "C" fn knytos_c_abort() -> ! {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn knytos_c_terminate(status: i32, run_finalizers: i32) -> ! {
+    terminate(status, run_finalizers != 0, None)
+}
+
+/// The caller has stopped application work and disposed of any external
+/// resources. This consumes the startup thread after C terminal cleanup.
+#[unsafe(no_mangle)]
+pub extern "C" fn knytos_shutdown_complete() -> ! {
+    let Some(request) = knytos_rt::Context.lifecycle().shutdown_requested() else {
+        knytos_rt::logln!("[c-runtime] shutdown completion without a request");
+        knytos_c_abort();
+    };
+    terminate(0, true, Some(request))
+}
+
+fn terminate(status: i32, run_finalizers: bool, shutdown: Option<knytos_rt::ShutdownRequest>) -> ! {
     #[cfg(feature = "native-workers")]
     crate::workers::require_joined();
     if EXITING.swap(true, Ordering::AcqRel) {
         knytos_c_abort();
     }
     sample_stack();
-    if run_finalizers != 0 {
+    if run_finalizers {
         unsafe {
             callbacks(
                 ptr::addr_of!(__fini_array_start).cast(),
@@ -285,6 +304,9 @@ pub extern "C" fn knytos_c_terminate(status: i32, run_finalizers: i32) -> ! {
     );
     if status != 0 {
         knytos_rt::domain_abort();
+    }
+    if let Some(request) = shutdown {
+        request.complete();
     }
     // All local C allocations are released; no remote owner is bypassed.
     unsafe { knytos_rt::abi::thread_exit() }

@@ -15,7 +15,8 @@ import time
 
 ROOT = Path(__file__).resolve().parents[2]
 CASES = [("c-hello", 0), ("c-memory", 1), ("c-format", 2), ("c-clock", 3),
-         ("c-startup", 4), ("c-exit", 5), ("c-error", 6), ("c-abort", 7), ("c-empty", 8), ("c-survivor", 0)]
+         ("c-startup", 4), ("c-exit", 5), ("c-error", 6), ("c-abort", 7), ("c-empty", 8),
+         ("c-shutdown-without-request", 9), ("c-survivor", 0)]
 
 
 def digest(path):
@@ -109,7 +110,7 @@ def main():
         if args.smp < 2:
             parser.error("worker fixtures need at least two guest CPUs")
         cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
-    abort_cases = (7, 11, 13, 15, 20)
+    abort_cases = (7, 9, 11, 13, 15, 20)
     cases += CASES[-1:]
     retirement_cases = {}
     retirement_images = [("parked", args.atomvm_shutdown_parked_elf)]
@@ -284,28 +285,39 @@ def main():
                             successor = retirement_instance(serial_text[replacement_start:], name, 2, mode, count)
                             retiring = serial_text[replacement_start:].split(
                                 f'[agent] launched "{name}" generation=2 asid=', 1)[0]
-                            abort = re.search(rf"Aborting user address space {asid}\b", retiring)
-                            assert abort, (name, domain_logs(retiring, asid))
-                            old_lines = domain_logs(retiring[:abort.start()], asid)
+                            acknowledgement = re.search(
+                                rf"\[supervisor\] deployment shutdown acknowledged asid={asid} generation=(\d+)\b",
+                                retiring)
+                            assert acknowledgement, (name, domain_logs(retiring, asid))
+                            old_lines = domain_logs(retiring[:acknowledgement.start()], asid)
                             assert "[atomvm] runtime=" not in old_lines, name
-                            sources = re.findall(r"\[atomvm\] (?:reactor|scheduler) shutdown source=([\w-]+)",
-                                                 old_lines)
-                            expected_sources = ("cq-wait",) if mode == "parked" else ("nonblocking",)
-                            if mode == "busy" and count > 1:
-                                expected_sources += ("cq-wait", "private-wait")
-                            assert sources and all(source in expected_sources for source in sources), (name, old_lines)
-                            assert "[c-runtime] abort" in old_lines and "[c-runtime] exit=" not in old_lines, old_lines
+                            source = "cq-wait" if mode == "parked" else "nonblocking"
+                            if mode == "busy" and count > 1 and "shutdown source=cq-wait" in old_lines:
+                                source = "cq-wait"
+                            stages = [f"[atomvm] reactor shutdown source={source}",
+                                      "[atomvm] schedulers stopped for shutdown", "[c-runtime] exit=0 "]
+                            if count > 1:
+                                activated = count - 1 if mode == "busy" else 0
+                                stages.insert(1, f"[atomvm] schedulers joined={count - 1} activated={activated}")
+                            assert all(stage in old_lines for stage in stages), (name, old_lines)
+                            assert [old_lines.index(stage) for stage in stages] == sorted(
+                                old_lines.index(stage) for stage in stages), (name, old_lines)
+                            assert "remaining_blocks=0" in old_lines and "[c-runtime] abort" not in old_lines, old_lines
+                            assert not re.search(rf"Aborting user address space {asid}\b", retiring), name
                             if mode == "parked":
                                 assert "scheduler entered slot=" not in domain_logs(initial[before:], asid), name
                                 assert "scheduler entered slot=" not in old_lines, name
                             record["cases"].append({
-                                "name": name, "case": number, "passed": True, "shutdown_sources": sources,
+                                "name": name, "case": number, "passed": True, "shutdown_source": source,
+                                "acknowledged_root_generation": int(acknowledgement[1]),
                                 "retired_asid": int(asid), "successor_asid": int(successor),
                                 "observation": serial_text[before:],
                             })
                             save()
                             continue
                         expected = "CABI expected abort" if number == 7 else "CABI expected nonzero" if number == 6 else "CABI explicit exit" if number == 5 else f"CABI PASS case={number}"
+                        if number == 9:
+                            expected = "CABI shutdown without request"
                         if number in vm_cases:
                             expected = vm_cases[number][2]
                         if number in worker_cases:
@@ -332,8 +344,11 @@ def main():
                             return True
                         serial_text = wait_for(complete, 60)
                         text = observation(serial_text)
-                        if number not in (7, 8) and number not in vm_cases and number not in worker_cases:
+                        if number not in (7, 8, 9) and number not in vm_cases and number not in worker_cases:
                             assert "CABI FINI" in text, name
+                        if number == 9:
+                            assert "[c-runtime] shutdown completion without a request" in text, name
+                            assert "CABI FINI" not in text, name
                         if number not in abort_cases:
                             assert "remaining_blocks=0" in text, name
                         if number in (4, 5, 6):

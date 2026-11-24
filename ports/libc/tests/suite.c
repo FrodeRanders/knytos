@@ -79,6 +79,9 @@ int main(int argc, char **argv) {
     } else if (CASE == 7) {
         puts("CABI expected abort");
         abort();
+    } else if (CASE == 9) {
+        puts("CABI shutdown without request");
+        knytos_shutdown_complete();
     }
     printf("CABI PASS case=%d\n", CASE);
     return 0;

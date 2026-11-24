@@ -25,11 +25,11 @@ def sha(path):
 
 def replace_pinned(text, old, new):
     if text.count(old) != 1:
-        raise SystemExit("Unexpected source for the pinned AtomVM SMP adaptation")
+        raise SystemExit("Unexpected source for the pinned AtomVM adaptation")
     return text.replace(old, new)
 
 
-def configure_smp(core, generated):
+def configure_smp(core, generated, scheduler):
     # The signed roster is fixed. Keep the upstream badarg path for
     # system_flag/2 while retaining SMP synchronization in this translation unit.
     nifs = replace_pinned((core / "nifs.c").read_text(),
@@ -40,7 +40,7 @@ def configure_smp(core, generated):
 
     # Reserve the VM's count under its scheduler lock, then wake a prepared
     # thread after releasing the scheduler and ready-list producer locks.
-    scheduler = replace_pinned((core / "scheduler.c").read_text(),
+    scheduler = replace_pinned(scheduler,
         "list_remove(&ctx->processes_list_head);\n#ifndef AVM_NO_SMP\n    if (SMP_MUTEX_TRYLOCK",
         "list_remove(&ctx->processes_list_head);\n#ifndef AVM_NO_SMP\n"
         "    bool start_scheduler = false;\n    if (SMP_MUTEX_TRYLOCK")
@@ -54,7 +54,8 @@ def configure_smp(core, generated):
         "    SMP_SPINLOCK_UNLOCK(&global->processes_spinlock);\n#ifndef AVM_NO_SMP\n"
         "    if (start_scheduler) {\n        smp_scheduler_start(global);\n    }\n"
         "    if (SMP_MUTEX_TRYLOCK")
-    (generated / "scheduler.c").write_text(scheduler)
+    scheduler = replace_pinned(scheduler, "        if (!global->waiting_scheduler",
+        "        if (!global->scheduler_stop_all && !global->waiting_scheduler")
 
     # Only the embedded, authenticated pack supplies modules in this profile.
     # Upstream read_priv mutates pin metadata under a shared lock.
@@ -63,6 +64,7 @@ def configure_smp(core, generated):
         entry = next(line for line in nifs_gperf.splitlines() if line.startswith(f"atomvm:{name},"))
         nifs_gperf = replace_pinned(nifs_gperf, entry + "\n", "")
     (generated / "nifs.gperf").write_text(nifs_gperf)
+    return scheduler
 
 
 def main():
@@ -133,8 +135,15 @@ def main():
         '#define SYSTEM_NAME "Knytos"\n#define SYSTEM_VERSION "1"\n'
         '#define SYSTEM_ARCHITECTURE "aarch64"\n#define ATOMVM_VERSION "0.6.6"\n')
     core = atomvm / "src/libAtomVM"
+    # A lifecycle request can arrive after the VM has selected a process but
+    # before the platform hook returns. Reenter the scheduler's stop path
+    # while holding its normal mutex instead of resuming interpreter work.
+    scheduler = replace_pinned((core / "scheduler.c").read_text(),
+        "    } while (result == NULL);\n\n#ifndef AVM_NO_SMP",
+        "    } while (result == NULL || global->scheduler_stop_all);\n\n#ifndef AVM_NO_SMP")
     if smp:
-        configure_smp(core, generated)
+        scheduler = configure_smp(core, generated, scheduler)
+    (generated / "scheduler.c").write_text(scheduler)
     for kind in ("bifs", "nifs"):
         definition = (generated if smp and kind == "nifs" else core) / (kind + ".gperf")
         with (generated / (kind + "_hash.h")).open("w") as target:
@@ -161,9 +170,9 @@ def main():
     match = re.search(r"set\(SOURCE_FILES\s+(.*?)\)", (core / "CMakeLists.txt").read_text(), re.S)
     sources = [core / name for name in match[1].split()] + [ROOT / "ports/atomvm/sys.c"]
     upstream_sources = sources.copy()
+    adapted = {"scheduler.c", "nifs.c"} if smp else {"scheduler.c"}
+    sources = [generated / path.name if path.name in adapted else path for path in sources]
     if smp:
-        sources = [generated / path.name if path.name in ("scheduler.c", "nifs.c") else path
-                   for path in sources]
         sources.append(ROOT / "ports/atomvm/smp.c")
     def compile_source(source):
         obj = work / (source.stem + ".o")

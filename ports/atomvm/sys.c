@@ -7,11 +7,13 @@
 #include "avmpack.h"
 #include "defaultatoms.h"
 #include "platform_nifs.h"
+#include "scheduler.h"
 #include "sys.h"
 #include "knytos.h"
 
 static _Atomic uint64_t waits;
 static _Atomic uint64_t deadlines;
+static atomic_bool shutdown_pending;
 #ifndef AVM_NO_SMP
 static _Atomic uint64_t worker_waits;
 
@@ -26,11 +28,15 @@ static _Noreturn void unsupported(const char *operation) {
     abort();
 }
 
-static _Noreturn void reactor_shutdown(const char *message) {
-    // Emit one record through the runtime console without acquiring a C
-    // stream lock that another scheduler might hold when shutdown arrives.
-    knytos_console_write(message, strlen(message));
-    abort();
+bool knytos_atomvm_shutdown_pending(void) {
+    return atomic_load_explicit(&shutdown_pending, memory_order_acquire);
+}
+
+static void reactor_shutdown(GlobalContext *global, const char *message) {
+    if (!atomic_exchange_explicit(&shutdown_pending, true, memory_order_acq_rel)) {
+        knytos_console_write(message, strlen(message));
+        scheduler_stop_all(global);
+    }
 }
 
 void sys_init_platform(GlobalContext *global) { global->platform_data = NULL; }
@@ -47,13 +53,12 @@ void sys_free_platform(GlobalContext *global) {
 void platform_defaultatoms_init(GlobalContext *global) { (void)global; }
 
 void sys_poll_events(GlobalContext *global, int timeout_ms) {
-    (void)global;
     if (timeout_ms == SYS_POLL_EVENTS_DO_NOT_WAIT) {
         // Continually runnable processes can keep the elected scheduler out
         // of CQ waits. This is an existing scheduling checkpoint outside the
         // VM's ready-list and scheduler locks.
         if (knytos_shutdown_requested()) {
-            reactor_shutdown("[atomvm] reactor shutdown source=nonblocking\n");
+            reactor_shutdown(global, "[atomvm] reactor shutdown source=nonblocking\n");
         }
         return;
     }
@@ -68,7 +73,8 @@ void sys_poll_events(GlobalContext *global, int timeout_ms) {
     int status = knytos_event_wait(timeout_ms);
 #endif
     if (status == KNYTOS_SHUTDOWN) {
-        reactor_shutdown("[atomvm] reactor shutdown source=cq-wait\n");
+        reactor_shutdown(global, "[atomvm] reactor shutdown source=cq-wait\n");
+        return;
     }
     if (status == KNYTOS_DEADLINE) atomic_fetch_add_explicit(&deadlines, 1, memory_order_relaxed);
     else if (status != KNYTOS_OK) {

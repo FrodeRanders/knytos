@@ -22,6 +22,9 @@ int32_t knytos_thread_signal(uint32_t slot);
 /* The elected registered participant may borrow the sole CQ zero cursor.
  * An overlapping wait returns KNYTOS_BUSY. Same timeout units as event_wait. */
 int32_t knytos_worker_event_wait(int64_t timeout_ms);
+/* Startup can assign lifecycle delivery to CQ zero before starting workers.
+ * Private synchronization then relies on peer readiness and terminal policy. */
+int32_t knytos_shutdown_via_reactor(void);
 
 struct knytos_mutex;
 struct knytos_condition;
@@ -67,6 +70,13 @@ int32_t knytos_event_wait(int64_t timeout_ms);
 void knytos_event_signal(void);
 /* Read the authenticated lifecycle request and mark it seen when present. */
 bool knytos_shutdown_requested(void);
+/* Call from startup after exact worker joins and external resource disposal.
+ * Runs finalizers and C heap cleanup before acknowledging a pending request. */
+#ifdef __cplusplus
+[[noreturn]] void knytos_shutdown_complete(void);
+#else
+_Noreturn void knytos_shutdown_complete(void);
+#endif
 int32_t knytos_allocation_stats(struct knytos_allocation_stats *result);
 struct knytos_abi_pair knytos_abi_transform(struct knytos_abi_pair value, uint64_t delta);
 /* Ordinary C pointer validity applies. No kernel capability is exposed. */

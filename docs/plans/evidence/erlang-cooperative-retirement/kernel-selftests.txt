@@ -1,0 +1,12 @@
+Kernel SHA-256 e2638cb4e2f981e4d9f00a8f02cfba60df9c0e46a47ac7b019785ec9e4446231
+[+    12.296069] [scheduler lifecycle] 3 initially co-located timer-affinity workers deferred
+[+    12.298087] [scheduler lifecycle] worker tid=30 running on LP2
+[+    12.298420] [scheduler lifecycle] worker tid=35 running on LP3
+[+    12.299084] [scheduler lifecycle] worker tid=39 running on LP1
+[+    12.663342] [scheduler lifecycle] worker tid=39 completed on LP1
+[+    12.666420] [scheduler lifecycle] worker tid=30 completed on LP2
+[+    12.670448] [scheduler lifecycle] worker tid=35 completed on LP3
+[+    12.670798] [scheduler lifecycle] 192 timer wakes retained established LP affinity.
+[+    15.697859] [scheduler remote abort] target stayed on LP1 through request, late admission was rejected, and owner-side retirement completed off-CPU.
+[+    15.698419] [scheduler lifecycle] SUCCESS: timer affinity, certified runtime migration, and safe cross-LP retirement verified.
+[+    84.623891] SELFTEST COMPLETE: passed=19 failed=0 pending=0 passed_bitmap=0x2003ffff failed_bitmap=0x0 pending_bitmap=0x0

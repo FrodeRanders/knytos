@@ -1,0 +1,128 @@
+{
+  "baseline_commit": "7dc2e5d4220d3a6e3de2b4f52d0f5d5d196b4bdb",
+  "preparation_failure": {
+    "stage": "test disk staging",
+    "raw_bundle_elf_bytes": 16790184,
+    "test_disk_bytes": 16777216,
+    "diagnostic": "ValueError: not enough free blocks for object",
+    "first_guest_booted": false,
+    "passing_campaign_omits": "archived single-scheduler hello image"
+  },
+  "guest_cpus": 4,
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "release_kernel_sha256": "20034b1c3fd010701129387a95ec56419f4ab6e09a7c6712b9716684bc0bc13d",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "outcome": "passed",
+  "retirements": {
+    "avm-shutdown-parked": {
+      "threads": 4,
+      "stack_pages_per_thread": 64,
+      "shutdown_grace_ms": 5000,
+      "package_sha256": "f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612",
+      "unsigned_elf_sha256": "a50825cd17738e2d0eccba00b41d8d70dac287679aa3aea4a25a83c71c002a56",
+      "signed_elf_sha256": "7c3d99fe58820249c02a26bfc7195322d52b4d33dbd7e0b7eeb4ae46eabfa0e5",
+      "signed_elf_bytes": 755584,
+      "signed_descriptor_sha256": "6abbf860fe3fc03a5079f7ffedbe5c342eb2d0d4ca0fa7b7a6a5cea5370c3dc6",
+      "replacement_descriptor_sha256": "14d9f2833875b115601df989a2a96cd853f78b93dee0862e0486301163ab4383",
+      "admitted_generations": [
+        1,
+        2
+      ],
+      "shutdown_source": "cq-wait",
+      "retired_asid": 43,
+      "successor_asid": 43,
+      "acknowledged_root_generation": 1
+    },
+    "avm-shutdown-busy-1": {
+      "threads": 1,
+      "stack_pages_per_thread": 64,
+      "shutdown_grace_ms": 5000,
+      "package_sha256": "cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b",
+      "unsigned_elf_sha256": "242011c05351b7d1f3f902d52eea7cd0373b003f4c7eaad4048a0fb22ba4f0e2",
+      "signed_elf_sha256": "074dc0f4884e0469ca37830beffd6be416ac2006ee0b825c4115f46b9ecc0b15",
+      "signed_elf_bytes": 720736,
+      "signed_descriptor_sha256": "07ba53f314c7224130401ee7228c68fc2360a3d0ffcf5dbe5e97f8c8976fa467",
+      "replacement_descriptor_sha256": "7546fec6a3e6a734856d5051c2460cffc576eec8e6a2a2dc18dd9ef5c8e4d410",
+      "admitted_generations": [
+        1,
+        2
+      ],
+      "shutdown_source": "nonblocking",
+      "retired_asid": 44,
+      "successor_asid": 44,
+      "acknowledged_root_generation": 1
+    },
+    "avm-shutdown-busy": {
+      "threads": 4,
+      "stack_pages_per_thread": 64,
+      "shutdown_grace_ms": 5000,
+      "package_sha256": "cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b",
+      "unsigned_elf_sha256": "d75c6a9b7c5c8fed47195d99c5b38f56c8ea5f9e157bab1f45d5641e683b20e0",
+      "signed_elf_sha256": "1bb02d3e99ced66b1fedb8c6f2ba7db1fcfb7d717425370eedc5752ce61dd4ee",
+      "signed_elf_bytes": 755584,
+      "signed_descriptor_sha256": "0a2e4354b36c296617f79cda6ab1c511bf628bd99458e538143dacb6e4234005",
+      "replacement_descriptor_sha256": "926d0bf8ab7f6f7cb944a6a69703fa43e4558e2bdf6412222ff31ae3be723453",
+      "admitted_generations": [
+        1,
+        2
+      ],
+      "shutdown_source": "nonblocking",
+      "retired_asid": 45,
+      "successor_asid": 45,
+      "acknowledged_root_generation": 1
+    }
+  },
+  "passed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request",
+    "avm-utc",
+    "avm-semantics",
+    "avm-overflow",
+    "avm-schedulers-1",
+    "avm-schedulers-2",
+    "avm-schedulers-4",
+    "avm-idle-schedulers",
+    "c-workers",
+    "c-unjoined",
+    "c-worker-reuse",
+    "c-sync",
+    "c-rwlock",
+    "c-worker-libc",
+    "c-worker-libc-close",
+    "c-survivor",
+    "avm-shutdown-parked",
+    "avm-shutdown-busy-1",
+    "avm-shutdown-busy"
+  ],
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "debug_kernel_selftests": {
+    "kernel_sha256": "e2638cb4e2f981e4d9f00a8f02cfba60df9c0e46a47ac7b019785ec9e4446231",
+    "observation": "[+    84.623891] SELFTEST COMPLETE: passed=19 failed=0 pending=0 passed_bitmap=0x2003ffff failed_bitmap=0x0 pending_bitmap=0x0"
+  },
+  "host_rust_tests": 89,
+  "host_script_checks": 15,
+  "harness_sha256": "ca71cb4753b35e501bb09715d70e6c4dc2932d411601fe16c7ae34ab3445b2d5"
+}

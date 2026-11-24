@@ -139,7 +139,7 @@ its private queue is distinct from the application reactor on CQ zero.
 Publish an application predicate with appropriate synchronization before
 `knytos_thread_signal` and recheck it after `knytos_thread_wait`. A wake can
 arrive early, coalesce, or survive slot reuse. It carries no payload or exit
-authority. Private waits check lifecycle before and after the wait.
+authority. By default, private waits check lifecycle before and after the wait.
 Lifecycle wakes target CQ zero. A finite private waiter can remain
 asleep until its deadline in the absence of a peer wake. Use
 `knytos_thread_wait_event` only when the application has an explicit
@@ -155,6 +155,15 @@ application checkpoint and marks a pending request as seen. Runnable work
 can keep a reactor from entering `knytos_event_wait`. The checkpoint borrows
 launch state and leaves CQ readiness for the elected poller. Seeing the
 request leaves the terminal cleanup transition pending.
+
+Before submitting any worker, startup may call
+`knytos_shutdown_via_reactor()` to route wait-time lifecycle delivery to
+CQ zero. Private waits continue to serve peer predicates during shutdown.
+The elected reactor must initiate the terminal path for those peers.
+Use `knytos_shutdown_complete()` from startup after application work has
+stopped, every worker has joined, and external resources are disposed.
+The runtime validates the request and joins, runs C finalizers, releases
+tracked allocations, then acknowledges the request and exits startup.
 
 Join admission rejection retains the worker and returns
 `KNYTOS_WAIT_REJECTED`. C must hold its borrow and observe the same worker

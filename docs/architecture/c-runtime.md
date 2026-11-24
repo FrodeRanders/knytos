@@ -170,11 +170,12 @@ with an unavailable diagnostic until an authorized UTC policy is implemented.
 The fixed AtomVM roster borrows one private shard CQ per participant for
 worker gates and condition waits. The elected poller alone waits on CQ zero,
 which also receives lifecycle wakes. All private event waits need an explicit
-terminal path. AtomVM also observes lifecycle at its nonblocking scheduler
-checkpoint when runnable work keeps it out of CQ waits. During deployment
-retirement a request observed at that checkpoint or in a wait ends the VM
-through domain abort. During ordinary VM completion the adapter wakes unused
-workers and joins the full roster before C allocation disposal. See the
+terminal path. AtomVM assigns lifecycle handling to the elected reactor
+before submitting workers and also observes it at a nonblocking scheduler
+checkpoint. Private waiters keep their peer readiness contracts. Startup
+waits for exact joins before disposing of the VM's local C allocation graph,
+then acknowledges through the Rust lifecycle API. The deployment agent
+retains the launch owner until kernel reclamation completes. See the
 [signed retirement fixture](../../ports/atomvm/README.md#signed-deployment-retirement).
 
 ## TLS and future thread profile

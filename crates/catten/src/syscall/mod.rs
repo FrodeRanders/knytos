@@ -2394,6 +2394,11 @@ pub(crate) fn retire_deployed_artifact_with_registry<const N: usize>(
     } else if acknowledged {
         crate::service::supervisor::DEPLOYMENT_ACKNOWLEDGED_RETIREMENTS
             .fetch_add(1, core::sync::atomic::Ordering::Relaxed);
+        crate::logln!(
+            "[supervisor] deployment shutdown acknowledged asid={} generation={}",
+            domain.address_space.id(),
+            domain.address_space.generation()
+        );
     }
     0
 }

@@ -10,6 +10,8 @@
 #include "knytos.h"
 #include "package.h"
 
+bool knytos_atomvm_shutdown_pending(void);
+
 #ifdef AVM_KNYTOS_SCHEDULERS
 void knytos_schedulers_prepare(GlobalContext *global);
 void knytos_schedulers_join(void);
@@ -24,7 +26,9 @@ int main(void) {
     /* Exercise a real wake published before the sole consumer parks. No
      * producer thread, timer polling or foreign CQ consumer is introduced. */
     knytos_event_signal();
-    if (knytos_event_wait(1000) != KNYTOS_OK) abort();
+    int startup_status = knytos_event_wait(1000);
+    if (startup_status == KNYTOS_SHUTDOWN) knytos_shutdown_complete();
+    if (startup_status != KNYTOS_OK) abort();
     puts("[atomvm] wake-before-wait passed");
     if (!avmpack_is_valid(application_package, sizeof(application_package))) return 1;
     GlobalContext *global = globalcontext_new();
@@ -47,12 +51,20 @@ int main(void) {
     if (!context) { globalcontext_destroy(global); return 1; }
     context->leader = 1;
 #ifndef AVM_NO_SMP
+    if (knytos_shutdown_via_reactor() != KNYTOS_OK) abort();
     knytos_schedulers_prepare(global);
 #endif
     context_execute_loop(context, module, "start", 0);
 #ifndef AVM_NO_SMP
     knytos_schedulers_join();
 #endif
+    if (knytos_atomvm_shutdown_pending()) {
+        // All native schedulers have exited. The package, its processes and
+        // its supported NIFs own only local C storage. Dispose that graph
+        // through the tracked heap, without replaying process exit callbacks.
+        puts("[atomvm] schedulers stopped for shutdown");
+        knytos_shutdown_complete();
+    }
     term result = context->x[0];
     fputs("[atomvm] return=", stdout);
     term_display(stdout, result, context);

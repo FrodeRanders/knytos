@@ -69,8 +69,8 @@ It is the sole CQ consumer. A zero timeout returns immediately; finite waits
 use the kernel watchdog and indefinite waits use readiness alone. The VM
 retains its absolute timer expiry and rechecks runnable processes after wakes.
 Conversion rounds remaining fractional milliseconds up to avoid a busy loop.
-Waiter rejection, invalid waits and shutdown are explicit failures and abort
-the domain; they cannot become a successful deadline or replay permission.
+Waiter rejection and invalid waits abort the domain. An authenticated
+shutdown request starts the scheduler stop and C cleanup path.
 No asynchronous service operation or closeable C resource is exposed.
 
 The pinned no-SMP scheduler does not require `sys_signal`; its native worker
@@ -180,11 +180,13 @@ that mutex. Lock acquisition and condition reacquisition each have a
 five-second budget. Any failed wait or acquisition aborts the domain.
 During idle operation the poller observes shutdown requests on CQ zero.
 When the ready queue keeps the VM out of CQ waits, the elected scheduler
-observes lifecycle at its nonblocking scheduling checkpoint. A private
-synchronization wait can also observe the request. Those paths log through
-the Rust console and abort the domain. The deployment supervisor retains
-retirement ownership. On normal VM completion, startup wakes unused workers
-and joins every exact native worker before releasing VM state.
+observes lifecycle at its nonblocking scheduling checkpoint. It requests
+the VM's scheduler stop while private synchronization continues to serve
+peers. The scheduler rechecks the stop before returning selected work to
+the interpreter. Startup wakes unused workers and joins every exact native
+worker. The current profile owns a local C allocation graph, which the
+runtime releases with its terminal heap cleanup before acknowledging.
+Erlang process exit callbacks are outside this retirement contract.
 
 The build generates target-only adaptations from the clean pinned source.
 The SMP NIF lookup excludes dynamic package add/close and `read_priv/2`.
@@ -237,8 +239,7 @@ python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
 
 After the original VM reaches its workload marker, the runner submits one
 signed replacement of that deployment with sequence two. It checks the
-original domain's shutdown observation, terminal abort and the succeeding
-generation's workload marker. The signed grace period is five seconds.
-The fixture covers domain retirement through deployment replacement.
-Cooperative VM state disposal during retirement and whole-node shutdown
-remain separate qualification.
+original domain's shutdown observation, exact joins, local heap disposal
+and supervisor acknowledgement before the succeeding generation's workload
+marker. The signed grace period is five seconds. Whole-node shutdown and
+future NIFs that own external resources require separate qualification.

@@ -1,0 +1,57 @@
+[+    26.224430] [EL0 LOG] lp=0 asid=43 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    26.225238] [EL0 LOG] lp=0 asid=43 [atomvm] package_sha256=f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612 bytes=21660
+[+    26.225763] [EL0 LOG] lp=0 asid=43 [atomvm] wake-before-wait passed
+[+    26.235161] [EL0 LOG] lp=0 asid=43 {m3_shutdown,parked}
+[+    26.236853] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-parked" generation=1 asid=43 principal=0xb83ba1c706cf8ffb
+[+    26.802391] [EL0 LOG] lp=0 asid=43 [atomvm] reactor shutdown source=cq-wait
+[+    26.804353] [EL0 LOG] lp=0 asid=43 [atomvm] schedulers joined=3 activated=0
+[+    26.804687] [EL0 LOG] lp=0 asid=43 [atomvm] schedulers stopped for shutdown
+[+    26.805532] [EL0 LOG] lp=0 asid=43 [c-runtime] exit=0 released_blocks=44 remaining_blocks=0 heap_peak=11857 sampled_stack=1440
+[+    26.863266] [supervisor] deployment shutdown acknowledged asid=43 generation=1
+[+    26.974406] [EL0 LOG] lp=0 asid=43 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    26.975184] [EL0 LOG] lp=0 asid=43 [atomvm] package_sha256=f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612 bytes=21660
+[+    26.975737] [EL0 LOG] lp=0 asid=43 [atomvm] wake-before-wait passed
+[+    26.985322] [EL0 LOG] lp=0 asid=43 {m3_shutdown,parked}
+[+    26.986762] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-parked" generation=2 asid=43 principal=0xb83ba1c706cf8ffb
+
+[+    27.660328] [EL0 LOG] lp=0 asid=44 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+    27.660855] [EL0 LOG] lp=0 asid=44 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    27.661415] [EL0 LOG] lp=0 asid=44 [atomvm] wake-before-wait passed
+[+    27.673883] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy-1" generation=1 asid=44 principal=0xe670475d1c3ee286
+[+    27.688167] [EL0 LOG] lp=0 asid=44 {m3_shutdown,busy}
+[+    29.678063] [EL0 LOG] lp=0 asid=44 [atomvm] reactor shutdown source=nonblocking
+[+    29.678336] [EL0 LOG] lp=0 asid=44 [atomvm] schedulers stopped for shutdown
+[+    29.679035] [EL0 LOG] lp=0 asid=44 [c-runtime] exit=0 released_blocks=63 remaining_blocks=0 heap_peak=21761 sampled_stack=1424
+[+    29.732020] [supervisor] deployment shutdown acknowledged asid=44 generation=1
+[+    29.847334] [EL0 LOG] lp=0 asid=44 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+    29.847889] [EL0 LOG] lp=0 asid=44 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    29.848347] [EL0 LOG] lp=0 asid=44 [atomvm] wake-before-wait passed
+[+    29.852473] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy-1" generation=2 asid=44 principal=0xe670475d1c3ee286
+[+    29.874740] [EL0 LOG] lp=0 asid=44 {m3_shutdown,busy}
+
+[+    31.867315] [EL0 LOG] lp=0 asid=45 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    31.868115] [EL0 LOG] lp=0 asid=45 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    31.868655] [EL0 LOG] lp=0 asid=45 [atomvm] wake-before-wait passed
+[+    31.878973] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy" generation=1 asid=45 principal=0xe998b4f07d2af16f
+[+    31.882025] [EL0 LOG] lp=1 asid=45 [atomvm] scheduler entered slot=1
+[+    31.882742] [EL0 LOG] lp=2 asid=45 [atomvm] scheduler entered slot=2
+[+    31.889910] [EL0 LOG] lp=3 asid=45 [atomvm] scheduler entered slot=3
+[+    31.909256] [EL0 LOG] lp=2 asid=45 {m3_shutdown,busy}
+[+    34.878677] [EL0 LOG] lp=3 asid=45 [atomvm] reactor shutdown source=nonblocking
+[+    34.888514] [EL0 LOG] lp=0 asid=45 [atomvm] schedulers joined=3 activated=3
+[+    34.896792] [EL0 LOG] lp=0 asid=45 [atomvm] schedulers stopped for shutdown
+[+    34.897622] [EL0 LOG] lp=0 asid=45 [c-runtime] exit=0 released_blocks=76 remaining_blocks=0 heap_peak=23620 sampled_stack=912
+[+    35.714509] [supervisor] deployment shutdown acknowledged asid=45 generation=1
+[+    35.964459] [EL0 LOG] lp=0 asid=45 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    35.965292] [EL0 LOG] lp=0 asid=45 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    35.965850] [EL0 LOG] lp=0 asid=45 [atomvm] wake-before-wait passed
+[+    35.976541] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy" generation=2 asid=45 principal=0xe998b4f07d2af16f
+[+    35.989290] [EL0 LOG] lp=1 asid=45 [atomvm] scheduler entered slot=1
+[+    35.990018] [EL0 LOG] lp=2 asid=45 [atomvm] scheduler entered slot=2
+[+    35.990853] [EL0 LOG] lp=3 asid=45 [atomvm] scheduler entered slot=3
+[+    36.026273] [EL0 LOG] lp=2 asid=45 {m3_shutdown,busy}
+
+[+    15.058791] [EL0 LOG] lp=0 asid=27 CABI shutdown without request
+[+    15.059235] [EL0 LOG] lp=0 asid=27 [c-runtime] shutdown completion without a request
+[+    15.059649] Aborting user address space 27
+[+    15.060055] [EL0 LOG] lp=0 asid=16 [agent] launched "c-shutdown-without-request" generation=1 asid=27 principal=0xff796389ca63da99

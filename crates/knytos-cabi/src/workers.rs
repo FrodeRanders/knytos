@@ -30,6 +30,22 @@ static MAIN_TID: AtomicU64 = AtomicU64::new(u64::MAX);
 static WORKER_LIMIT: AtomicUsize = AtomicUsize::new(0);
 static STARTS_CLOSED: AtomicBool = AtomicBool::new(false);
 static NEXT_GENERATION: AtomicU64 = AtomicU64::new(1);
+static REACTOR_SHUTDOWN: AtomicBool = AtomicBool::new(false);
+
+/// Startup may assign lifecycle handling to CQ zero before any submission.
+/// Private waiters continue serving peer predicates through shutdown.
+#[unsafe(no_mangle)]
+pub extern "C" fn knytos_shutdown_via_reactor() -> i32 {
+    if !is_main() || NEXT_GENERATION.load(Ordering::Relaxed) != 1 {
+        return INVALID;
+    }
+    REACTOR_SHUTDOWN.store(true, Ordering::Release);
+    OK
+}
+
+pub(crate) fn reactor_owns_shutdown() -> bool {
+    REACTOR_SHUTDOWN.load(Ordering::Acquire)
+}
 
 /// Runtime-local participant identity. Neither part is a kernel handle.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
