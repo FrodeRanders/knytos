@@ -20,6 +20,7 @@ execution records. For current knowledge and work, use:
 
 ## Investigations
 
+- [AArch64 CI minimal boot timeout](investigations/2026-11-24-aarch64-minimal-timeout.md)
 - [AArch64 CI firmware boot selection](investigations/2026-11-22-aarch64-uefi-boot.md)
 - [Fusion ARM self-test fixture panics](investigations/2026-11-15-fusion-arm-selftest-panic.md)
 - [Fusion ARM early-console and platform bring-up](investigations/2026-11-15-fusion-arm-console.md)

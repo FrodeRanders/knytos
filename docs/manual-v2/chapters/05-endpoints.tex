@@ -330,8 +330,9 @@ parents and enclosing IRQ contexts require separate qualification.
 
 \section{Message envelope}
 
-The kernel validates a fixed-width message envelope. It does not understand Rust
-enums, \texttt{serde} formats, or protocol-specific types:
+The kernel validates a fixed-width message envelope, but has explicitly no
+understanding of Rust enums, \texttt{serde} formats, protocol-specific types,
+or such things:
 
 \begin{lstlisting}[style=rustCode]
 struct MessageHeader {

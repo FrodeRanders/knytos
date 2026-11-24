@@ -1,0 +1,68 @@
+(lldb) target create "/Users/runner/work/knytos/knytos/target/boot-diagnostics/aarch64-aic2zg3s/kernel.elf"
+Current executable set to '/Users/runner/work/knytos/knytos/target/boot-diagnostics/aarch64-aic2zg3s/kernel.elf' (aarch64).
+(lldb) settings set interpreter.stop-command-source-on-error false
+(lldb) process connect --plugin gdb-remote unix-connect:///tmp/ctdiag-hgcrmqaj/gdb.sock
+Process 1 stopped
+* thread #1, stop reason = signal SIGTRAP
+    frame #0: 0xffffffff801289c0 kernel.elf`knytos::syscall::sys_cq_wait_checked + 2084
+kernel.elf`knytos::syscall::sys_cq_wait_checked:
+->  0xffffffff801289c0 <+2084>: ldarb  w8, [x8]
+    0xffffffff801289c4 <+2088>: cmp    w8, #0x2
+    0xffffffff801289c8 <+2092>: b.ne   0xffffffff80128cf4        ; <+2904>
+    0xffffffff801289cc <+2096>: adrp   x9, 336
+Target 0: (kernel.elf) stopped.
+(lldb) thread list
+Process 1 stopped
+* thread #1: tid = 0x0001, 0xffffffff801289c0 kernel.elf`knytos::syscall::sys_cq_wait_checked + 2084, stop reason = signal SIGTRAP
+  thread #2: tid = 0x0002, 0xffffffff8006b0ac kernel.elf`knytos::cpu::isa::aarch64::lp::ops::lp_idle_loop + 532
+  thread #3: tid = 0x0003, 0xffffffff8006b0ac kernel.elf`knytos::cpu::isa::aarch64::lp::ops::lp_idle_loop + 532
+  thread #4: tid = 0x0004, 0xffffffff8006b0ac kernel.elf`knytos::cpu::isa::aarch64::lp::ops::lp_idle_loop + 532
+(lldb) thread backtrace all
+* thread #1, stop reason = signal SIGTRAP
+  * frame #0: 0xffffffff801289c0 kernel.elf`knytos::syscall::sys_cq_wait_checked + 2084
+    frame #1: 0xffffffff800db26c kernel.elf`sync_dispatcher + 4032
+    frame #2: 0xffffffff800006d8 kernel.elf`sync_common + 84
+  thread #2
+    frame #0: 0xffffffff8006b0ac kernel.elf`knytos::cpu::isa::aarch64::lp::ops::lp_idle_loop + 532
+  thread #3
+    frame #0: 0xffffffff8006b0ac kernel.elf`knytos::cpu::isa::aarch64::lp::ops::lp_idle_loop + 532
+  thread #4
+    frame #0: 0xffffffff8006b0ac kernel.elf`knytos::cpu::isa::aarch64::lp::ops::lp_idle_loop + 532
+
+SCHEDULER_LP_DIAGNOSTICS (first four LPs where applicable)
+0xffffffff8026ca58: 0x000000000000000e 0x0000000000000010
+0xffffffff8026ca68: 0x0000000000000006 0x0000000000001cea
+0xffffffff8026ca78: 0x000000000000000c 0x000000000000000d
+0xffffffff8026ca88: 0x0000000000000001 0x0000000000000002
+0xffffffff8026ca98: 0x0000000000000000 0x00000000000008a4
+0xffffffff8026caa8: 0xffffffffffffffff 0xffffffffffffffff
+0xffffffff8026cab8: 0x0000000000000003 0x0000000000000003
+0xffffffff8026cac8: 0x0000000000000000 0x00000000000008a1
+0xffffffff8026cad8: 0xffffffffffffffff 0xffffffffffffffff
+0xffffffff8026cae8: 0x0000000000000002 0x0000000000000004
+0xffffffff8026caf8: 0x0000000000000000 0x00000000000008a1
+0xffffffff8026cb08: 0xffffffffffffffff 0xffffffffffffffff
+
+TIMER_DIAGNOSTICS (first four LPs where applicable)
+0xffffffff8027a5b0: 0x0000000000000eb3 0x0000000000000eb0
+0xffffffff8027a5c0: 0x0000000000000002 0x0000000000000e0f
+0xffffffff8027a5d0: 0x0000000000000e0e 0x0000000000000002
+0xffffffff8027a5e0: 0x0000000000000001 0x000000029e743bfa
+0xffffffff8027a5f0: 0x000000029e6ab4c4 0x0000000000000000
+0xffffffff8027a600: 0x0000000000000000 0x0000000000000000
+0xffffffff8027a610: 0x00000000000008a3 0x00000000000008a2
+0xffffffff8027a620: 0x0000000000000001 0x0000000000000000
+0xffffffff8027a630: 0x000000029e9a4bdf 0x000000029e6aab00
+0xffffffff8027a640: 0x0000000000000000 0x0000000000000000
+0xffffffff8027a650: 0x0000000000000000 0x00000000000008a0
+0xffffffff8027a660: 0x000000000000089f 0x0000000000000001
+0xffffffff8027a670: 0x0000000000000000 0x000000029e9a6bdb
+0xffffffff8027a680: 0x000000029e6ac0f9 0x0000000000000000
+0xffffffff8027a690: 0x0000000000000000 0x0000000000000000
+0xffffffff8027a6a0: 0x00000000000008a0 0x000000000000089f
+0xffffffff8027a6b0: 0x0000000000000001 0x0000000000000000
+0xffffffff8027a6c0: 0x000000029e9a60de 0x000000029e6ab63b
+
+WAKER_DIAGNOSTICS (first four LPs where applicable)
+0xffffffff80282ae0: 0x0000000000000007 0x0000000000000007
+0xffffffff80282af0: 0x0000000000000000
