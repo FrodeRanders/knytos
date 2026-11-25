@@ -1,0 +1,303 @@
+== baseline ==
+[+    15.620159] [EL0 LOG] lp=0 asid=28 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+    15.620678] [EL0 LOG] lp=0 asid=28 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    15.621122] [EL0 LOG] lp=0 asid=28 [atomvm] wake-before-wait passed
+[+    15.627947] [EL0 LOG] lp=0 asid=28 {perf,schedulers,1}
+[+    16.346077] [EL0 LOG] lp=0 asid=28 {perf,throughput,1,96000,632168}
+[+    16.977840] [EL0 LOG] lp=0 asid=28 {perf,throughput,2,96000,631490}
+[+    17.620450] [EL0 LOG] lp=0 asid=28 {perf,throughput,3,96000,642362}
+[+    17.633020] [EL0 LOG] lp=0 asid=28 {perf,latency,1,1916,36}
+[+    17.645016] [EL0 LOG] lp=0 asid=28 {perf,latency,2,1732,26}
+[+    17.658104] [EL0 LOG] lp=0 asid=28 {perf,latency,3,2834,26}
+[+    17.670416] [EL0 LOG] lp=0 asid=28 {perf,latency,4,2028,34}
+[+    17.681712] [EL0 LOG] lp=0 asid=28 {perf,latency,5,948,36}
+[+    17.694322] [EL0 LOG] lp=0 asid=28 {perf,latency,6,2272,34}
+[+    17.704992] [EL0 LOG] lp=0 asid=28 {perf,latency,7,342,32}
+[+    17.715834] [EL0 LOG] lp=0 asid=28 {perf,latency,8,486,40}
+[+    17.729144] [EL0 LOG] lp=0 asid=28 {perf,latency,9,2918,60}
+[+    17.741257] [EL0 LOG] lp=0 asid=28 {perf,latency,10,1710,44}
+[+    17.752580] [EL0 LOG] lp=0 asid=28 {perf,latency,11,906,38}
+[+    17.764178] [EL0 LOG] lp=0 asid=28 {perf,latency,12,1188,48}
+[+    17.775860] [EL0 LOG] lp=0 asid=28 {perf,latency,13,1174,60}
+[+    17.787021] [EL0 LOG] lp=0 asid=28 {perf,latency,14,604,50}
+[+    17.799701] [EL0 LOG] lp=0 asid=28 {perf,latency,15,2204,52}
+[+    17.810810] [EL0 LOG] lp=0 asid=28 {perf,latency,16,558,56}
+[+    17.821667] [EL0 LOG] lp=0 asid=28 {perf,latency,17,324,46}
+[+    17.832319] [EL0 LOG] lp=0 asid=28 {perf,latency,18,240,40}
+[+    17.842953] [EL0 LOG] lp=0 asid=28 {perf,latency,19,288,32}
+[+    17.854433] [EL0 LOG] lp=0 asid=28 {perf,latency,20,1166,36}
+[+    17.865959] [EL0 LOG] lp=0 asid=28 {perf,latency,21,1178,40}
+[+    17.877198] [EL0 LOG] lp=0 asid=28 {perf,latency,22,868,36}
+[+    17.888128] [EL0 LOG] lp=0 asid=28 {perf,latency,23,554,46}
+[+    17.899643] [EL0 LOG] lp=0 asid=28 {perf,latency,24,1104,42}
+[+    17.910960] [EL0 LOG] lp=0 asid=28 {perf,latency,25,890,50}
+[+    17.922275] [EL0 LOG] lp=0 asid=28 {perf,latency,26,860,46}
+[+    17.934990] [EL0 LOG] lp=0 asid=28 {perf,latency,27,2236,56}
+[+    17.947339] [EL0 LOG] lp=0 asid=28 {perf,latency,28,1780,56}
+[+    17.958532] [EL0 LOG] lp=0 asid=28 {perf,latency,29,650,58}
+[+    17.970910] [EL0 LOG] lp=0 asid=28 {perf,latency,30,1802,66}
+[+    17.982785] [EL0 LOG] lp=0 asid=28 {perf,latency,31,1248,64}
+[+    17.994464] [EL0 LOG] lp=0 asid=28 {perf,latency,32,980,92}
+[+    17.994967] [EL0 LOG] lp=0 asid=28 {perf,idle_start,23628458}
+[+    25.996597] [EL0 LOG] lp=0 asid=28 {perf,idle_end,31630068}
+[+    25.996898] [EL0 LOG] lp=0 asid=28 {perf,load_start,31630402}
+[+    34.445430] [EL0 LOG] lp=0 asid=28 {perf,load_end,40078916,13}
+[+    34.446407] [EL0 LOG] lp=0 asid=28 {perf,pass}
+[+    34.446722] [EL0 LOG] lp=0 asid=28 [atomvm] return=ok
+[+    34.446979] [EL0 LOG] lp=0 asid=28 [atomvm] reactor waits=34 deadlines=34
+[+    34.448177] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=26 remaining_blocks=0 heap_peak=40100 sampled_stack=1424
+[+    35.103089] [EL0 LOG] lp=0 asid=29 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=2 interpreter=yes
+[+    35.104032] [EL0 LOG] lp=0 asid=29 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    35.104645] [EL0 LOG] lp=0 asid=29 [atomvm] wake-before-wait passed
+[+    35.116595] [EL0 LOG] lp=0 asid=29 {perf,schedulers,2}
+[+    35.118290] [EL0 LOG] lp=1 asid=29 [atomvm] scheduler entered slot=1
+[+    46.897648] [EL0 LOG] lp=1 asid=29 {perf,throughput,1,96000,10460956}
+[+    57.351243] [EL0 LOG] lp=1 asid=29 {perf,throughput,2,96000,10452732}
+[+    67.774836] [EL0 LOG] lp=1 asid=29 {perf,throughput,3,96000,10422816}
+[+    67.788114] [EL0 LOG] lp=0 asid=29 {perf,latency,1,1410,248}
+[+    67.801377] [EL0 LOG] lp=0 asid=29 {perf,latency,2,2110,168}
+[+    67.814654] [EL0 LOG] lp=0 asid=29 {perf,latency,3,2058,164}
+[+    67.827899] [EL0 LOG] lp=0 asid=29 {perf,latency,4,1954,262}
+[+    67.840892] [EL0 LOG] lp=0 asid=29 {perf,latency,5,1640,156}
+[+    67.853661] [EL0 LOG] lp=0 asid=29 {perf,latency,6,1472,142}
+[+    67.867660] [EL0 LOG] lp=1 asid=29 {perf,latency,7,2424,194}
+[+    67.880905] [EL0 LOG] lp=0 asid=29 {perf,latency,8,1822,192}
+[+    67.894286] [EL0 LOG] lp=0 asid=29 {perf,latency,9,1396,154}
+[+    67.906653] [EL0 LOG] lp=0 asid=29 {perf,latency,10,792,142}
+[+    67.919994] [EL0 LOG] lp=0 asid=29 {perf,latency,11,2092,172}
+[+    67.933869] [EL0 LOG] lp=0 asid=29 {perf,latency,12,2666,162}
+[+    67.947480] [EL0 LOG] lp=0 asid=29 {perf,latency,13,1880,138}
+[+    67.959597] [EL0 LOG] lp=1 asid=29 {perf,latency,14,628,252}
+[+    67.972358] [EL0 LOG] lp=0 asid=29 {perf,latency,15,1154,210}
+[+    67.985152] [EL0 LOG] lp=1 asid=29 {perf,latency,16,1000,172}
+[+    67.998726] [EL0 LOG] lp=0 asid=29 {perf,latency,17,1894,230}
+[+    68.013189] [EL0 LOG] lp=1 asid=29 {perf,latency,18,2576,284}
+[+    68.026809] [EL0 LOG] lp=0 asid=29 {perf,latency,19,1532,194}
+[+    68.040925] [EL0 LOG] lp=1 asid=29 {perf,latency,20,1926,234}
+[+    68.054522] [EL0 LOG] lp=0 asid=29 {perf,latency,21,1442,220}
+[+    68.068970] [EL0 LOG] lp=0 asid=29 {perf,latency,22,2376,292}
+[+    68.083342] [EL0 LOG] lp=1 asid=29 {perf,latency,23,2160,328}
+[+    68.098037] [EL0 LOG] lp=0 asid=29 {perf,latency,24,1592,356}
+[+    68.112742] [EL0 LOG] lp=1 asid=29 {perf,latency,25,2436,312}
+[+    68.126731] [EL0 LOG] lp=1 asid=29 {perf,latency,26,780,1476}
+[+    68.140713] [EL0 LOG] lp=0 asid=29 {perf,latency,27,1850,204}
+[+    68.153782] [EL0 LOG] lp=0 asid=29 {perf,latency,28,760,330}
+[+    68.168972] [EL0 LOG] lp=0 asid=29 {perf,latency,29,2702,358}
+[+    68.183913] [EL0 LOG] lp=1 asid=29 {perf,latency,30,1908,288}
+[+    68.199132] [EL0 LOG] lp=1 asid=29 {perf,latency,31,2064,426}
+[+    68.214620] [EL0 LOG] lp=0 asid=29 {perf,latency,32,1958,440}
+[+    68.215694] [EL0 LOG] lp=0 asid=29 {perf,idle_start,73848682}
+[+    76.219644] [EL0 LOG] lp=0 asid=29 {perf,idle_end,81852228}
+[+    76.220746] [EL0 LOG] lp=0 asid=29 {perf,load_start,81853784}
+[+    86.725162] [EL0 LOG] lp=0 asid=29 {perf,load_end,92358474,1}
+[+    86.730822] [EL0 LOG] lp=0 asid=29 {perf,pass}
+[+    86.734034] [EL0 LOG] lp=0 asid=29 [atomvm] schedulers joined=1 activated=1
+[+    86.734393] [EL0 LOG] lp=0 asid=29 [atomvm] return=ok
+[+    86.734686] [EL0 LOG] lp=0 asid=29 [atomvm] reactor waits=193 deadlines=33
+[+    86.734943] [EL0 LOG] lp=0 asid=29 [atomvm] reactor worker_waits=85
+[+    86.736178] [EL0 LOG] lp=0 asid=29 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=43409 sampled_stack=1440
+[+    87.341130] [EL0 LOG] lp=0 asid=30 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    87.341975] [EL0 LOG] lp=0 asid=30 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    87.342525] [EL0 LOG] lp=0 asid=30 [atomvm] wake-before-wait passed
+[+    87.355760] [EL0 LOG] lp=0 asid=30 {perf,schedulers,4}
+[+    87.357353] [EL0 LOG] lp=1 asid=30 [atomvm] scheduler entered slot=1
+[+    87.358063] [EL0 LOG] lp=2 asid=30 [atomvm] scheduler entered slot=2
+[+    87.358957] [EL0 LOG] lp=3 asid=30 [atomvm] scheduler entered slot=3
+[+   106.673149] [EL0 LOG] lp=0 asid=30 {perf,throughput,1,96000,17167370}
+[+   123.853230] [EL0 LOG] lp=3 asid=30 {perf,throughput,2,96000,17179466}
+[+   141.031140] [EL0 LOG] lp=0 asid=30 {perf,throughput,3,96000,17177366}
+[+   141.044535] [EL0 LOG] lp=1 asid=30 {perf,latency,1,1464,272}
+[+   141.058791] [EL0 LOG] lp=0 asid=30 {perf,latency,2,2818,178}
+[+   141.072391] [EL0 LOG] lp=0 asid=30 {perf,latency,3,2144,236}
+[+   141.085734] [EL0 LOG] lp=0 asid=30 {perf,latency,4,1960,172}
+[+   141.098369] [EL0 LOG] lp=2 asid=30 {perf,latency,5,1124,236}
+[+   141.112090] [EL0 LOG] lp=1 asid=30 {perf,latency,6,1894,238}
+[+   141.126085] [EL0 LOG] lp=1 asid=30 {perf,latency,7,2262,218}
+[+   141.141092] [EL0 LOG] lp=1 asid=30 {perf,latency,8,3166,242}
+[+   141.155108] [EL0 LOG] lp=2 asid=30 {perf,latency,9,1896,384}
+[+   141.169289] [EL0 LOG] lp=1 asid=30 {perf,latency,10,1598,868}
+[+   141.183684] [EL0 LOG] lp=0 asid=30 {perf,latency,11,2520,350}
+[+   141.198439] [EL0 LOG] lp=2 asid=30 {perf,latency,12,1948,414}
+[+   141.211938] [EL0 LOG] lp=0 asid=30 {perf,latency,13,1286,304}
+[+   141.226620] [EL0 LOG] lp=1 asid=30 {perf,latency,14,2254,254}
+[+   141.241114] [EL0 LOG] lp=1 asid=30 {perf,latency,15,2130,288}
+[+   141.256098] [EL0 LOG] lp=1 asid=30 {perf,latency,16,2354,354}
+[+   141.270452] [EL0 LOG] lp=1 asid=30 {perf,latency,17,1688,410}
+[+   141.285266] [EL0 LOG] lp=0 asid=30 {perf,latency,18,2166,382}
+[+   141.300606] [EL0 LOG] lp=2 asid=30 {perf,latency,19,2206,338}
+[+   141.316401] [EL0 LOG] lp=1 asid=30 {perf,latency,20,2236,402}
+[+   141.330976] [EL0 LOG] lp=2 asid=30 {perf,latency,21,1508,508}
+[+   141.346153] [EL0 LOG] lp=1 asid=30 {perf,latency,22,2218,376}
+[+   141.361358] [EL0 LOG] lp=2 asid=30 {perf,latency,23,2306,350}
+[+   141.378183] [EL0 LOG] lp=2 asid=30 {perf,latency,24,3428,340}
+[+   141.393233] [EL0 LOG] lp=0 asid=30 {perf,latency,25,1978,346}
+[+   141.407144] [EL0 LOG] lp=2 asid=30 {perf,latency,26,960,442}
+[+   141.422022] [EL0 LOG] lp=2 asid=30 {perf,latency,27,2314,324}
+[+   141.436682] [EL0 LOG] lp=0 asid=30 {perf,latency,28,1748,318}
+[+   141.451892] [EL0 LOG] lp=2 asid=30 {perf,latency,29,3066,262}
+[+   141.466143] [EL0 LOG] lp=1 asid=30 {perf,latency,30,1990,242}
+[+   141.479894] [EL0 LOG] lp=1 asid=30 {perf,latency,31,1770,200}
+[+   141.493535] [EL0 LOG] lp=0 asid=30 {perf,latency,32,1932,172}
+[+   141.494262] [EL0 LOG] lp=0 asid=30 {perf,idle_start,147127414}
+[+   149.499029] [EL0 LOG] lp=2 asid=30 {perf,idle_end,155131336}
+[+   149.500403] [EL0 LOG] lp=2 asid=30 {perf,load_start,155133358}
+[+   166.790890] [EL0 LOG] lp=2 asid=30 {perf,load_end,172424088,1}
+[+   166.799180] [EL0 LOG] lp=1 asid=30 {perf,pass}
+[+   166.801298] [EL0 LOG] lp=0 asid=30 [atomvm] schedulers joined=3 activated=3
+[+   166.801724] [EL0 LOG] lp=0 asid=30 [atomvm] return=ok
+[+   166.802079] [EL0 LOG] lp=0 asid=30 [atomvm] reactor waits=227 deadlines=33
+[+   166.802401] [EL0 LOG] lp=0 asid=30 [atomvm] reactor worker_waits=154
+[+   166.803799] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=43559 sampled_stack=1440
+
+== coalesced ==
+[+    15.610272] [EL0 LOG] lp=0 asid=28 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+    15.610786] [EL0 LOG] lp=0 asid=28 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    15.611220] [EL0 LOG] lp=0 asid=28 [atomvm] wake-before-wait passed
+[+    15.618100] [EL0 LOG] lp=0 asid=28 {perf,schedulers,1}
+[+    16.320188] [EL0 LOG] lp=0 asid=28 {perf,throughput,1,96000,618676}
+[+    16.953870] [EL0 LOG] lp=0 asid=28 {perf,throughput,2,96000,633420}
+[+    17.593726] [EL0 LOG] lp=0 asid=28 {perf,throughput,3,96000,639616}
+[+    17.605488] [EL0 LOG] lp=0 asid=28 {perf,latency,1,1088,40}
+[+    17.618678] [EL0 LOG] lp=0 asid=28 {perf,latency,2,2914,28}
+[+    17.629572] [EL0 LOG] lp=0 asid=28 {perf,latency,3,610,28}
+[+    17.642838] [EL0 LOG] lp=0 asid=28 {perf,latency,4,2976,32}
+[+    17.654908] [EL0 LOG] lp=0 asid=28 {perf,latency,5,1778,32}
+[+    17.667690] [EL0 LOG] lp=0 asid=28 {perf,latency,6,2466,34}
+[+    17.678754] [EL0 LOG] lp=0 asid=28 {perf,latency,7,722,36}
+[+    17.691178] [EL0 LOG] lp=0 asid=28 {perf,latency,8,2072,38}
+[+    17.703706] [EL0 LOG] lp=0 asid=28 {perf,latency,9,2166,38}
+[+    17.715822] [EL0 LOG] lp=0 asid=28 {perf,latency,10,1742,42}
+[+    17.728416] [EL0 LOG] lp=0 asid=28 {perf,latency,11,2190,42}
+[+    17.740752] [EL0 LOG] lp=0 asid=28 {perf,latency,12,1916,46}
+[+    17.753464] [EL0 LOG] lp=0 asid=28 {perf,latency,13,2238,50}
+[+    17.764636] [EL0 LOG] lp=0 asid=28 {perf,latency,14,632,54}
+[+    17.776060] [EL0 LOG] lp=0 asid=28 {perf,latency,15,864,62}
+[+    17.787356] [EL0 LOG] lp=0 asid=28 {perf,latency,16,656,62}
+[+    17.800090] [EL0 LOG] lp=0 asid=28 {perf,latency,17,2060,72}
+[+    17.811314] [EL0 LOG] lp=0 asid=28 {perf,latency,18,532,66}
+[+    17.822428] [EL0 LOG] lp=0 asid=28 {perf,latency,19,442,64}
+[+    17.833614] [EL0 LOG] lp=0 asid=28 {perf,latency,20,560,58}
+[+    17.844872] [EL0 LOG] lp=0 asid=28 {perf,latency,21,720,40}
+[+    17.855550] [EL0 LOG] lp=0 asid=28 {perf,latency,22,276,40}
+[+    17.867220] [EL0 LOG] lp=0 asid=28 {perf,latency,23,1298,36}
+[+    17.880396] [EL0 LOG] lp=0 asid=28 {perf,latency,24,2826,38}
+[+    17.891330] [EL0 LOG] lp=0 asid=28 {perf,latency,25,554,42}
+[+    17.904566] [EL0 LOG] lp=0 asid=28 {perf,latency,26,2832,42}
+[+    17.917464] [EL0 LOG] lp=0 asid=28 {perf,latency,27,2456,50}
+[+    17.929508] [EL0 LOG] lp=0 asid=28 {perf,latency,28,1552,46}
+[+    17.941132] [EL0 LOG] lp=0 asid=28 {perf,latency,29,1146,52}
+[+    17.951990] [EL0 LOG] lp=0 asid=28 {perf,latency,30,324,56}
+[+    17.963886] [EL0 LOG] lp=0 asid=28 {perf,latency,31,1332,64}
+[+    17.975866] [EL0 LOG] lp=0 asid=28 {perf,latency,32,1388,66}
+[+    17.976358] [EL0 LOG] lp=0 asid=28 {perf,idle_start,23609038}
+[+    25.977910] [EL0 LOG] lp=0 asid=28 {perf,idle_end,31610568}
+[+    25.978262] [EL0 LOG] lp=0 asid=28 {perf,load_start,31610972}
+[+    34.264490] [EL0 LOG] lp=0 asid=28 {perf,load_end,39897188,13}
+[+    34.265448] [EL0 LOG] lp=0 asid=28 {perf,pass}
+[+    34.265690] [EL0 LOG] lp=0 asid=28 [atomvm] return=ok
+[+    34.265890] [EL0 LOG] lp=0 asid=28 [atomvm] reactor waits=33 deadlines=33
+[+    34.266920] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=26 remaining_blocks=0 heap_peak=40100 sampled_stack=1424
+[+    34.911622] [EL0 LOG] lp=0 asid=29 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=2 interpreter=yes
+[+    34.912506] [EL0 LOG] lp=0 asid=29 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    34.913152] [EL0 LOG] lp=0 asid=29 [atomvm] wake-before-wait passed
+[+    34.924646] [EL0 LOG] lp=0 asid=29 {perf,schedulers,2}
+[+    34.926318] [EL0 LOG] lp=1 asid=29 [atomvm] scheduler entered slot=1
+[+    45.451580] [EL0 LOG] lp=0 asid=29 {perf,throughput,1,96000,9354992}
+[+    54.803888] [EL0 LOG] lp=0 asid=29 {perf,throughput,2,96000,9351702}
+[+    64.150390] [EL0 LOG] lp=1 asid=29 {perf,throughput,3,96000,9345970}
+[+    64.165342] [EL0 LOG] lp=1 asid=29 {perf,latency,1,3114,264}
+[+    64.177926] [EL0 LOG] lp=0 asid=29 {perf,latency,2,1250,128}
+[+    64.191094] [EL0 LOG] lp=0 asid=29 {perf,latency,3,1944,164}
+[+    64.203686] [EL0 LOG] lp=0 asid=29 {perf,latency,4,1252,180}
+[+    64.216522] [EL0 LOG] lp=1 asid=29 {perf,latency,5,1414,186}
+[+    64.228600] [EL0 LOG] lp=1 asid=29 {perf,latency,6,584,160}
+[+    64.242160] [EL0 LOG] lp=1 asid=29 {perf,latency,7,1788,266}
+[+    64.256786] [EL0 LOG] lp=0 asid=29 {perf,latency,8,2266,162}
+[+    64.271998] [EL0 LOG] lp=0 asid=29 {perf,latency,9,3618,162}
+[+    64.285124] [EL0 LOG] lp=0 asid=29 {perf,latency,10,1362,238}
+[+    64.298688] [EL0 LOG] lp=0 asid=29 {perf,latency,11,1662,294}
+[+    64.312192] [EL0 LOG] lp=1 asid=29 {perf,latency,12,1020,772}
+[+    64.327310] [EL0 LOG] lp=1 asid=29 {perf,latency,13,3120,208}
+[+    64.340228] [EL0 LOG] lp=0 asid=29 {perf,latency,14,748,244}
+[+    64.354832] [EL0 LOG] lp=1 asid=29 {perf,latency,15,2178,496}
+[+    64.369494] [EL0 LOG] lp=1 asid=29 {perf,latency,16,1944,948}
+[+    64.383826] [EL0 LOG] lp=1 asid=29 {perf,latency,17,2100,412}
+[+    64.397610] [EL0 LOG] lp=0 asid=29 {perf,latency,18,1570,196}
+[+    64.412416] [EL0 LOG] lp=1 asid=29 {perf,latency,19,3326,166}
+[+    64.425010] [EL0 LOG] lp=1 asid=29 {perf,latency,20,1030,156}
+[+    64.437350] [EL0 LOG] lp=0 asid=29 {perf,latency,21,940,238}
+[+    64.450344] [EL0 LOG] lp=0 asid=29 {perf,latency,22,1518,156}
+[+    64.465182] [EL0 LOG] lp=1 asid=29 {perf,latency,23,3186,266}
+[+    64.478358] [EL0 LOG] lp=0 asid=29 {perf,latency,24,1426,190}
+[+    64.491674] [EL0 LOG] lp=1 asid=29 {perf,latency,25,1956,106}
+[+    64.503220] [EL0 LOG] lp=0 asid=29 {perf,latency,26,382,132}
+[+    64.516114] [EL0 LOG] lp=0 asid=29 {perf,latency,27,1814,116}
+[+    64.530158] [EL0 LOG] lp=1 asid=29 {perf,latency,28,2722,158}
+[+    64.545262] [EL0 LOG] lp=0 asid=29 {perf,latency,29,3270,188}
+[+    64.557888] [EL0 LOG] lp=1 asid=29 {perf,latency,30,1132,168}
+[+    64.571590] [EL0 LOG] lp=0 asid=29 {perf,latency,31,1778,370}
+[+    64.585280] [EL0 LOG] lp=0 asid=29 {perf,latency,32,1564,218}
+[+    64.586308] [EL0 LOG] lp=0 asid=29 {perf,idle_start,70218538}
+[+    72.589304] [EL0 LOG] lp=0 asid=29 {perf,idle_end,78221580}
+[+    72.589954] [EL0 LOG] lp=0 asid=29 {perf,load_start,78222404}
+[+    81.960550] [EL0 LOG] lp=1 asid=29 {perf,load_end,87593066,1}
+[+    81.965916] [EL0 LOG] lp=1 asid=29 {perf,pass}
+[+    81.968742] [EL0 LOG] lp=0 asid=29 [atomvm] schedulers joined=1 activated=1
+[+    81.969094] [EL0 LOG] lp=0 asid=29 [atomvm] return=ok
+[+    81.969388] [EL0 LOG] lp=0 asid=29 [atomvm] reactor waits=116 deadlines=33
+[+    81.969654] [EL0 LOG] lp=0 asid=29 [atomvm] reactor worker_waits=57
+[+    81.969894] [EL0 LOG] lp=0 asid=29 [atomvm] reactor kernel_wakes=83
+[+    81.971116] [EL0 LOG] lp=0 asid=29 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=43409 sampled_stack=1440
+[+    82.636882] [EL0 LOG] lp=0 asid=30 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    82.637700] [EL0 LOG] lp=0 asid=30 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    82.638226] [EL0 LOG] lp=0 asid=30 [atomvm] wake-before-wait passed
+[+    82.650986] [EL0 LOG] lp=0 asid=30 {perf,schedulers,4}
+[+    82.652582] [EL0 LOG] lp=1 asid=30 [atomvm] scheduler entered slot=1
+[+    82.653460] [EL0 LOG] lp=2 asid=30 [atomvm] scheduler entered slot=2
+[+    82.654388] [EL0 LOG] lp=3 asid=30 [atomvm] scheduler entered slot=3
+[+   100.069830] [EL0 LOG] lp=3 asid=30 {perf,throughput,1,96000,15472106}
+[+   115.551750] [EL0 LOG] lp=0 asid=30 {perf,throughput,2,96000,15481240}
+[+   131.032774] [EL0 LOG] lp=1 asid=30 {perf,throughput,3,96000,15480428}
+[+   131.047368] [EL0 LOG] lp=1 asid=30 {perf,latency,1,2812,208}
+[+   131.060144] [EL0 LOG] lp=0 asid=30 {perf,latency,2,1066,188}
+[+   131.075286] [EL0 LOG] lp=1 asid=30 {perf,latency,3,3572,280}
+[+   131.092368] [EL0 LOG] lp=2 asid=30 {perf,latency,4,5368,204}
+[+   131.105498] [EL0 LOG] lp=0 asid=30 {perf,latency,5,1636,196}
+[+   131.117912] [EL0 LOG] lp=0 asid=30 {perf,latency,6,772,196}
+[+   131.132278] [EL0 LOG] lp=0 asid=30 {perf,latency,7,2136,214}
+[+   131.145002] [EL0 LOG] lp=2 asid=30 {perf,latency,8,864,206}
+[+   131.159318] [EL0 LOG] lp=2 asid=30 {perf,latency,9,2222,214}
+[+   131.177672] [EL0 LOG] lp=2 asid=30 {perf,latency,10,5812,338}
+[+   131.190336] [EL0 LOG] lp=2 asid=30 {perf,latency,11,554,322}
+[+   131.204328] [EL0 LOG] lp=0 asid=30 {perf,latency,12,1714,320}
+[+   131.219928] [EL0 LOG] lp=0 asid=30 {perf,latency,13,2778,290}
+[+   131.235748] [EL0 LOG] lp=1 asid=30 {perf,latency,14,2926,1012}
+[+   131.249558] [EL0 LOG] lp=1 asid=30 {perf,latency,15,2032,196}
+[+   131.264028] [EL0 LOG] lp=0 asid=30 {perf,latency,16,2288,210}
+[+   131.278760] [EL0 LOG] lp=0 asid=30 {perf,latency,17,3064,230}
+[+   131.293256] [EL0 LOG] lp=2 asid=30 {perf,latency,18,2690,240}
+[+   131.306868] [EL0 LOG] lp=2 asid=30 {perf,latency,19,1814,238}
+[+   131.321016] [EL0 LOG] lp=1 asid=30 {perf,latency,20,2254,200}
+[+   131.336122] [EL0 LOG] lp=0 asid=30 {perf,latency,21,2906,260}
+[+   131.350542] [EL0 LOG] lp=2 asid=30 {perf,latency,22,2036,268}
+[+   131.363978] [EL0 LOG] lp=0 asid=30 {perf,latency,23,1538,268}
+[+   131.377318] [EL0 LOG] lp=1 asid=30 {perf,latency,24,1210,380}
+[+   131.390548] [EL0 LOG] lp=2 asid=30 {perf,latency,25,1122,236}
+[+   131.405128] [EL0 LOG] lp=1 asid=30 {perf,latency,26,1604,852}
+[+   131.419238] [EL0 LOG] lp=1 asid=30 {perf,latency,27,1332,348}
+[+   131.432406] [EL0 LOG] lp=0 asid=30 {perf,latency,28,754,336}
+[+   131.447494] [EL0 LOG] lp=1 asid=30 {perf,latency,29,2640,302}
+[+   131.463006] [EL0 LOG] lp=1 asid=30 {perf,latency,30,3224,288}
+[+   131.477006] [EL0 LOG] lp=2 asid=30 {perf,latency,31,1244,272}
+[+   131.492200] [EL0 LOG] lp=2 asid=30 {perf,latency,32,2446,298}
+[+   131.493430] [EL0 LOG] lp=2 asid=30 {perf,idle_start,137125528}
+[+   139.496894] [EL0 LOG] lp=1 asid=30 {perf,idle_end,145129112}
+[+   139.497862] [EL0 LOG] lp=1 asid=30 {perf,load_start,145130104}
+[+   155.160474] [EL0 LOG] lp=2 asid=30 {perf,load_end,160792984,1}
+[+   155.168056] [EL0 LOG] lp=3 asid=30 {perf,pass}
+[+   155.170154] [EL0 LOG] lp=0 asid=30 [atomvm] schedulers joined=3 activated=3
+[+   155.170560] [EL0 LOG] lp=0 asid=30 [atomvm] return=ok
+[+   155.170892] [EL0 LOG] lp=0 asid=30 [atomvm] reactor waits=110 deadlines=33
+[+   155.171220] [EL0 LOG] lp=0 asid=30 [atomvm] reactor worker_waits=59
+[+   155.171518] [EL0 LOG] lp=0 asid=30 [atomvm] reactor kernel_wakes=77
+[+   155.172874] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=43704 sampled_stack=1440

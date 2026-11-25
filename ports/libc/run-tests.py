@@ -69,6 +69,57 @@ def verify_vm_shutdown(text, name, asid, mode, count, reason):
             "retired_asid": int(asid)}
 
 
+def vm_metrics(tls, reader, asid, count):
+    response, _ = tls.exchange(
+        reader, 28080, b"GET /metrics HTTP/1.1\r\nHost: localhost\r\n\r\n",
+        200, 3, include_body=True)
+    report = json.loads(response["body"])["threads"]
+    rows = sorted((row for row in report["sample"] if row["asid"] == asid),
+                  key=lambda row: (row["tid"], row["generation"]))
+    domain, = [entry for entry in report["domains"] if entry["asid"] == asid]
+    assert len(rows) == count == domain["threads"] and all(not row["saturated"] for row in rows), rows
+    assert report["freq_hz"] > 0 and domain["heap_valid"] == 1, (report["freq_hz"], domain)
+    return {"ticks": report["mono_ticks"], "frequency_hz": report["freq_hz"],
+            "threads": rows, "domain": domain}
+
+
+def performance_result(lines, count, windows):
+    assert f"{{perf,schedulers,{count}}}" in lines and "{perf,pass}" in lines, lines
+    assert re.search(r"\[c-runtime\] exit=0 .*remaining_blocks=0", lines), lines
+    for slot in range(1, count):
+        assert re.search(rf"\[EL0 LOG\] lp={slot} asid=\d+ \[atomvm\] scheduler entered slot={slot}$",
+                         lines, re.MULTILINE), lines
+    if count > 1:
+        assert f"[atomvm] schedulers joined={count - 1} activated={count - 1}" in lines, lines
+    throughput = [tuple(map(int, match)) for match in
+                  re.findall(r"\{perf,throughput,(\d+),(\d+),(\d+)\}", lines)]
+    latency = [tuple(map(int, match)) for match in
+               re.findall(r"\{perf,latency,(\d+),(\d+),(\d+)\}", lines)]
+    assert [trial for trial, _, _ in throughput] == [1, 2, 3], throughput
+    assert all(messages == 96000 and elapsed > 0 for _, messages, elapsed in throughput), throughput
+    assert [sample for sample, _, _ in latency] == list(range(1, 33)), latency
+    for name, (first, last) in windows.items():
+        start, = map(int, re.findall(rf"\{{perf,{name}_start,(\d+)\}}", lines))
+        end, = map(int, re.findall(rf"\{{perf,{name}_end,(\d+)(?:,\d+)?\}}", lines))
+        frequency = first["frequency_hz"]
+        elapsed = last["ticks"] - first["ticks"]
+        assert frequency == last["frequency_hz"] and elapsed >= frequency, (name, windows[name])
+        assert end - start >= 8000000, (name, start, end)
+        assert start <= first["ticks"] * 1000000 // frequency < last["ticks"] * 1000000 // frequency <= end
+        slices = []
+        for old, new in zip(first["threads"], last["threads"], strict=True):
+            assert (old["tid"], old["generation"]) == (new["tid"], new["generation"]), (old, new)
+            if name == "idle":
+                assert old["state"] == new["state"] == "blocked", (old, new)
+            delta = new["runtime_ticks"] - old["runtime_ticks"]
+            assert delta >= 0, (old, new)
+            slices.append(delta)
+        last["elapsed_ticks"] = elapsed
+        last["runtime_delta_ticks"] = slices
+    return {"throughput_trials": throughput, "timer_and_wake_samples": latency,
+            "cpu_windows": windows}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--picolibc-source", required=True, type=Path)
@@ -82,6 +133,8 @@ def main():
                         help="add an AtomVM scheduler workload using its adjacent build manifest")
     parser.add_argument("--atomvm-idle-scheduler-elf", type=Path,
                         help="add the AtomVM hello fixture with prepared but unused workers")
+    parser.add_argument("--atomvm-performance-elf", action="append", type=Path, default=[],
+                        help="measure signed AtomVM message, timer and CPU performance")
     parser.add_argument("--atomvm-shutdown-busy-elf", action="append", type=Path, default=[],
                         help="retire an AtomVM VM running continuous Erlang work (one or four schedulers)")
     parser.add_argument("--atomvm-shutdown-parked-elf", type=Path,
@@ -120,6 +173,14 @@ def main():
             parser.error("The idle scheduler fixture requires worker threads")
         scheduler_cases[idle_case] = count
         vm_cases[idle_case] = ("avm-idle-schedulers", args.atomvm_idle_scheduler_elf, "[atomvm] completed status=0")
+    performance_cases = {}
+    for image in args.atomvm_performance_elf:
+        count = scheduler_count(image)
+        number = 30 + count
+        if number in performance_cases:
+            parser.error(f"Duplicate performance fixture for {count} schedulers")
+        scheduler_cases[number] = performance_cases[number] = count
+        vm_cases[number] = (f"avm-performance-{count}", image, "[atomvm] completed status=0")
     cases.extend((name, number) for number, (name, path, _) in vm_cases.items() if path)
     worker_cases = {
         14: ("c-workers", 2, "WORKER PASS"),
@@ -256,6 +317,12 @@ def main():
                            KNYTOS_MANAGEMENT_READER_CERT_FILE=str(credentials / "reader.pem"),
                            KNYTOS_MANAGEMENT_READER_KEY_FILE=str(credentials / "reader.key"),
                            KNYTOS_MANAGEMENT_SERVER_NAME="127.0.0.1")
+        if performance_cases:
+            tls_spec = importlib.util.spec_from_file_location(
+                "management_tls", ROOT / "scripts/tests/management_tls.py")
+            tls = importlib.util.module_from_spec(tls_spec)
+            tls_spec.loader.exec_module(tls)
+            reader = tls.context("reader", environment)
         record.update(kernel_sha256=digest(output / "kernel.elf"), firmware_sha256=digest(firmware),
                       qemu_version=subprocess.check_output([qemu, "--version"], text=True).strip(),
                       initial_disk_sha256=digest(output / "disk.img"), boot_image_sha256=digest(output / "boot.img"),
@@ -301,6 +368,26 @@ def main():
                     for name, number in cases:
                         before = len(serial.read_text(errors="replace"))
                         command([signer, "deployment-notify", output / (name + ".cdep"), "127.0.0.1:28081"], name + "-admission", env=environment, timeout=40)
+                        if number in performance_cases:
+                            count = performance_cases[number]
+                            launch = re.compile(rf'\[agent\] launched "{re.escape(name)}" generation=1 asid=(\d+)')
+                            started = wait_for(lambda s: launch.search(s[before:]), 60)
+                            asid = int(launch.search(started[before:])[1])
+                            windows = {}
+                            for phase in ("idle", "load"):
+                                wait_for(lambda s: f"{{perf,{phase}_start," in domain_logs(s[before:], asid), 60)
+                                first = vm_metrics(tls, reader, asid, count)
+                                time.sleep(1.25)  # Space the two observations within the guest phase.
+                                last = vm_metrics(tls, reader, asid, count)
+                                windows[phase] = (first, last)
+                                (output / (name + "-metrics.json")).write_text(json.dumps(windows, indent=2) + "\n")
+                            finished = wait_for(lambda s: "[c-runtime] exit=" in domain_logs(s[before:], asid), 60)
+                            result = performance_result(domain_logs(finished[before:], asid), count, windows)
+                            record["cases"].append({"name": name, "case": number, "passed": True,
+                                                    "asid": asid, "performance": result,
+                                                    "observation": finished[before:]})
+                            save()
+                            continue
                         if number in retirement_cases:
                             mode = retirement_cases[number]
                             count = scheduler_cases[number]

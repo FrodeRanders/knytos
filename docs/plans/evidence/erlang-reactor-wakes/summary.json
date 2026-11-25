@@ -1,0 +1,3081 @@
+{
+  "baseline_commit": "1e6fdc0a",
+  "host": "Darwin arm64",
+  "accelerator": "QEMU TCG",
+  "guest_cpus": 4,
+  "guest_cpu": "cortex-a710",
+  "package_sha256": "62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31",
+  "atomvm_revision": "ff993a80963298b532c1e573f883951ecaac9fef",
+  "otp_revision": "fc7e10af595f3ffd2c25c84c253a4d042734cfed",
+  "otp_version": "27.3.4.19",
+  "toolchain": {
+    "picolibc_revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff",
+    "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+    "rustc": "rustc 1.102.0-nightly (5f4effd57 2026-11-13)\nbinary: rustc\ncommit-hash: 5f4effd579500175af844241eb179e756190f1e7\ncommit-date: 2026-11-13\nhost: aarch64-apple-darwin\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5"
+  },
+  "harness_sha256": "55d880914255c34a1d8b19a003fb9c4a68ece82af29b9753156884df439779fb",
+  "management_client_sha256": "03bfea9f9314649bce6f5f74166b58971c8ffc5cf285cf5822afa93cba9f8d77",
+  "workload_source_sha256": "0efce158404fb1b3e8c6a6f37df04b878f0cfea8fd34db9138b325a3d45421aa",
+  "baseline_reused_existing_boot": true,
+  "baseline_sys_c_sha256": "9e1ed9c0e18fbde759da3c80abf5cc30e5edb0d0e855504376b7862540ff58c7",
+  "coalesced_sys_c_sha256": "5625f646a1d1b2c65831a9331af0aeb11545c62a7ec275f891e7e74a0d5e1e8f",
+  "host_script_checks_passed": 32,
+  "measurements": {
+    "baseline": {
+      "kernel_sha256": "5b82fd25a34abf1a9c9ab50d0aa0b7f42cfa2743ce4a9b1790ccecfb03e6a141",
+      "boot_image_sha256": "529144659512169fe6d1eb22496d8b885e672ac99d5b0b359d36d0c68da829ee",
+      "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+      "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+      "initial_disk_sha256": "e1e010cfacf6d9c63b0ee14696edc499401062c3cde4bcb415085bc30e9abf20",
+      "passed_cases": [
+        "c-hello",
+        "c-memory",
+        "c-format",
+        "c-clock",
+        "c-startup",
+        "c-exit",
+        "c-error",
+        "c-abort",
+        "c-empty",
+        "c-shutdown-without-request",
+        "avm-performance-1",
+        "avm-performance-2",
+        "avm-performance-4",
+        "c-survivor"
+      ],
+      "negative_controls": [
+        {
+          "name": "tls-rejected",
+          "expected_diagnostic": "TLS is unsupported",
+          "passed": true
+        },
+        {
+          "name": "unsupported-rejected",
+          "expected_diagnostic": "undefined symbol: open",
+          "passed": true
+        },
+        {
+          "name": "signature-rejected",
+          "passed": true
+        }
+      ],
+      "measurements": [
+        {
+          "schedulers": 1,
+          "asid": 28,
+          "unsigned_elf_sha256": "20ca54a8ef8778db0fe28b095132005def55d41d2f5539dcad1f2a6bb3a4d93f",
+          "signed_elf_sha256": "6981544e6c50695385527345ff6b77f21b261e4fa3662810611749890c6ee3e1",
+          "signed_descriptor_sha256": "21bcd3b03d7d2a282c8dd751ecb5ecc5ce7e17e3b9b48b35a7a11a258fc2808f",
+          "signed_elf_bytes": 724832,
+          "stack_pages_per_thread": 64,
+          "throughput_median_messages_per_s": 151858.37,
+          "timer_late_p95_us": 2834,
+          "wake_latency_p95_us": 66,
+          "loaded_cpu_pct": 90.6455,
+          "loaded_dispatches": 302,
+          "loaded_snapshot_seconds": 2.223,
+          "throughput_trials": [
+            [
+              1,
+              96000,
+              632168
+            ],
+            [
+              2,
+              96000,
+              631490
+            ],
+            [
+              3,
+              96000,
+              642362
+            ]
+          ],
+          "timer_and_wake_samples": [
+            [
+              1,
+              1916,
+              36
+            ],
+            [
+              2,
+              1732,
+              26
+            ],
+            [
+              3,
+              2834,
+              26
+            ],
+            [
+              4,
+              2028,
+              34
+            ],
+            [
+              5,
+              948,
+              36
+            ],
+            [
+              6,
+              2272,
+              34
+            ],
+            [
+              7,
+              342,
+              32
+            ],
+            [
+              8,
+              486,
+              40
+            ],
+            [
+              9,
+              2918,
+              60
+            ],
+            [
+              10,
+              1710,
+              44
+            ],
+            [
+              11,
+              906,
+              38
+            ],
+            [
+              12,
+              1188,
+              48
+            ],
+            [
+              13,
+              1174,
+              60
+            ],
+            [
+              14,
+              604,
+              50
+            ],
+            [
+              15,
+              2204,
+              52
+            ],
+            [
+              16,
+              558,
+              56
+            ],
+            [
+              17,
+              324,
+              46
+            ],
+            [
+              18,
+              240,
+              40
+            ],
+            [
+              19,
+              288,
+              32
+            ],
+            [
+              20,
+              1166,
+              36
+            ],
+            [
+              21,
+              1178,
+              40
+            ],
+            [
+              22,
+              868,
+              36
+            ],
+            [
+              23,
+              554,
+              46
+            ],
+            [
+              24,
+              1104,
+              42
+            ],
+            [
+              25,
+              890,
+              50
+            ],
+            [
+              26,
+              860,
+              46
+            ],
+            [
+              27,
+              2236,
+              56
+            ],
+            [
+              28,
+              1780,
+              56
+            ],
+            [
+              29,
+              650,
+              58
+            ],
+            [
+              30,
+              1802,
+              66
+            ],
+            [
+              31,
+              1248,
+              64
+            ],
+            [
+              32,
+              980,
+              92
+            ]
+          ],
+          "cpu_windows": {
+            "idle": [
+              {
+                "ticks": 1497048312,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 26,
+                    "asid": 28,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 38,
+                    "dispatch": 325,
+                    "samples": 325,
+                    "runtime_ticks": 120459746,
+                    "runtime_ms": 1927,
+                    "cpu_pct": 8,
+                    "min_ticks": 4125,
+                    "max_ticks": 788312,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 28,
+                  "owned_frames": 155,
+                  "stack_pages": 64,
+                  "stack_pages_high_water": 64,
+                  "stack_used_high_water": 0,
+                  "threads": 1,
+                  "threads_high_water": 1,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 36242,
+                  "heap_peak_bytes": 40100,
+                  "heap_allocations": 900874,
+                  "heap_total_allocated_bytes": 331890057,
+                  "heap_lock_spins": 0
+                }
+              },
+              {
+                "ticks": 1592222750,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 26,
+                    "asid": 28,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 38,
+                    "dispatch": 325,
+                    "samples": 325,
+                    "runtime_ticks": 120459746,
+                    "runtime_ms": 1927,
+                    "cpu_pct": 7,
+                    "min_ticks": 4125,
+                    "max_ticks": 788312,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 28,
+                  "owned_frames": 155,
+                  "stack_pages": 64,
+                  "stack_pages_high_water": 64,
+                  "stack_used_high_water": 0,
+                  "threads": 1,
+                  "threads_high_water": 1,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 36242,
+                  "heap_peak_bytes": 40100,
+                  "heap_allocations": 900874,
+                  "heap_total_allocated_bytes": 331890057,
+                  "heap_lock_spins": 0
+                },
+                "elapsed_ticks": 95174438,
+                "runtime_delta_ticks": [
+                  0
+                ]
+              }
+            ],
+            "load": [
+              {
+                "ticks": 2004789875,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 26,
+                    "asid": 28,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 38,
+                    "dispatch": 381,
+                    "samples": 381,
+                    "runtime_ticks": 145208688,
+                    "runtime_ms": 2323,
+                    "cpu_pct": 7,
+                    "min_ticks": 3813,
+                    "max_ticks": 788312,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 28,
+                  "owned_frames": 155,
+                  "stack_pages": 64,
+                  "stack_pages_high_water": 64,
+                  "stack_used_high_water": 0,
+                  "threads": 1,
+                  "threads_high_water": 1,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39398,
+                  "heap_peak_bytes": 40100,
+                  "heap_allocations": 1086400,
+                  "heap_total_allocated_bytes": 400225451,
+                  "heap_lock_spins": 0
+                }
+              },
+              {
+                "ticks": 2143726062,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 26,
+                    "asid": 28,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 38,
+                    "dispatch": 683,
+                    "samples": 683,
+                    "runtime_ticks": 271148132,
+                    "runtime_ms": 4338,
+                    "cpu_pct": 12,
+                    "min_ticks": 3375,
+                    "max_ticks": 792938,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 28,
+                  "owned_frames": 155,
+                  "stack_pages": 64,
+                  "stack_pages_high_water": 64,
+                  "stack_used_high_water": 0,
+                  "threads": 1,
+                  "threads_high_water": 1,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39247,
+                  "heap_peak_bytes": 40100,
+                  "heap_allocations": 2053577,
+                  "heap_total_allocated_bytes": 756493922,
+                  "heap_lock_spins": 0
+                },
+                "elapsed_ticks": 138936187,
+                "runtime_delta_ticks": [
+                  125939444
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "schedulers": 2,
+          "asid": 29,
+          "unsigned_elf_sha256": "8ff10d588aded37262e89ca2717ef6aa01af809425cf513138d624dfc620fd1e",
+          "signed_elf_sha256": "36b92fc5221b86f172f73c60128b81ca8c533cd087ef6cc171925299fb92fb95",
+          "signed_descriptor_sha256": "a8bca5f2dcb1e3851ee62b436625c27a1ca90cbc9b687c14705e7c1e216ff965",
+          "signed_elf_bytes": 755584,
+          "stack_pages_per_thread": 64,
+          "throughput_median_messages_per_s": 9184.2,
+          "timer_late_p95_us": 2666,
+          "wake_latency_p95_us": 440,
+          "loaded_cpu_pct": 83.4061,
+          "loaded_dispatches": 8113,
+          "loaded_snapshot_seconds": 1.6149,
+          "throughput_trials": [
+            [
+              1,
+              96000,
+              10460956
+            ],
+            [
+              2,
+              96000,
+              10452732
+            ],
+            [
+              3,
+              96000,
+              10422816
+            ]
+          ],
+          "timer_and_wake_samples": [
+            [
+              1,
+              1410,
+              248
+            ],
+            [
+              2,
+              2110,
+              168
+            ],
+            [
+              3,
+              2058,
+              164
+            ],
+            [
+              4,
+              1954,
+              262
+            ],
+            [
+              5,
+              1640,
+              156
+            ],
+            [
+              6,
+              1472,
+              142
+            ],
+            [
+              7,
+              2424,
+              194
+            ],
+            [
+              8,
+              1822,
+              192
+            ],
+            [
+              9,
+              1396,
+              154
+            ],
+            [
+              10,
+              792,
+              142
+            ],
+            [
+              11,
+              2092,
+              172
+            ],
+            [
+              12,
+              2666,
+              162
+            ],
+            [
+              13,
+              1880,
+              138
+            ],
+            [
+              14,
+              628,
+              252
+            ],
+            [
+              15,
+              1154,
+              210
+            ],
+            [
+              16,
+              1000,
+              172
+            ],
+            [
+              17,
+              1894,
+              230
+            ],
+            [
+              18,
+              2576,
+              284
+            ],
+            [
+              19,
+              1532,
+              194
+            ],
+            [
+              20,
+              1926,
+              234
+            ],
+            [
+              21,
+              1442,
+              220
+            ],
+            [
+              22,
+              2376,
+              292
+            ],
+            [
+              23,
+              2160,
+              328
+            ],
+            [
+              24,
+              1592,
+              356
+            ],
+            [
+              25,
+              2436,
+              312
+            ],
+            [
+              26,
+              780,
+              1476
+            ],
+            [
+              27,
+              1850,
+              204
+            ],
+            [
+              28,
+              760,
+              330
+            ],
+            [
+              29,
+              2702,
+              358
+            ],
+            [
+              30,
+              1908,
+              288
+            ],
+            [
+              31,
+              2064,
+              426
+            ],
+            [
+              32,
+              1958,
+              440
+            ]
+          ],
+          "cpu_windows": {
+            "idle": [
+              {
+                "ticks": 4628927375,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 29,
+                    "state": "blocked",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 40,
+                    "dispatch": 90992,
+                    "samples": 90992,
+                    "runtime_ticks": 1884531552,
+                    "runtime_ms": 30152,
+                    "cpu_pct": 40,
+                    "min_ticks": 1687,
+                    "max_ticks": 364687,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 29,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 39,
+                    "dispatch": 91223,
+                    "samples": 91223,
+                    "runtime_ticks": 1746365703,
+                    "runtime_ms": 27941,
+                    "cpu_pct": 37,
+                    "min_ticks": 1688,
+                    "max_ticks": 819000,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 29,
+                  "owned_frames": 161,
+                  "stack_pages": 128,
+                  "stack_pages_high_water": 128,
+                  "stack_used_high_water": 0,
+                  "threads": 2,
+                  "threads_high_water": 2,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39071,
+                  "heap_peak_bytes": 43409,
+                  "heap_allocations": 900888,
+                  "heap_total_allocated_bytes": 331892886,
+                  "heap_lock_spins": 75991
+                }
+              },
+              {
+                "ticks": 4725129625,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 29,
+                    "state": "blocked",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 40,
+                    "dispatch": 90992,
+                    "samples": 90992,
+                    "runtime_ticks": 1884531552,
+                    "runtime_ms": 30152,
+                    "cpu_pct": 39,
+                    "min_ticks": 1687,
+                    "max_ticks": 364687,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 29,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 39,
+                    "dispatch": 91223,
+                    "samples": 91223,
+                    "runtime_ticks": 1746365703,
+                    "runtime_ms": 27941,
+                    "cpu_pct": 36,
+                    "min_ticks": 1688,
+                    "max_ticks": 819000,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 29,
+                  "owned_frames": 161,
+                  "stack_pages": 128,
+                  "stack_pages_high_water": 128,
+                  "stack_used_high_water": 0,
+                  "threads": 2,
+                  "threads_high_water": 2,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39071,
+                  "heap_peak_bytes": 43409,
+                  "heap_allocations": 900888,
+                  "heap_total_allocated_bytes": 331892886,
+                  "heap_lock_spins": 75991
+                },
+                "elapsed_ticks": 96202250,
+                "runtime_delta_ticks": [
+                  0,
+                  0
+                ]
+              }
+            ],
+            "load": [
+              {
+                "ticks": 5133008062,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 29,
+                    "state": "blocked",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 40,
+                    "dispatch": 91571,
+                    "samples": 91571,
+                    "runtime_ticks": 1899820233,
+                    "runtime_ms": 30397,
+                    "cpu_pct": 37,
+                    "min_ticks": 1687,
+                    "max_ticks": 364687,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 29,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 39,
+                    "dispatch": 91817,
+                    "samples": 91817,
+                    "runtime_ticks": 1758911520,
+                    "runtime_ms": 28142,
+                    "cpu_pct": 34,
+                    "min_ticks": 1688,
+                    "max_ticks": 819000,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 29,
+                  "owned_frames": 161,
+                  "stack_pages": 128,
+                  "stack_pages_high_water": 128,
+                  "stack_used_high_water": 0,
+                  "threads": 2,
+                  "threads_high_water": 2,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 42227,
+                  "heap_peak_bytes": 43409,
+                  "heap_allocations": 907683,
+                  "heap_total_allocated_bytes": 334394715,
+                  "heap_lock_spins": 76161
+                }
+              },
+              {
+                "ticks": 5233936562,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 29,
+                    "state": "running",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 40,
+                    "dispatch": 95590,
+                    "samples": 95589,
+                    "runtime_ticks": 1990955559,
+                    "runtime_ms": 31855,
+                    "cpu_pct": 38,
+                    "min_ticks": 1687,
+                    "max_ticks": 521875,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 29,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 39,
+                    "dispatch": 95911,
+                    "samples": 95911,
+                    "runtime_ticks": 1836137272,
+                    "runtime_ms": 29378,
+                    "cpu_pct": 35,
+                    "min_ticks": 1688,
+                    "max_ticks": 819000,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 29,
+                  "owned_frames": 161,
+                  "stack_pages": 128,
+                  "stack_pages_high_water": 128,
+                  "stack_used_high_water": 0,
+                  "threads": 2,
+                  "threads_high_water": 2,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 42667,
+                  "heap_peak_bytes": 43409,
+                  "heap_allocations": 951593,
+                  "heap_total_allocated_bytes": 350568869,
+                  "heap_lock_spins": 78115
+                },
+                "elapsed_ticks": 100928500,
+                "runtime_delta_ticks": [
+                  91135326,
+                  77225752
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "schedulers": 4,
+          "asid": 30,
+          "unsigned_elf_sha256": "9cd9f1e72ef3a9bcf7d7a6444c2771fb6ddf82e4424ed924dd1bbaa2b369f141",
+          "signed_elf_sha256": "a32ee3030cc82999ac134fb371c4028c65805706040af252d2214c497c1759cb",
+          "signed_descriptor_sha256": "ef2202a76a6bf74511e234f73d3bfd3f94abfdfaac3817d09af4006f196459d4",
+          "signed_elf_bytes": 755584,
+          "stack_pages_per_thread": 64,
+          "throughput_median_messages_per_s": 5588.75,
+          "timer_late_p95_us": 3166,
+          "wake_latency_p95_us": 508,
+          "loaded_cpu_pct": 64.707,
+          "loaded_dispatches": 15378,
+          "loaded_snapshot_seconds": 1.6588,
+          "throughput_trials": [
+            [
+              1,
+              96000,
+              17167370
+            ],
+            [
+              2,
+              96000,
+              17179466
+            ],
+            [
+              3,
+              96000,
+              17177366
+            ]
+          ],
+          "timer_and_wake_samples": [
+            [
+              1,
+              1464,
+              272
+            ],
+            [
+              2,
+              2818,
+              178
+            ],
+            [
+              3,
+              2144,
+              236
+            ],
+            [
+              4,
+              1960,
+              172
+            ],
+            [
+              5,
+              1124,
+              236
+            ],
+            [
+              6,
+              1894,
+              238
+            ],
+            [
+              7,
+              2262,
+              218
+            ],
+            [
+              8,
+              3166,
+              242
+            ],
+            [
+              9,
+              1896,
+              384
+            ],
+            [
+              10,
+              1598,
+              868
+            ],
+            [
+              11,
+              2520,
+              350
+            ],
+            [
+              12,
+              1948,
+              414
+            ],
+            [
+              13,
+              1286,
+              304
+            ],
+            [
+              14,
+              2254,
+              254
+            ],
+            [
+              15,
+              2130,
+              288
+            ],
+            [
+              16,
+              2354,
+              354
+            ],
+            [
+              17,
+              1688,
+              410
+            ],
+            [
+              18,
+              2166,
+              382
+            ],
+            [
+              19,
+              2206,
+              338
+            ],
+            [
+              20,
+              2236,
+              402
+            ],
+            [
+              21,
+              1508,
+              508
+            ],
+            [
+              22,
+              2218,
+              376
+            ],
+            [
+              23,
+              2306,
+              350
+            ],
+            [
+              24,
+              3428,
+              340
+            ],
+            [
+              25,
+              1978,
+              346
+            ],
+            [
+              26,
+              960,
+              442
+            ],
+            [
+              27,
+              2314,
+              324
+            ],
+            [
+              28,
+              1748,
+              318
+            ],
+            [
+              29,
+              3066,
+              262
+            ],
+            [
+              30,
+              1990,
+              242
+            ],
+            [
+              31,
+              1770,
+              200
+            ],
+            [
+              32,
+              1932,
+              172
+            ]
+          ],
+          "cpu_windows": {
+            "idle": [
+              {
+                "ticks": 9205645437,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 42,
+                    "dispatch": 159771,
+                    "samples": 159771,
+                    "runtime_ticks": 2716795537,
+                    "runtime_ms": 43468,
+                    "cpu_pct": 29,
+                    "min_ticks": 1750,
+                    "max_ticks": 270000,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 41,
+                    "dispatch": 166917,
+                    "samples": 166917,
+                    "runtime_ticks": 2708191640,
+                    "runtime_ms": 43331,
+                    "cpu_pct": 29,
+                    "min_ticks": 1687,
+                    "max_ticks": 490625,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 27,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 2,
+                    "pinned_lp": 2,
+                    "generation": 43,
+                    "dispatch": 124859,
+                    "samples": 124859,
+                    "runtime_ticks": 2205733023,
+                    "runtime_ms": 35291,
+                    "cpu_pct": 23,
+                    "min_ticks": 2000,
+                    "max_ticks": 249250,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 28,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 3,
+                    "pinned_lp": 3,
+                    "generation": 44,
+                    "dispatch": 73271,
+                    "samples": 73271,
+                    "runtime_ticks": 1303619617,
+                    "runtime_ms": 20857,
+                    "cpu_pct": 14,
+                    "min_ticks": 2250,
+                    "max_ticks": 171062,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 30,
+                  "owned_frames": 161,
+                  "stack_pages": 256,
+                  "stack_pages_high_water": 256,
+                  "stack_used_high_water": 0,
+                  "threads": 4,
+                  "threads_high_water": 4,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39071,
+                  "heap_peak_bytes": 43559,
+                  "heap_allocations": 900888,
+                  "heap_total_allocated_bytes": 331892886,
+                  "heap_lock_spins": 125112
+                }
+              },
+              {
+                "ticks": 9300844000,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 42,
+                    "dispatch": 159771,
+                    "samples": 159771,
+                    "runtime_ticks": 2716795537,
+                    "runtime_ms": 43468,
+                    "cpu_pct": 29,
+                    "min_ticks": 1750,
+                    "max_ticks": 270000,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 41,
+                    "dispatch": 166917,
+                    "samples": 166917,
+                    "runtime_ticks": 2708191640,
+                    "runtime_ms": 43331,
+                    "cpu_pct": 29,
+                    "min_ticks": 1687,
+                    "max_ticks": 490625,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 27,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 2,
+                    "pinned_lp": 2,
+                    "generation": 43,
+                    "dispatch": 124859,
+                    "samples": 124859,
+                    "runtime_ticks": 2205733023,
+                    "runtime_ms": 35291,
+                    "cpu_pct": 23,
+                    "min_ticks": 2000,
+                    "max_ticks": 249250,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 28,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 3,
+                    "pinned_lp": 3,
+                    "generation": 44,
+                    "dispatch": 73271,
+                    "samples": 73271,
+                    "runtime_ticks": 1303619617,
+                    "runtime_ms": 20857,
+                    "cpu_pct": 14,
+                    "min_ticks": 2250,
+                    "max_ticks": 171062,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 30,
+                  "owned_frames": 161,
+                  "stack_pages": 256,
+                  "stack_pages_high_water": 256,
+                  "stack_used_high_water": 0,
+                  "threads": 4,
+                  "threads_high_water": 4,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39071,
+                  "heap_peak_bytes": 43559,
+                  "heap_allocations": 900888,
+                  "heap_total_allocated_bytes": 331892886,
+                  "heap_lock_spins": 125112
+                },
+                "elapsed_ticks": 95198563,
+                "runtime_delta_ticks": [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ],
+            "load": [
+              {
+                "ticks": 9711125875,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 30,
+                    "state": "running",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 42,
+                    "dispatch": 160342,
+                    "samples": 160341,
+                    "runtime_ticks": 2729404037,
+                    "runtime_ms": 43670,
+                    "cpu_pct": 28,
+                    "min_ticks": 1750,
+                    "max_ticks": 317875,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 30,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 41,
+                    "dispatch": 167224,
+                    "samples": 167224,
+                    "runtime_ticks": 2715125451,
+                    "runtime_ms": 43442,
+                    "cpu_pct": 27,
+                    "min_ticks": 1687,
+                    "max_ticks": 490625,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 27,
+                    "asid": 30,
+                    "state": "running",
+                    "lp": 2,
+                    "pinned_lp": 2,
+                    "generation": 43,
+                    "dispatch": 125329,
+                    "samples": 125328,
+                    "runtime_ticks": 2217128525,
+                    "runtime_ms": 35474,
+                    "cpu_pct": 22,
+                    "min_ticks": 2000,
+                    "max_ticks": 960250,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 28,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 3,
+                    "pinned_lp": 3,
+                    "generation": 44,
+                    "dispatch": 73626,
+                    "samples": 73626,
+                    "runtime_ticks": 1311196552,
+                    "runtime_ms": 20979,
+                    "cpu_pct": 13,
+                    "min_ticks": 2250,
+                    "max_ticks": 171062,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 30,
+                  "owned_frames": 161,
+                  "stack_pages": 256,
+                  "stack_pages_high_water": 256,
+                  "stack_used_high_water": 0,
+                  "threads": 4,
+                  "threads_high_water": 4,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 42227,
+                  "heap_peak_bytes": 43559,
+                  "heap_allocations": 904215,
+                  "heap_total_allocated_bytes": 333117335,
+                  "heap_lock_spins": 125381
+                }
+              },
+              {
+                "ticks": 9814799250,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 42,
+                    "dispatch": 165097,
+                    "samples": 165097,
+                    "runtime_ticks": 2813226026,
+                    "runtime_ms": 45011,
+                    "cpu_pct": 28,
+                    "min_ticks": 1750,
+                    "max_ticks": 317875,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 30,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 41,
+                    "dispatch": 171731,
+                    "samples": 171731,
+                    "runtime_ticks": 2788177079,
+                    "runtime_ms": 44610,
+                    "cpu_pct": 28,
+                    "min_ticks": 1687,
+                    "max_ticks": 490625,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 27,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 2,
+                    "pinned_lp": 2,
+                    "generation": 43,
+                    "dispatch": 129196,
+                    "samples": 129196,
+                    "runtime_ticks": 2286421588,
+                    "runtime_ms": 36582,
+                    "cpu_pct": 23,
+                    "min_ticks": 2000,
+                    "max_ticks": 960250,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 28,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 3,
+                    "pinned_lp": 3,
+                    "generation": 44,
+                    "dispatch": 75875,
+                    "samples": 75875,
+                    "runtime_ticks": 1353365677,
+                    "runtime_ms": 21653,
+                    "cpu_pct": 13,
+                    "min_ticks": 2250,
+                    "max_ticks": 171062,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 30,
+                  "owned_frames": 161,
+                  "stack_pages": 256,
+                  "stack_pages_high_water": 256,
+                  "stack_used_high_water": 0,
+                  "threads": 4,
+                  "threads_high_water": 4,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 42227,
+                  "heap_peak_bytes": 43559,
+                  "heap_allocations": 931035,
+                  "heap_total_allocated_bytes": 342996595,
+                  "heap_lock_spins": 127954
+                },
+                "elapsed_ticks": 103673375,
+                "runtime_delta_ticks": [
+                  83821989,
+                  73051628,
+                  69293063,
+                  42169125
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "coalesced": {
+      "kernel_sha256": "5b82fd25a34abf1a9c9ab50d0aa0b7f42cfa2743ce4a9b1790ccecfb03e6a141",
+      "boot_image_sha256": "529144659512169fe6d1eb22496d8b885e672ac99d5b0b359d36d0c68da829ee",
+      "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+      "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+      "initial_disk_sha256": "02c9ef2678cc1a2ea1703c4d2f7f510642842c98d36d6ef0e75d9b6d64aa420b",
+      "passed_cases": [
+        "c-hello",
+        "c-memory",
+        "c-format",
+        "c-clock",
+        "c-startup",
+        "c-exit",
+        "c-error",
+        "c-abort",
+        "c-empty",
+        "c-shutdown-without-request",
+        "avm-performance-1",
+        "avm-performance-2",
+        "avm-performance-4",
+        "c-survivor"
+      ],
+      "negative_controls": [
+        {
+          "name": "tls-rejected",
+          "expected_diagnostic": "TLS is unsupported",
+          "passed": true
+        },
+        {
+          "name": "unsupported-rejected",
+          "expected_diagnostic": "undefined symbol: open",
+          "passed": true
+        },
+        {
+          "name": "signature-rejected",
+          "passed": true
+        }
+      ],
+      "measurements": [
+        {
+          "schedulers": 1,
+          "asid": 28,
+          "unsigned_elf_sha256": "20ca54a8ef8778db0fe28b095132005def55d41d2f5539dcad1f2a6bb3a4d93f",
+          "signed_elf_sha256": "6981544e6c50695385527345ff6b77f21b261e4fa3662810611749890c6ee3e1",
+          "signed_descriptor_sha256": "21bcd3b03d7d2a282c8dd751ecb5ecc5ce7e17e3b9b48b35a7a11a258fc2808f",
+          "signed_elf_bytes": 724832,
+          "stack_pages_per_thread": 64,
+          "throughput_median_messages_per_s": 151558.21,
+          "timer_late_p95_us": 2914,
+          "wake_latency_p95_us": 66,
+          "loaded_cpu_pct": 91.127,
+          "loaded_dispatches": 296,
+          "loaded_snapshot_seconds": 2.2727,
+          "throughput_trials": [
+            [
+              1,
+              96000,
+              618676
+            ],
+            [
+              2,
+              96000,
+              633420
+            ],
+            [
+              3,
+              96000,
+              639616
+            ]
+          ],
+          "timer_and_wake_samples": [
+            [
+              1,
+              1088,
+              40
+            ],
+            [
+              2,
+              2914,
+              28
+            ],
+            [
+              3,
+              610,
+              28
+            ],
+            [
+              4,
+              2976,
+              32
+            ],
+            [
+              5,
+              1778,
+              32
+            ],
+            [
+              6,
+              2466,
+              34
+            ],
+            [
+              7,
+              722,
+              36
+            ],
+            [
+              8,
+              2072,
+              38
+            ],
+            [
+              9,
+              2166,
+              38
+            ],
+            [
+              10,
+              1742,
+              42
+            ],
+            [
+              11,
+              2190,
+              42
+            ],
+            [
+              12,
+              1916,
+              46
+            ],
+            [
+              13,
+              2238,
+              50
+            ],
+            [
+              14,
+              632,
+              54
+            ],
+            [
+              15,
+              864,
+              62
+            ],
+            [
+              16,
+              656,
+              62
+            ],
+            [
+              17,
+              2060,
+              72
+            ],
+            [
+              18,
+              532,
+              66
+            ],
+            [
+              19,
+              442,
+              64
+            ],
+            [
+              20,
+              560,
+              58
+            ],
+            [
+              21,
+              720,
+              40
+            ],
+            [
+              22,
+              276,
+              40
+            ],
+            [
+              23,
+              1298,
+              36
+            ],
+            [
+              24,
+              2826,
+              38
+            ],
+            [
+              25,
+              554,
+              42
+            ],
+            [
+              26,
+              2832,
+              42
+            ],
+            [
+              27,
+              2456,
+              50
+            ],
+            [
+              28,
+              1552,
+              46
+            ],
+            [
+              29,
+              1146,
+              52
+            ],
+            [
+              30,
+              324,
+              56
+            ],
+            [
+              31,
+              1332,
+              64
+            ],
+            [
+              32,
+              1388,
+              66
+            ]
+          ],
+          "cpu_windows": {
+            "idle": [
+              {
+                "ticks": 1491834250,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 26,
+                    "asid": 28,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 38,
+                    "dispatch": 308,
+                    "samples": 308,
+                    "runtime_ticks": 119299550,
+                    "runtime_ms": 1908,
+                    "cpu_pct": 7,
+                    "min_ticks": 4375,
+                    "max_ticks": 786812,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 28,
+                  "owned_frames": 155,
+                  "stack_pages": 64,
+                  "stack_pages_high_water": 64,
+                  "stack_used_high_water": 0,
+                  "threads": 1,
+                  "threads_high_water": 1,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 36242,
+                  "heap_peak_bytes": 40100,
+                  "heap_allocations": 900874,
+                  "heap_total_allocated_bytes": 331890057,
+                  "heap_lock_spins": 0
+                }
+              },
+              {
+                "ticks": 1584931000,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 26,
+                    "asid": 28,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 38,
+                    "dispatch": 308,
+                    "samples": 308,
+                    "runtime_ticks": 119299550,
+                    "runtime_ms": 1908,
+                    "cpu_pct": 7,
+                    "min_ticks": 4375,
+                    "max_ticks": 786812,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 28,
+                  "owned_frames": 155,
+                  "stack_pages": 64,
+                  "stack_pages_high_water": 64,
+                  "stack_used_high_water": 0,
+                  "threads": 1,
+                  "threads_high_water": 1,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 36242,
+                  "heap_peak_bytes": 40100,
+                  "heap_allocations": 900874,
+                  "heap_total_allocated_bytes": 331890057,
+                  "heap_lock_spins": 0
+                },
+                "elapsed_ticks": 93096750,
+                "runtime_delta_ticks": [
+                  0
+                ]
+              }
+            ],
+            "load": [
+              {
+                "ticks": 2003630812,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 26,
+                    "asid": 28,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 38,
+                    "dispatch": 371,
+                    "samples": 371,
+                    "runtime_ticks": 144105552,
+                    "runtime_ms": 2305,
+                    "cpu_pct": 7,
+                    "min_ticks": 4375,
+                    "max_ticks": 786812,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 28,
+                  "owned_frames": 155,
+                  "stack_pages": 64,
+                  "stack_pages_high_water": 64,
+                  "stack_used_high_water": 0,
+                  "threads": 1,
+                  "threads_high_water": 1,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39398,
+                  "heap_peak_bytes": 40100,
+                  "heap_allocations": 1089505,
+                  "heap_total_allocated_bytes": 401368706,
+                  "heap_lock_spins": 0
+                }
+              },
+              {
+                "ticks": 2145674750,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 26,
+                    "asid": 28,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 38,
+                    "dispatch": 667,
+                    "samples": 667,
+                    "runtime_ticks": 273545865,
+                    "runtime_ms": 4376,
+                    "cpu_pct": 12,
+                    "min_ticks": 4312,
+                    "max_ticks": 788312,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 28,
+                  "owned_frames": 155,
+                  "stack_pages": 64,
+                  "stack_pages_high_water": 64,
+                  "stack_used_high_water": 0,
+                  "threads": 1,
+                  "threads_high_water": 1,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39398,
+                  "heap_peak_bytes": 40100,
+                  "heap_allocations": 2102616,
+                  "heap_total_allocated_bytes": 774556403,
+                  "heap_lock_spins": 0
+                },
+                "elapsed_ticks": 142043938,
+                "runtime_delta_ticks": [
+                  129440313
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "schedulers": 2,
+          "asid": 29,
+          "unsigned_elf_sha256": "da53b6afebdbf07616cf38a749ae14afaf5dacf09349d8ea6715f0741ff9dc1c",
+          "signed_elf_sha256": "e708b7a3226c75c8bf575a0bb676192c4d3ab2993e51d652c771fa39583083d4",
+          "signed_descriptor_sha256": "0215e29cc125919a3f52195409cfc877e6ca8fa908bcba65a43025d37491ff37",
+          "signed_elf_bytes": 755712,
+          "stack_pages_per_thread": 64,
+          "throughput_median_messages_per_s": 10265.51,
+          "timer_late_p95_us": 3326,
+          "wake_latency_p95_us": 772,
+          "loaded_cpu_pct": 86.0784,
+          "loaded_dispatches": 7417,
+          "loaded_snapshot_seconds": 1.5982,
+          "reactor_kernel_wakes": 83,
+          "throughput_trials": [
+            [
+              1,
+              96000,
+              9354992
+            ],
+            [
+              2,
+              96000,
+              9351702
+            ],
+            [
+              3,
+              96000,
+              9345970
+            ]
+          ],
+          "timer_and_wake_samples": [
+            [
+              1,
+              3114,
+              264
+            ],
+            [
+              2,
+              1250,
+              128
+            ],
+            [
+              3,
+              1944,
+              164
+            ],
+            [
+              4,
+              1252,
+              180
+            ],
+            [
+              5,
+              1414,
+              186
+            ],
+            [
+              6,
+              584,
+              160
+            ],
+            [
+              7,
+              1788,
+              266
+            ],
+            [
+              8,
+              2266,
+              162
+            ],
+            [
+              9,
+              3618,
+              162
+            ],
+            [
+              10,
+              1362,
+              238
+            ],
+            [
+              11,
+              1662,
+              294
+            ],
+            [
+              12,
+              1020,
+              772
+            ],
+            [
+              13,
+              3120,
+              208
+            ],
+            [
+              14,
+              748,
+              244
+            ],
+            [
+              15,
+              2178,
+              496
+            ],
+            [
+              16,
+              1944,
+              948
+            ],
+            [
+              17,
+              2100,
+              412
+            ],
+            [
+              18,
+              1570,
+              196
+            ],
+            [
+              19,
+              3326,
+              166
+            ],
+            [
+              20,
+              1030,
+              156
+            ],
+            [
+              21,
+              940,
+              238
+            ],
+            [
+              22,
+              1518,
+              156
+            ],
+            [
+              23,
+              3186,
+              266
+            ],
+            [
+              24,
+              1426,
+              190
+            ],
+            [
+              25,
+              1956,
+              106
+            ],
+            [
+              26,
+              382,
+              132
+            ],
+            [
+              27,
+              1814,
+              116
+            ],
+            [
+              28,
+              2722,
+              158
+            ],
+            [
+              29,
+              3270,
+              188
+            ],
+            [
+              30,
+              1132,
+              168
+            ],
+            [
+              31,
+              1778,
+              370
+            ],
+            [
+              32,
+              1564,
+              218
+            ]
+          ],
+          "cpu_windows": {
+            "idle": [
+              {
+                "ticks": 4402541062,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 29,
+                    "state": "blocked",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 40,
+                    "dispatch": 76755,
+                    "samples": 76755,
+                    "runtime_ticks": 1750840666,
+                    "runtime_ms": 28013,
+                    "cpu_pct": 39,
+                    "min_ticks": 1625,
+                    "max_ticks": 372312,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 29,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 39,
+                    "dispatch": 76091,
+                    "samples": 76091,
+                    "runtime_ticks": 1586081116,
+                    "runtime_ms": 25377,
+                    "cpu_pct": 36,
+                    "min_ticks": 1625,
+                    "max_ticks": 785875,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 29,
+                  "owned_frames": 161,
+                  "stack_pages": 128,
+                  "stack_pages_high_water": 128,
+                  "stack_used_high_water": 0,
+                  "threads": 2,
+                  "threads_high_water": 2,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39071,
+                  "heap_peak_bytes": 43409,
+                  "heap_allocations": 900888,
+                  "heap_total_allocated_bytes": 331892886,
+                  "heap_lock_spins": 87209
+                }
+              },
+              {
+                "ticks": 4496760562,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 29,
+                    "state": "blocked",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 40,
+                    "dispatch": 76755,
+                    "samples": 76755,
+                    "runtime_ticks": 1750840666,
+                    "runtime_ms": 28013,
+                    "cpu_pct": 38,
+                    "min_ticks": 1625,
+                    "max_ticks": 372312,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 29,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 39,
+                    "dispatch": 76091,
+                    "samples": 76091,
+                    "runtime_ticks": 1586081116,
+                    "runtime_ms": 25377,
+                    "cpu_pct": 35,
+                    "min_ticks": 1625,
+                    "max_ticks": 785875,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 29,
+                  "owned_frames": 161,
+                  "stack_pages": 128,
+                  "stack_pages_high_water": 128,
+                  "stack_used_high_water": 0,
+                  "threads": 2,
+                  "threads_high_water": 2,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39071,
+                  "heap_peak_bytes": 43409,
+                  "heap_allocations": 900888,
+                  "heap_total_allocated_bytes": 331892886,
+                  "heap_lock_spins": 87209
+                },
+                "elapsed_ticks": 94219500,
+                "runtime_delta_ticks": [
+                  0,
+                  0
+                ]
+              }
+            ],
+            "load": [
+              {
+                "ticks": 4904476812,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 29,
+                    "state": "running",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 40,
+                    "dispatch": 77284,
+                    "samples": 77283,
+                    "runtime_ticks": 1765241482,
+                    "runtime_ms": 28243,
+                    "cpu_pct": 35,
+                    "min_ticks": 1625,
+                    "max_ticks": 600438,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 29,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 39,
+                    "dispatch": 76641,
+                    "samples": 76641,
+                    "runtime_ticks": 1597572243,
+                    "runtime_ms": 25561,
+                    "cpu_pct": 32,
+                    "min_ticks": 1625,
+                    "max_ticks": 785875,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 29,
+                  "owned_frames": 161,
+                  "stack_pages": 128,
+                  "stack_pages_high_water": 128,
+                  "stack_used_high_water": 0,
+                  "threads": 2,
+                  "threads_high_water": 2,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 42227,
+                  "heap_peak_bytes": 43409,
+                  "heap_allocations": 908181,
+                  "heap_total_allocated_bytes": 334577865,
+                  "heap_lock_spins": 87281
+                }
+              },
+              {
+                "ticks": 5004366000,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 29,
+                    "state": "running",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 40,
+                    "dispatch": 81104,
+                    "samples": 81103,
+                    "runtime_ticks": 1860441847,
+                    "runtime_ms": 29767,
+                    "cpu_pct": 37,
+                    "min_ticks": 1625,
+                    "max_ticks": 600438,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 29,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 39,
+                    "dispatch": 80238,
+                    "samples": 80238,
+                    "runtime_ticks": 1674337809,
+                    "runtime_ms": 26789,
+                    "cpu_pct": 33,
+                    "min_ticks": 1625,
+                    "max_ticks": 785875,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 29,
+                  "owned_frames": 161,
+                  "stack_pages": 128,
+                  "stack_pages_high_water": 128,
+                  "stack_used_high_water": 0,
+                  "threads": 2,
+                  "threads_high_water": 2,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 42227,
+                  "heap_peak_bytes": 43409,
+                  "heap_allocations": 957297,
+                  "heap_total_allocated_bytes": 352669485,
+                  "heap_lock_spins": 88679
+                },
+                "elapsed_ticks": 99889188,
+                "runtime_delta_ticks": [
+                  95200365,
+                  76765566
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "schedulers": 4,
+          "asid": 30,
+          "unsigned_elf_sha256": "513fd59c95ae056b39b9fd60eca916865d1e530616c17f23855ecb1c617c06aa",
+          "signed_elf_sha256": "c5e7115eeb0b62a43e0ecead7875284f8328eec5412d5dbd453bc9dfbccafc48",
+          "signed_descriptor_sha256": "961fb0d934e8579320f5c56e2a9f78cee18175f256bd39bdb1f976a9db936bfe",
+          "signed_elf_bytes": 755712,
+          "stack_pages_per_thread": 64,
+          "throughput_median_messages_per_s": 6201.38,
+          "timer_late_p95_us": 5368,
+          "wake_latency_p95_us": 852,
+          "loaded_cpu_pct": 66.3121,
+          "loaded_dispatches": 15401,
+          "loaded_snapshot_seconds": 1.6681,
+          "reactor_kernel_wakes": 77,
+          "throughput_trials": [
+            [
+              1,
+              96000,
+              15472106
+            ],
+            [
+              2,
+              96000,
+              15481240
+            ],
+            [
+              3,
+              96000,
+              15480428
+            ]
+          ],
+          "timer_and_wake_samples": [
+            [
+              1,
+              2812,
+              208
+            ],
+            [
+              2,
+              1066,
+              188
+            ],
+            [
+              3,
+              3572,
+              280
+            ],
+            [
+              4,
+              5368,
+              204
+            ],
+            [
+              5,
+              1636,
+              196
+            ],
+            [
+              6,
+              772,
+              196
+            ],
+            [
+              7,
+              2136,
+              214
+            ],
+            [
+              8,
+              864,
+              206
+            ],
+            [
+              9,
+              2222,
+              214
+            ],
+            [
+              10,
+              5812,
+              338
+            ],
+            [
+              11,
+              554,
+              322
+            ],
+            [
+              12,
+              1714,
+              320
+            ],
+            [
+              13,
+              2778,
+              290
+            ],
+            [
+              14,
+              2926,
+              1012
+            ],
+            [
+              15,
+              2032,
+              196
+            ],
+            [
+              16,
+              2288,
+              210
+            ],
+            [
+              17,
+              3064,
+              230
+            ],
+            [
+              18,
+              2690,
+              240
+            ],
+            [
+              19,
+              1814,
+              238
+            ],
+            [
+              20,
+              2254,
+              200
+            ],
+            [
+              21,
+              2906,
+              260
+            ],
+            [
+              22,
+              2036,
+              268
+            ],
+            [
+              23,
+              1538,
+              268
+            ],
+            [
+              24,
+              1210,
+              380
+            ],
+            [
+              25,
+              1122,
+              236
+            ],
+            [
+              26,
+              1604,
+              852
+            ],
+            [
+              27,
+              1332,
+              348
+            ],
+            [
+              28,
+              754,
+              336
+            ],
+            [
+              29,
+              2640,
+              302
+            ],
+            [
+              30,
+              3224,
+              288
+            ],
+            [
+              31,
+              1244,
+              272
+            ],
+            [
+              32,
+              2446,
+              298
+            ]
+          ],
+          "cpu_windows": {
+            "idle": [
+              {
+                "ticks": 8587899812,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 42,
+                    "dispatch": 144433,
+                    "samples": 144433,
+                    "runtime_ticks": 2527366862,
+                    "runtime_ms": 40437,
+                    "cpu_pct": 29,
+                    "min_ticks": 1812,
+                    "max_ticks": 1267188,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 41,
+                    "dispatch": 147453,
+                    "samples": 147453,
+                    "runtime_ticks": 2470925921,
+                    "runtime_ms": 39534,
+                    "cpu_pct": 28,
+                    "min_ticks": 2000,
+                    "max_ticks": 681750,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 27,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 2,
+                    "pinned_lp": 2,
+                    "generation": 43,
+                    "dispatch": 115686,
+                    "samples": 115686,
+                    "runtime_ticks": 2041205719,
+                    "runtime_ms": 32659,
+                    "cpu_pct": 23,
+                    "min_ticks": 1750,
+                    "max_ticks": 285937,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 28,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 3,
+                    "pinned_lp": 3,
+                    "generation": 44,
+                    "dispatch": 67916,
+                    "samples": 67916,
+                    "runtime_ticks": 1215914661,
+                    "runtime_ms": 19454,
+                    "cpu_pct": 14,
+                    "min_ticks": 2250,
+                    "max_ticks": 317438,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 30,
+                  "owned_frames": 161,
+                  "stack_pages": 256,
+                  "stack_pages_high_water": 256,
+                  "stack_used_high_water": 0,
+                  "threads": 4,
+                  "threads_high_water": 4,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39071,
+                  "heap_peak_bytes": 43704,
+                  "heap_allocations": 900888,
+                  "heap_total_allocated_bytes": 331892886,
+                  "heap_lock_spins": 104921
+                }
+              },
+              {
+                "ticks": 8685737312,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 42,
+                    "dispatch": 144433,
+                    "samples": 144433,
+                    "runtime_ticks": 2527366862,
+                    "runtime_ms": 40437,
+                    "cpu_pct": 29,
+                    "min_ticks": 1812,
+                    "max_ticks": 1267188,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 41,
+                    "dispatch": 147453,
+                    "samples": 147453,
+                    "runtime_ticks": 2470925921,
+                    "runtime_ms": 39534,
+                    "cpu_pct": 28,
+                    "min_ticks": 2000,
+                    "max_ticks": 681750,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 27,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 2,
+                    "pinned_lp": 2,
+                    "generation": 43,
+                    "dispatch": 115686,
+                    "samples": 115686,
+                    "runtime_ticks": 2041205719,
+                    "runtime_ms": 32659,
+                    "cpu_pct": 23,
+                    "min_ticks": 1750,
+                    "max_ticks": 285937,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 28,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 3,
+                    "pinned_lp": 3,
+                    "generation": 44,
+                    "dispatch": 67916,
+                    "samples": 67916,
+                    "runtime_ticks": 1215914661,
+                    "runtime_ms": 19454,
+                    "cpu_pct": 13,
+                    "min_ticks": 2250,
+                    "max_ticks": 317438,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 30,
+                  "owned_frames": 161,
+                  "stack_pages": 256,
+                  "stack_pages_high_water": 256,
+                  "stack_used_high_water": 0,
+                  "threads": 4,
+                  "threads_high_water": 4,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 39071,
+                  "heap_peak_bytes": 43704,
+                  "heap_allocations": 900888,
+                  "heap_total_allocated_bytes": 331892886,
+                  "heap_lock_spins": 104921
+                },
+                "elapsed_ticks": 97837500,
+                "runtime_delta_ticks": [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ],
+            "load": [
+              {
+                "ticks": 9083216312,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 30,
+                    "state": "running",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 42,
+                    "dispatch": 144975,
+                    "samples": 144974,
+                    "runtime_ticks": 2538275496,
+                    "runtime_ms": 40612,
+                    "cpu_pct": 27,
+                    "min_ticks": 1812,
+                    "max_ticks": 1267188,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 30,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 41,
+                    "dispatch": 147798,
+                    "samples": 147798,
+                    "runtime_ticks": 2477478736,
+                    "runtime_ms": 39639,
+                    "cpu_pct": 27,
+                    "min_ticks": 2000,
+                    "max_ticks": 681750,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 27,
+                    "asid": 30,
+                    "state": "ready",
+                    "lp": 2,
+                    "pinned_lp": 2,
+                    "generation": 43,
+                    "dispatch": 116187,
+                    "samples": 116187,
+                    "runtime_ticks": 2050483099,
+                    "runtime_ms": 32807,
+                    "cpu_pct": 22,
+                    "min_ticks": 1750,
+                    "max_ticks": 285937,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 28,
+                    "asid": 30,
+                    "state": "running",
+                    "lp": 3,
+                    "pinned_lp": 3,
+                    "generation": 44,
+                    "dispatch": 68200,
+                    "samples": 68199,
+                    "runtime_ticks": 1221953161,
+                    "runtime_ms": 19551,
+                    "cpu_pct": 13,
+                    "min_ticks": 2250,
+                    "max_ticks": 317438,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 30,
+                  "owned_frames": 161,
+                  "stack_pages": 256,
+                  "stack_pages_high_water": 256,
+                  "stack_used_high_water": 0,
+                  "threads": 4,
+                  "threads_high_water": 4,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 42227,
+                  "heap_peak_bytes": 43704,
+                  "heap_allocations": 904209,
+                  "heap_total_allocated_bytes": 333115125,
+                  "heap_lock_spins": 106244
+                }
+              },
+              {
+                "ticks": 9187473687,
+                "frequency_hz": 62500000,
+                "threads": [
+                  {
+                    "tid": 7,
+                    "asid": 30,
+                    "state": "running",
+                    "lp": 1,
+                    "pinned_lp": 1,
+                    "generation": 42,
+                    "dispatch": 149760,
+                    "samples": 149759,
+                    "runtime_ticks": 2625420986,
+                    "runtime_ms": 42006,
+                    "cpu_pct": 28,
+                    "min_ticks": 1812,
+                    "max_ticks": 1267188,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 26,
+                    "asid": 30,
+                    "state": "ready",
+                    "lp": 0,
+                    "pinned_lp": 0,
+                    "generation": 41,
+                    "dispatch": 152154,
+                    "samples": 152154,
+                    "runtime_ticks": 2549515955,
+                    "runtime_ms": 40792,
+                    "cpu_pct": 27,
+                    "min_ticks": 2000,
+                    "max_ticks": 681750,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 27,
+                    "asid": 30,
+                    "state": "running",
+                    "lp": 2,
+                    "pinned_lp": 2,
+                    "generation": 43,
+                    "dispatch": 120128,
+                    "samples": 120127,
+                    "runtime_ticks": 2123304470,
+                    "runtime_ms": 33972,
+                    "cpu_pct": 23,
+                    "min_ticks": 1750,
+                    "max_ticks": 285937,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  },
+                  {
+                    "tid": 28,
+                    "asid": 30,
+                    "state": "blocked",
+                    "lp": 3,
+                    "pinned_lp": 3,
+                    "generation": 44,
+                    "dispatch": 70519,
+                    "samples": 70519,
+                    "runtime_ticks": 1266490239,
+                    "runtime_ms": 20263,
+                    "cpu_pct": 13,
+                    "min_ticks": 2250,
+                    "max_ticks": 317438,
+                    "saturated": 0,
+                    "stack_pages": 64,
+                    "stack_committed_pages": 1,
+                    "stack_used_pages": 1
+                  }
+                ],
+                "domain": {
+                  "asid": 30,
+                  "owned_frames": 161,
+                  "stack_pages": 256,
+                  "stack_pages_high_water": 256,
+                  "stack_used_high_water": 0,
+                  "threads": 4,
+                  "threads_high_water": 4,
+                  "heap_valid": 1,
+                  "heap_capacity_bytes": 4194304,
+                  "heap_allocated_bytes": 42227,
+                  "heap_peak_bytes": 43704,
+                  "heap_allocations": 933996,
+                  "heap_total_allocated_bytes": 344087370,
+                  "heap_lock_spins": 114990
+                },
+                "elapsed_ticks": 104257375,
+                "runtime_delta_ticks": [
+                  87145490,
+                  72037219,
+                  72821371,
+                  44537078
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "regression": {
+    "kernel_sha256": "dbcb44ebbb4eae0fb1bcd6b8a71affa2716b434ed04fb9cdceefa17dea80bce8",
+    "boot_image_sha256": "a0f3b09ccd26867f907ba4649ca675aea89f7027b27210c38de556499e6d8417",
+    "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+    "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+    "initial_disk_sha256": "0843f808c931581a2da1948366568a5018d551a59361b1632ab48654a5dd6910",
+    "passed_cases": [
+      "c-hello",
+      "c-memory",
+      "c-format",
+      "c-clock",
+      "c-startup",
+      "c-exit",
+      "c-error",
+      "c-abort",
+      "c-empty",
+      "c-shutdown-without-request",
+      "avm-schedulers-2",
+      "avm-schedulers-4",
+      "c-workers",
+      "c-unjoined",
+      "c-worker-reuse",
+      "c-sync",
+      "c-rwlock",
+      "c-worker-libc",
+      "c-worker-libc-close",
+      "c-survivor",
+      "avm-shutdown-parked",
+      "avm-shutdown-busy"
+    ],
+    "negative_controls": [
+      {
+        "name": "tls-rejected",
+        "expected_diagnostic": "TLS is unsupported",
+        "passed": true
+      },
+      {
+        "name": "unsupported-rejected",
+        "expected_diagnostic": "undefined symbol: open",
+        "passed": true
+      },
+      {
+        "name": "signature-rejected",
+        "passed": true
+      }
+    ],
+    "node_shutdown": {
+      "admitted_generation": 1,
+      "target_node": "0x42e21edb",
+      "intent_sha256": "56fb371719f263cb0921ef7d406d2eec337cebcf34732b9df6f06f0c7563bbe0",
+      "qmp_event": {
+        "timestamp": {
+          "seconds": 1795612293,
+          "microseconds": 766838
+        },
+        "event": "SHUTDOWN",
+        "data": {
+          "guest": true,
+          "reason": "guest-shutdown"
+        }
+      },
+      "qemu_exit_status": 0
+    },
+    "vm_cases": [
+      {
+        "name": "avm-schedulers-2",
+        "schedulers": 2,
+        "package_sha256": "7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794",
+        "unsigned_elf_sha256": "5d7677817e6395fbbbd4e5f0fbe8adbae4f8098be1dce1ff943d7e35904e1950",
+        "signed_elf_sha256": "34a6eabb2445be556a67b59c32e2cf97d5aaa13dbbbf31baad3ffcf25cd74cc1",
+        "signed_descriptor_sha256": "85fe4ec98baa22c510076e9f132de2c4b3fa7dd8e94a2ad5cbae5aca6e260a3a",
+        "signed_elf_bytes": 755712,
+        "stack_pages_per_thread": 64,
+        "asid": 28
+      },
+      {
+        "name": "avm-schedulers-4",
+        "schedulers": 4,
+        "package_sha256": "7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794",
+        "unsigned_elf_sha256": "94e82ff1f837540b37fc2713fd8e982920a965b7af68acae7e31c0ff89a0fc2e",
+        "signed_elf_sha256": "eefe8b986df83236229e5116630f8b3c549bf4b748cc7a10b74bcb539b2e1b36",
+        "signed_descriptor_sha256": "d3f976d8bf18e09fff6f6017a2cbc9e5ced699f9d35f17d873af3f235afeaa4b",
+        "signed_elf_bytes": 755712,
+        "stack_pages_per_thread": 64,
+        "asid": 29
+      },
+      {
+        "name": "avm-shutdown-parked",
+        "schedulers": 4,
+        "package_sha256": "f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612",
+        "unsigned_elf_sha256": "a9087bb30ba26b4c8ce2d64c431128bcf20a3c78a6db3a59da650678992be328",
+        "signed_elf_sha256": "422c489f78469b8cf1822133fc70b5c561f75fab429ecb7cc20857b58938780f",
+        "signed_descriptor_sha256": "b0c331902314501eda4e48042588f48dd5c9998fd74ea9cc774328a4bd60c344",
+        "signed_elf_bytes": 755712,
+        "stack_pages_per_thread": 64,
+        "retired_asid": 38,
+        "shutdown_source": "cq-wait",
+        "acknowledged_root_generation": 1,
+        "asid": 38
+      },
+      {
+        "name": "avm-shutdown-busy",
+        "schedulers": 4,
+        "package_sha256": "cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b",
+        "unsigned_elf_sha256": "83fbd985edead3fb4c402901cc5de562aaf5055b7e011e7852a80161114509b1",
+        "signed_elf_sha256": "01bd5dc488298a08dad178ac70eaa90dafd45497517029fbb91f5e9ac0848297",
+        "signed_descriptor_sha256": "4dceec2c9495f3546ad5c145c247e5e661c471e200b068c171dd96ff8fd68bc2",
+        "signed_elf_bytes": 755712,
+        "stack_pages_per_thread": 64,
+        "retired_asid": 39,
+        "shutdown_source": "nonblocking",
+        "acknowledged_root_generation": 1,
+        "asid": 39
+      }
+    ]
+  }
+}

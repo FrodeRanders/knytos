@@ -1,0 +1,2138 @@
+{
+  "baseline_commit": "1e6fdc0a",
+  "host": "Darwin arm64",
+  "accelerator": "QEMU TCG",
+  "guest_cpu": "cortex-a710",
+  "guest_cpus": 4,
+  "toolchain": {
+    "picolibc_revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff",
+    "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+    "rustc": "rustc 1.102.0-nightly (5f4effd57 2026-11-13)\nbinary: rustc\ncommit-hash: 5f4effd579500175af844241eb179e756190f1e7\ncommit-date: 2026-11-13\nhost: aarch64-apple-darwin\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5"
+  },
+  "package_sha256": "62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31",
+  "harness_sha256": "55d880914255c34a1d8b19a003fb9c4a68ece82af29b9753156884df439779fb",
+  "fixture_source_sha256": "0efce158404fb1b3e8c6a6f37df04b878f0cfea8fd34db9138b325a3d45421aa",
+  "coalesced_sys_c_sha256": "5625f646a1d1b2c65831a9331af0aeb11545c62a7ec275f891e7e74a0d5e1e8f",
+  "host_checks_passed": 32,
+  "counter_run": {
+    "campaign": {
+      "boot_image_sha256": "529144659512169fe6d1eb22496d8b885e672ac99d5b0b359d36d0c68da829ee",
+      "kernel_sha256": "5b82fd25a34abf1a9c9ab50d0aa0b7f42cfa2743ce4a9b1790ccecfb03e6a141",
+      "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+      "initial_disk_sha256": "b97caea7bfaa205c725a9ea6e746fb668d861d1bae318dbf34d138e38d8969a8",
+      "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+      "passed_cases": [
+        "c-hello",
+        "c-memory",
+        "c-format",
+        "c-clock",
+        "c-startup",
+        "c-exit",
+        "c-error",
+        "c-abort",
+        "c-empty",
+        "c-shutdown-without-request",
+        "avm-performance-1",
+        "avm-performance-2",
+        "avm-performance-4",
+        "c-survivor"
+      ],
+      "negative_controls": [
+        {
+          "name": "tls-rejected",
+          "expected_diagnostic": "TLS is unsupported",
+          "passed": true
+        },
+        {
+          "name": "unsupported-rejected",
+          "expected_diagnostic": "undefined symbol: open",
+          "passed": true
+        },
+        {
+          "name": "signature-rejected",
+          "passed": true
+        }
+      ]
+    },
+    "measurements": [
+      {
+        "schedulers": 1,
+        "asid": 28,
+        "artifacts": {
+          "atomvm_revision": "ff993a80963298b532c1e573f883951ecaac9fef",
+          "otp_revision": "fc7e10af595f3ffd2c25c84c253a4d042734cfed",
+          "package_sha256": "62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31",
+          "unsigned_elf_sha256": "20ca54a8ef8778db0fe28b095132005def55d41d2f5539dcad1f2a6bb3a4d93f",
+          "signed_elf_sha256": "6981544e6c50695385527345ff6b77f21b261e4fa3662810611749890c6ee3e1",
+          "reference_signed_elf_sha256": "6981544e6c50695385527345ff6b77f21b261e4fa3662810611749890c6ee3e1",
+          "descriptor_sha256": "21bcd3b03d7d2a282c8dd751ecb5ecc5ce7e17e3b9b48b35a7a11a258fc2808f"
+        },
+        "reference_throughput_messages_per_s": 151558.21,
+        "throughput_messages_per_s": 155268.45,
+        "throughput_trials": [
+          [
+            1,
+            96000,
+            613438
+          ],
+          [
+            2,
+            96000,
+            618284
+          ],
+          [
+            3,
+            96000,
+            623394
+          ]
+        ],
+        "timer_and_wake_samples": [
+          [
+            1,
+            1974,
+            36
+          ],
+          [
+            2,
+            1744,
+            26
+          ],
+          [
+            3,
+            1312,
+            28
+          ],
+          [
+            4,
+            1782,
+            34
+          ],
+          [
+            5,
+            1998,
+            30
+          ],
+          [
+            6,
+            756,
+            32
+          ],
+          [
+            7,
+            1798,
+            32
+          ],
+          [
+            8,
+            2942,
+            36
+          ],
+          [
+            9,
+            230,
+            40
+          ],
+          [
+            10,
+            3154,
+            40
+          ],
+          [
+            11,
+            1320,
+            48
+          ],
+          [
+            12,
+            1926,
+            54
+          ],
+          [
+            13,
+            770,
+            46
+          ],
+          [
+            14,
+            1638,
+            50
+          ],
+          [
+            15,
+            448,
+            72
+          ],
+          [
+            16,
+            1846,
+            64
+          ],
+          [
+            17,
+            818,
+            68
+          ],
+          [
+            18,
+            1214,
+            48
+          ],
+          [
+            19,
+            396,
+            46
+          ],
+          [
+            20,
+            406,
+            38
+          ],
+          [
+            21,
+            784,
+            38
+          ],
+          [
+            22,
+            522,
+            40
+          ],
+          [
+            23,
+            2768,
+            40
+          ],
+          [
+            24,
+            2848,
+            40
+          ],
+          [
+            25,
+            2160,
+            42
+          ],
+          [
+            26,
+            1268,
+            46
+          ],
+          [
+            27,
+            1190,
+            42
+          ],
+          [
+            28,
+            3212,
+            60
+          ],
+          [
+            29,
+            1284,
+            58
+          ],
+          [
+            30,
+            824,
+            54
+          ],
+          [
+            31,
+            838,
+            50
+          ],
+          [
+            32,
+            2024,
+            64
+          ]
+        ],
+        "cpu_samples": {
+          "idle": {
+            "elapsed_ticks": 93696562,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 38,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 312,
+                  "runtime_ticks": 117075183
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 38,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 312,
+                  "runtime_ticks": 117075183
+                }
+              }
+            ]
+          },
+          "load": {
+            "elapsed_ticks": 137671687,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 38,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 372,
+                  "runtime_ticks": 144168681
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 38,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 673,
+                  "runtime_ticks": 269589679
+                }
+              }
+            ]
+          }
+        },
+        "timer_late_p95_us": 3154,
+        "wake_latency_p95_us": 68
+      },
+      {
+        "schedulers": 2,
+        "asid": 29,
+        "artifacts": {
+          "atomvm_revision": "ff993a80963298b532c1e573f883951ecaac9fef",
+          "otp_revision": "fc7e10af595f3ffd2c25c84c253a4d042734cfed",
+          "package_sha256": "62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31",
+          "unsigned_elf_sha256": "15a15c62852f86b698c7f160fb587dbfca15285a846ed13e8c64eb667354d580",
+          "signed_elf_sha256": "ac3264627c12c9d4dffae66996704721fe28d7ebd63461db7a2398d3d7b1fb7d",
+          "reference_signed_elf_sha256": "e708b7a3226c75c8bf575a0bb676192c4d3ab2993e51d652c771fa39583083d4",
+          "descriptor_sha256": "b6bc68e217644a39759faccd378dc8d48782fa43b1ac3dbcce3fb9ac89cce799",
+          "instrumented_inputs_sha256": {
+            "sync.rs": "43d061eef975c1736b450efb0bd23193fb48af1be45972b02909045e52af1eb2",
+            "sync/rwlock.rs": "4aaa05c165fa1a201d48c410bb38ec9108a02f6990d7c07d88cb65b20510c1f8",
+            "workers.rs": "9b9129b4d11e2aa097a4f25016582833758f2344a212c7fb86e4faa04322e6a7"
+          }
+        },
+        "reference_throughput_messages_per_s": 10265.51,
+        "throughput_messages_per_s": 10725.44,
+        "throughput_trials": [
+          [
+            1,
+            96000,
+            8958134
+          ],
+          [
+            2,
+            96000,
+            8939110
+          ],
+          [
+            3,
+            96000,
+            8950680
+          ]
+        ],
+        "timer_and_wake_samples": [
+          [
+            1,
+            3242,
+            252
+          ],
+          [
+            2,
+            1414,
+            152
+          ],
+          [
+            3,
+            888,
+            128
+          ],
+          [
+            4,
+            1598,
+            126
+          ],
+          [
+            5,
+            2216,
+            140
+          ],
+          [
+            6,
+            1798,
+            188
+          ],
+          [
+            7,
+            2272,
+            136
+          ],
+          [
+            8,
+            2264,
+            134
+          ],
+          [
+            9,
+            2134,
+            180
+          ],
+          [
+            10,
+            1422,
+            146
+          ],
+          [
+            11,
+            1714,
+            170
+          ],
+          [
+            12,
+            1912,
+            182
+          ],
+          [
+            13,
+            1956,
+            202
+          ],
+          [
+            14,
+            2720,
+            236
+          ],
+          [
+            15,
+            1870,
+            242
+          ],
+          [
+            16,
+            1054,
+            218
+          ],
+          [
+            17,
+            2132,
+            242
+          ],
+          [
+            18,
+            1664,
+            300
+          ],
+          [
+            19,
+            3036,
+            340
+          ],
+          [
+            20,
+            1440,
+            268
+          ],
+          [
+            21,
+            2736,
+            272
+          ],
+          [
+            22,
+            3416,
+            364
+          ],
+          [
+            23,
+            1736,
+            302
+          ],
+          [
+            24,
+            2434,
+            286
+          ],
+          [
+            25,
+            788,
+            254
+          ],
+          [
+            26,
+            2218,
+            356
+          ],
+          [
+            27,
+            932,
+            350
+          ],
+          [
+            28,
+            2492,
+            268
+          ],
+          [
+            29,
+            3396,
+            466
+          ],
+          [
+            30,
+            2698,
+            402
+          ],
+          [
+            31,
+            1652,
+            304
+          ],
+          [
+            32,
+            1558,
+            554
+          ]
+        ],
+        "cpu_samples": {
+          "idle": {
+            "elapsed_ticks": 93553312,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 7,
+                  "generation": 40,
+                  "lp": 1,
+                  "state": "blocked",
+                  "dispatch": 63681,
+                  "runtime_ticks": 1681625689
+                },
+                "end": {
+                  "tid": 7,
+                  "generation": 40,
+                  "lp": 1,
+                  "state": "blocked",
+                  "dispatch": 63681,
+                  "runtime_ticks": 1681625689
+                }
+              },
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 39,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 70788,
+                  "runtime_ticks": 1523618431
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 39,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 70788,
+                  "runtime_ticks": 1523618431
+                }
+              }
+            ]
+          },
+          "load": {
+            "elapsed_ticks": 99594750,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 7,
+                  "generation": 40,
+                  "lp": 1,
+                  "state": "blocked",
+                  "dispatch": 64014,
+                  "runtime_ticks": 1695734314
+                },
+                "end": {
+                  "tid": 7,
+                  "generation": 40,
+                  "lp": 1,
+                  "state": "running",
+                  "dispatch": 67331,
+                  "runtime_ticks": 1790854373
+                }
+              },
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 39,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 71130,
+                  "runtime_ticks": 1532663551
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 39,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 74792,
+                  "runtime_ticks": 1611134718
+                }
+              }
+            ]
+          }
+        },
+        "counters_by_slot": {
+          "0": {
+            "mutex_calls": 411317,
+            "mutex_immediate": 320788,
+            "mutex_cq_waits": 100036,
+            "mutex_try": 348642,
+            "mutex_try_busy": 46951,
+            "rw_read_calls": 174402,
+            "rw_write_calls": 164,
+            "rw_immediate": 174555,
+            "rw_cq_waits": 13,
+            "rw_try_read": 0,
+            "rw_try_read_busy": 0,
+            "condition_waits": 62429,
+            "condition_cq_waits": 66984,
+            "condition_selections": 62429,
+            "condition_signals": 174277
+          },
+          "1": {
+            "mutex_calls": 504384,
+            "mutex_immediate": 416994,
+            "mutex_cq_waits": 96533,
+            "mutex_try": 444198,
+            "mutex_try_busy": 45774,
+            "rw_read_calls": 222092,
+            "rw_write_calls": 36,
+            "rw_immediate": 222118,
+            "rw_cq_waits": 10,
+            "rw_try_read": 0,
+            "rw_try_read_busy": 0,
+            "condition_waits": 59746,
+            "condition_cq_waits": 63705,
+            "condition_selections": 59746,
+            "condition_signals": 222018
+          },
+          "2": {
+            "mutex_calls": 0,
+            "mutex_immediate": 0,
+            "mutex_cq_waits": 0,
+            "mutex_try": 0,
+            "mutex_try_busy": 0,
+            "rw_read_calls": 0,
+            "rw_write_calls": 0,
+            "rw_immediate": 0,
+            "rw_cq_waits": 0,
+            "rw_try_read": 0,
+            "rw_try_read_busy": 0,
+            "condition_waits": 0,
+            "condition_cq_waits": 0,
+            "condition_selections": 0,
+            "condition_signals": 0
+          },
+          "3": {
+            "mutex_calls": 0,
+            "mutex_immediate": 0,
+            "mutex_cq_waits": 0,
+            "mutex_try": 0,
+            "mutex_try_busy": 0,
+            "rw_read_calls": 0,
+            "rw_write_calls": 0,
+            "rw_immediate": 0,
+            "rw_cq_waits": 0,
+            "rw_try_read": 0,
+            "rw_try_read_busy": 0,
+            "condition_waits": 0,
+            "condition_cq_waits": 0,
+            "condition_selections": 0,
+            "condition_signals": 0
+          }
+        },
+        "counters_total": {
+          "mutex_calls": 915701,
+          "mutex_immediate": 737782,
+          "mutex_cq_waits": 196569,
+          "mutex_try": 792840,
+          "mutex_try_busy": 92725,
+          "rw_read_calls": 396494,
+          "rw_write_calls": 200,
+          "rw_immediate": 396673,
+          "rw_cq_waits": 23,
+          "rw_try_read": 0,
+          "rw_try_read_busy": 0,
+          "condition_waits": 122175,
+          "condition_cq_waits": 130689,
+          "condition_selections": 122175,
+          "condition_signals": 396295
+        },
+        "counted_ping_pong_messages": 396000,
+        "load_batches": 1,
+        "timer_late_p95_us": 3396,
+        "wake_latency_p95_us": 466
+      },
+      {
+        "schedulers": 4,
+        "asid": 30,
+        "artifacts": {
+          "atomvm_revision": "ff993a80963298b532c1e573f883951ecaac9fef",
+          "otp_revision": "fc7e10af595f3ffd2c25c84c253a4d042734cfed",
+          "package_sha256": "62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31",
+          "unsigned_elf_sha256": "5f276f641c3a6ec52ea278b0864da0d4851129cdafb7e5f8f3c1ae251db8ce07",
+          "signed_elf_sha256": "697c30590e22da359869cf4032ce7fdbd80278cc51364fe844172f26b4fa0955",
+          "reference_signed_elf_sha256": "c5e7115eeb0b62a43e0ecead7875284f8328eec5412d5dbd453bc9dfbccafc48",
+          "descriptor_sha256": "ede9ca7f5c36048a3e6f183182bd2d098f48e49b81d0c2cc42026d6724d619d2",
+          "instrumented_inputs_sha256": {
+            "sync.rs": "43d061eef975c1736b450efb0bd23193fb48af1be45972b02909045e52af1eb2",
+            "sync/rwlock.rs": "4aaa05c165fa1a201d48c410bb38ec9108a02f6990d7c07d88cb65b20510c1f8",
+            "workers.rs": "9b9129b4d11e2aa097a4f25016582833758f2344a212c7fb86e4faa04322e6a7"
+          }
+        },
+        "reference_throughput_messages_per_s": 6201.38,
+        "throughput_messages_per_s": 6269.69,
+        "throughput_trials": [
+          [
+            1,
+            96000,
+            15324688
+          ],
+          [
+            2,
+            96000,
+            15284544
+          ],
+          [
+            3,
+            96000,
+            15311754
+          ]
+        ],
+        "timer_and_wake_samples": [
+          [
+            1,
+            2654,
+            298
+          ],
+          [
+            2,
+            1504,
+            142
+          ],
+          [
+            3,
+            2394,
+            192
+          ],
+          [
+            4,
+            2540,
+            168
+          ],
+          [
+            5,
+            1420,
+            200
+          ],
+          [
+            6,
+            1800,
+            404
+          ],
+          [
+            7,
+            1182,
+            202
+          ],
+          [
+            8,
+            1354,
+            216
+          ],
+          [
+            9,
+            1632,
+            250
+          ],
+          [
+            10,
+            1566,
+            256
+          ],
+          [
+            11,
+            4184,
+            278
+          ],
+          [
+            12,
+            1464,
+            252
+          ],
+          [
+            13,
+            1184,
+            270
+          ],
+          [
+            14,
+            2724,
+            308
+          ],
+          [
+            15,
+            5706,
+            288
+          ],
+          [
+            16,
+            1504,
+            290
+          ],
+          [
+            17,
+            1410,
+            246
+          ],
+          [
+            18,
+            6206,
+            256
+          ],
+          [
+            19,
+            3602,
+            190
+          ],
+          [
+            20,
+            2714,
+            176
+          ],
+          [
+            21,
+            852,
+            260
+          ],
+          [
+            22,
+            1638,
+            234
+          ],
+          [
+            23,
+            2612,
+            230
+          ],
+          [
+            24,
+            1726,
+            266
+          ],
+          [
+            25,
+            1354,
+            236
+          ],
+          [
+            26,
+            1320,
+            308
+          ],
+          [
+            27,
+            2380,
+            252
+          ],
+          [
+            28,
+            1564,
+            308
+          ],
+          [
+            29,
+            2394,
+            392
+          ],
+          [
+            30,
+            1226,
+            330
+          ],
+          [
+            31,
+            2834,
+            342
+          ],
+          [
+            32,
+            2786,
+            372
+          ]
+        ],
+        "cpu_samples": {
+          "idle": {
+            "elapsed_ticks": 97536937,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 7,
+                  "generation": 42,
+                  "lp": 1,
+                  "state": "blocked",
+                  "dispatch": 140852,
+                  "runtime_ticks": 2503674218
+                },
+                "end": {
+                  "tid": 7,
+                  "generation": 42,
+                  "lp": 1,
+                  "state": "blocked",
+                  "dispatch": 140852,
+                  "runtime_ticks": 2503674218
+                }
+              },
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 41,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 142272,
+                  "runtime_ticks": 2450749723
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 41,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 142272,
+                  "runtime_ticks": 2450749723
+                }
+              },
+              {
+                "start": {
+                  "tid": 27,
+                  "generation": 43,
+                  "lp": 2,
+                  "state": "blocked",
+                  "dispatch": 115808,
+                  "runtime_ticks": 2060163899
+                },
+                "end": {
+                  "tid": 27,
+                  "generation": 43,
+                  "lp": 2,
+                  "state": "blocked",
+                  "dispatch": 115808,
+                  "runtime_ticks": 2060163899
+                }
+              },
+              {
+                "start": {
+                  "tid": 28,
+                  "generation": 44,
+                  "lp": 3,
+                  "state": "blocked",
+                  "dispatch": 70066,
+                  "runtime_ticks": 1285391713
+                },
+                "end": {
+                  "tid": 28,
+                  "generation": 44,
+                  "lp": 3,
+                  "state": "blocked",
+                  "dispatch": 70066,
+                  "runtime_ticks": 1285391713
+                }
+              }
+            ]
+          },
+          "load": {
+            "elapsed_ticks": 104152187,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 7,
+                  "generation": 42,
+                  "lp": 1,
+                  "state": "running",
+                  "dispatch": 141585,
+                  "runtime_ticks": 2517550853
+                },
+                "end": {
+                  "tid": 7,
+                  "generation": 42,
+                  "lp": 1,
+                  "state": "running",
+                  "dispatch": 146368,
+                  "runtime_ticks": 2605006743
+                }
+              },
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 41,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 142932,
+                  "runtime_ticks": 2462253729
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 41,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 147188,
+                  "runtime_ticks": 2535252558
+                }
+              },
+              {
+                "start": {
+                  "tid": 27,
+                  "generation": 43,
+                  "lp": 2,
+                  "state": "blocked",
+                  "dispatch": 116421,
+                  "runtime_ticks": 2071766087
+                },
+                "end": {
+                  "tid": 27,
+                  "generation": 43,
+                  "lp": 2,
+                  "state": "running",
+                  "dispatch": 120395,
+                  "runtime_ticks": 2145653276
+                }
+              },
+              {
+                "start": {
+                  "tid": 28,
+                  "generation": 44,
+                  "lp": 3,
+                  "state": "running",
+                  "dispatch": 70441,
+                  "runtime_ticks": 1292738841
+                },
+                "end": {
+                  "tid": 28,
+                  "generation": 44,
+                  "lp": 3,
+                  "state": "running",
+                  "dispatch": 72923,
+                  "runtime_ticks": 1341091200
+                }
+              }
+            ]
+          }
+        },
+        "counters_by_slot": {
+          "0": {
+            "mutex_calls": 373556,
+            "mutex_immediate": 252545,
+            "mutex_cq_waits": 167387,
+            "mutex_try": 263842,
+            "mutex_try_busy": 45054,
+            "rw_read_calls": 131941,
+            "rw_write_calls": 148,
+            "rw_immediate": 132084,
+            "rw_cq_waits": 6,
+            "rw_try_read": 0,
+            "rw_try_read_busy": 0,
+            "condition_waits": 109439,
+            "condition_cq_waits": 133214,
+            "condition_selections": 109439,
+            "condition_signals": 131876
+          },
+          "1": {
+            "mutex_calls": 375794,
+            "mutex_immediate": 256536,
+            "mutex_cq_waits": 167089,
+            "mutex_try": 262457,
+            "mutex_try_busy": 48677,
+            "rw_read_calls": 131217,
+            "rw_write_calls": 22,
+            "rw_immediate": 131234,
+            "rw_cq_waits": 9,
+            "rw_try_read": 0,
+            "rw_try_read_busy": 0,
+            "condition_waits": 113018,
+            "condition_cq_waits": 139601,
+            "condition_selections": 113018,
+            "condition_signals": 131206
+          },
+          "2": {
+            "mutex_calls": 266261,
+            "mutex_immediate": 175058,
+            "mutex_cq_waits": 137060,
+            "mutex_try": 174789,
+            "mutex_try_busy": 35059,
+            "rw_read_calls": 87466,
+            "rw_write_calls": 19,
+            "rw_immediate": 87481,
+            "rw_cq_waits": 5,
+            "rw_try_read": 0,
+            "rw_try_read_busy": 0,
+            "condition_waits": 91359,
+            "condition_cq_waits": 118654,
+            "condition_selections": 91359,
+            "condition_signals": 87353
+          },
+          "3": {
+            "mutex_calls": 146416,
+            "mutex_immediate": 94397,
+            "mutex_cq_waits": 80730,
+            "mutex_try": 91752,
+            "mutex_try_busy": 20055,
+            "rw_read_calls": 45871,
+            "rw_write_calls": 11,
+            "rw_immediate": 45877,
+            "rw_cq_waits": 7,
+            "rw_try_read": 0,
+            "rw_try_read_busy": 0,
+            "condition_waits": 54652,
+            "condition_cq_waits": 72824,
+            "condition_selections": 54652,
+            "condition_signals": 45862
+          }
+        },
+        "counters_total": {
+          "mutex_calls": 1162027,
+          "mutex_immediate": 778536,
+          "mutex_cq_waits": 552266,
+          "mutex_try": 792840,
+          "mutex_try_busy": 148845,
+          "rw_read_calls": 396495,
+          "rw_write_calls": 200,
+          "rw_immediate": 396676,
+          "rw_cq_waits": 27,
+          "rw_try_read": 0,
+          "rw_try_read_busy": 0,
+          "condition_waits": 368468,
+          "condition_cq_waits": 464293,
+          "condition_selections": 368468,
+          "condition_signals": 396297
+        },
+        "counted_ping_pong_messages": 396000,
+        "load_batches": 1,
+        "timer_late_p95_us": 5706,
+        "wake_latency_p95_us": 392
+      }
+    ]
+  },
+  "read_probe_run": {
+    "campaign": {
+      "boot_image_sha256": "529144659512169fe6d1eb22496d8b885e672ac99d5b0b359d36d0c68da829ee",
+      "kernel_sha256": "5b82fd25a34abf1a9c9ab50d0aa0b7f42cfa2743ce4a9b1790ccecfb03e6a141",
+      "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+      "initial_disk_sha256": "4905d0275b3686017ba58adada8074a9e8c91b86a9f295003f122cc0bf619649",
+      "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+      "passed_cases": [
+        "c-hello",
+        "c-memory",
+        "c-format",
+        "c-clock",
+        "c-startup",
+        "c-exit",
+        "c-error",
+        "c-abort",
+        "c-empty",
+        "c-shutdown-without-request",
+        "avm-performance-1",
+        "avm-performance-2",
+        "avm-performance-4",
+        "c-survivor"
+      ],
+      "negative_controls": [
+        {
+          "name": "tls-rejected",
+          "expected_diagnostic": "TLS is unsupported",
+          "passed": true
+        },
+        {
+          "name": "unsupported-rejected",
+          "expected_diagnostic": "undefined symbol: open",
+          "passed": true
+        },
+        {
+          "name": "signature-rejected",
+          "passed": true
+        }
+      ]
+    },
+    "measurements": [
+      {
+        "schedulers": 1,
+        "asid": 28,
+        "unsigned_elf_sha256": "20ca54a8ef8778db0fe28b095132005def55d41d2f5539dcad1f2a6bb3a4d93f",
+        "signed_elf_sha256": "6981544e6c50695385527345ff6b77f21b261e4fa3662810611749890c6ee3e1",
+        "signed_descriptor_sha256": "21bcd3b03d7d2a282c8dd751ecb5ecc5ce7e17e3b9b48b35a7a11a258fc2808f",
+        "throughput_messages_per_s": 154920.67,
+        "throughput_trials": [
+          [
+            1,
+            96000,
+            619672
+          ],
+          [
+            2,
+            96000,
+            617506
+          ],
+          [
+            3,
+            96000,
+            679072
+          ]
+        ],
+        "timer_and_wake_samples": [
+          [
+            1,
+            1482,
+            48
+          ],
+          [
+            2,
+            634,
+            32
+          ],
+          [
+            3,
+            2126,
+            34
+          ],
+          [
+            4,
+            808,
+            30
+          ],
+          [
+            5,
+            1450,
+            28
+          ],
+          [
+            6,
+            2904,
+            36
+          ],
+          [
+            7,
+            1054,
+            28
+          ],
+          [
+            8,
+            2322,
+            32
+          ],
+          [
+            9,
+            1596,
+            30
+          ],
+          [
+            10,
+            2312,
+            24
+          ],
+          [
+            11,
+            780,
+            26
+          ],
+          [
+            12,
+            2342,
+            28
+          ],
+          [
+            13,
+            1160,
+            44
+          ],
+          [
+            14,
+            2410,
+            68
+          ],
+          [
+            15,
+            186,
+            48
+          ],
+          [
+            16,
+            310,
+            62
+          ],
+          [
+            17,
+            322,
+            66
+          ],
+          [
+            18,
+            896,
+            62
+          ],
+          [
+            19,
+            3164,
+            62
+          ],
+          [
+            20,
+            1210,
+            56
+          ],
+          [
+            21,
+            2498,
+            56
+          ],
+          [
+            22,
+            1694,
+            50
+          ],
+          [
+            23,
+            2300,
+            56
+          ],
+          [
+            24,
+            2068,
+            56
+          ],
+          [
+            25,
+            1776,
+            44
+          ],
+          [
+            26,
+            506,
+            36
+          ],
+          [
+            27,
+            912,
+            26
+          ],
+          [
+            28,
+            1972,
+            84
+          ],
+          [
+            29,
+            1194,
+            80
+          ],
+          [
+            30,
+            978,
+            36
+          ],
+          [
+            31,
+            690,
+            84
+          ],
+          [
+            32,
+            696,
+            32
+          ]
+        ],
+        "cpu_samples": {
+          "idle": {
+            "elapsed_ticks": 95210188,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 38,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 330,
+                  "runtime_ticks": 120062066
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 38,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 330,
+                  "runtime_ticks": 120062066
+                }
+              }
+            ]
+          },
+          "load": {
+            "elapsed_ticks": 163809750,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 38,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 388,
+                  "runtime_ticks": 144782005
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 38,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 732,
+                  "runtime_ticks": 292634438
+                }
+              }
+            ]
+          }
+        },
+        "timer_late_p95_us": 2904,
+        "wake_latency_p95_us": 84
+      },
+      {
+        "schedulers": 2,
+        "asid": 29,
+        "unsigned_elf_sha256": "c3d7d0d61ceb1d70f5e6152356c297695a68ee398a4dd5f882681a9b3a12bcc1",
+        "signed_elf_sha256": "3769fcc9d1b4454934a51ceab3e897bec288800fb19a72c7f700c266df35902e",
+        "signed_descriptor_sha256": "767a0c8c22059e52472799b398d560fb2745027ac3ec745d21fc0d4aef5e9939",
+        "throughput_messages_per_s": 10982.16,
+        "throughput_trials": [
+          [
+            1,
+            96000,
+            8811200
+          ],
+          [
+            2,
+            96000,
+            8741446
+          ],
+          [
+            3,
+            96000,
+            8689814
+          ]
+        ],
+        "timer_and_wake_samples": [
+          [
+            1,
+            1342,
+            234
+          ],
+          [
+            2,
+            2096,
+            176
+          ],
+          [
+            3,
+            1504,
+            124
+          ],
+          [
+            4,
+            1770,
+            154
+          ],
+          [
+            5,
+            1534,
+            128
+          ],
+          [
+            6,
+            2056,
+            176
+          ],
+          [
+            7,
+            1056,
+            322
+          ],
+          [
+            8,
+            1404,
+            228
+          ],
+          [
+            9,
+            2522,
+            238
+          ],
+          [
+            10,
+            966,
+            172
+          ],
+          [
+            11,
+            3960,
+            278
+          ],
+          [
+            12,
+            1772,
+            234
+          ],
+          [
+            13,
+            970,
+            202
+          ],
+          [
+            14,
+            1606,
+            228
+          ],
+          [
+            15,
+            2344,
+            250
+          ],
+          [
+            16,
+            1878,
+            254
+          ],
+          [
+            17,
+            800,
+            316
+          ],
+          [
+            18,
+            1878,
+            288
+          ],
+          [
+            19,
+            2188,
+            254
+          ],
+          [
+            20,
+            2442,
+            322
+          ],
+          [
+            21,
+            3366,
+            310
+          ],
+          [
+            22,
+            1128,
+            334
+          ],
+          [
+            23,
+            2276,
+            234
+          ],
+          [
+            24,
+            2044,
+            292
+          ],
+          [
+            25,
+            580,
+            208
+          ],
+          [
+            26,
+            2006,
+            180
+          ],
+          [
+            27,
+            1800,
+            186
+          ],
+          [
+            28,
+            3426,
+            158
+          ],
+          [
+            29,
+            666,
+            178
+          ],
+          [
+            30,
+            1390,
+            210
+          ],
+          [
+            31,
+            1384,
+            174
+          ],
+          [
+            32,
+            1582,
+            166
+          ]
+        ],
+        "cpu_samples": {
+          "idle": {
+            "elapsed_ticks": 95227438,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 7,
+                  "generation": 40,
+                  "lp": 1,
+                  "state": "blocked",
+                  "dispatch": 78924,
+                  "runtime_ticks": 1628190670
+                },
+                "end": {
+                  "tid": 7,
+                  "generation": 40,
+                  "lp": 1,
+                  "state": "blocked",
+                  "dispatch": 78924,
+                  "runtime_ticks": 1628190670
+                }
+              },
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 39,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 83161,
+                  "runtime_ticks": 1470973932
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 39,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 83161,
+                  "runtime_ticks": 1470973932
+                }
+              }
+            ]
+          },
+          "load": {
+            "elapsed_ticks": 102622750,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 7,
+                  "generation": 40,
+                  "lp": 1,
+                  "state": "running",
+                  "dispatch": 79264,
+                  "runtime_ticks": 1640784485
+                },
+                "end": {
+                  "tid": 7,
+                  "generation": 40,
+                  "lp": 1,
+                  "state": "running",
+                  "dispatch": 83370,
+                  "runtime_ticks": 1738529246
+                }
+              },
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 39,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 83487,
+                  "runtime_ticks": 1478250377
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 39,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 87765,
+                  "runtime_ticks": 1555829123
+                }
+              }
+            ]
+          }
+        },
+        "smp_c_sha256": "68a452240b13710dc50e3a5084f88c6d1f1f089af2ead1b18a8b2c9147d8332a",
+        "timer_late_p95_us": 3426,
+        "wake_latency_p95_us": 322
+      },
+      {
+        "schedulers": 4,
+        "asid": 30,
+        "unsigned_elf_sha256": "59406599f57d61a825c86afe8454525a7101bf84041429817894e383fe97d247",
+        "signed_elf_sha256": "eb34114a89406606eaed9da5262a15ddda902a36d1898bff00f8919b15d2e57b",
+        "signed_descriptor_sha256": "9dd9a82b1fb783ea5dd0c1bbb5cc3186b0a3690d271f44ce708d9aeb8ccde94f",
+        "throughput_messages_per_s": 6431.75,
+        "throughput_trials": [
+          [
+            1,
+            96000,
+            14911438
+          ],
+          [
+            2,
+            96000,
+            14925964
+          ],
+          [
+            3,
+            96000,
+            14972660
+          ]
+        ],
+        "timer_and_wake_samples": [
+          [
+            1,
+            3374,
+            252
+          ],
+          [
+            2,
+            1724,
+            140
+          ],
+          [
+            3,
+            904,
+            182
+          ],
+          [
+            4,
+            1200,
+            162
+          ],
+          [
+            5,
+            1578,
+            196
+          ],
+          [
+            6,
+            1904,
+            166
+          ],
+          [
+            7,
+            934,
+            192
+          ],
+          [
+            8,
+            560,
+            202
+          ],
+          [
+            9,
+            2340,
+            302
+          ],
+          [
+            10,
+            1942,
+            294
+          ],
+          [
+            11,
+            586,
+            250
+          ],
+          [
+            12,
+            2044,
+            214
+          ],
+          [
+            13,
+            1074,
+            336
+          ],
+          [
+            14,
+            2008,
+            306
+          ],
+          [
+            15,
+            3290,
+            322
+          ],
+          [
+            16,
+            1600,
+            264
+          ],
+          [
+            17,
+            1140,
+            274
+          ],
+          [
+            18,
+            1380,
+            250
+          ],
+          [
+            19,
+            786,
+            242
+          ],
+          [
+            20,
+            1596,
+            502
+          ],
+          [
+            21,
+            1744,
+            344
+          ],
+          [
+            22,
+            884,
+            312
+          ],
+          [
+            23,
+            1690,
+            234
+          ],
+          [
+            24,
+            3126,
+            234
+          ],
+          [
+            25,
+            866,
+            226
+          ],
+          [
+            26,
+            1738,
+            238
+          ],
+          [
+            27,
+            1774,
+            252
+          ],
+          [
+            28,
+            2324,
+            208
+          ],
+          [
+            29,
+            1636,
+            180
+          ],
+          [
+            30,
+            540,
+            284
+          ],
+          [
+            31,
+            1402,
+            220
+          ],
+          [
+            32,
+            2496,
+            212
+          ]
+        ],
+        "cpu_samples": {
+          "idle": {
+            "elapsed_ticks": 94605250,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 7,
+                  "generation": 42,
+                  "lp": 1,
+                  "state": "blocked",
+                  "dispatch": 143990,
+                  "runtime_ticks": 2411475700
+                },
+                "end": {
+                  "tid": 7,
+                  "generation": 42,
+                  "lp": 1,
+                  "state": "blocked",
+                  "dispatch": 143990,
+                  "runtime_ticks": 2411475700
+                }
+              },
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 41,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 147263,
+                  "runtime_ticks": 2378131490
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 41,
+                  "lp": 0,
+                  "state": "blocked",
+                  "dispatch": 147263,
+                  "runtime_ticks": 2378131490
+                }
+              },
+              {
+                "start": {
+                  "tid": 27,
+                  "generation": 43,
+                  "lp": 2,
+                  "state": "blocked",
+                  "dispatch": 118223,
+                  "runtime_ticks": 1978349064
+                },
+                "end": {
+                  "tid": 27,
+                  "generation": 43,
+                  "lp": 2,
+                  "state": "blocked",
+                  "dispatch": 118223,
+                  "runtime_ticks": 1978349064
+                }
+              },
+              {
+                "start": {
+                  "tid": 28,
+                  "generation": 44,
+                  "lp": 3,
+                  "state": "blocked",
+                  "dispatch": 70092,
+                  "runtime_ticks": 1195240921
+                },
+                "end": {
+                  "tid": 28,
+                  "generation": 44,
+                  "lp": 3,
+                  "state": "blocked",
+                  "dispatch": 70092,
+                  "runtime_ticks": 1195240921
+                }
+              }
+            ]
+          },
+          "load": {
+            "elapsed_ticks": 104676250,
+            "frequency_hz": 62500000,
+            "threads": [
+              {
+                "start": {
+                  "tid": 7,
+                  "generation": 42,
+                  "lp": 1,
+                  "state": "running",
+                  "dispatch": 144696,
+                  "runtime_ticks": 2425820576
+                },
+                "end": {
+                  "tid": 7,
+                  "generation": 42,
+                  "lp": 1,
+                  "state": "running",
+                  "dispatch": 149711,
+                  "runtime_ticks": 2513668752
+                }
+              },
+              {
+                "start": {
+                  "tid": 26,
+                  "generation": 41,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 147686,
+                  "runtime_ticks": 2386534619
+                },
+                "end": {
+                  "tid": 26,
+                  "generation": 41,
+                  "lp": 0,
+                  "state": "ready",
+                  "dispatch": 152090,
+                  "runtime_ticks": 2459640489
+                }
+              },
+              {
+                "start": {
+                  "tid": 27,
+                  "generation": 43,
+                  "lp": 2,
+                  "state": "running",
+                  "dispatch": 118860,
+                  "runtime_ticks": 1991151300
+                },
+                "end": {
+                  "tid": 27,
+                  "generation": 43,
+                  "lp": 2,
+                  "state": "running",
+                  "dispatch": 123167,
+                  "runtime_ticks": 2065118343
+                }
+              },
+              {
+                "start": {
+                  "tid": 28,
+                  "generation": 44,
+                  "lp": 3,
+                  "state": "blocked",
+                  "dispatch": 70527,
+                  "runtime_ticks": 1203690169
+                },
+                "end": {
+                  "tid": 28,
+                  "generation": 44,
+                  "lp": 3,
+                  "state": "running",
+                  "dispatch": 73197,
+                  "runtime_ticks": 1250883416
+                }
+              }
+            ]
+          }
+        },
+        "smp_c_sha256": "68a452240b13710dc50e3a5084f88c6d1f1f089af2ead1b18a8b2c9147d8332a",
+        "timer_late_p95_us": 3290,
+        "wake_latency_p95_us": 344
+      }
+    ],
+    "startup_markers": [
+      "[+     4.058688] BOOT COMPLETE: validation passed; local storage ready; services submitted",
+      "[+   144.775523] [EL0 LOG] lp=0 asid=16 [agent] launched \"c-hello\" generation=1 asid=18 principal=0x9fa51c8c1729c981"
+    ]
+  },
+  "regression": {
+    "campaign": {
+      "boot_image_sha256": "1f90326be966d97a8fd0ddaea7236415f3b9082b1605835270794025df0a7814",
+      "kernel_sha256": "8801acd129e2e23efff317fc00c69bfdaba6f0735902970d4e702bb8476c0590",
+      "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+      "initial_disk_sha256": "f9773fbb2eee994a12bfb2e949cf2fbb20b9b2f65034fa9a20a38f20b4310592",
+      "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+      "passed_cases": [
+        "c-hello",
+        "c-memory",
+        "c-format",
+        "c-clock",
+        "c-startup",
+        "c-exit",
+        "c-error",
+        "c-abort",
+        "c-empty",
+        "c-shutdown-without-request",
+        "avm-schedulers-4",
+        "c-workers",
+        "c-unjoined",
+        "c-worker-reuse",
+        "c-sync",
+        "c-rwlock",
+        "c-worker-libc",
+        "c-worker-libc-close",
+        "c-survivor",
+        "avm-shutdown-parked",
+        "avm-shutdown-busy"
+      ],
+      "negative_controls": [
+        {
+          "name": "tls-rejected",
+          "expected_diagnostic": "TLS is unsupported",
+          "passed": true
+        },
+        {
+          "name": "unsupported-rejected",
+          "expected_diagnostic": "undefined symbol: open",
+          "passed": true
+        },
+        {
+          "name": "signature-rejected",
+          "passed": true
+        }
+      ]
+    },
+    "node_shutdown": {
+      "admitted_generation": 1,
+      "target_node": "0x42e21edb",
+      "intent_sha256": "c53e74fc638653d75fc250885d782113a61844430b5be035b0a247ea544ce1c2",
+      "qmp_event": {
+        "timestamp": {
+          "seconds": 1795620617,
+          "microseconds": 143841
+        },
+        "event": "SHUTDOWN",
+        "data": {
+          "guest": true,
+          "reason": "guest-shutdown"
+        }
+      },
+      "qemu_exit_status": 0
+    },
+    "vm_cases": [
+      {
+        "name": "avm-schedulers-4",
+        "schedulers": 4,
+        "package_sha256": "7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794",
+        "unsigned_elf_sha256": "7d3522b5fe0966a8865945f2f767a9452c43ee51ed87adb1bdeddc3a7a3a2b9c",
+        "signed_elf_sha256": "b3d0c742cdd99bb29814407a928f5870caca7626b8fdb7e382cddefdbd70d91e",
+        "signed_descriptor_sha256": "b3d0e57d46424c55a9fc6fdd44357dec7ad2138a72e791f4b0eb7c77318f8e15",
+        "asid": 28
+      },
+      {
+        "name": "avm-shutdown-parked",
+        "schedulers": 4,
+        "package_sha256": "f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612",
+        "unsigned_elf_sha256": "f68106724b7894c6fb3af881267d244bdb92dfb856d6b7fe7fa7df287d3cfb5b",
+        "signed_elf_sha256": "441bcd97bd87c30853a187310dbd2d8ddaa8ccb427522408576bbc39e108537d",
+        "signed_descriptor_sha256": "a61ad25a7c1e66fff230bf0bbc84a8011a4aa4def6c86e5dc6e137f199212e00",
+        "retired_asid": 37,
+        "acknowledged_root_generation": 1,
+        "shutdown_source": "cq-wait"
+      },
+      {
+        "name": "avm-shutdown-busy",
+        "schedulers": 4,
+        "package_sha256": "cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b",
+        "unsigned_elf_sha256": "f1aa36baa33bb696b1527fccca5ca572e068dc8628a4b49e16ef9091a4a2185c",
+        "signed_elf_sha256": "13dfc009f163bbf5f8621a1839dc0400e094175e9b48cd79d99019249dc71dba",
+        "signed_descriptor_sha256": "0027e360408728974467df642a2f74de3cf0a402e60deeffa4a5502e3b5cea6f",
+        "retired_asid": 38,
+        "acknowledged_root_generation": 1,
+        "shutdown_source": "nonblocking"
+      }
+    ]
+  }
+}

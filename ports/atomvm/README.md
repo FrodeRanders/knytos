@@ -172,12 +172,21 @@ and scheduler locks have been released. The configured roster is fixed.
 Changing `schedulers_online` through `erlang:system_flag/2` returns
 `badarg`.
 
-The elected AtomVM poller borrows CQ zero. The Rust adapter rejects
-overlapping waits on its shared cursor. Other schedulers use event-only
-condition waits on their private CQs. The runtime registers a condition
-waiter before releasing its mutex and returns success after reacquiring
-that mutex. Lock acquisition and condition reacquisition each have a
-five-second budget. Any failed wait or acquisition aborts the domain.
+The elected AtomVM poller borrows CQ zero. While it scans for work,
+`sys_signal` coalesces hints into one pending notification. The poller
+consumes a pending hint by rescanning before it parks. The first hint
+after it arms advances the CQ generation, which covers a wake before
+the wait enters the kernel. The Rust adapter rejects overlapping waits
+on its shared cursor. The kernel posts its lifecycle wake directly
+to CQ zero. Other schedulers use event-only condition waits on their
+private CQs. The runtime registers a waiter before releasing its mutex
+and returns success after reacquiring it. Lock acquisition and condition
+reacquisition each have a five-second budget. Any failed wait or
+acquisition aborts the domain.
+
+For a read, the adapter first tries shared acquisition. A busy result
+enters the bounded wait under the same writer admission rules.
+
 During idle operation the poller observes shutdown requests on CQ zero.
 When the ready queue keeps the VM out of CQ waits, the elected scheduler
 observes lifecycle at its nonblocking scheduling checkpoint. It requests
@@ -264,3 +273,30 @@ verifies each VM's join and heap cleanup before the supervisor's
 acknowledgement, then checks the deployment agent's cooperative exit,
 the PSCI marker and a guest-originated QMP shutdown with QEMU exit status
 zero.
+
+## Scheduler performance
+
+Build `ports/atomvm/tests/performance.erl` with the same pinned inputs
+and `--schedulers 1`, `2` and `4`. Then pass the three images to the
+signed runner.
+
+```sh
+python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
+  --atomvm-performance-elf target/atomvm/performance-1.elf \
+  --atomvm-performance-elf target/atomvm/performance-2.elf \
+  --atomvm-performance-elf target/atomvm/performance-4.elf \
+  --smp 4 --output target/atomvm/performance-four-cpus
+```
+
+The fixture warms up 12 client and echo pairs, then times three batches
+of 96,000 request and reply messages. It samples 32 ten-millisecond
+receive deadlines and 32 send-to-receive latencies after quiet intervals.
+It then runs an eight-second idle window and at least eight seconds of
+repeated message batches. The runner takes two authenticated
+`/metrics` snapshots in each window. It checks the guest counter time,
+the exact thread generations and blocked states during idle, then
+records CPU tick deltas and the kernel's heap and stack counters.
+Run one image per guest and set `--smp` to its scheduler count to
+measure configurations with matching guest and scheduler counts.
+On normal SMP exit, `kernel_wakes` counts CQ zero wake calls from
+the VM's elected-poller signal path.

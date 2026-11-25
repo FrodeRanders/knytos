@@ -1,0 +1,63 @@
+== avm-schedulers-2 ==
+[+    15.671904] [EL0 LOG] lp=0 asid=28 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=2 interpreter=yes
+[+    15.672746] [EL0 LOG] lp=0 asid=28 [atomvm] package_sha256=7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794 bytes=22708
+[+    15.673322] [EL0 LOG] lp=0 asid=28 [atomvm] wake-before-wait passed
+[+    15.687854] [EL0 LOG] lp=1 asid=28 [atomvm] scheduler entered slot=1
+[+    15.766850] [EL0 LOG] lp=0 asid=28 [atomvm] schedulers joined=1 activated=1
+[+    15.767222] [EL0 LOG] lp=0 asid=28 [atomvm] return=ok
+[+    15.767524] [EL0 LOG] lp=0 asid=28 [atomvm] reactor waits=9 deadlines=3
+[+    15.767792] [EL0 LOG] lp=0 asid=28 [atomvm] reactor worker_waits=5
+[+    15.768034] [EL0 LOG] lp=0 asid=28 [atomvm] reactor kernel_wakes=6
+[+    15.768556] [EL0 LOG] lp=0 asid=28 [atomvm] completed status=0
+[+    15.769260] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=24 remaining_blocks=0 heap_peak=20758 sampled_stack=1440
+
+== avm-schedulers-4 ==
+[+    16.330066] [EL0 LOG] lp=0 asid=29 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    16.330928] [EL0 LOG] lp=0 asid=29 [atomvm] package_sha256=7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794 bytes=22708
+[+    16.331496] [EL0 LOG] lp=0 asid=29 [atomvm] wake-before-wait passed
+[+    16.347276] [EL0 LOG] lp=1 asid=29 [atomvm] scheduler entered slot=1
+[+    16.347942] [EL0 LOG] lp=2 asid=29 [atomvm] scheduler entered slot=2
+[+    16.349178] [EL0 LOG] lp=3 asid=29 [atomvm] scheduler entered slot=3
+[+    16.415344] [EL0 LOG] lp=0 asid=29 [atomvm] schedulers joined=3 activated=3
+[+    16.415730] [EL0 LOG] lp=0 asid=29 [atomvm] return=ok
+[+    16.416036] [EL0 LOG] lp=0 asid=29 [atomvm] reactor waits=12 deadlines=3
+[+    16.416304] [EL0 LOG] lp=0 asid=29 [atomvm] reactor worker_waits=10
+[+    16.416558] [EL0 LOG] lp=0 asid=29 [atomvm] reactor kernel_wakes=9
+[+    16.417102] [EL0 LOG] lp=0 asid=29 [atomvm] completed status=0
+[+    16.418102] [EL0 LOG] lp=0 asid=29 [c-runtime] exit=0 released_blocks=24 remaining_blocks=0 heap_peak=20758 sampled_stack=1440
+
+== avm-shutdown-parked ==
+[+    22.765902] [EL0 LOG] lp=0 asid=38 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    22.766694] [EL0 LOG] lp=0 asid=38 [atomvm] package_sha256=f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612 bytes=21660
+[+    22.767222] [EL0 LOG] lp=0 asid=38 [atomvm] wake-before-wait passed
+[+    22.779584] [EL0 LOG] lp=0 asid=38 {m3_shutdown,parked}
+[+    26.844824] [EL0 LOG] lp=0 asid=38 [atomvm] reactor shutdown source=cq-wait
+[+    26.846800] [EL0 LOG] lp=0 asid=38 [atomvm] schedulers joined=3 activated=0
+[+    26.847154] [EL0 LOG] lp=0 asid=38 [atomvm] schedulers stopped for shutdown
+[+    26.847974] [EL0 LOG] lp=0 asid=38 [c-runtime] exit=0 released_blocks=44 remaining_blocks=0 heap_peak=11857 sampled_stack=1440
+[+    26.860714] [supervisor] node shutdown acknowledged asid=38 generation=1
+
+== avm-shutdown-busy ==
+[+    23.433714] [EL0 LOG] lp=0 asid=39 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    23.434526] [EL0 LOG] lp=0 asid=39 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    23.435068] [EL0 LOG] lp=0 asid=39 [atomvm] wake-before-wait passed
+[+    23.447366] [EL0 LOG] lp=1 asid=39 [atomvm] scheduler entered slot=1
+[+    23.447982] [EL0 LOG] lp=2 asid=39 [atomvm] scheduler entered slot=2
+[+    23.448776] [EL0 LOG] lp=3 asid=39 [atomvm] scheduler entered slot=3
+[+    23.456040] [EL0 LOG] lp=0 asid=39 {m3_shutdown,busy}
+[+    26.838968] [EL0 LOG] lp=1 asid=39 [atomvm] reactor shutdown source=nonblocking
+[+    26.843048] [EL0 LOG] lp=0 asid=39 [atomvm] schedulers joined=3 activated=3
+[+    26.843412] [EL0 LOG] lp=0 asid=39 [atomvm] schedulers stopped for shutdown
+[+    26.844228] [EL0 LOG] lp=0 asid=39 [c-runtime] exit=0 released_blocks=76 remaining_blocks=0 heap_peak=23620 sampled_stack=1440
+[+    26.858944] [supervisor] node shutdown acknowledged asid=39 generation=1
+
+== whole-node completion ==
+[+    15.018844] [EL0 LOG] lp=0 asid=16 [agent] launched "c-shutdown-without-request" generation=1 asid=27 principal=0xff796389ca63da99
+[+    22.778456] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-parked" generation=1 asid=38 principal=0xb83ba1c706cf8ffb
+[+    23.440486] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy" generation=1 asid=39 principal=0xe998b4f07d2af16f
+[+    26.412658] [EL0 LOG] lp=0 asid=16 [agent] accepted cluster shutdown sequence=1795612290 generation=1 node_grace_ms=60000 phase_grace_ms=5000
+[+    26.837146] [EL0 LOG] lp=0 asid=16 [agent] node shutdown requested deadline_ms=37099
+[+    26.860954] [EL0 LOG] lp=0 asid=16 [agent] application domains drained; draining connectors
+[+    26.861228] [EL0 LOG] lp=0 asid=16 [agent] child domains drained for node shutdown
+[+    26.862104] [shutdown] DeploymentAgent: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    26.897998] [shutdown] POWER-OFF REQUESTED via PSCI Hvc

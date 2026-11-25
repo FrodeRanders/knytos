@@ -1,0 +1,156 @@
+== counter run ==
+[+    15.746378] [EL0 LOG] lp=0 asid=28 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+    15.746884] [EL0 LOG] lp=0 asid=28 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    15.754254] [EL0 LOG] lp=0 asid=28 {perf,schedulers,1}
+[+    16.449340] [EL0 LOG] lp=0 asid=28 {perf,throughput,1,96000,613438}
+[+    17.067902] [EL0 LOG] lp=0 asid=28 {perf,throughput,2,96000,618284}
+[+    17.691538] [EL0 LOG] lp=0 asid=28 {perf,throughput,3,96000,623394}
+[+    18.074880] [EL0 LOG] lp=0 asid=28 {perf,idle_start,23690564}
+[+    26.078222] [EL0 LOG] lp=0 asid=28 {perf,idle_end,31693872}
+[+    26.078704] [EL0 LOG] lp=0 asid=28 {perf,load_start,31694396}
+[+    34.247630] [EL0 LOG] lp=0 asid=28 {perf,load_end,39863310,13}
+[+    34.248546] [EL0 LOG] lp=0 asid=28 {perf,pass}
+[+    34.248990] [EL0 LOG] lp=0 asid=28 [atomvm] reactor waits=33 deadlines=33
+[+    34.249996] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=26 remaining_blocks=0 heap_peak=40100 sampled_stack=1424
+[+    35.145320] [EL0 LOG] lp=0 asid=29 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=2 interpreter=yes
+[+    35.146216] [EL0 LOG] lp=0 asid=29 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    35.158634] [EL0 LOG] lp=0 asid=29 {perf,schedulers,2}
+[+    35.160302] [EL0 LOG] lp=1 asid=29 [atomvm] scheduler entered slot=1
+[+    45.244214] [EL0 LOG] lp=1 asid=29 {perf,throughput,1,96000,8958134}
+[+    54.183932] [EL0 LOG] lp=0 asid=29 {perf,throughput,2,96000,8939110}
+[+    63.135322] [EL0 LOG] lp=1 asid=29 {perf,throughput,3,96000,8950680}
+[+    63.589356] [EL0 LOG] lp=1 asid=29 {perf,idle_start,69204536}
+[+    71.594152] [EL0 LOG] lp=1 asid=29 {perf,idle_end,77209008}
+[+    71.595334] [EL0 LOG] lp=1 asid=29 {perf,load_start,77210558}
+[+    80.611428] [EL0 LOG] lp=0 asid=29 {perf,load_end,86226932,1}
+[+    80.616340] [EL0 LOG] lp=0 asid=29 {perf,pass}
+[+    80.618212] [EL0 LOG] lp=0 asid=29 [atomvm] schedulers joined=1 activated=1
+[+    80.619026] [EL0 LOG] lp=0 asid=29 [atomvm] reactor waits=115 deadlines=33
+[+    80.619566] [EL0 LOG] lp=0 asid=29 [atomvm] reactor worker_waits=67
+[+    80.619888] [EL0 LOG] lp=0 asid=29 [atomvm] reactor kernel_wakes=82
+[+    80.622532] [EL0 LOG] lp=0 asid=29 [cabi-sync-profile] slot=0 counts=[411317, 320788, 100036, 348642, 46951, 174402, 164, 174555, 13, 0, 0, 62429, 66984, 62429, 174277]
+[+    80.623042] [EL0 LOG] lp=0 asid=29 [cabi-sync-profile] slot=1 counts=[504384, 416994, 96533, 444198, 45774, 222092, 36, 222118, 10, 0, 0, 59746, 63705, 59746, 222018]
+[+    80.623536] [EL0 LOG] lp=0 asid=29 [cabi-sync-profile] slot=2 counts=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[+    80.623908] [EL0 LOG] lp=0 asid=29 [cabi-sync-profile] slot=3 counts=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[+    80.624394] [EL0 LOG] lp=0 asid=29 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=43409 sampled_stack=1440
+[+    80.938902] [EL0 LOG] lp=0 asid=30 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    80.939704] [EL0 LOG] lp=0 asid=30 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    80.952276] [EL0 LOG] lp=0 asid=30 {perf,schedulers,4}
+[+    80.953890] [EL0 LOG] lp=1 asid=30 [atomvm] scheduler entered slot=1
+[+    80.954716] [EL0 LOG] lp=2 asid=30 [atomvm] scheduler entered slot=2
+[+    80.955650] [EL0 LOG] lp=3 asid=30 [atomvm] scheduler entered slot=3
+[+    98.325312] [EL0 LOG] lp=2 asid=30 {perf,throughput,1,96000,15324688}
+[+   113.610644] [EL0 LOG] lp=3 asid=30 {perf,throughput,2,96000,15284544}
+[+   128.922944] [EL0 LOG] lp=0 asid=30 {perf,throughput,3,96000,15311754}
+[+   129.381872] [EL0 LOG] lp=0 asid=30 {perf,idle_start,134996930}
+[+   137.386344] [EL0 LOG] lp=2 asid=30 {perf,idle_end,143001646}
+[+   137.386870] [EL0 LOG] lp=2 asid=30 {perf,load_start,143002340}
+[+   152.821204] [EL0 LOG] lp=0 asid=30 {perf,load_end,158436698,1}
+[+   152.832288] [EL0 LOG] lp=0 asid=30 {perf,pass}
+[+   152.835328] [EL0 LOG] lp=0 asid=30 [atomvm] schedulers joined=3 activated=3
+[+   152.836126] [EL0 LOG] lp=0 asid=30 [atomvm] reactor waits=124 deadlines=33
+[+   152.836458] [EL0 LOG] lp=0 asid=30 [atomvm] reactor worker_waits=85
+[+   152.836766] [EL0 LOG] lp=0 asid=30 [atomvm] reactor kernel_wakes=91
+[+   152.838158] [EL0 LOG] lp=0 asid=30 [cabi-sync-profile] slot=0 counts=[373556, 252545, 167387, 263842, 45054, 131941, 148, 132084, 6, 0, 0, 109439, 133214, 109439, 131876]
+[+   152.838724] [EL0 LOG] lp=0 asid=30 [cabi-sync-profile] slot=1 counts=[375794, 256536, 167089, 262457, 48677, 131217, 22, 131234, 9, 0, 0, 113018, 139601, 113018, 131206]
+[+   152.839586] [EL0 LOG] lp=0 asid=30 [cabi-sync-profile] slot=2 counts=[266261, 175058, 137060, 174789, 35059, 87466, 19, 87481, 5, 0, 0, 91359, 118654, 91359, 87353]
+[+   152.840118] [EL0 LOG] lp=0 asid=30 [cabi-sync-profile] slot=3 counts=[146416, 94397, 80730, 91752, 20055, 45871, 11, 45877, 7, 0, 0, 54652, 72824, 54652, 45862]
+[+   152.840836] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=43409 sampled_stack=1440
+
+== read probe run ==
+[+     4.058688] BOOT COMPLETE: validation passed; local storage ready; services submitted
+[+   144.775523] [EL0 LOG] lp=0 asid=16 [agent] launched "c-hello" generation=1 asid=18 principal=0x9fa51c8c1729c981
+[+   150.507255] [EL0 LOG] lp=0 asid=28 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+   150.507758] [EL0 LOG] lp=0 asid=28 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+   150.515076] [EL0 LOG] lp=0 asid=28 {perf,schedulers,1}
+[+   151.219266] [EL0 LOG] lp=0 asid=28 {perf,throughput,1,96000,619672}
+[+   151.837049] [EL0 LOG] lp=0 asid=28 {perf,throughput,2,96000,617506}
+[+   152.516390] [EL0 LOG] lp=0 asid=28 {perf,throughput,3,96000,679072}
+[+   152.896096] [EL0 LOG] lp=0 asid=28 {perf,idle_start,158529190}
+[+   160.899448] [EL0 LOG] lp=0 asid=28 {perf,idle_end,166532436}
+[+   160.900187] [EL0 LOG] lp=0 asid=28 {perf,load_start,166533254}
+[+   169.227158] [EL0 LOG] lp=0 asid=28 {perf,load_end,174860226,13}
+[+   169.228642] [EL0 LOG] lp=0 asid=28 {perf,pass}
+[+   169.229124] [EL0 LOG] lp=0 asid=28 [atomvm] reactor waits=33 deadlines=33
+[+   169.230745] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=26 remaining_blocks=0 heap_peak=40100 sampled_stack=1424
+[+   169.882405] [EL0 LOG] lp=0 asid=29 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=2 interpreter=yes
+[+   169.883415] [EL0 LOG] lp=0 asid=29 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+   169.894036] [EL0 LOG] lp=0 asid=29 {perf,schedulers,2}
+[+   169.897231] [EL0 LOG] lp=1 asid=29 [atomvm] scheduler entered slot=1
+[+   179.815660] [EL0 LOG] lp=0 asid=29 {perf,throughput,1,96000,8811200}
+[+   188.557692] [EL0 LOG] lp=1 asid=29 {perf,throughput,2,96000,8741446}
+[+   197.248041] [EL0 LOG] lp=1 asid=29 {perf,throughput,3,96000,8689814}
+[+   197.685229] [EL0 LOG] lp=1 asid=29 {perf,idle_start,203318010}
+[+   205.688780] [EL0 LOG] lp=1 asid=29 {perf,idle_end,211320810}
+[+   205.690349] [EL0 LOG] lp=1 asid=29 {perf,load_start,211322782}
+[+   214.382294] [EL0 LOG] lp=1 asid=29 {perf,load_end,220015168,1}
+[+   214.386945] [EL0 LOG] lp=0 asid=29 {perf,pass}
+[+   214.388612] [EL0 LOG] lp=0 asid=29 [atomvm] schedulers joined=1 activated=1
+[+   214.389260] [EL0 LOG] lp=0 asid=29 [atomvm] reactor waits=109 deadlines=33
+[+   214.389521] [EL0 LOG] lp=0 asid=29 [atomvm] reactor worker_waits=55
+[+   214.390225] [EL0 LOG] lp=0 asid=29 [atomvm] reactor kernel_wakes=76
+[+   214.391450] [EL0 LOG] lp=0 asid=29 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=43409 sampled_stack=1440
+[+   214.728355] [EL0 LOG] lp=0 asid=30 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+   214.729132] [EL0 LOG] lp=0 asid=30 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+   214.741734] [EL0 LOG] lp=0 asid=30 {perf,schedulers,4}
+[+   214.743342] [EL0 LOG] lp=1 asid=30 [atomvm] scheduler entered slot=1
+[+   214.744061] [EL0 LOG] lp=2 asid=30 [atomvm] scheduler entered slot=2
+[+   214.745097] [EL0 LOG] lp=3 asid=30 [atomvm] scheduler entered slot=3
+[+   231.519496] [EL0 LOG] lp=1 asid=30 {perf,throughput,1,96000,14911438}
+[+   246.446063] [EL0 LOG] lp=0 asid=30 {perf,throughput,2,96000,14925964}
+[+   261.419300] [EL0 LOG] lp=2 asid=30 {perf,throughput,3,96000,14972660}
+[+   261.857117] [EL0 LOG] lp=0 asid=30 {perf,idle_start,267489790}
+[+   269.860435] [EL0 LOG] lp=2 asid=30 {perf,idle_end,275492580}
+[+   269.861830] [EL0 LOG] lp=2 asid=30 {perf,load_start,275494416}
+[+   284.869701] [EL0 LOG] lp=1 asid=30 {perf,load_end,290502592,1}
+[+   284.877470] [EL0 LOG] lp=1 asid=30 {perf,pass}
+[+   284.879568] [EL0 LOG] lp=0 asid=30 [atomvm] schedulers joined=3 activated=3
+[+   284.880303] [EL0 LOG] lp=0 asid=30 [atomvm] reactor waits=115 deadlines=33
+[+   284.880615] [EL0 LOG] lp=0 asid=30 [atomvm] reactor worker_waits=65
+[+   284.881353] [EL0 LOG] lp=0 asid=30 [atomvm] reactor kernel_wakes=82
+[+   284.882965] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=43849 sampled_stack=1440
+
+== read probe lifecycle ==
+[+    15.723787] [EL0 LOG] lp=0 asid=28 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    15.724573] [EL0 LOG] lp=0 asid=28 [atomvm] package_sha256=7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794 bytes=22708
+[+    15.725175] [EL0 LOG] lp=0 asid=28 [atomvm] wake-before-wait passed
+[+    15.739732] [EL0 LOG] lp=1 asid=28 [atomvm] scheduler entered slot=1
+[+    15.740417] [EL0 LOG] lp=2 asid=28 [atomvm] scheduler entered slot=2
+[+    15.741335] [EL0 LOG] lp=3 asid=28 [atomvm] scheduler entered slot=3
+[+    15.805056] [EL0 LOG] lp=0 asid=28 {smp,pass}
+[+    15.807965] [EL0 LOG] lp=0 asid=28 [atomvm] schedulers joined=3 activated=3
+[+    15.808326] [EL0 LOG] lp=0 asid=28 [atomvm] return=ok
+[+    15.808639] [EL0 LOG] lp=0 asid=28 [atomvm] reactor waits=14 deadlines=3
+[+    15.809154] [EL0 LOG] lp=0 asid=28 [atomvm] reactor worker_waits=12
+[+    15.809433] [EL0 LOG] lp=0 asid=28 [atomvm] reactor kernel_wakes=11
+[+    15.809990] [EL0 LOG] lp=0 asid=28 [atomvm] completed status=0
+[+    15.810691] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=24 remaining_blocks=0 heap_peak=20758 sampled_stack=1440
+[+    19.209054] [EL0 LOG] lp=0 asid=33 RWLOCK shared and nested readers
+[+    19.665067] [EL0 LOG] lp=0 asid=33 RWLOCK writer timeout wakes readers
+[+    19.670205] [EL0 LOG] lp=0 asid=33 RWLOCK last reader releases writer
+[+    19.670716] [EL0 LOG] lp=0 asid=33 RWLOCK PASS
+[+    22.181610] [EL0 LOG] lp=0 asid=37 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    22.182405] [EL0 LOG] lp=0 asid=37 [atomvm] package_sha256=f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612 bytes=21660
+[+    22.182944] [EL0 LOG] lp=0 asid=37 [atomvm] wake-before-wait passed
+[+    22.192340] [EL0 LOG] lp=0 asid=37 {m3_shutdown,parked}
+[+    22.850821] [EL0 LOG] lp=0 asid=38 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    22.851685] [EL0 LOG] lp=0 asid=38 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    22.852399] [EL0 LOG] lp=0 asid=38 [atomvm] wake-before-wait passed
+[+    22.866911] [EL0 LOG] lp=1 asid=38 [atomvm] scheduler entered slot=1
+[+    22.867628] [EL0 LOG] lp=2 asid=38 [atomvm] scheduler entered slot=2
+[+    22.868404] [EL0 LOG] lp=3 asid=38 [atomvm] scheduler entered slot=3
+[+    22.876575] [EL0 LOG] lp=0 asid=38 {m3_shutdown,busy}
+[+    26.300552] [EL0 LOG] lp=1 asid=38 [atomvm] reactor shutdown source=nonblocking
+[+    26.305420] [EL0 LOG] lp=0 asid=38 [atomvm] schedulers joined=3 activated=3
+[+    26.305725] [EL0 LOG] lp=0 asid=38 [atomvm] schedulers stopped for shutdown
+[+    26.306497] [EL0 LOG] lp=0 asid=38 [c-runtime] exit=0 released_blocks=76 remaining_blocks=0 heap_peak=23620 sampled_stack=1440
+[+    26.306948] [EL0 LOG] lp=0 asid=37 [atomvm] reactor shutdown source=cq-wait
+[+    26.308755] [EL0 LOG] lp=0 asid=37 [atomvm] schedulers joined=3 activated=0
+[+    26.309542] [EL0 LOG] lp=0 asid=37 [atomvm] schedulers stopped for shutdown
+[+    26.310305] [EL0 LOG] lp=0 asid=37 [c-runtime] exit=0 released_blocks=44 remaining_blocks=0 heap_peak=11857 sampled_stack=1440
+[+    26.314519] [supervisor] node shutdown acknowledged asid=38 generation=1
+[+    26.316220] [supervisor] node shutdown acknowledged asid=37 generation=1
+[+    26.316423] [EL0 LOG] lp=0 asid=16 [agent] application domains drained; draining connectors
+[+    26.316646] [EL0 LOG] lp=0 asid=16 [agent] child domains drained for node shutdown
+[+    26.317546] [shutdown] DeploymentAgent: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    26.356054] [shutdown] POWER-OFF REQUESTED via PSCI Hvc

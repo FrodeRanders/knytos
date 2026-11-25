@@ -16,10 +16,20 @@ static _Atomic uint64_t deadlines;
 static atomic_bool shutdown_pending;
 #ifndef AVM_NO_SMP
 static _Atomic uint64_t worker_waits;
+static _Atomic uint64_t reactor_wakes;
+
+/* A VM producer publishes work before calling sys_signal. Retain its hint
+ * in userspace while the elected poller is scanning. An armed poller needs
+ * the kernel generation, including in the gap before it enters CQ wait. */
+enum ReactorState { REACTOR_SCANNING, REACTOR_NOTIFIED, REACTOR_ARMED };
+static _Atomic enum ReactorState reactor_state;
 
 void sys_signal(GlobalContext *global) {
     (void)global;
-    knytos_event_signal();
+    if (atomic_exchange_explicit(&reactor_state, REACTOR_NOTIFIED, memory_order_acq_rel) == REACTOR_ARMED) {
+        atomic_fetch_add_explicit(&reactor_wakes, 1, memory_order_relaxed);
+        knytos_event_signal();
+    }
 }
 #endif
 
@@ -48,6 +58,8 @@ void sys_free_platform(GlobalContext *global) {
 #ifndef AVM_NO_SMP
     printf("[atomvm] reactor worker_waits=%llu\n",
         (unsigned long long)atomic_load_explicit(&worker_waits, memory_order_relaxed));
+    printf("[atomvm] reactor kernel_wakes=%llu\n",
+        (unsigned long long)atomic_load_explicit(&reactor_wakes, memory_order_relaxed));
 #endif
 }
 void platform_defaultatoms_init(GlobalContext *global) { (void)global; }
@@ -62,14 +74,25 @@ void sys_poll_events(GlobalContext *global, int timeout_ms) {
         }
         return;
     }
-    atomic_fetch_add_explicit(&waits, 1, memory_order_relaxed);
 #ifndef AVM_NO_SMP
     // AtomVM serializes this role with its scheduler mutex and publishes the
     // handoff only after returning from the wait. Private waiters use their
     // own CQs. At idle, the elected poller also observes lifecycle on CQ 0.
+    if (atomic_exchange_explicit(&reactor_state, REACTOR_ARMED, memory_order_acq_rel) == REACTOR_NOTIFIED) {
+        // The next scheduler scan observes publications through this
+        // exchange. Any later producer records a fresh pending hint.
+        atomic_exchange_explicit(&reactor_state, REACTOR_SCANNING, memory_order_acq_rel);
+        if (knytos_shutdown_requested()) {
+            reactor_shutdown(global, "[atomvm] reactor shutdown source=nonblocking\n");
+        }
+        return;
+    }
+    atomic_fetch_add_explicit(&waits, 1, memory_order_relaxed);
     if (!knytos_thread_is_startup()) atomic_fetch_add_explicit(&worker_waits, 1, memory_order_relaxed);
     int status = knytos_worker_event_wait(timeout_ms);
+    atomic_exchange_explicit(&reactor_state, REACTOR_SCANNING, memory_order_acq_rel);
 #else
+    atomic_fetch_add_explicit(&waits, 1, memory_order_relaxed);
     int status = knytos_event_wait(timeout_ms);
 #endif
     if (status == KNYTOS_SHUTDOWN) {

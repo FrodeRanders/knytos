@@ -62,12 +62,12 @@ The [C runtime](../../ports/libc/README.md) exposes a single-consumer borrowed
 CQ-zero wait and explicit wake. Its C statuses retain deadline, admission,
 invalid request and lifecycle shutdown separately; it checks lifecycle before
 and after the checked wait. The [AtomVM adapter](../../ports/atomvm/README.md)
-has no native workers or asynchronous service operations, keeps its absolute
-VM timer expiry across readiness, and aborts on rejected wait admission. It
-rounds fractional remaining milliseconds up instead of busy-polling. A wake
-generation posted before waiting and Erlang queued-message/timed-receive tests
-qualify this single-scheduler scope, without supplying SMP or remote cleanup
-guarantees.
+keeps its absolute VM timer expiry across readiness, rounds fractional
+remaining milliseconds up and aborts on rejected wait admission. The
+default profile runs a single scheduler. In the opt-in native scheduler
+profile, the elected poller consumes a retained VM hint by rescanning
+before parking. A hint after arming posts a CQ zero generation. The
+kernel posts its lifecycle notification to CQ zero independently.
 
 The AtomVM adapter bounds the proposed relative duration against a fresh
 monotonic sample before returning nanoseconds to the VM. The pinned scheduler
@@ -79,9 +79,12 @@ The opt-in [C worker profile](../../ports/libc/README.md#restricted-native-worke
 uses one private launch CQ per roster slot. A slot's wake may be observed by
 a later occupant, so callbacks publish and recheck their own synchronized
 predicate and carry one total deadline across hints. The startup reactor
-keeps CQ zero. The worker API uses finite waits because lifecycle currently
-wakes only the default queue. Observing readiness never substitutes for
-joining the retained thread generation.
+uses CQ zero through the startup-only wrapper. The native scheduler
+wrapper permits the elected participant to borrow the same guarded
+cursor. The kernel wakes only CQ zero for lifecycle. Event-only waits
+on a private queue require a terminal wake path. AtomVM's elected
+reactor observes lifecycle and initiates the wake of its peers. Join
+the retained thread generation to observe worker termination.
 
 A C mutex registers contention while observing the owner under its state
 guard. Condition wait registers the participant under the condition guard

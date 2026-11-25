@@ -1,0 +1,6 @@
+{
+  "instrumentation.patch": "60619da154eb3ed315aeb1533f7fd9de6ba02bd14182dd035fc8195b4dd14144",
+  "read-probe.patch": "acd37b552597e5c040ee2a3e485eb883b5209365a3893194b226d04feaae8016",
+  "serial-excerpts.txt": "9b7304ad6bae6843a2b9a55ce71da483df101db8c10805ddf6f2db7828f0ffed",
+  "summary.json": "708a65439be380bd9061830800ffd075a4affd5ace3e68c794f096eb9e029683"
+}

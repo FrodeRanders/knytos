@@ -39,6 +39,9 @@ execution records. For current knowledge and work, use:
 
 ## Milestone records
 
+- [AtomVM scheduler contention](milestones/2026-11-25-atomvm-scheduler-contention.md)
+- [AtomVM CQ wake comparison](milestones/2026-11-25-atomvm-reactor-wakes.md)
+- [AtomVM scheduler performance](milestones/2026-11-25-atomvm-scheduler-performance.md)
 - [AtomVM whole-node shutdown](milestones/2026-11-25-atomvm-node-shutdown.md)
 - [AtomVM cooperative deployment retirement](milestones/2026-11-24-atomvm-cooperative-retirement.md)
 - [AtomVM deployment retirement](milestones/2026-11-24-atomvm-deployment-retirement.md)

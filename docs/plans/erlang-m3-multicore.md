@@ -21,12 +21,19 @@ The [cooperative retirement results](../reports/milestones/2026-11-24-atomvm-coo
 cover exact scheduler joins, local disposal and supervisor acknowledgement.
 The [whole-node shutdown results](../reports/milestones/2026-11-25-atomvm-node-shutdown.md)
 cover simultaneous busy and parked four-scheduler deployments through PSCI poweroff.
+The [performance measurements](../reports/milestones/2026-11-25-atomvm-scheduler-performance.md)
+cover message throughput, timer and wake latency, CPU utilization and memory.
+The [CQ wake comparison](../reports/milestones/2026-11-25-atomvm-reactor-wakes.md)
+repeats the message workload after coalescing elected-poller wake hints.
+The [synchronization profile](../reports/milestones/2026-11-25-atomvm-scheduler-contention.md)
+records private mutex and condition waits, scheduler signals and read/write
+lock acquisitions on that workload.
 
 | Pinned AtomVM requirement | Knytos boundary and remaining qualification |
 | --- | --- |
 | Scheduler entry with a `GlobalContext *` and a main/worker distinction | Startup prepares the fixed roster and retains each `ThreadHandle`. AtomVM reserves scheduler count under its own lock and releases a prepared worker after the ready-list publication. Dynamic reconfiguration returns `badarg`. |
 | Mutex, try-lock, condition variable and read/write lock | The adapter uses the worker ABI. Conditions wait on the participant's private CQ and return to the VM with the mutex reacquired. Failed waits and lock calls abort. Contention and waiter-admission limits need targeted stress tests. |
-| Event poll interruption through `sys_signal` | AtomVM elects one poller. The C runtime guards its CQ zero cursor against overlap. Private waiters have their own cursors. Signed deployment retirement reached the CQ wait with parked workers and the nonblocking checkpoint when processes remained runnable. |
+| Event poll interruption through `sys_signal` | AtomVM elects one poller. The port retains VM wake hints during a runnable scan and posts a CQ generation for the first hint after arming. The C runtime guards the CQ zero cursor against overlap. Private waiters have their own cursors. The kernel independently wakes the poller for signed retirement. |
 | Thread-safe C library | The Picolibc worker profile supplies participant errno and fixed streams. The remaining linked environment and timezone mutators sit behind the unavailable wall-clock call. Dynamic AVM package operations and the private-data NIF are excluded in the SMP lookup. The full concurrent NIF and libc surface needs additional auditing. |
 | Process and VM teardown | The VM count can reach zero while native callbacks are returning. Startup wakes and joins every exact worker before freeing VM state. Join failure retains the worker owner through domain abort. The heap-only profile stops schedulers, completes C cleanup and acknowledges before startup exits. Signed deployment replacement and whole-node shutdown exercised this path. The agent retains each launch owner through reclamation. Cleanup for external NIF resources remains open. |
 
@@ -36,10 +43,15 @@ the C runtime. The M2 and M3 fixtures cover the sole consumer's wake-before-wait
 case and timer deadlines. Controlled wake injection during poller rotation
 and private waiter saturation remain open.
 
-Run the same message and timer workload across 1, 2 and 4 AtomVM
-schedulers. Measure throughput, wake latency, idle CPU use and memory
-before closing M3. Exercise wait admission rejection while an SMP VM has
-active and parked workers. Keep the signed thread and stack
-limits explicit for each run. See the
+The message-heavy workload still shows much lower throughput with SMP
+on QEMU TCG. Private mutex and condition wait calls per message rise
+with the scheduler count. Measure which handoffs find runnable work,
+how often selected workers wait again for the scheduler mutex and how
+much time each path takes. Separate allocator lock spins from C runtime
+metadata lock spins. Compare sustained and compute-heavy workloads and
+physical hardware before closing M3.
+Exercise wait admission rejection while an SMP VM has
+active and parked workers. Keep the signed thread and stack limits
+explicit for each run. See the
 [runtime and threading contracts](../reference/contributor-contracts.md#threads-stacks-and-scheduler-handoff)
 and [CQ wait contract](../reference/cq-wait.md).

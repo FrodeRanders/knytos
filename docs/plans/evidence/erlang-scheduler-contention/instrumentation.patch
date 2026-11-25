@@ -1,0 +1,251 @@
+diff --git a/crates/knytos-cabi/src/sync.rs b/crates/knytos-cabi/src/sync.rs
+index 1c6b83b8..d04b3593 100644
+--- a/crates/knytos-cabi/src/sync.rs
++++ b/crates/knytos-cabi/src/sync.rs
+@@ -4,12 +4,66 @@
+ pub(crate) mod libc;
+ mod rwlock;
+
++pub(crate) mod profile {
++    use core::sync::atomic::{
++        AtomicU64,
++        Ordering,
++    };
++
++    use crate::workers::{
++        PARTICIPANT_COUNT,
++        Participant,
++    };
++
++    #[repr(usize)]
++    pub(crate) enum Counter {
++        MutexCalls,
++        MutexImmediate,
++        MutexPark,
++        MutexTry,
++        MutexTryBusy,
++        ReadCalls,
++        WriteCalls,
++        RwImmediate,
++        RwPark,
++        ReadTry,
++        ReadTryBusy,
++        ConditionWait,
++        ConditionPark,
++        ConditionSelected,
++        ConditionSignal,
++    }
++    const COUNT: usize = Counter::ConditionSignal as usize + 1;
++
++    #[repr(align(128))]
++    struct Slot([AtomicU64; COUNT]);
++    static COUNTERS: [Slot; PARTICIPANT_COUNT] =
++        [const { Slot([const { AtomicU64::new(0) }; COUNT]) }; PARTICIPANT_COUNT];
++
++    pub(crate) fn record(caller: Participant, counter: Counter) {
++        let cell = &COUNTERS[caller.slot as usize].0[counter as usize];
++        // Each participant is the only writer to its live slot.
++        cell.store(cell.load(Ordering::Relaxed) + 1, Ordering::Relaxed);
++    }
++
++    pub(crate) fn report() {
++        for (slot, row) in COUNTERS.iter().enumerate() {
++            let values = row.0.each_ref().map(|c| c.load(Ordering::Relaxed));
++            knytos_rt::logln!("[cabi-sync-profile] slot={} counts={:?}", slot, values);
++        }
++    }
++}
++
+ use knytos_rt::{
+     CountingMutex,
+     deadline::Deadline,
+ };
+ use lock_api::Mutex;
+
++use self::profile::{
++    Counter,
++    record,
++};
+ use crate::{
+     ALLOCATIONS,
+     BUSY,
+@@ -45,7 +99,7 @@ impl NativeMutex {
+
+     fn try_lock(&self, caller: Participant) -> i32 {
+         let mut state = self.0.lock();
+-        match state.owner {
++        let status = match state.owner {
+             None => {
+                 state.owner = Some(caller);
+                 state.depth = 1;
+@@ -53,7 +107,13 @@ impl NativeMutex {
+             }
+             Some(owner) if owner == caller => INVALID,
+             Some(_) => BUSY,
++        };
++        drop(state);
++        record(caller, Counter::MutexTry);
++        if status == BUSY {
++            record(caller, Counter::MutexTryBusy);
+         }
++        status
+     }
+
+     fn lock(&self, caller: Participant, deadline: &Deadline) -> i32 {
+@@ -61,6 +121,7 @@ impl NativeMutex {
+     }
+
+     fn lock_inner(&self, caller: Participant, deadline: &Deadline, recursive: bool) -> i32 {
++        record(caller, Counter::MutexCalls);
+         let bit = caller.bit();
+         loop {
+             let remaining = deadline.remaining_ms();
+@@ -68,9 +129,14 @@ impl NativeMutex {
+                 let mut state = self.0.lock();
+                 match state.owner {
+                     None => {
++                        let immediate = state.waiting & bit == 0;
+                         state.waiting &= !bit;
+                         state.owner = Some(caller);
+                         state.depth = 1;
++                        drop(state);
++                        if immediate {
++                            record(caller, Counter::MutexImmediate);
++                        }
+                         return OK;
+                     }
+                     Some(owner) if owner == caller && recursive => {
+@@ -90,6 +156,7 @@ impl NativeMutex {
+                     Some(_) => state.waiting |= bit,
+                 }
+             }
++            record(caller, Counter::MutexPark);
+             let status = park(caller, deadline.remaining_ms());
+             if status != OK && status != DEADLINE {
+                 self.0.lock().waiting &= !bit;
+@@ -132,6 +199,7 @@ impl Condition {
+         deadline: Option<&Deadline>,
+         reacquire_ms: u32,
+     ) -> i32 {
++        record(caller, Counter::ConditionWait);
+         let bit = caller.bit();
+         let waiting = {
+             // Register while still owning the application mutex. This is
+@@ -162,6 +230,7 @@ impl Condition {
+                     return DEADLINE;
+                 }
+             }
++            record(caller, Counter::ConditionPark);
+             let status = park_event(caller, remaining);
+             if status != OK && status != DEADLINE {
+                 let mut state = self.0.lock();
+@@ -170,6 +239,7 @@ impl Condition {
+                 return status;
+             }
+         }
++        record(caller, Counter::ConditionSelected);
+         // Timed callers share their original budget with reacquisition.
+         // Event-only callers start a separate lock budget upon selection.
+         let lock_deadline;
+@@ -315,9 +385,10 @@ pub unsafe extern "C" fn knytos_condition_wait_event(
+ /// Safety: unless null, the pointer names a live object throughout the call.
+ #[unsafe(no_mangle)]
+ pub unsafe extern "C" fn knytos_condition_signal(condition: *const Condition, all: u32) -> i32 {
+-    let (Some(object), Some(_)) = (unsafe { condition.as_ref() }, participant()) else {
++    let (Some(object), Some(caller)) = (unsafe { condition.as_ref() }, participant()) else {
+         return INVALID;
+     };
++    record(caller, Counter::ConditionSignal);
+     object.signal(all != 0);
+     OK
+ }
+diff --git a/crates/knytos-cabi/src/sync/rwlock.rs b/crates/knytos-cabi/src/sync/rwlock.rs
+index dbf3e63d..108954d7 100644
+--- a/crates/knytos-cabi/src/sync/rwlock.rs
++++ b/crates/knytos-cabi/src/sync/rwlock.rs
+@@ -5,7 +5,13 @@ use knytos_rt::{
+ };
+ use lock_api::Mutex;
+
+-use super::publish;
++use super::{
++    profile::{
++        Counter,
++        record,
++    },
++    publish,
++};
+ use crate::{
+     ALLOCATIONS,
+     BUSY,
+@@ -112,17 +118,25 @@ pub struct NativeRwLock(Mutex<CountingMutex, State>);
+
+ impl NativeRwLock {
+     fn acquire(&self, caller: Participant, access: Access, deadline: &Deadline) -> i32 {
++        record(
++            caller,
++            match access {
++                Access::Read => Counter::ReadCalls,
++                Access::Write => Counter::WriteCalls,
++            },
++        );
+         loop {
+             let remaining = deadline.remaining_ms();
+-            let (status, wake) = {
++            let (status, wake, immediate) = {
+                 let mut state = self.0.lock();
+                 let status = state.try_acquire(caller, access);
+                 if status == BUSY && remaining != 0 {
+                     // Register against the same state read by unlock. A
+                     // subsequent release leaves a retained CQ generation.
+                     *state.waiters(access) |= caller.bit();
+-                    (BUSY, 0)
++                    (BUSY, 0, false)
+                 } else {
++                    let immediate = status == OK && *state.waiters(access) & caller.bit() == 0;
+                     let wake = state.withdraw(caller, access);
+                     (
+                         if status == BUSY {
+@@ -131,13 +145,18 @@ impl NativeRwLock {
+                             status
+                         },
+                         wake,
++                        immediate,
+                     )
+                 }
+             };
++            if immediate {
++                record(caller, Counter::RwImmediate);
++            }
+             wake_waiters(wake);
+             if status != BUSY {
+                 return status;
+             }
++            record(caller, Counter::RwPark);
+             let status = park(caller, deadline.remaining_ms());
+             if status != OK && status != DEADLINE {
+                 let wake = self.0.lock().withdraw(caller, access);
+@@ -203,7 +222,12 @@ pub unsafe extern "C" fn knytos_rwlock_try_read(lock: *const NativeRwLock) -> i3
+     let (Some(lock), Some(caller)) = (unsafe { lock.as_ref() }, participant()) else {
+         return INVALID;
+     };
+-    lock.0.lock().try_acquire(caller, Access::Read)
++    let status = lock.0.lock().try_acquire(caller, Access::Read);
++    record(caller, Counter::ReadTry);
++    if status == BUSY {
++        record(caller, Counter::ReadTryBusy);
++    }
++    status
+ }
+
+ /// Safety: unless null, the object remains live through the entire wait.
+diff --git a/crates/knytos-cabi/src/workers.rs b/crates/knytos-cabi/src/workers.rs
+index 35671f63..61eac073 100644
+--- a/crates/knytos-cabi/src/workers.rs
++++ b/crates/knytos-cabi/src/workers.rs
+@@ -294,4 +294,5 @@ pub(crate) fn require_joined() {
+         knytos_rt::logln!("[c-runtime] exit with an unjoined worker");
+         knytos_rt::domain_abort();
+     }
++    crate::sync::profile::report();
+ }

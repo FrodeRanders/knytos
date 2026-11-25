@@ -1028,8 +1028,12 @@ guest. [Cooperative deployment retirement](../reports/milestones/2026-11-24-atom
 joins busy and parked schedulers before acknowledgement.
 [Signed whole-node shutdown](../reports/milestones/2026-11-25-atomvm-node-shutdown.md)
 drained both kinds of deployment on the same guest before PSCI poweroff.
-Performance and sustained load remain part of the
-[multicore qualification](erlang-m3-multicore.md).
+The [scheduler benchmarks](../reports/milestones/2026-11-25-atomvm-scheduler-performance.md)
+measured idle CPU use and found a throughput regression under SMP for
+the message-heavy workload. The [CQ wake comparison](../reports/milestones/2026-11-25-atomvm-reactor-wakes.md)
+qualifies coalescing VM hints to the elected poller. Attribution of the
+remaining throughput gap and wider load coverage remain in
+the [multicore qualification](erlang-m3-multicore.md).
 
 ### 10.1. Objective
 

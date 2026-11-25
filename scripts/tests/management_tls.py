@@ -9,11 +9,12 @@ if not __debug__:
     raise RuntimeError("management TLS probes require enabled runtime checks; Python optimization is unsupported")
 
 
-def context(role=None):
-    ca = os.environ["KNYTOS_MANAGEMENT_CA_FILE"]
+def context(role=None, environment=None):
+    environment = os.environ if environment is None else environment
+    ca = environment["KNYTOS_MANAGEMENT_CA_FILE"]
     prefix = "KNYTOS_MANAGEMENT_" + (role.upper() + "_" if role else "")
-    cert = os.environ[prefix + "CERT_FILE"]
-    key = os.environ[prefix + "KEY_FILE"]
+    cert = environment[prefix + "CERT_FILE"]
+    key = environment[prefix + "KEY_FILE"]
     result = ssl.create_default_context(cafile=ca)
     result.minimum_version = ssl.TLSVersion.TLSv1_3
     result.maximum_version = ssl.TLSVersion.TLSv1_3

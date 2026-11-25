@@ -100,7 +100,9 @@ void smp_rwlock_destroy(RWLock *lock)
 
 void smp_rwlock_rdlock(RWLock *lock)
 {
-    require_ok("rwlock read", knytos_rwlock_read((struct knytos_rwlock *) lock, LOCK_TIMEOUT_MS));
+    if (!smp_rwlock_tryrdlock(lock)) {
+        require_ok("rwlock read", knytos_rwlock_read((struct knytos_rwlock *) lock, LOCK_TIMEOUT_MS));
+    }
 }
 
 bool smp_rwlock_tryrdlock(RWLock *lock)
