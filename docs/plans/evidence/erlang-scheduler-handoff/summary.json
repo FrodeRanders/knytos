@@ -1,0 +1,676 @@
+{
+  "base_commit": "6ff819d57faa5ebef71decf1bbc0aa409a4f401b",
+  "host": "Darwin arm64",
+  "guest_cpu": "cortex-a710",
+  "guest_cpus": 4,
+  "accelerator": "QEMU TCG",
+  "toolchain": {
+    "picolibc_revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff",
+    "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+    "rustc": "rustc 1.102.0-nightly (5f4effd57 2026-11-13)\nbinary: rustc\ncommit-hash: 5f4effd579500175af844241eb179e756190f1e7\ncommit-date: 2026-11-13\nhost: aarch64-apple-darwin\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5"
+  },
+  "package_sha256": "62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31",
+  "harness_sha256": "55d880914255c34a1d8b19a003fb9c4a68ece82af29b9753156884df439779fb",
+  "workload_source_sha256": "0efce158404fb1b3e8c6a6f37df04b878f0cfea8fd34db9138b325a3d45421aa",
+  "condition_wait_sample_stride_per_slot": 64,
+  "histogram_upper_edges_us": [
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096,
+    8192
+  ],
+  "campaign": {
+    "kernel_sha256": "5b82fd25a34abf1a9c9ab50d0aa0b7f42cfa2743ce4a9b1790ccecfb03e6a141",
+    "boot_image_sha256": "529144659512169fe6d1eb22496d8b885e672ac99d5b0b359d36d0c68da829ee",
+    "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+    "initial_disk_sha256": "d6bae82126b603b400db48c15a8ae48392b1220f7c1e3ec7428e9d8eb1b399f9",
+    "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+    "passed_cases": [
+      "c-hello",
+      "c-memory",
+      "c-format",
+      "c-clock",
+      "c-startup",
+      "c-exit",
+      "c-error",
+      "c-abort",
+      "c-empty",
+      "c-shutdown-without-request",
+      "avm-performance-1",
+      "avm-performance-2",
+      "avm-performance-4",
+      "c-survivor"
+    ],
+    "negative_controls": [
+      {
+        "name": "tls-rejected",
+        "expected_diagnostic": "TLS is unsupported",
+        "passed": true
+      },
+      {
+        "name": "unsupported-rejected",
+        "expected_diagnostic": "undefined symbol: open",
+        "passed": true
+      },
+      {
+        "name": "signature-rejected",
+        "passed": true
+      }
+    ]
+  },
+  "measurements": [
+    {
+      "schedulers": 1,
+      "asid": 28,
+      "throughput_messages_per_s": 148601.29,
+      "prior_uninstrumented_throughput_messages_per_s": 154920.67,
+      "throughput_trials": [
+        [
+          1,
+          96000,
+          646024
+        ],
+        [
+          2,
+          96000,
+          638838
+        ],
+        [
+          3,
+          96000,
+          646258
+        ]
+      ],
+      "timer_late_p95_us": 2346,
+      "wake_latency_p95_us": 88,
+      "sampled_cpu_windows": {
+        "idle": {
+          "duration_s": 1.520858,
+          "dispatches": 0,
+          "runtime_tick_deltas": [
+            0
+          ]
+        },
+        "load": {
+          "duration_s": 2.313554,
+          "dispatches": 303,
+          "runtime_tick_deltas": [
+            131925812
+          ]
+        }
+      },
+      "signed_elf_sha256": "6981544e6c50695385527345ff6b77f21b261e4fa3662810611749890c6ee3e1",
+      "signed_descriptor_sha256": "21bcd3b03d7d2a282c8dd751ecb5ecc5ce7e17e3b9b48b35a7a11a258fc2808f",
+      "reference_signed_elf_sha256": "6981544e6c50695385527345ff6b77f21b261e4fa3662810611749890c6ee3e1"
+    },
+    {
+      "schedulers": 2,
+      "asid": 29,
+      "throughput_messages_per_s": 10839.61,
+      "prior_uninstrumented_throughput_messages_per_s": 10982.16,
+      "throughput_trials": [
+        [
+          1,
+          96000,
+          8856408
+        ],
+        [
+          2,
+          96000,
+          8852542
+        ],
+        [
+          3,
+          96000,
+          8856590
+        ]
+      ],
+      "timer_late_p95_us": 2536,
+      "wake_latency_p95_us": 422,
+      "sampled_cpu_windows": {
+        "idle": {
+          "duration_s": 1.517555,
+          "dispatches": 0,
+          "runtime_tick_deltas": [
+            0,
+            0
+          ]
+        },
+        "load": {
+          "duration_s": 1.617479,
+          "dispatches": 8327,
+          "runtime_tick_deltas": [
+            96430875,
+            78144648
+          ]
+        }
+      },
+      "signed_elf_sha256": "b53d7652707c1b7ee8303dbe406ce73d94ae1a0981aa142dd381956406616657",
+      "signed_descriptor_sha256": "4ad175eebba74e07fa8e9831a603ebf31c325c80827c3f1cf66cfee4aaa3c12e",
+      "scheduler_returns": {
+        "won_election": 96683,
+        "poller_already_elected": 47852,
+        "first_scan_found_process": 96618,
+        "first_scan_found_no_process": 65,
+        "won_election_without_recorded_scan": 0
+      },
+      "condvar": {
+        "waits": 144536,
+        "reacquired": 144536,
+        "with_cq_wait": 42841,
+        "cq_wait_calls": 50045,
+        "returns_outside_election_path": 1,
+        "wait_us": {
+          "histogram": [
+            0,
+            0,
+            0,
+            16,
+            53,
+            644,
+            682,
+            731,
+            83,
+            39,
+            7,
+            3,
+            0,
+            0
+          ],
+          "samples": 2258,
+          "p50_bucket": {
+            "lower_exclusive_us": 64,
+            "upper_inclusive_us": 128
+          },
+          "p95_bucket": {
+            "lower_exclusive_us": 256,
+            "upper_inclusive_us": 512
+          }
+        },
+        "lock_us": {
+          "histogram": [
+            0,
+            0,
+            22,
+            565,
+            1002,
+            470,
+            111,
+            75,
+            9,
+            2,
+            1,
+            1,
+            0,
+            0
+          ],
+          "samples": 2258,
+          "p50_bucket": {
+            "lower_exclusive_us": 16,
+            "upper_inclusive_us": 32
+          },
+          "p95_bucket": {
+            "lower_exclusive_us": 64,
+            "upper_inclusive_us": 128
+          }
+        }
+      },
+      "condition_rows_by_slot": {
+        "0": {
+          "waits": 70532,
+          "reacquired": 70532,
+          "with_cq_wait": 20824,
+          "cq_wait_calls": 24673,
+          "wait_us": [
+            0,
+            0,
+            0,
+            4,
+            32,
+            190,
+            375,
+            408,
+            61,
+            23,
+            6,
+            3,
+            0,
+            0
+          ],
+          "lock_us": [
+            0,
+            0,
+            12,
+            269,
+            491,
+            239,
+            39,
+            44,
+            4,
+            2,
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "waits": 74004,
+          "reacquired": 74004,
+          "with_cq_wait": 22017,
+          "cq_wait_calls": 25372,
+          "wait_us": [
+            0,
+            0,
+            0,
+            12,
+            21,
+            454,
+            307,
+            323,
+            22,
+            16,
+            1,
+            0,
+            0,
+            0
+          ],
+          "lock_us": [
+            0,
+            0,
+            10,
+            296,
+            511,
+            231,
+            72,
+            31,
+            5,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "waits": 0,
+          "reacquired": 0,
+          "with_cq_wait": 0,
+          "cq_wait_calls": 0,
+          "wait_us": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "lock_us": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "waits": 0,
+          "reacquired": 0,
+          "with_cq_wait": 0,
+          "cq_wait_calls": 0,
+          "wait_us": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "lock_us": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "unsigned_elf_sha256": "e927ceed940a8caceb1f1239ce00ae8c4bd384dc6c6c36ce4f4ff95551132dc8",
+      "profiled_source_sha256": {
+        "ports/atomvm/build.py": "bdd715aa55a2af4b6b9ba100b66737acd8e09695fe23483a597ed92071a52e90",
+        "ports/atomvm/smp.c": "f688f0f6f34ca9a576f5f70b8013885400fb41c2964c5f89d3d0b42669c10e97",
+        "crates/knytos-cabi/src/sync.rs": "0358c9f852e997544a61693e93b540c66f48014c7adbfc8f511794a05d5605e1",
+        "crates/knytos-cabi/src/sync/libc.rs": "cdcbeae3063b24e2c42bdbfa36ea6a74403be98f70ae218ceab696fccf08c1b5",
+        "crates/knytos-cabi/src/workers.rs": "f32330089043493694d6d62a309b865c76e273bc0d1b9054e308e0364f9d622c"
+      },
+      "generated_scheduler_sha256": "5c9ba1bd8aa83950ae215c014e176fecabbc82c357fa387ac8be663079cd6302",
+      "package_sha256": "62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31",
+      "reference_signed_elf_sha256": "3769fcc9d1b4454934a51ceab3e897bec288800fb19a72c7f700c266df35902e"
+    },
+    {
+      "schedulers": 4,
+      "asid": 30,
+      "throughput_messages_per_s": 6459.96,
+      "prior_uninstrumented_throughput_messages_per_s": 6431.75,
+      "throughput_trials": [
+        [
+          1,
+          96000,
+          14860768
+        ],
+        [
+          2,
+          96000,
+          14858312
+        ],
+        [
+          3,
+          96000,
+          14950198
+        ]
+      ],
+      "timer_late_p95_us": 2684,
+      "wake_latency_p95_us": 394,
+      "sampled_cpu_windows": {
+        "idle": {
+          "duration_s": 1.53611,
+          "dispatches": 0,
+          "runtime_tick_deltas": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "load": {
+          "duration_s": 1.714085,
+          "dispatches": 16438,
+          "runtime_tick_deltas": [
+            89773699,
+            75058217,
+            73536881,
+            47073445
+          ]
+        }
+      },
+      "signed_elf_sha256": "058571729598ed974e6465542cb8556cc56ce06fdedc1fde2533b6c47dac8f34",
+      "signed_descriptor_sha256": "ae44c62079e41326f66a1ec8aae954bd23d4dcfdf1d803ef8695d1f097f48269",
+      "scheduler_returns": {
+        "won_election": 182474,
+        "poller_already_elected": 190252,
+        "first_scan_found_process": 182407,
+        "first_scan_found_no_process": 67,
+        "won_election_without_recorded_scan": 0
+      },
+      "condvar": {
+        "waits": 372729,
+        "reacquired": 372729,
+        "with_cq_wait": 152019,
+        "cq_wait_calls": 241147,
+        "returns_outside_election_path": 3,
+        "wait_us": {
+          "histogram": [
+            0,
+            0,
+            0,
+            21,
+            197,
+            512,
+            1246,
+            1843,
+            1132,
+            580,
+            220,
+            62,
+            6,
+            2
+          ],
+          "samples": 5821,
+          "p50_bucket": {
+            "lower_exclusive_us": 128,
+            "upper_inclusive_us": 256
+          },
+          "p95_bucket": {
+            "lower_exclusive_us": 512,
+            "upper_inclusive_us": 1024
+          }
+        },
+        "lock_us": {
+          "histogram": [
+            0,
+            0,
+            32,
+            462,
+            1920,
+            1477,
+            464,
+            996,
+            388,
+            73,
+            8,
+            1,
+            0,
+            0
+          ],
+          "samples": 5821,
+          "p50_bucket": {
+            "lower_exclusive_us": 32,
+            "upper_inclusive_us": 64
+          },
+          "p95_bucket": {
+            "lower_exclusive_us": 256,
+            "upper_inclusive_us": 512
+          }
+        }
+      },
+      "condition_rows_by_slot": {
+        "0": {
+          "waits": 112354,
+          "reacquired": 112354,
+          "with_cq_wait": 44935,
+          "cq_wait_calls": 66355,
+          "wait_us": [
+            0,
+            0,
+            0,
+            8,
+            71,
+            167,
+            551,
+            768,
+            136,
+            44,
+            9,
+            1,
+            0,
+            0
+          ],
+          "lock_us": [
+            0,
+            0,
+            13,
+            196,
+            640,
+            449,
+            100,
+            234,
+            81,
+            34,
+            7,
+            1,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "waits": 117436,
+          "reacquired": 117436,
+          "with_cq_wait": 47155,
+          "cq_wait_calls": 71430,
+          "wait_us": [
+            0,
+            0,
+            0,
+            9,
+            77,
+            235,
+            436,
+            636,
+            374,
+            65,
+            1,
+            0,
+            0,
+            1
+          ],
+          "lock_us": [
+            0,
+            0,
+            8,
+            166,
+            675,
+            445,
+            146,
+            283,
+            101,
+            9,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "waits": 91304,
+          "reacquired": 91304,
+          "with_cq_wait": 39084,
+          "cq_wait_calls": 66335,
+          "wait_us": [
+            0,
+            0,
+            0,
+            3,
+            43,
+            82,
+            210,
+            354,
+            449,
+            243,
+            41,
+            0,
+            0,
+            1
+          ],
+          "lock_us": [
+            0,
+            0,
+            7,
+            71,
+            410,
+            356,
+            123,
+            333,
+            112,
+            14,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "waits": 51635,
+          "reacquired": 51635,
+          "with_cq_wait": 20845,
+          "cq_wait_calls": 37027,
+          "wait_us": [
+            0,
+            0,
+            0,
+            1,
+            6,
+            28,
+            49,
+            85,
+            173,
+            228,
+            169,
+            61,
+            6,
+            0
+          ],
+          "lock_us": [
+            0,
+            0,
+            4,
+            29,
+            195,
+            227,
+            95,
+            146,
+            94,
+            16,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "unsigned_elf_sha256": "fd91229640099fbe36e1b83dd98aef7f0662ef851596fe7638df5a5280184114",
+      "profiled_source_sha256": {
+        "ports/atomvm/build.py": "bdd715aa55a2af4b6b9ba100b66737acd8e09695fe23483a597ed92071a52e90",
+        "ports/atomvm/smp.c": "f688f0f6f34ca9a576f5f70b8013885400fb41c2964c5f89d3d0b42669c10e97",
+        "crates/knytos-cabi/src/sync.rs": "0358c9f852e997544a61693e93b540c66f48014c7adbfc8f511794a05d5605e1",
+        "crates/knytos-cabi/src/sync/libc.rs": "cdcbeae3063b24e2c42bdbfa36ea6a74403be98f70ae218ceab696fccf08c1b5",
+        "crates/knytos-cabi/src/workers.rs": "f32330089043493694d6d62a309b865c76e273bc0d1b9054e308e0364f9d622c"
+      },
+      "generated_scheduler_sha256": "5c9ba1bd8aa83950ae215c014e176fecabbc82c357fa387ac8be663079cd6302",
+      "package_sha256": "62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31",
+      "reference_signed_elf_sha256": "eb34114a89406606eaed9da5262a15ddda902a36d1898bff00f8919b15d2e57b"
+    }
+  ]
+}

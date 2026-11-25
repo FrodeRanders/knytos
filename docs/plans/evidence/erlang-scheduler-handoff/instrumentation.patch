@@ -1,0 +1,257 @@
+diff --git a/crates/knytos-cabi/src/sync.rs b/crates/knytos-cabi/src/sync.rs
+index 1c6b83b8..13cc6246 100644
+--- a/crates/knytos-cabi/src/sync.rs
++++ b/crates/knytos-cabi/src/sync.rs
+@@ -4,6 +4,104 @@
+ pub(crate) mod libc;
+ mod rwlock;
+
++pub(crate) mod handoff_profile {
++    use core::sync::atomic::{
++        AtomicU64,
++        Ordering,
++    };
++
++    use crate::workers::{
++        PARTICIPANT_COUNT,
++        Participant,
++    };
++
++    const SAMPLE_STRIDE: u64 = 64;
++    const LIMITS_US: [u64; 13] = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192];
++    type Histogram = [AtomicU64; LIMITS_US.len() + 1];
++    const EMPTY: Histogram = [const { AtomicU64::new(0) }; LIMITS_US.len() + 1];
++
++    #[repr(align(128))]
++    struct Slot {
++        waits: AtomicU64,
++        reacquired: AtomicU64,
++        contended: AtomicU64,
++        park_calls: AtomicU64,
++        wait_durations: Histogram,
++        lock_durations: Histogram,
++    }
++
++    static SLOTS: [Slot; PARTICIPANT_COUNT] = [const {
++        Slot {
++            waits: AtomicU64::new(0),
++            reacquired: AtomicU64::new(0),
++            contended: AtomicU64::new(0),
++            park_calls: AtomicU64::new(0),
++            wait_durations: EMPTY,
++            lock_durations: EMPTY,
++        }
++    }; PARTICIPANT_COUNT];
++
++    fn row(caller: Participant) -> &'static Slot {
++        &SLOTS[caller.slot as usize]
++    }
++
++    fn add(counter: &AtomicU64, count: u64) {
++        // Each live roster slot has one writer; read the counters after join.
++        counter.store(counter.load(Ordering::Relaxed) + count, Ordering::Relaxed);
++    }
++
++    pub(super) fn begin(caller: Participant) -> Option<(u64, u64)> {
++        let count = &row(caller).waits;
++        add(count, 1);
++        (count.load(Ordering::Relaxed) % SAMPLE_STRIDE == 0).then(knytos_rt::abi::monotonic_clock)
++    }
++
++    pub(super) fn selected(caller: Participant, start: Option<(u64, u64)>) -> Option<(u64, u64)> {
++        start.map(|start| finish(&row(caller).wait_durations, start))
++    }
++
++    pub(super) fn reacquired(caller: Participant, start: Option<(u64, u64)>, parks: u64) {
++        let row = row(caller);
++        if let Some(start) = start {
++            finish(&row.lock_durations, start);
++        }
++        add(&row.reacquired, 1);
++        add(&row.contended, u64::from(parks != 0));
++        add(&row.park_calls, parks);
++    }
++
++    fn finish(histogram: &Histogram, (start, frequency): (u64, u64)) -> (u64, u64) {
++        let (end, observed_frequency) = knytos_rt::abi::monotonic_clock();
++        assert!(end >= start && frequency != 0 && frequency == observed_frequency);
++        let usec = (end - start).saturating_mul(1_000_000).div_ceil(frequency);
++        add(&histogram[LIMITS_US.partition_point(|&limit| limit < usec)], 1);
++        (end, frequency)
++    }
++
++    pub(crate) fn report() {
++        for (slot, row) in SLOTS.iter().enumerate() {
++            knytos_rt::logln!(
++                "[cabi-handoff] slot={} waits={} reacquired={} contended={} parks={}",
++                slot,
++                row.waits.load(Ordering::Relaxed),
++                row.reacquired.load(Ordering::Relaxed),
++                row.contended.load(Ordering::Relaxed),
++                row.park_calls.load(Ordering::Relaxed),
++            );
++            knytos_rt::logln!(
++                "[cabi-handoff] slot={} wait_us={:?}",
++                slot,
++                row.wait_durations.each_ref().map(|value| value.load(Ordering::Relaxed))
++            );
++            knytos_rt::logln!(
++                "[cabi-handoff] slot={} lock_us={:?}",
++                slot,
++                row.lock_durations.each_ref().map(|value| value.load(Ordering::Relaxed))
++            );
++        }
++    }
++}
++
+ use knytos_rt::{
+     CountingMutex,
+     deadline::Deadline,
+@@ -57,10 +155,16 @@ impl NativeMutex {
+     }
+
+     fn lock(&self, caller: Participant, deadline: &Deadline) -> i32 {
+-        self.lock_inner(caller, deadline, false)
++        self.lock_inner(caller, deadline, false, None)
+     }
+
+-    fn lock_inner(&self, caller: Participant, deadline: &Deadline, recursive: bool) -> i32 {
++    fn lock_inner(
++        &self,
++        caller: Participant,
++        deadline: &Deadline,
++        recursive: bool,
++        mut park_count: Option<&mut u64>,
++    ) -> i32 {
+         let bit = caller.bit();
+         loop {
+             let remaining = deadline.remaining_ms();
+@@ -90,6 +194,9 @@ impl NativeMutex {
+                     Some(_) => state.waiting |= bit,
+                 }
+             }
++            if let Some(count) = park_count.as_deref_mut() {
++                *count += 1;
++            }
+             let status = park(caller, deadline.remaining_ms());
+             if status != OK && status != DEADLINE {
+                 self.0.lock().waiting &= !bit;
+@@ -132,6 +239,7 @@ impl Condition {
+         deadline: Option<&Deadline>,
+         reacquire_ms: u32,
+     ) -> i32 {
++        let sampled = handoff_profile::begin(caller);
+         let bit = caller.bit();
+         let waiting = {
+             // Register while still owning the application mutex. This is
+@@ -170,6 +278,7 @@ impl Condition {
+                 return status;
+             }
+         }
++        let selected = handoff_profile::selected(caller, sampled);
+         // Timed callers share their original budget with reacquisition.
+         // Event-only callers start a separate lock budget upon selection.
+         let lock_deadline;
+@@ -180,7 +289,12 @@ impl Condition {
+                 &lock_deadline
+             }
+         };
+-        mutex.lock(caller, deadline)
++        let mut parks = 0;
++        let status = mutex.lock_inner(caller, deadline, false, Some(&mut parks));
++        if status == OK {
++            handoff_profile::reacquired(caller, selected, parks);
++        }
++        status
+     }
+
+     fn signal(&self, all: bool) {
+diff --git a/crates/knytos-cabi/src/sync/libc.rs b/crates/knytos-cabi/src/sync/libc.rs
+index ab72c091..c0c4b35d 100644
+--- a/crates/knytos-cabi/src/sync/libc.rs
++++ b/crates/knytos-cabi/src/sync/libc.rs
+@@ -68,7 +68,7 @@ fn acquire(lock: &NativeMutex, recursive: bool) {
+     let Some(caller) = participant() else {
+         abort("lock outside the worker roster");
+     };
+-    if lock.lock_inner(caller, &Deadline::after(LOCK_BUDGET_MS), recursive) != OK {
++    if lock.lock_inner(caller, &Deadline::after(LOCK_BUDGET_MS), recursive, None) != OK {
+         abort("libc lock acquisition failed");
+     }
+ }
+diff --git a/crates/knytos-cabi/src/workers.rs b/crates/knytos-cabi/src/workers.rs
+index 35671f63..2798dbfc 100644
+--- a/crates/knytos-cabi/src/workers.rs
++++ b/crates/knytos-cabi/src/workers.rs
+@@ -294,4 +294,5 @@ pub(crate) fn require_joined() {
+         knytos_rt::logln!("[c-runtime] exit with an unjoined worker");
+         knytos_rt::domain_abort();
+     }
++    crate::sync::handoff_profile::report();
+ }
+diff --git a/ports/atomvm/build.py b/ports/atomvm/build.py
+index 0317c868..ab4554c7 100644
+--- a/ports/atomvm/build.py
++++ b/ports/atomvm/build.py
+@@ -64,6 +64,25 @@ def configure_smp(core, generated, scheduler):
+         entry = next(line for line in nifs_gperf.splitlines() if line.startswith(f"atomvm:{name},"))
+         nifs_gperf = replace_pinned(nifs_gperf, entry + "\n", "")
+     (generated / "nifs.gperf").write_text(nifs_gperf)
++    scheduler = replace_pinned(scheduler, "static Context *scheduler_run0(GlobalContext *global)",
++        "extern void knytos_handoff_return(bool);\n"
++        "extern void knytos_handoff_first_scan(bool);\n\n"
++        "static Context *scheduler_run0(GlobalContext *global)")
++    scheduler = replace_pinned(scheduler, "    bool main_thread = smp_is_main_thread(global);",
++        "    bool main_thread = smp_is_main_thread(global);\n"
++        "    bool handoff_scan = false;")
++    scheduler = replace_pinned(scheduler, "                is_waiting = !global->waiting_scheduler;",
++        "                is_waiting = !global->waiting_scheduler;\n"
++        "                knytos_handoff_return(is_waiting);\n"
++        "                handoff_scan = is_waiting;")
++    scheduler = replace_pinned(scheduler, "        if (result == NULL && !global->scheduler_stop_all) {",
++        "#ifndef AVM_NO_SMP\n"
++        "        if (handoff_scan) {\n"
++        "            knytos_handoff_first_scan(result != NULL);\n"
++        "            handoff_scan = false;\n"
++        "        }\n"
++        "#endif\n"
++        "        if (result == NULL && !global->scheduler_stop_all) {")
+     return scheduler
+
+
+diff --git a/ports/atomvm/smp.c b/ports/atomvm/smp.c
+index 10c3f470..cb836365 100644
+--- a/ports/atomvm/smp.c
++++ b/ports/atomvm/smp.c
+@@ -18,6 +18,21 @@ static struct SchedulerWorker {
+
+ static atomic_uint scheduled_workers;
+
++static _Atomic uint64_t returned_elected;
++static _Atomic uint64_t returned_busy;
++static _Atomic uint64_t scan_runnable;
++static _Atomic uint64_t scan_empty;
++
++void knytos_handoff_return(bool elected)
++{
++    atomic_fetch_add_explicit(elected ? &returned_elected : &returned_busy, 1, memory_order_relaxed);
++}
++
++void knytos_handoff_first_scan(bool runnable)
++{
++    atomic_fetch_add_explicit(runnable ? &scan_runnable : &scan_empty, 1, memory_order_relaxed);
++}
++
+ static void require_ok(const char *operation, int status)
+ {
+     if (status == KNYTOS_SHUTDOWN) {
+@@ -184,4 +199,9 @@ void knytos_schedulers_join(void)
+     }
+     printf("[atomvm] schedulers joined=%u activated=%u\n", AVM_KNYTOS_SCHEDULERS - 1,
+         atomic_load_explicit(&scheduled_workers, memory_order_relaxed));
++    printf("[atomvm-handoff] elected=%llu busy=%llu runnable=%llu empty=%llu\n",
++        (unsigned long long) atomic_load_explicit(&returned_elected, memory_order_relaxed),
++        (unsigned long long) atomic_load_explicit(&returned_busy, memory_order_relaxed),
++        (unsigned long long) atomic_load_explicit(&scan_runnable, memory_order_relaxed),
++        (unsigned long long) atomic_load_explicit(&scan_empty, memory_order_relaxed));
+ }

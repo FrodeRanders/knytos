@@ -39,6 +39,7 @@ execution records. For current knowledge and work, use:
 
 ## Milestone records
 
+- [AtomVM scheduler handoff profile](milestones/2026-11-25-atomvm-scheduler-handoff.md)
 - [AtomVM scheduler contention](milestones/2026-11-25-atomvm-scheduler-contention.md)
 - [AtomVM CQ wake comparison](milestones/2026-11-25-atomvm-reactor-wakes.md)
 - [AtomVM scheduler performance](milestones/2026-11-25-atomvm-scheduler-performance.md)
