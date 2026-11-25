@@ -58,6 +58,10 @@ impl Participant {
     pub(crate) const fn bit(self) -> u8 {
         1 << self.slot
     }
+
+    pub(crate) const fn queue(self) -> u32 {
+        self.slot + 1
+    }
 }
 
 #[derive(Clone, Copy)]
@@ -270,7 +274,7 @@ pub(crate) fn park_event(caller: Participant, timeout: Option<u64>) -> i32 {
     if WORKER_LIMIT.load(Ordering::Relaxed) == 0 {
         return INVALID;
     }
-    wait_on_queue(timeout, caller.slot + 1)
+    wait_on_queue(timeout, caller.queue())
 }
 
 /// Signal slots captured from a synchronization object's exact waiter set.

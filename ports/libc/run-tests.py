@@ -18,6 +18,7 @@ GUEST_MAC = "52:54:00:12:34:56"
 CASES = [("c-hello", 0), ("c-memory", 1), ("c-format", 2), ("c-clock", 3),
          ("c-startup", 4), ("c-exit", 5), ("c-error", 6), ("c-abort", 7), ("c-empty", 8),
          ("c-shutdown-without-request", 9), ("c-survivor", 0)]
+HOLD_SERVICE = "m4-hold-service"
 
 
 def digest(path):
@@ -27,6 +28,23 @@ def digest(path):
 def domain_logs(text, asid):
     prefix = re.compile(rf"\[EL0 LOG\] lp=\d+ asid={asid} ")
     return "\n".join(line for line in text.splitlines() if prefix.search(line))
+
+
+def verify_active_cancel(text, server_asid, client_asid):
+    stages = (
+        (server_asid, "[m4 hold] accepted case=1"),
+        (client_asid, "{m4,cancelling_accepted_call}"),
+        (server_asid, "[m4 hold] late reply rejected case=1"),
+        (client_asid, "{m4,accepted_cancel_reused_ms,"),
+        (server_asid, "[m4 hold] accepted case=2"),
+        (server_asid, "[m4 hold] late reply rejected case=2"),
+        (client_asid, "{m4,accepted_call_timed_out}"),
+    )
+    offset = 0
+    for asid, marker in stages:
+        match = re.search(rf"\[EL0 LOG\] lp=\d+ asid={asid} {re.escape(marker)}", text[offset:])
+        assert match is not None, marker
+        offset += match.end()
 
 
 def retirement_instance(text, name, generation, mode, schedulers):
@@ -133,6 +151,8 @@ def main():
     parser.add_argument("--atomvm-overflow-elf", type=Path)
     parser.add_argument("--atomvm-service-elf", type=Path,
                         help="run the scoped native-service fixture with signed test grants")
+    parser.add_argument("--atomvm-active-cancel-elf", type=Path,
+                        help="qualify cancellation against a signed service that holds replies")
     parser.add_argument("--atomvm-scheduler-elf", action="append", type=Path, default=[],
                         help="add an AtomVM scheduler workload using its adjacent build manifest")
     parser.add_argument("--atomvm-idle-scheduler-elf", type=Path,
@@ -165,12 +185,19 @@ def main():
             parser.error("The service worker requires one Erlang scheduler and two guest CPUs")
         return manifest
     service_case = 35
+    active_cancel_case = 36
     service_workers = set()
     if args.atomvm_service_elf:
         if not scheduler_manifest(args.atomvm_service_elf).get("service_worker"):
             parser.error("--atomvm-service-elf requires a service worker image")
         service_workers.add(service_case)
         vm_cases[service_case] = ("avm-native-service", args.atomvm_service_elf, "{m4,native_service,pass}")
+    if args.atomvm_active_cancel_elf:
+        if not scheduler_manifest(args.atomvm_active_cancel_elf).get("service_worker"):
+            parser.error("--atomvm-active-cancel-elf requires a service worker image")
+        service_workers.add(active_cancel_case)
+        vm_cases[active_cancel_case] = ("avm-active-cancel", args.atomvm_active_cancel_elf,
+                                       "{m4,active_cancel,pass}")
     scheduler_cases = {}
     for image in args.atomvm_scheduler_elf:
         count = scheduler_manifest(image)["schedulers"]
@@ -285,14 +312,29 @@ def main():
         command([ROOT / "scripts/run-aarch64.sh", "release", "--minimal", "--build-only", "--instance", "cabi-m1"], "baseline-build")
         signer = ROOT / "target/debug/cluster-sign"
         key = ROOT / "tools/cluster-sign/dev-key.hex"
+        if args.atomvm_active_cancel_elf:
+            service_target = ROOT / "crates/knytos-services/target"
+            command(["cargo", "build", "--locked", "-p", "knytos-app", "--features", "test-support",
+                     "--example", "atomvm_cancel_fixture", "--target", "crates/knytos-services/aarch64-unknown-none.json",
+                     "--target-dir", service_target, "--release", "-Z", "build-std=core,alloc"],
+                    HOLD_SERVICE + "-build")
+            hold_image = images / (HOLD_SERVICE + ".elf")
+            shutil.copyfile(service_target / "aarch64-unknown-none/release/examples/atomvm_cancel_fixture", hold_image)
+            command([signer, "elf-sign", hold_image, HOLD_SERVICE, key, "service", "1", "1", "0x7", "-"],
+                    HOLD_SERVICE + "-sign")
+            command([signer, "deployment-sign", output / (HOLD_SERVICE + ".cdep"), HOLD_SERVICE,
+                     "fixture/" + HOLD_SERVICE, hold_image, "0", "1", "16", "1", "5000", key,
+                     "m4.hold=publish"], HOLD_SERVICE + "-descriptor")
         for name, number in cases:
             image = images / (name + ".elf")
             command([signer, "elf-sign", image, name, key, "service", "1", "1", "0x7", "-"], name + "-sign")
             thread_limit = (2 if number in service_workers else
                             worker_cases[number][1] if number in worker_cases else scheduler_cases.get(number, 1))
-            grants = ["m4.missing=call"] if number in service_workers else []
+            grants = ["m4.missing=call"] if number in service_workers and number != active_cancel_case else []
             if number == service_case:
                 grants.extend(("time=call", "observe=call"))
+            if number == active_cancel_case:
+                grants.append("m4.hold=call")
             command([signer, "deployment-sign", output / (name + ".cdep"), name, "fixture/" + name,
                      image, "0", "1", "64" if number in vm_cases else "16",
                      thread_limit, "5000", key, *grants], name + "-descriptor")
@@ -386,6 +428,13 @@ def main():
                              and "[time] synchronized" in s and "[dns] proposed filtered capacity" in s, 180)
                     live = []
                     for name, number in cases:
+                        if number == active_cancel_case:
+                            command([signer, "deployment-notify", output / (HOLD_SERVICE + ".cdep"),
+                                     "127.0.0.1:28081"], HOLD_SERVICE + "-admission", env=environment, timeout=40)
+                            launch = re.compile(rf'\[agent\] launched "{HOLD_SERVICE}" generation=1 asid=(\d+)')
+                            started = wait_for(lambda s: launch.search(s) and
+                                               "[m4 hold] published" in domain_logs(s, launch.search(s)[1]), 60)
+                            hold_asid = int(launch.search(started)[1])
                         before = len(serial.read_text(errors="replace"))
                         command([signer, "deployment-notify", output / (name + ".cdep"), "127.0.0.1:28081"], name + "-admission", env=environment, timeout=40)
                         if number in performance_cases:
@@ -496,6 +545,10 @@ def main():
                                           "foreign_cancel_rejected", "cancelled_reply_suppressed",
                                           "cancelled_slot_reused"):
                                 assert f"{{m4,{stage}}}" in text, stage
+                            assert "[atomvm] service worker joined" in text and "[atomvm] return=ok" in text, name
+                        if number == active_cancel_case:
+                            client_asid = int(re.search(r"\[EL0 LOG\] lp=\d+ asid=(\d+)", text)[1])
+                            verify_active_cancel(serial_text[before:], hold_asid, client_asid)
                             assert "[atomvm] service worker joined" in text and "[atomvm] return=ok" in text, name
                         if number in scheduler_cases:
                             count = scheduler_cases[number]

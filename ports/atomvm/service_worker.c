@@ -149,8 +149,11 @@ static term cancel(Context *ctx, int argc, term argv[])
     enum RequestState expected = REQUESTED;
     // Only the scheduler can publish another request. A worker that lost
     // this claim holds no borrowed slot data and can try the next request.
-    atomic_compare_exchange_strong_explicit(&request.state, &expected, EMPTY,
-        memory_order_acq_rel, memory_order_relaxed);
+    if (!atomic_compare_exchange_strong_explicit(&request.state, &expected, EMPTY,
+            memory_order_acq_rel, memory_order_relaxed)
+        && expected == RUNNING && knytos_thread_signal(WORKER_SLOT) != KNYTOS_OK) {
+        abort();
+    }
     return OK_ATOM;
 }
 

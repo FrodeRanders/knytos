@@ -29,3 +29,9 @@ name = "echo_service"
 path = "examples/echo_service.rs"
 test = true
 bench = false
+
+[[example]]
+name = "atomvm_cancel_fixture"
+required-features = ["test-support"]
+test = true
+bench = false

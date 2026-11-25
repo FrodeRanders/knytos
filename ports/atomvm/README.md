@@ -342,22 +342,27 @@ process withdraws its delivery interest. A queued request can release
 its slot immediately if the worker has yet to claim it. Once claimed,
 the slot stays occupied until the worker settles its native resources
 and the scheduler observes the result. The worker checks cancellation
-before grant acquisition and again before invocation. Work that has
-already started can finish under its original native budget. Remote
-effects can survive cancellation.
+before grant acquisition and again before invocation. Grant acquisition
+and call admission can run until the original native deadline. Once
+IPC accepts the call, the worker waits on its private CQ for reply readiness
+or a cancellation signal. Cancellation closes the exact pending call
+before releasing its connection. Remote effects can survive cancellation.
 
 Cancelled references receive no further reply. A stale, foreign or
 already delivered reference returns `{error, not_found}`. A reply
 already in the mailbox remains available to receive. Reusable service
-objects, interrupting an accepted native call, payload attachments
-and the SMP Erlang scheduler profile remain separate M4 work.
+objects, payload attachments and the SMP Erlang scheduler profile
+remain separate M4 work.
 
-Build `tests/native_service.erl` and `tests/shutdown_service.erl` with
-`--service-worker`. Pass their images to the signed runner.
+Build `tests/native_service.erl`, `tests/active_cancel.erl` and
+`tests/shutdown_service.erl` with `--service-worker`. The signed runner
+builds and launches a scoped fixture service for `active_cancel`. It
+holds replies so the test can verify pending-call cancellation and timeout.
 
 ```sh
 python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
   --atomvm-service-elf target/atomvm/native_service.elf \
+  --atomvm-active-cancel-elf target/atomvm/active_cancel.elf \
   --atomvm-shutdown-busy-elf target/atomvm/shutdown_service.elf \
   --atomvm-node-shutdown --smp 2 --output target/atomvm/service-validation
 ```

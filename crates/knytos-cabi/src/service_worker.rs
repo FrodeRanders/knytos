@@ -6,6 +6,7 @@ use knytos_app::{
 };
 use knytos_rt::{
     Context,
+    abi::ipc_status,
     call::{
         Admission,
         AdmissionError,
@@ -14,6 +15,7 @@ use knytos_rt::{
     deadline::Deadline,
     owned::{
         Connection,
+        IpcError,
         PendingCall,
     },
 };
@@ -36,6 +38,45 @@ const REQUEST_BUDGET_MS: u64 = 1_000;
 struct InFlightScalar {
     pending: PendingCall<'static>,
     _connection: Connection,
+}
+
+impl InFlightScalar {
+    fn observe(
+        mut self,
+        worker: workers::Participant,
+        deadline: &Deadline,
+        cancelled: extern "C" fn() -> bool,
+    ) -> Result<i64, i32> {
+        // The worker holds no VM or runtime metadata guard. Early returns
+        // close the exact pending owner before releasing the connection.
+        self.pending.bind_cq(worker.queue()).map_err(|error| match error {
+            IpcError::Status(ipc_status::RESOURCE_LIMIT) => WAIT_REJECTED,
+            _ => UNAVAILABLE,
+        })?;
+        loop {
+            if cancelled() {
+                return Err(CANCELLED);
+            }
+            if let Some(reply) = self.pending.poll().map_err(|_| UNAVAILABLE)? {
+                if reply.connection.is_some() || reply.memory.is_some() {
+                    return Err(UNEXPECTED_REPLY);
+                }
+                return Ok(reply.result);
+            }
+            let remaining = deadline.remaining_ms();
+            if remaining == 0 {
+                return Err(DEADLINE);
+            }
+            // Both the native reply and cancellation signal this CQ. Either
+            // wake, including expiry, requires a fresh check of both sources.
+            match workers::park(worker, remaining) {
+                OK | DEADLINE => {}
+                WAIT_REJECTED => return Err(WAIT_REJECTED),
+                SHUTDOWN => return Err(SHUTDOWN),
+                _ => return Err(UNAVAILABLE),
+            }
+        }
+    }
 }
 
 fn admission_status(error: AdmissionError) -> i32 {
@@ -65,6 +106,7 @@ fn grant_status(error: grant_client::Error) -> i32 {
 }
 
 fn invoke(
+    worker: workers::Participant,
     service: &[u8],
     opcode: u32,
     argument: i64,
@@ -85,21 +127,11 @@ fn invoke(
     let pending = Admission::with_lifecycle(&deadline, context.lifecycle())
         .call(connection.as_ref(), opcode, argument as u64)
         .map_err(admission_status)?;
-    let operation = InFlightScalar {
+    InFlightScalar {
         pending,
         _connection: connection,
-    };
-    // This worker holds no VM or C runtime metadata guard. Its pending owner
-    // performs fail-closed cancellation here even on a rejected wait.
-    let reply = operation
-        .pending
-        .observe_until(&deadline)
-        .cancel_on_failure()
-        .map_err(observation_status)?;
-    if reply.connection.is_some() || reply.memory.is_some() {
-        return Err(UNEXPECTED_REPLY);
     }
-    Ok(reply.result)
+    .observe(worker, &deadline, cancelled)
 }
 
 /// # Safety
@@ -117,12 +149,14 @@ pub unsafe extern "C" fn knytos_worker_call_scalar(
     let Some(cancelled) = cancelled else {
         return INVALID;
     };
+    let Some(worker) = workers::participant().filter(|worker| worker.slot != 0) else {
+        return INVALID;
+    };
     if name.is_null()
         || length == 0
         || length > knytos_launch::deployment::MAX_SERVICE_NAME_LEN
         || output.is_null()
         || !(output as usize).is_multiple_of(core::mem::align_of::<i64>())
-        || !workers::participant().is_some_and(|worker| worker.slot != 0)
     {
         return INVALID;
     }
@@ -130,7 +164,7 @@ pub unsafe extern "C" fn knytos_worker_call_scalar(
     if service.iter().any(|byte| !(0x21..=0x7e).contains(byte)) {
         return INVALID;
     }
-    match invoke(service, opcode, argument, cancelled) {
+    match invoke(worker, service, opcode, argument, cancelled) {
         Ok(result) => {
             unsafe { output.write(result) };
             OK
