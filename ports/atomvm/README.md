@@ -184,6 +184,11 @@ and returns success after reacquiring it. Lock acquisition and condition
 reacquisition each have a five-second budget. Any failed wait or
 acquisition aborts the domain.
 
+The normal handoff publishes poller availability under the scheduler
+mutex and signals the condition after releasing it. The returning
+waiter reacquires the mutex and checks whether the poller role is
+available.
+
 For a read, the adapter first tries shared acquisition. A busy result
 enters the bounded wait under the same writer admission rules.
 

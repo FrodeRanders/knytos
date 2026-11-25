@@ -1,0 +1,21 @@
+diff --git a/ports/atomvm/build.py b/ports/atomvm/build.py
+index 0317c868..470ed1d3 100644
+--- a/ports/atomvm/build.py
++++ b/ports/atomvm/build.py
+@@ -57,6 +57,16 @@ def configure_smp(core, generated, scheduler):
+     scheduler = replace_pinned(scheduler, "        if (!global->waiting_scheduler",
+         "        if (!global->scheduler_stop_all && !global->waiting_scheduler")
+
++    # Publish poller availability under the scheduler mutex. Release it
++    # before notifying a condition waiter that will reacquire that mutex.
++    scheduler = replace_pinned(scheduler,
++        "    global->waiting_scheduler = false;\n"
++        "    smp_condvar_signal(global->schedulers_cv);\n"
++        "    SMP_MUTEX_UNLOCK(global->schedulers_mutex);\n#endif\n\n    return result;",
++        "    global->waiting_scheduler = false;\n"
++        "    SMP_MUTEX_UNLOCK(global->schedulers_mutex);\n"
++        "    smp_condvar_signal(global->schedulers_cv);\n#endif\n\n    return result;")
++
+     # Only the embedded, authenticated pack supplies modules in this profile.
+     # Upstream read_priv mutates pin metadata under a shared lock.
+     nifs_gperf = (core / "nifs.gperf").read_text()

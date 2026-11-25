@@ -1,0 +1,174 @@
+== Signal before scheduler mutex release ==
+[+    15.446885] [EL0 LOG] lp=0 asid=28 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    16.198907] [EL0 LOG] lp=0 asid=28 {perf,throughput,1,96000,655714}
+[+    16.848800] [EL0 LOG] lp=0 asid=28 {perf,throughput,2,96000,649598}
+[+    17.507715] [EL0 LOG] lp=0 asid=28 {perf,throughput,3,96000,658650}
+[+    17.892731] [EL0 LOG] lp=0 asid=28 {perf,idle_start,23531072}
+[+    25.897019] [EL0 LOG] lp=0 asid=28 {perf,idle_end,31535296}
+[+    25.897641] [EL0 LOG] lp=0 asid=28 {perf,load_start,31535978}
+[+    34.015812] [EL0 LOG] lp=0 asid=28 {perf,load_end,39654154,12}
+[+    34.016739] [EL0 LOG] lp=0 asid=28 {perf,pass}
+[+    34.017129] [EL0 LOG] lp=0 asid=28 [atomvm] reactor waits=33 deadlines=33
+[+    34.018119] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=26 remaining_blocks=0 heap_peak=40100 sampled_stack=1424
+[+    34.668623] [EL0 LOG] lp=0 asid=29 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    44.676238] [EL0 LOG] lp=0 asid=29 {perf,throughput,1,96000,8882906}
+[+    53.576178] [EL0 LOG] lp=0 asid=29 {perf,throughput,2,96000,8899304}
+[+    62.488801] [EL0 LOG] lp=0 asid=29 {perf,throughput,3,96000,8912092}
+[+    62.939836] [EL0 LOG] lp=1 asid=29 {perf,idle_start,68577728}
+[+    70.943244] [EL0 LOG] lp=1 asid=29 {perf,idle_end,76580894}
+[+    70.944843] [EL0 LOG] lp=1 asid=29 {perf,load_start,76582650}
+[+    79.876685] [EL0 LOG] lp=0 asid=29 {perf,load_end,85514862,1}
+[+    79.881539] [EL0 LOG] lp=0 asid=29 {perf,pass}
+[+    79.883446] [EL0 LOG] lp=0 asid=29 [atomvm] schedulers joined=1 activated=1
+[+    79.884079] [EL0 LOG] lp=0 asid=29 [atomvm-handoff-overlap] elected_immediate=72919 busy_immediate=31574 elected_waited=26132 busy_waited=15331 runnable=98989 empty=62
+[+    79.885064] [EL0 LOG] lp=0 asid=29 [atomvm] reactor waits=111 deadlines=34
+[+    79.885393] [EL0 LOG] lp=0 asid=29 [atomvm] reactor worker_waits=68
+[+    79.885685] [EL0 LOG] lp=0 asid=29 [atomvm] reactor kernel_wakes=77
+[+    79.887235] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=0 waits=72467 reacquired=72467 contended=20217 parks=23525
+[+    79.887753] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=0 wait_us=[0, 0, 0, 9, 30, 213, 358, 416, 58, 36, 10, 1, 0, 1]
+[+    79.888136] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=0 lock_us=[0, 0, 10, 291, 494, 236, 40, 53, 5, 3, 0, 0, 0, 0]
+[+    79.888463] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=1 waits=73490 reacquired=73490 contended=21246 parks=24515
+[+    79.888723] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=1 wait_us=[0, 0, 0, 10, 25, 384, 347, 324, 34, 22, 1, 0, 0, 1]
+[+    79.888990] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=1 lock_us=[0, 0, 16, 269, 540, 230, 57, 35, 1, 0, 0, 0, 0, 0]
+[+    79.889248] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=2 waits=0 reacquired=0 contended=0 parks=0
+[+    79.889474] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=2 wait_us=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[+    79.889710] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=2 lock_us=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[+    79.889955] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=3 waits=0 reacquired=0 contended=0 parks=0
+[+    79.890180] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=3 wait_us=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[+    79.890417] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=3 lock_us=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[+    79.890886] [EL0 LOG] lp=0 asid=29 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=43432 sampled_stack=1440
+[+    80.220977] [EL0 LOG] lp=0 asid=30 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    97.114506] [EL0 LOG] lp=2 asid=30 {perf,throughput,1,96000,14989810}
+[+   112.001581] [EL0 LOG] lp=0 asid=30 {perf,throughput,2,96000,14886504}
+[+   126.951096] [EL0 LOG] lp=1 asid=30 {perf,throughput,3,96000,14948842}
+[+   127.395921] [EL0 LOG] lp=1 asid=30 {perf,idle_start,133033840}
+[+   135.398703] [EL0 LOG] lp=2 asid=30 {perf,idle_end,141036236}
+[+   135.400266] [EL0 LOG] lp=2 asid=30 {perf,load_start,141037948}
+[+   150.498245] [EL0 LOG] lp=0 asid=30 {perf,load_end,156136418,1}
+[+   150.505815] [EL0 LOG] lp=3 asid=30 {perf,pass}
+[+   150.508017] [EL0 LOG] lp=0 asid=30 [atomvm] schedulers joined=3 activated=3
+[+   150.508593] [EL0 LOG] lp=0 asid=30 [atomvm-handoff-overlap] elected_immediate=120001 busy_immediate=100508 elected_waited=62254 busy_waited=90777 runnable=182186 empty=69
+[+   150.509543] [EL0 LOG] lp=0 asid=30 [atomvm] reactor waits=109 deadlines=33
+[+   150.509855] [EL0 LOG] lp=0 asid=30 [atomvm] reactor worker_waits=70
+[+   150.510195] [EL0 LOG] lp=0 asid=30 [atomvm] reactor kernel_wakes=76
+[+   150.511414] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=0 waits=113071 reacquired=113071 contended=45276 parks=66317
+[+   150.511918] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=0 wait_us=[0, 0, 0, 7, 84, 153, 547, 766, 133, 62, 12, 2, 0, 0]
+[+   150.512284] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=0 lock_us=[0, 0, 8, 216, 643, 411, 94, 258, 100, 28, 6, 2, 0, 0]
+[+   150.512838] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=1 waits=118517 reacquired=118517 contended=47274 parks=71079
+[+   150.513178] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=1 wait_us=[0, 0, 0, 8, 75, 240, 473, 599, 384, 71, 1, 0, 0, 0]
+[+   150.513513] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=1 lock_us=[0, 0, 5, 177, 708, 438, 147, 263, 104, 9, 0, 0, 0, 0]
+[+   150.513848] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=2 waits=91336 reacquired=91336 contended=39272 parks=66209
+[+   150.514147] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=2 wait_us=[0, 0, 0, 6, 45, 80, 202, 333, 485, 251, 25, 0, 0, 0]
+[+   150.514404] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=2 lock_us=[0, 0, 6, 71, 418, 348, 131, 300, 137, 16, 0, 0, 0, 0]
+[+   150.514659] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=3 waits=50617 reacquired=50617 contended=21209 parks=37434
+[+   150.514904] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=3 wait_us=[0, 0, 0, 0, 11, 52, 35, 59, 173, 215, 171, 67, 7, 0]
+[+   150.515162] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=3 lock_us=[0, 0, 2, 25, 170, 223, 96, 154, 103, 17, 0, 0, 0, 0]
+[+   150.515637] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=43409 sampled_stack=1440
+
+== Signal after scheduler mutex release ==
+[+    15.676398] [EL0 LOG] lp=0 asid=28 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    16.408802] [EL0 LOG] lp=0 asid=28 {perf,throughput,1,96000,636766}
+[+    17.045374] [EL0 LOG] lp=0 asid=28 {perf,throughput,2,96000,636300}
+[+    17.692109] [EL0 LOG] lp=0 asid=28 {perf,throughput,3,96000,646486}
+[+    18.087703] [EL0 LOG] lp=0 asid=28 {perf,idle_start,23742588}
+[+    26.089996] [EL0 LOG] lp=0 asid=28 {perf,idle_end,31744880}
+[+    26.090326] [EL0 LOG] lp=0 asid=28 {perf,load_start,31745244}
+[+    34.596595] [EL0 LOG] lp=0 asid=28 {perf,load_end,40251494,13}
+[+    34.597571] [EL0 LOG] lp=0 asid=28 {perf,pass}
+[+    34.597954] [EL0 LOG] lp=0 asid=28 [atomvm] reactor waits=33 deadlines=33
+[+    34.598912] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=26 remaining_blocks=0 heap_peak=40100 sampled_stack=1424
+[+    35.246420] [EL0 LOG] lp=0 asid=29 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    45.146399] [EL0 LOG] lp=0 asid=29 {perf,throughput,1,96000,8783734}
+[+    53.818203] [EL0 LOG] lp=0 asid=29 {perf,throughput,2,96000,8671272}
+[+    62.523542] [EL0 LOG] lp=1 asid=29 {perf,throughput,3,96000,8704808}
+[+    62.957432] [EL0 LOG] lp=0 asid=29 {perf,idle_start,68611912}
+[+    70.961602] [EL0 LOG] lp=0 asid=29 {perf,idle_end,76615646}
+[+    70.964585] [EL0 LOG] lp=0 asid=29 {perf,load_start,76617386}
+[+    79.802253] [EL0 LOG] lp=0 asid=29 {perf,load_end,85456990,1}
+[+    79.808393] [EL0 LOG] lp=1 asid=29 {perf,pass}
+[+    79.810501] [EL0 LOG] lp=0 asid=29 [atomvm] schedulers joined=1 activated=1
+[+    79.811070] [EL0 LOG] lp=0 asid=29 [atomvm-handoff-overlap] elected_immediate=71045 busy_immediate=24847 elected_waited=20667 busy_waited=10795 runnable=91658 empty=54
+[+    79.812012] [EL0 LOG] lp=0 asid=29 [atomvm] reactor waits=112 deadlines=33
+[+    79.812325] [EL0 LOG] lp=0 asid=29 [atomvm] reactor worker_waits=60
+[+    79.812745] [EL0 LOG] lp=0 asid=29 [atomvm] reactor kernel_wakes=79
+[+    79.814139] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=0 waits=65390 reacquired=65390 contended=15913 parks=18542
+[+    79.814650] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=0 wait_us=[0, 0, 0, 0, 9, 102, 304, 495, 57, 38, 14, 2, 0, 0]
+[+    79.815008] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=0 lock_us=[0, 0, 11, 228, 504, 189, 30, 52, 3, 4, 0, 0, 0, 0]
+[+    79.815332] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=1 waits=61964 reacquired=61964 contended=15549 parks=17677
+[+    79.815587] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=1 wait_us=[0, 0, 0, 0, 3, 225, 362, 349, 12, 16, 1, 0, 0, 0]
+[+    79.815835] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=1 lock_us=[0, 0, 6, 230, 481, 177, 46, 27, 0, 1, 0, 0, 0, 0]
+[+    79.816092] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=2 waits=0 reacquired=0 contended=0 parks=0
+[+    79.816306] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=2 wait_us=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[+    79.816540] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=2 lock_us=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[+    79.816768] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=3 waits=0 reacquired=0 contended=0 parks=0
+[+    79.816981] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=3 wait_us=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[+    79.817219] [EL0 LOG] lp=0 asid=29 [cabi-handoff] slot=3 lock_us=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[+    79.817912] [EL0 LOG] lp=0 asid=29 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=43409 sampled_stack=1440
+[+    80.370854] [EL0 LOG] lp=0 asid=30 [atomvm] package_sha256=62a9322caef49511980368e7e14c3f67eaf3c649bc0add8506b2e0462b238a31 bytes=24828
+[+    95.541622] [EL0 LOG] lp=3 asid=30 {perf,throughput,1,96000,13466282}
+[+   108.968790] [EL0 LOG] lp=1 asid=30 {perf,throughput,2,96000,13426348}
+[+   122.356319] [EL0 LOG] lp=3 asid=30 {perf,throughput,3,96000,13386988}
+[+   122.790493] [EL0 LOG] lp=0 asid=30 {perf,idle_start,128444814}
+[+   130.793316] [EL0 LOG] lp=2 asid=30 {perf,idle_end,136447694}
+[+   130.794035] [EL0 LOG] lp=2 asid=30 {perf,load_start,136448648}
+[+   144.323859] [EL0 LOG] lp=2 asid=30 {perf,load_end,149978404,1}
+[+   144.332033] [EL0 LOG] lp=2 asid=30 {perf,pass}
+[+   144.333974] [EL0 LOG] lp=0 asid=30 [atomvm] schedulers joined=3 activated=3
+[+   144.335076] [EL0 LOG] lp=0 asid=30 [atomvm-handoff-overlap] elected_immediate=108991 busy_immediate=116624 elected_waited=54505 busy_waited=63484 runnable=163433 empty=63
+[+   144.336044] [EL0 LOG] lp=0 asid=30 [atomvm] reactor waits=134 deadlines=33
+[+   144.336350] [EL0 LOG] lp=0 asid=30 [atomvm] reactor worker_waits=72
+[+   144.336644] [EL0 LOG] lp=0 asid=30 [atomvm] reactor kernel_wakes=101
+[+   144.338181] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=0 waits=91487 reacquired=91487 contended=26825 parks=35805
+[+   144.338712] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=0 wait_us=[0, 0, 0, 0, 6, 24, 194, 881, 231, 79, 13, 1, 0, 0]
+[+   144.339074] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=0 lock_us=[0, 0, 9, 146, 561, 434, 128, 97, 33, 19, 1, 1, 0, 0]
+[+   144.339436] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=1 waits=96608 reacquired=96608 contended=31383 parks=42757
+[+   144.340054] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=1 wait_us=[0, 0, 0, 0, 7, 57, 201, 775, 397, 69, 3, 0, 0, 0]
+[+   144.340384] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=1 lock_us=[0, 0, 4, 123, 541, 443, 193, 159, 45, 1, 0, 0, 0, 0]
+[+   144.340719] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=2 waits=86592 reacquired=86592 contended=32219 parks=45632
+[+   144.341027] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=2 wait_us=[0, 0, 0, 0, 4, 14, 88, 544, 480, 204, 18, 1, 0, 0]
+[+   144.341284] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=2 lock_us=[0, 0, 4, 54, 375, 454, 206, 211, 48, 1, 0, 0, 0, 0]
+[+   144.341539] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=3 waits=68918 reacquired=68918 contended=27562 parks=40446
+[+   144.341789] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=3 wait_us=[0, 0, 0, 0, 2, 12, 43, 298, 380, 254, 80, 7, 0, 0]
+[+   144.342045] [EL0 LOG] lp=0 asid=30 [cabi-handoff] slot=3 lock_us=[0, 0, 0, 37, 253, 345, 186, 194, 59, 1, 1, 0, 0, 0]
+[+   144.342565] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=28 remaining_blocks=0 heap_peak=44000 sampled_stack=1440
+
+== Uninstrumented unlock-before-signal lifecycle ==
+[+    15.605718] [EL0 LOG] lp=0 asid=28 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    15.606525] [EL0 LOG] lp=0 asid=28 [atomvm] package_sha256=7859d30e7ed8a4b12706ce1144ce1ba75720b349dfb0e3e256a45193f2e3f794 bytes=22708
+[+    15.607085] [EL0 LOG] lp=0 asid=28 [atomvm] wake-before-wait passed
+[+    15.622084] [EL0 LOG] lp=1 asid=28 [atomvm] scheduler entered slot=1
+[+    15.622797] [EL0 LOG] lp=2 asid=28 [atomvm] scheduler entered slot=2
+[+    15.623875] [EL0 LOG] lp=3 asid=28 [atomvm] scheduler entered slot=3
+[+    15.687186] [EL0 LOG] lp=2 asid=28 {smp,pass}
+[+    15.689836] [EL0 LOG] lp=0 asid=28 [atomvm] schedulers joined=3 activated=3
+[+    15.690195] [EL0 LOG] lp=0 asid=28 [atomvm] return=ok
+[+    15.690488] [EL0 LOG] lp=0 asid=28 [atomvm] reactor waits=13 deadlines=4
+[+    15.690746] [EL0 LOG] lp=0 asid=28 [atomvm] reactor worker_waits=10
+[+    15.690991] [EL0 LOG] lp=0 asid=28 [atomvm] reactor kernel_wakes=9
+[+    15.691871] [EL0 LOG] lp=0 asid=28 [atomvm] completed status=0
+[+    15.692548] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=24 remaining_blocks=0 heap_peak=20758 sampled_stack=1440
+[+    16.835697] [EL0 LOG] lp=0 asid=30 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    16.836509] [EL0 LOG] lp=0 asid=30 [atomvm] package_sha256=f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612 bytes=21660
+[+    16.837045] [EL0 LOG] lp=0 asid=30 [atomvm] wake-before-wait passed
+[+    16.848449] [EL0 LOG] lp=0 asid=30 {m3_shutdown,parked}
+[+    17.485961] [EL0 LOG] lp=0 asid=31 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    17.486777] [EL0 LOG] lp=0 asid=31 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    17.487328] [EL0 LOG] lp=0 asid=31 [atomvm] wake-before-wait passed
+[+    17.499864] [EL0 LOG] lp=1 asid=31 [atomvm] scheduler entered slot=1
+[+    17.500560] [EL0 LOG] lp=2 asid=31 [atomvm] scheduler entered slot=2
+[+    17.501805] [EL0 LOG] lp=3 asid=31 [atomvm] scheduler entered slot=3
+[+    17.509899] [EL0 LOG] lp=2 asid=31 {m3_shutdown,busy}
+[+    20.108753] [EL0 LOG] lp=1 asid=31 [atomvm] reactor shutdown source=nonblocking
+[+    20.111146] [EL0 LOG] lp=0 asid=31 [atomvm] schedulers joined=3 activated=3
+[+    20.111468] [EL0 LOG] lp=0 asid=31 [atomvm] schedulers stopped for shutdown
+[+    20.112253] [EL0 LOG] lp=0 asid=31 [c-runtime] exit=0 released_blocks=76 remaining_blocks=0 heap_peak=23620 sampled_stack=912
+[+    20.112717] [EL0 LOG] lp=0 asid=30 [atomvm] reactor shutdown source=cq-wait
+[+    20.114768] [EL0 LOG] lp=0 asid=30 [atomvm] schedulers joined=3 activated=0
+[+    20.115060] [EL0 LOG] lp=0 asid=30 [atomvm] schedulers stopped for shutdown
+[+    20.115784] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=44 remaining_blocks=0 heap_peak=11857 sampled_stack=1440
+[+    20.128380] [supervisor] node shutdown acknowledged asid=31 generation=1
+[+    20.128738] [supervisor] node shutdown acknowledged asid=30 generation=1
+[+    20.128959] [EL0 LOG] lp=0 asid=16 [agent] application domains drained; draining connectors
+[+    20.129200] [EL0 LOG] lp=0 asid=16 [agent] child domains drained for node shutdown
+[+    20.130163] [shutdown] DeploymentAgent: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    20.168637] [shutdown] POWER-OFF REQUESTED via PSCI Hvc

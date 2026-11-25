@@ -31,6 +31,11 @@ lock acquisitions on that workload.
 The [handoff profile](../reports/milestones/2026-11-25-atomvm-scheduler-handoff.md)
 records poller election outcomes, first-scan selections and sampled
 condition and mutex durations.
+The [joint election and wait profile](../reports/milestones/2026-11-25-atomvm-scheduler-handoff-overlap.md)
+pairs each mutex reacquisition outcome with the ensuing poller election.
+The [wake-order comparison](../reports/milestones/2026-11-25-atomvm-scheduler-wake-order.md)
+measures the effect of releasing the scheduler mutex before the normal
+condition notification.
 
 | Pinned AtomVM requirement | Knytos boundary and remaining qualification |
 | --- | --- |
@@ -50,12 +55,14 @@ The message-heavy workload still shows much lower throughput with SMP
 on QEMU TCG. Private mutex and condition wait calls per message rise
 with the scheduler count. Over 99.9% of winning condition handoffs
 selected a process on the first scan, while 51% of four-scheduler
-condition returns found another poller already elected. Measure the
-overlap with contended mutex reacquisition and qualify any election
-change against runnable, timed and shutdown workloads. Separate
-allocator lock spins from C runtime metadata lock spins. Compare
-sustained and compute-heavy workloads and physical hardware before
-closing M3.
+condition returns found another poller already elected. Releasing the
+mutex before the normal notification reduced reacquisition CQ wait
+calls per message. Contention remains when schedulers compete for
+election after publication. Measure how often a newly arriving
+scheduler claims the poller role before a notified waiter, and check
+whether this pattern holds under sustained and compute-heavy workloads.
+Separate allocator lock spins from C runtime metadata lock spins and
+compare physical hardware before closing M3.
 Exercise wait admission rejection while an SMP VM has
 active and parked workers. Keep the signed thread and stack limits
 explicit for each run. See the
