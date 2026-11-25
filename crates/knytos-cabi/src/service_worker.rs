@@ -30,6 +30,7 @@ use crate::{
 
 const UNAUTHORIZED: i32 = 8;
 const UNEXPECTED_REPLY: i32 = 9;
+const CANCELLED: i32 = 10;
 const REQUEST_BUDGET_MS: u64 = 1_000;
 
 struct InFlightScalar {
@@ -63,13 +64,24 @@ fn grant_status(error: grant_client::Error) -> i32 {
     }
 }
 
-fn invoke(service: &[u8], opcode: u32, argument: i64) -> Result<i64, i32> {
+fn invoke(
+    service: &[u8],
+    opcode: u32,
+    argument: i64,
+    cancelled: extern "C" fn() -> bool,
+) -> Result<i64, i32> {
+    if cancelled() {
+        return Err(CANCELLED);
+    }
     let context = Context;
     let app = Application::from_context(&context).map_err(|_| UNAVAILABLE)?;
     let deadline = Deadline::after(REQUEST_BUDGET_MS);
     let connection = app
         .acquire(service, knytos_launch::deployment::RIGHT_CALL, &deadline)
         .map_err(grant_status)?;
+    if cancelled() {
+        return Err(CANCELLED);
+    }
     let pending = Admission::with_lifecycle(&deadline, context.lifecycle())
         .call(connection.as_ref(), opcode, argument as u64)
         .map_err(admission_status)?;
@@ -92,14 +104,19 @@ fn invoke(service: &[u8], opcode: u32, argument: i64) -> Result<i64, i32> {
 
 /// # Safety
 /// The name and output are separate live C buffers for the call's duration.
+/// The callback is nonblocking and leaves those buffers live.
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn knytos_worker_call_scalar(
     name: *const u8,
     length: usize,
     opcode: u32,
     argument: i64,
+    cancelled: Option<extern "C" fn() -> bool>,
     output: *mut i64,
 ) -> i32 {
+    let Some(cancelled) = cancelled else {
+        return INVALID;
+    };
     if name.is_null()
         || length == 0
         || length > knytos_launch::deployment::MAX_SERVICE_NAME_LEN
@@ -113,7 +130,7 @@ pub unsafe extern "C" fn knytos_worker_call_scalar(
     if service.iter().any(|byte| !(0x21..=0x7e).contains(byte)) {
         return INVALID;
     }
-    match invoke(service, opcode, argument) {
+    match invoke(service, opcode, argument, cancelled) {
         Ok(result) => {
             unsafe { output.write(result) };
             OK

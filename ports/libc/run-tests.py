@@ -492,7 +492,9 @@ def main():
                             assert reactor and int(reactor[2]) >= 6, name
                         if number == service_case:
                             for stage in ("scalar_reply", "unauthorized", "attachment_rejected",
-                                          "timer_with_pending_call", "abandoned_slot_reused"):
+                                          "timer_with_pending_call", "abandoned_slot_reused",
+                                          "foreign_cancel_rejected", "cancelled_reply_suppressed",
+                                          "cancelled_slot_reused"):
                                 assert f"{{m4,{stage}}}" in text, stage
                             assert "[atomvm] service worker joined" in text and "[atomvm] return=ok" in text, name
                         if number in scheduler_cases:

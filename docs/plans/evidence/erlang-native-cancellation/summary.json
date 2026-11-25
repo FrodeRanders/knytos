@@ -1,0 +1,106 @@
+{
+  "kernel_sha256": "763ab347332251467a03a0203de6f77c985ede184ccfa1e3a53437d9f94e8539",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "boot_image_sha256": "5d5007339394753d56a93ad8700f14bcffec357dc3d101ac9d3bdcf4741999db",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "initial_disk_sha256": "cb772f22f159ce7142b24cd9dd5f0d6df782d0acfb8e22b15edcd49d3a144bc7",
+  "node_shutdown": {
+    "admitted_generation": 1,
+    "target_node": "0x42e21edb",
+    "intent_sha256": "ba13ddbacb1c217e741b99b56a93d27ecda5fdda3d9bf2320d9d45e51f88652a",
+    "qmp_event": {
+      "timestamp": {
+        "seconds": 1795641367,
+        "microseconds": 347754
+      },
+      "event": "SHUTDOWN",
+      "data": {
+        "guest": true,
+        "reason": "guest-shutdown"
+      }
+    },
+    "qemu_exit_status": 0
+  },
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "base_commit": "421ce59cd3e768f38cea5da93307d2f2f5697772",
+  "guest_cpus": 2,
+  "host_tests_passed": 8,
+  "signed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request",
+    "avm-native-service",
+    "c-survivor",
+    "avm-shutdown-busy-1"
+  ],
+  "harness_sha256": "753395480584176fd0eb43cbd11734feac8f7d3af08dab5ecdb840056ebb334f",
+  "fixtures": [
+    {
+      "name": "avm-native-service",
+      "asid": 28,
+      "schedulers": 1,
+      "max_native_threads": 2,
+      "grants": [
+        "m4.missing=call",
+        "time=call",
+        "observe=call"
+      ],
+      "package_sha256": "aa12d62072136a4da4baeaa46f1a1235ff73938e61111fb030931a30a5cc1104",
+      "unsigned_elf_sha256": "198d0585e53b0cb5985ef627677fa353f4616e0d66d032108dedeaee8a5af8f8",
+      "signed_elf_sha256": "90cb02d0f69babcd2752c37c630fb709d1e19ef1f1d0e990e8dc65007782146a",
+      "signed_descriptor_sha256": "c4b967c61ccc86821b4110531b33210c8bbf82464c375b73a6d630c391e7ea6d",
+      "fixture_source_sha256": "1ee6756a59e0d143dc1dd1510ccc4a897d75aa9c309b3f5e850e4042b106e4f3",
+      "cancellation_markers": [
+        "foreign_cancel_rejected",
+        "cancel_slot_busy",
+        "cancelled_reply_suppressed",
+        "cancel_slot_released",
+        "cancelled_reply_suppressed",
+        "cancelled_slot_reused"
+      ]
+    },
+    {
+      "name": "avm-shutdown-busy-1",
+      "asid": 30,
+      "schedulers": 1,
+      "max_native_threads": 2,
+      "grants": [
+        "m4.missing=call"
+      ],
+      "package_sha256": "522184b19d8215bf2a1efc3434dca4f8cdc73af312ca931344db4ed4054c7a74",
+      "unsigned_elf_sha256": "f613b6f0f1e5f01cf25d48d076ca548689fbbedf993424920598902b0c9d4621",
+      "signed_elf_sha256": "05294269492f48a2787c1a844296b2f0345e61aa1d0b57be9901ff6b53b1a1e9",
+      "signed_descriptor_sha256": "cceb5055193026970df7613125d3003c6a30da784ea8c47c22b2de6d0bbf7e29",
+      "fixture_source_sha256": "af29aed6c6fcd57cf30f57be9d00e2fdfe823f2dc6f757dbae21148501fc99e5",
+      "shutdown_source": "nonblocking",
+      "acknowledged_root_generation": 1
+    }
+  ],
+  "atomvm_revision": "ff993a80963298b532c1e573f883951ecaac9fef",
+  "otp_revision": "fc7e10af595f3ffd2c25c84c253a4d042734cfed",
+  "picolibc_revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff",
+  "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+  "rustc": "rustc 1.102.0-nightly (5f4effd57 2026-11-13)\nbinary: rustc\ncommit-hash: 5f4effd579500175af844241eb179e756190f1e7\ncommit-date: 2026-11-13\nhost: aarch64-apple-darwin\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5"
+}

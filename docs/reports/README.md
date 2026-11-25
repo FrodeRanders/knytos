@@ -39,6 +39,7 @@ execution records. For current knowledge and work, use:
 
 ## Milestone records
 
+- [AtomVM native request cancellation](milestones/2026-11-25-atomvm-native-cancellation.md)
 - [AtomVM scoped native service calls](milestones/2026-11-25-atomvm-native-service.md)
 - [AtomVM poller election origin](milestones/2026-11-25-atomvm-poller-origin.md)
 - [AtomVM scheduler wake order](milestones/2026-11-25-atomvm-scheduler-wake-order.md)

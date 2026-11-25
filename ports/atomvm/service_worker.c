@@ -9,13 +9,14 @@
 #include "service_worker.h"
 
 enum { WORKER_SLOT = 1, MAX_SERVICE_NAME = 128 };
-enum RequestState { EMPTY, REQUESTED, REPLIED };
+enum RequestState { EMPTY, REQUESTED, RUNNING, REPLIED };
 
-/* Only the Erlang scheduler submits and delivers. Only the native worker
- * handles REQUESTED. State publication transfers access to the slot. The
- * worker owns native resources on its stack and publishes only scalar data. */
+/* The scheduler and worker compete once for REQUESTED. Cancellation can
+ * release an unclaimed slot. RUNNING keeps it reserved until the worker
+ * disposes of its native owners and publishes REPLIED. */
 static struct {
     _Atomic enum RequestState state;
+    atomic_bool cancelled;
     int32_t recipient;
     uint64_t reference;
     uint8_t service[MAX_SERVICE_NAME];
@@ -27,16 +28,25 @@ static struct {
 } request;
 static atomic_bool stopping;
 
+static bool cancellation_requested(void)
+{
+    return atomic_load_explicit(&request.cancelled, memory_order_acquire)
+        || atomic_load_explicit(&stopping, memory_order_acquire);
+}
+
 static void worker(void *argument)
 {
     (void) argument;
     while (!atomic_load_explicit(&stopping, memory_order_acquire)) {
-        if (atomic_load_explicit(&request.state, memory_order_acquire) != REQUESTED) {
+        enum RequestState expected = REQUESTED;
+        if (!atomic_compare_exchange_strong_explicit(&request.state, &expected, RUNNING,
+                memory_order_acq_rel, memory_order_relaxed)) {
             if (knytos_thread_wait_event() != KNYTOS_OK) abort();
             continue;
         }
         request.status = knytos_worker_call_scalar(
-            request.service, request.length, request.opcode, request.argument, &request.result);
+            request.service, request.length, request.opcode, request.argument,
+            cancellation_requested, &request.result);
         atomic_store_explicit(&request.state, REPLIED, memory_order_release);
         knytos_event_signal();
     }
@@ -113,12 +123,38 @@ static term submit(Context *ctx, int argc, term argv[])
     }
     request.reference = globalcontext_get_ref_ticks(ctx->global);
     term result = result_pair(OK_ATOM, term_from_ref_ticks(request.reference, &ctx->heap), &ctx->heap);
+    atomic_store_explicit(&request.cancelled, false, memory_order_relaxed);
     atomic_store_explicit(&request.state, REQUESTED, memory_order_release);
     if (knytos_thread_signal(WORKER_SLOT) != KNYTOS_OK) abort();
     return result;
 }
 
 const struct Nif knytos_request_nif = { .base.type = NIFFunctionType, .nif_ptr = submit };
+
+static term cancel(Context *ctx, int argc, term argv[])
+{
+    (void) argc;
+    VALIDATE_VALUE(argv[0], term_is_reference);
+    if (atomic_load_explicit(&request.state, memory_order_acquire) == EMPTY
+        || request.recipient != ctx->process_id
+        || request.reference != term_to_ref_ticks(argv[0])) {
+        if (memory_ensure_free_opt(ctx, TUPLE_SIZE(2), MEMORY_CAN_SHRINK) != MEMORY_GC_OK) {
+            RAISE_ERROR(OUT_OF_MEMORY_ATOM);
+        }
+        term reason = globalcontext_make_atom(ctx->global, ATOM_STR("\11", "not_found"));
+        return result_pair(ERROR_ATOM, reason, &ctx->heap);
+    }
+
+    atomic_store_explicit(&request.cancelled, true, memory_order_release);
+    enum RequestState expected = REQUESTED;
+    // Only the scheduler can publish another request. A worker that lost
+    // this claim holds no borrowed slot data and can try the next request.
+    atomic_compare_exchange_strong_explicit(&request.state, &expected, EMPTY,
+        memory_order_acq_rel, memory_order_relaxed);
+    return OK_ATOM;
+}
+
+const struct Nif knytos_cancel_nif = { .base.type = NIFFunctionType, .nif_ptr = cancel };
 
 bool knytos_service_reply_ready(void)
 {
@@ -128,6 +164,10 @@ bool knytos_service_reply_ready(void)
 void knytos_service_deliver(GlobalContext *global)
 {
     if (!knytos_service_reply_ready()) return;
+    if (atomic_load_explicit(&request.cancelled, memory_order_acquire)) {
+        atomic_store_explicit(&request.state, EMPTY, memory_order_release);
+        return;
+    }
 
     BEGIN_WITH_STACK_HEAP(TUPLE_SIZE(3) + TUPLE_SIZE(2) + REF_SIZE + BOXED_INT64_SIZE, heap);
     term payload = request.status == KNYTOS_OK

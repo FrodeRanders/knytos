@@ -143,7 +143,11 @@ acquired connection through terminal observation or cancellation of
 its call and disposes of unused returned capabilities before publishing
 the scalar result. The VM copies a value into its mailbox from CQ zero
 readiness. Startup joins the worker before acknowledging shutdown or
-releasing its local C graph.
+releasing its local C graph. The Erlang submitter can withdraw delivery
+interest by its request reference. The scheduler releases an unclaimed
+slot through the same atomic transition that arbitrates worker claim.
+Claimed work stays reserved through native settlement, even when its
+result will be discarded.
 
 ## Clocks and events
 

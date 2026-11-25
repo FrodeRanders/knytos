@@ -336,11 +336,21 @@ result into the caller's mailbox. Delivery ends when the caller
 exits. The worker settles accepted work and startup joins it before
 acknowledging signed shutdown or disposing of the VM.
 
-The slot covers one request from submission through delivery. It
-exposes no connection capability or caller-controlled cleanup token.
-Explicit Erlang cancellation, reusable service objects, payload
-attachments and the SMP Erlang scheduler profile remain separate
-M4 work.
+The slot covers one request from submission through delivery.
+`knytos:cancel(Reference)` returns `ok` when the submitting Erlang
+process withdraws its delivery interest. A queued request can release
+its slot immediately if the worker has yet to claim it. Once claimed,
+the slot stays occupied until the worker settles its native resources
+and the scheduler observes the result. The worker checks cancellation
+before grant acquisition and again before invocation. Work that has
+already started can finish under its original native budget. Remote
+effects can survive cancellation.
+
+Cancelled references receive no further reply. A stale, foreign or
+already delivered reference returns `{error, not_found}`. A reply
+already in the mailbox remains available to receive. Reusable service
+objects, interrupting an accepted native call, payload attachments
+and the SMP Erlang scheduler profile remain separate M4 work.
 
 Build `tests/native_service.erl` and `tests/shutdown_service.erl` with
 `--service-worker`. Pass their images to the signed runner.

@@ -1196,11 +1196,16 @@ uses one Erlang scheduler and one native worker for scoped scalar
 invocation. The signed deployment descriptor authorizes service names.
 The VM receives an Erlang reference and asynchronous scalar result.
 Native grant acquisition, call ownership and cleanup run in the worker.
-Reusable opaque service objects, explicit Erlang cancellation, returned
-attachments and subscriptions remain subsequent work. The
+The submitting process can cancel reply delivery and release an
+unclaimed request. A claimed request keeps its worker and cleanup
+scope until settlement. Reusable opaque service objects, interruption
+of accepted native operations, returned attachments and subscriptions
+remain subsequent work. The
 [signed qualification](../reports/milestones/2026-11-25-atomvm-native-service.md)
 covers grant denial, busy admission, independent Erlang timer progress
-and node shutdown of the worker profile.
+and node shutdown of the worker profile. The
+[cancellation qualification](../reports/milestones/2026-11-25-atomvm-native-cancellation.md)
+covers caller authority, suppressed replies and reuse of the slot.
 
 ### 11.2. Erlang-facing API
 
