@@ -28,6 +28,9 @@ static struct {
     size_t length;
     uint32_t opcode;
     int64_t argument;
+    bool has_payload;
+    size_t bytes_len;
+    uint8_t bytes[KNYTOS_SERVICE_MAX_PAYLOAD];
     int32_t status;
     int64_t result;
 } request;
@@ -98,6 +101,8 @@ static uint32_t next_command(struct knytos_service_command *command)
         *command = (struct knytos_service_command) {
             .name = request.service, .length = request.length,
             .argument = request.argument, .opcode = request.opcode,
+            .bytes = request.has_payload ? &request.bytes : NULL,
+            .bytes_len = request.bytes_len,
         };
         return request.kind;
     }
@@ -213,13 +218,20 @@ static bool owns_handle(Context *ctx, void *handle)
 
 static term submit(Context *ctx, int argc, term argv[])
 {
-    (void) argc;
     VALIDATE_VALUE(argv[0], term_is_binary);
     VALIDATE_VALUE(argv[1], term_is_any_integer);
     VALIDATE_VALUE(argv[2], term_is_any_integer);
     int64_t opcode = term_maybe_unbox_int64(argv[1]);
     if (opcode < 0 || opcode > UINT32_MAX) {
         RAISE_ERROR(BADARG_ATOM);
+    }
+    size_t bytes_len = 0;
+    if (argc == 4) {
+        VALIDATE_VALUE(argv[3], term_is_binary);
+        bytes_len = term_binary_size(argv[3]);
+        if (bytes_len > KNYTOS_SERVICE_MAX_PAYLOAD) {
+            RAISE_ERROR(BADARG_ATOM);
+        }
     }
     void *handle = NULL;
     size_t length = term_binary_size(argv[0]);
@@ -232,6 +244,9 @@ static term submit(Context *ctx, int argc, term argv[])
     request.length = length;
     request.opcode = (uint32_t) opcode;
     request.argument = term_maybe_unbox_int64(argv[2]);
+    request.has_payload = argc == 4;
+    request.bytes_len = bytes_len;
+    if (bytes_len != 0) memcpy(request.bytes, term_binary_data(argv[3]), bytes_len);
     if (handle) {
         enif_keep_resource(handle);
         request.handle = handle;
@@ -260,6 +275,8 @@ static term lookup(Context *ctx, int argc, term argv[])
     }
     memcpy(request.service, term_binary_data(argv[0]), length);
     request.length = length;
+    request.has_payload = false;
+    request.bytes_len = 0;
     return queue_request(ctx, KNYTOS_SERVICE_LOOKUP);
 }
 
@@ -335,10 +352,19 @@ void knytos_service_deliver(GlobalContext *global)
         return;
     }
 
+    bool byte_reply = request.status == KNYTOS_SERVICE_BYTE_REPLY;
+    size_t bytes_len = byte_reply ? (size_t) request.result : 0;
+    if (bytes_len > KNYTOS_SERVICE_MAX_PAYLOAD) abort();
+    // The stack heap needs constant storage for the largest inline binary
+    // or the refcounted header. Larger byte buffers are allocated by AtomVM.
     BEGIN_WITH_STACK_HEAP(TUPLE_SIZE(3) + TUPLE_SIZE(2) + REF_SIZE
-        + BOXED_INT64_SIZE + TERM_BOXED_RESOURCE_SIZE, heap);
+        + BOXED_INT64_SIZE + TERM_BOXED_RESOURCE_SIZE
+        + BINARY_HEADER_SIZE + REFC_BINARY_MIN / TERM_BYTES, heap);
     term payload;
-    if (request.status != KNYTOS_OK) {
+    if (byte_reply) {
+        term binary = term_from_literal_binary(request.bytes, bytes_len, &heap, global);
+        payload = result_pair(OK_ATOM, binary, &heap);
+    } else if (request.status != KNYTOS_OK) {
         payload = result_pair(ERROR_ATOM, result_reason(global, request.status), &heap);
     } else if (request.kind == KNYTOS_SERVICE_LOOKUP) {
         session.owner = recipient;

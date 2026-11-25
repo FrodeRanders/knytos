@@ -4,7 +4,7 @@
 
 start() ->
     Start = erlang:monotonic_time(millisecond),
-    {ok, Cancelled} = knytos:request(<<"m4.hold">>, 1, 1),
+    {ok, Cancelled} = knytos:request(<<"m4.hold">>, 1, 1, <<0, 255>>),
     %% The signed runner checks the server's accepted marker before this
     %% cancel marker. The service holds its reply until the replacement call.
     receive after 100 -> ok end,
@@ -15,7 +15,7 @@ start() ->
     true = Elapsed < 750,
     erlang:display({m4, accepted_cancel_reused_ms, Elapsed}),
 
-    {ok, TimedOut} = knytos:request(<<"m4.hold">>, 1, 2),
+    {ok, TimedOut} = knytos:request(<<"m4.hold">>, 1, 2, <<>>),
     {error, timeout} = result(TimedOut),
     {ok, Probe} = knytos:request(<<"m4.hold">>, 2, 2),
     {ok, 42} = result(Probe),
@@ -25,7 +25,43 @@ start() ->
     end,
     ok = owner_exit(3, normal),
     ok = owner_exit(4, killed),
+    ok = payload_cases(),
     erlang:display({m4, active_cancel, pass}),
+    ok.
+
+payload_cases() ->
+    Name = <<"m4.hold">>,
+    {ok, Denied} = knytos:request(<<"time">>, 255, 0, <<1>>),
+    {error, unauthorized} = result(Denied),
+    {ok, Lookup} = knytos:lookup(Name),
+    {ok, Handle} = result(Lookup),
+    ok = echo(Name, <<0, 255, 17>>),
+    ok = echo(Handle, <<>>),
+    Page = binary:copy(<<3, 254>>, 2048),
+    ok = echo(Handle, Page),
+    {ok, Scalar} = knytos:request(Handle, 255, 0, <<1>>),
+    {ok, -1} = result(Scalar),
+    erlang:display({m4, byte_payload_roundtrip}),
+    {ok, Negative} = knytos:request(Handle, 3, -1, <<1>>),
+    {error, unexpected_reply} = result(Negative),
+    {ok, Oversized} = knytos:request(Handle, 3, 4097, <<1>>),
+    {error, unexpected_reply} = result(Oversized),
+    {ok, LargeBacking} = knytos:request(Handle, 4, 0, <<1>>),
+    {error, unexpected_reply} = result(LargeBacking),
+    TooLarge = <<Page/binary, 0>>,
+    try knytos:request(Handle, 3, 4097, TooLarge) of
+        _ -> error(oversized_payload_admitted)
+    catch
+        error:badarg -> ok
+    end,
+    ok = echo(Handle, <<42>>),
+    ok = knytos:close(Handle),
+    erlang:display({m4, byte_payload_bounds}),
+    ok.
+
+echo(Service, Bytes) ->
+    {ok, Ref} = knytos:request(Service, 3, byte_size(Bytes), Bytes),
+    {ok, Bytes} = result(Ref),
     ok.
 
 owner_exit(Case, Reason) ->

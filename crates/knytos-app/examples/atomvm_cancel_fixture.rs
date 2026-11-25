@@ -1,4 +1,4 @@
-//! Signed scalar service used by the AtomVM cancellation fixture.
+//! Signed service used by the AtomVM cancellation and payload fixture.
 #![cfg_attr(not(test), no_std)]
 #![cfg_attr(not(test), no_main)]
 
@@ -13,6 +13,7 @@ use knytos_app::{
     owned::{
         Endpoint,
         IpcError,
+        OwnedMemory,
         ReplyToken,
     },
     service::{
@@ -45,8 +46,26 @@ pub fn run(ctx: &Context) -> Result<AppExit, Error> {
             let result = match message.opcode {
                 1 if held.is_none() => {
                     held = Some(reply);
-                    logln!("[m4 hold] accepted case={}", message.arg0);
+                    logln!(
+                        "[m4 hold] accepted case={} payload={}",
+                        message.arg0,
+                        message.memory.is_some()
+                    );
                     return Ok(());
+                }
+                // Return the moved page and let the client validate the
+                // initialized byte count, including deliberately bad counts.
+                3 => match message.memory.take() {
+                    Some(memory) => {
+                        return reply
+                            .reply_move(memory, message.arg0 as i64)
+                            .map_err(|(_, error)| error);
+                    }
+                    None => -1,
+                },
+                4 => {
+                    let memory = OwnedMemory::allocate(2).map_err(|_| IpcError::CreationFailed)?;
+                    return reply.reply_move(memory, 1).map_err(|(_, error)| error);
                 }
                 2 => {
                     if held.take().is_some_and(|previous| previous.reply(1).is_err()) {

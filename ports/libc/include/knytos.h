@@ -60,6 +60,7 @@ int32_t knytos_rwlock_unlock(const struct knytos_rwlock *lock);
 #ifdef KNYTOS_SERVICE_WORKER
 enum { KNYTOS_SERVICE_UNAUTHORIZED = 8, KNYTOS_SERVICE_UNEXPECTED_REPLY = 9 };
 enum { KNYTOS_SERVICE_CANCELLED = 10, KNYTOS_SERVICE_NOT_FOUND = 11 };
+enum { KNYTOS_SERVICE_BYTE_REPLY = 12, KNYTOS_SERVICE_MAX_PAYLOAD = 4096 };
 enum { KNYTOS_SERVICE_STOP, KNYTOS_SERVICE_NAMED_CALL, KNYTOS_SERVICE_LOOKUP,
     KNYTOS_SERVICE_BOUND_CALL, KNYTOS_SERVICE_RELEASE };
 struct knytos_service_command {
@@ -67,9 +68,12 @@ struct knytos_service_command {
     size_t length;
     int64_t argument;
     uint32_t opcode;
+    uint8_t (*bytes)[KNYTOS_SERVICE_MAX_PAYLOAD];
+    size_t bytes_len;
 };
 /* The worker owns all connections. next initializes a command for lookup
- * or call. The name stays live until complete. cancelled is nonblocking. */
+ * or call. The name stays live and the worker may overwrite bytes until
+ * complete. A BYTE_REPLY result gives the initialized byte count. */
 void knytos_service_worker_run(uint32_t (*next)(struct knytos_service_command *),
                                void (*complete)(uint32_t, int32_t, int64_t),
                                bool (*cancelled)(void));

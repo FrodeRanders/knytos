@@ -1205,8 +1205,10 @@ before process-monitor delivery. Grant acquisition retains the original
 deadline. The worker owns one reusable service connection at a time.
 Asynchronous lookup returns an AtomVM resource scoped to the submitting
 process. Explicit close, garbage collection and process exit release the
-worker's connection after outstanding calls settle. Returned attachments
-and subscriptions remain subsequent work. The
+worker's connection after outstanding calls settle. The four-argument
+request moves one bounded byte payload and can return a copied binary
+from an owned reply page. Subscription and general capability attachment
+support remain subsequent work. The
 [signed qualification](../reports/milestones/2026-11-25-atomvm-native-service.md)
 covers grant denial, busy admission, independent Erlang timer progress
 and node shutdown of the worker profile. The
@@ -1218,6 +1220,8 @@ The [process-exit qualification](../reports/milestones/2026-11-25-atomvm-service
 covers normal exit, kill signals and unrelated process termination.
 The [reusable service qualification](../reports/milestones/2026-11-25-atomvm-service-handles.md)
 covers repeated calls, process scope, external term encoding and release.
+The [binary payload qualification](../reports/milestones/2026-11-25-atomvm-byte-payloads.md)
+covers moved requests, copied replies, size rejection, cancellation and timeout.
 
 ### 11.2. Erlang-facing API
 

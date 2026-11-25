@@ -332,8 +332,8 @@ discards unexpected returned capabilities and reports
 `unexpected_reply`. Other asynchronous
 errors include `unauthorized`, `timeout`, `wait_rejected`,
 `shutdown`, `unavailable` and `badarg` for a rejected service name.
-CQ zero wakes the Erlang scheduler, which copies only the scalar
-result into the caller's mailbox. The scheduler tracks the exact
+CQ zero wakes the Erlang scheduler, which delivers the result into
+the caller's mailbox. The scheduler tracks the exact
 submitting process until delivery or cancellation. The worker settles
 accepted work and startup joins it before acknowledging signed
 shutdown or disposing of the VM.
@@ -359,8 +359,8 @@ guards. Exiting unrelated processes leave the slot alone.
 Cancelled references receive no further reply. A stale, foreign or
 already delivered reference returns `{error, not_found}`. A reply
 already in the mailbox remains available to receive. Reusable service
-handles share the same request slot. Payload attachments and the SMP
-Erlang scheduler profile remain separate M4 work.
+handles share the same request slot. Subscriptions and the SMP Erlang
+scheduler profile remain separate M4 work.
 
 `knytos:lookup(ServiceName)` uses the signed `service=call` grant and
 returns `{ok, Reference}`. Inspect `{knytos_reply, Reference, {ok, Handle}}`
@@ -380,11 +380,32 @@ after they settle. Garbage collection and owner exit also schedule its
 release. The finalizer only marks the release, and the scheduler signals
 the worker after leaving VM guards.
 
+### Binary service payloads
+
+`knytos:request(Service, Opcode, Argument, Bytes)` opts into one moved
+memory attachment. `Bytes` must be a binary of at most 4096 bytes.
+An empty binary sends an empty payload backed by one page. The worker
+copies the bytes into private memory and consumes that owner during IPC
+submission. `Argument` passes through unchanged. A service protocol
+that puts byte length in the scalar argument expects `byte_size(Bytes)`
+from the caller.
+
+A reply with a memory attachment uses its scalar result as the count
+of initialized bytes. The worker accepts a nonnegative count that fits
+in the returned one-page object, copies exactly those bytes and releases
+the native memory before delivery. The mailbox receives
+`{knytos_reply, Reference, {ok, Binary}}`. A reply without an attachment
+keeps the scalar result. Oversized backing, invalid lengths and returned
+connection capabilities yield `unexpected_reply`. Three-argument requests
+continue to reject returned attachments. Cancelling a request can abandon
+its reply after the service has received the moved memory.
+
 Build `tests/native_service.erl`, `tests/active_cancel.erl` and
 `tests/shutdown_service.erl` with `--service-worker`. The signed runner
 builds and launches a scoped fixture service for `active_cancel`. It
 holds replies so the test can verify pending-call cancellation, timeout,
-and cleanup after normal exit or a kill signal.
+and cleanup after normal exit or a kill signal. It also echoes binary
+payloads and returns malformed lengths for the client to reject.
 
 ```sh
 python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \

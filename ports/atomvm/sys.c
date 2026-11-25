@@ -205,6 +205,7 @@ static const struct Nif platform_nif = { .base.type = NIFFunctionType, .nif_ptr 
 const struct Nif *platform_nifs_get_nif(const char *name) {
 #ifdef KNYTOS_SERVICE_WORKER
     if (!strcmp(name, "knytos:request/3")) return &knytos_request_nif;
+    if (!strcmp(name, "knytos:request/4")) return &knytos_request_nif;
     if (!strcmp(name, "knytos:cancel/1")) return &knytos_cancel_nif;
     if (!strcmp(name, "knytos:lookup/1")) return &knytos_lookup_nif;
     if (!strcmp(name, "knytos:close/1")) return &knytos_close_nif;
