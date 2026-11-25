@@ -26,6 +26,7 @@ start() ->
     ok = owner_exit(3, normal),
     ok = owner_exit(4, killed),
     ok = payload_cases(),
+    ok = subscription_cases(),
     erlang:display({m4, active_cancel, pass}),
     ok.
 
@@ -63,6 +64,70 @@ echo(Service, Bytes) ->
     {ok, Ref} = knytos:request(Service, 3, byte_size(Bytes), Bytes),
     {ok, Bytes} = result(Ref),
     ok.
+
+subscription_cases() ->
+    Parent = self(),
+    {Owner, OwnerMonitor} = spawn_opt(fun() ->
+        Handle = lookup_hold(erlang:monotonic_time(millisecond) + 750),
+        Ref = subscribe_ready(Handle, erlang:monotonic_time(millisecond) + 750),
+        Parent ! {abandoned_watch, Ref}
+    end, [monitor]),
+    Abandoned = receive {abandoned_watch, Ref} -> Ref after 5000 -> error(no_watch) end,
+    receive {'DOWN', OwnerMonitor, process, Owner, normal} -> ok
+    after 5000 -> error(watch_owner_still_alive)
+    end,
+    Handle = lookup_hold(erlang:monotonic_time(millisecond) + 750),
+    {error, not_found} = knytos:unsubscribe(Abandoned),
+    {ok, Pending} = knytos:subscribe(Handle, closed),
+    ok = knytos:unsubscribe(Pending),
+    receive {knytos_reply, Pending, ok} -> ok after 0 -> ok end,
+    Old = subscribe_ready(Handle, erlang:monotonic_time(millisecond) + 750),
+    {error, busy} = knytos:subscribe(Handle, closed),
+    {Peer, PeerMonitor} = spawn_opt(fun() ->
+        {error, not_found} = knytos:unsubscribe(Old),
+        {error, not_found} = knytos:subscribe(Handle, closed)
+    end, [monitor]),
+    receive {'DOWN', PeerMonitor, process, Peer, normal} -> ok
+    after 5000 -> error(foreign_watch_access)
+    end,
+    ok = knytos:unsubscribe(Old),
+    {error, not_found} = knytos:unsubscribe(Old),
+    Watch = subscribe_ready(Handle, erlang:monotonic_time(millisecond) + 750),
+    erlang:display({m4, close_watch_scope}),
+    {ok, Close} = knytos:request(Handle, 5, 0),
+    {ok, 0} = result(Close),
+    erlang:display({m4, awaiting_close_watch}),
+    receive
+        {knytos_event, Watch, closed} -> ok;
+        {knytos_event, Watch, {error, Reason}} -> error({watch_failed, Reason})
+    end,
+    {error, not_found} = knytos:request(Handle, 255, 0),
+    {error, not_found} = knytos:unsubscribe(Watch),
+    receive
+        {knytos_event, _, _} -> error(unexpected_watch_event);
+        {knytos_reply, Pending, _} -> error(cancelled_registration_delivered)
+    after 20 -> ok
+    end,
+    erlang:display({m4, close_watch_event}),
+    ok.
+
+lookup_hold(Deadline) ->
+    true = erlang:monotonic_time(millisecond) < Deadline,
+    case knytos:lookup(<<"m4.hold">>) of
+        {error, busy} -> receive after 20 -> lookup_hold(Deadline) end;
+        {ok, Ref} ->
+            {ok, Handle} = result(Ref),
+            Handle
+    end.
+
+subscribe_ready(Handle, Deadline) ->
+    true = erlang:monotonic_time(millisecond) < Deadline,
+    case knytos:subscribe(Handle, closed) of
+        {error, busy} -> receive after 20 -> subscribe_ready(Handle, Deadline) end;
+        {ok, Ref} ->
+            ok = result(Ref),
+            Ref
+    end.
 
 owner_exit(Case, Reason) ->
     Parent = self(),

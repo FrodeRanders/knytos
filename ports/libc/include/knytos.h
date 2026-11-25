@@ -62,7 +62,8 @@ enum { KNYTOS_SERVICE_UNAUTHORIZED = 8, KNYTOS_SERVICE_UNEXPECTED_REPLY = 9 };
 enum { KNYTOS_SERVICE_CANCELLED = 10, KNYTOS_SERVICE_NOT_FOUND = 11 };
 enum { KNYTOS_SERVICE_BYTE_REPLY = 12, KNYTOS_SERVICE_MAX_PAYLOAD = 4096 };
 enum { KNYTOS_SERVICE_STOP, KNYTOS_SERVICE_NAMED_CALL, KNYTOS_SERVICE_LOOKUP,
-    KNYTOS_SERVICE_BOUND_CALL, KNYTOS_SERVICE_RELEASE };
+    KNYTOS_SERVICE_BOUND_CALL, KNYTOS_SERVICE_RELEASE, KNYTOS_SERVICE_SUBSCRIBE,
+    KNYTOS_SERVICE_UNSUBSCRIBE };
 struct knytos_service_command {
     const uint8_t *name;
     size_t length;
@@ -77,6 +78,8 @@ struct knytos_service_command {
 void knytos_service_worker_run(uint32_t (*next)(struct knytos_service_command *),
                                void (*complete)(uint32_t, int32_t, int64_t),
                                bool (*cancelled)(void));
+/* Scheduler checkpoint on CQ zero. BUSY means the watch is still pending. */
+int32_t knytos_service_watch_poll(void);
 #endif
 struct knytos_allocation_stats { uint64_t blocks, requested_bytes, peak_requested_bytes; };
 struct knytos_abi_pair { uint64_t unsigned_value; int64_t signed_value; double floating_value; };

@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 scoped scalar invocation implemented.\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 scoped service calls, reusable handles, binary payloads and endpoint-close subscriptions implemented for the single-scheduler service profile.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -1207,8 +1207,10 @@ Asynchronous lookup returns an AtomVM resource scoped to the submitting
 process. Explicit close, garbage collection and process exit release the
 worker's connection after outstanding calls settle. The four-argument
 request moves one bounded byte payload and can return a copied binary
-from an owned reply page. Subscription and general capability attachment
-support remain subsequent work. The
+from an owned reply page. The one-shot `closed` subscription binds a
+reusable service handle to its endpoint's native close completion.
+General capability attachments and additional event types remain
+subsequent work. The
 [signed qualification](../reports/milestones/2026-11-25-atomvm-native-service.md)
 covers grant denial, busy admission, independent Erlang timer progress
 and node shutdown of the worker profile. The
@@ -1222,6 +1224,8 @@ The [reusable service qualification](../reports/milestones/2026-11-25-atomvm-ser
 covers repeated calls, process scope, external term encoding and release.
 The [binary payload qualification](../reports/milestones/2026-11-25-atomvm-byte-payloads.md)
 covers moved requests, copied replies, size rejection, cancellation and timeout.
+The [endpoint-close qualification](../reports/milestones/2026-11-26-atomvm-close-subscriptions.md)
+covers owner scope, unsubscribe, event-only wakeup and shutdown with an armed watch.
 
 ### 11.2. Erlang-facing API
 

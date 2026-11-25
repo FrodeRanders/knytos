@@ -50,6 +50,10 @@ def verify_active_cancel(text, server_asid, client_asid):
     stages.extend((
         (client_asid, "{m4,byte_payload_roundtrip}"),
         (client_asid, "{m4,byte_payload_bounds}"),
+        (client_asid, "{m4,close_watch_scope}"),
+        (client_asid, "{m4,awaiting_close_watch}"),
+        (server_asid, "[m4 hold] closing endpoint"),
+        (client_asid, "{m4,close_watch_event}"),
     ))
     offset = 0
     for asid, marker in stages:

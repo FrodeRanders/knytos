@@ -359,8 +359,8 @@ guards. Exiting unrelated processes leave the slot alone.
 Cancelled references receive no further reply. A stale, foreign or
 already delivered reference returns `{error, not_found}`. A reply
 already in the mailbox remains available to receive. Reusable service
-handles share the same request slot. Subscriptions and the SMP Erlang
-scheduler profile remain separate M4 work.
+handles share the same request slot. The SMP Erlang scheduler profile
+remains separate M4 work.
 
 `knytos:lookup(ServiceName)` uses the signed `service=call` grant and
 returns `{ok, Reference}`. Inspect `{knytos_reply, Reference, {ok, Handle}}`
@@ -400,12 +400,31 @@ connection capabilities yield `unexpected_reply`. Three-argument requests
 continue to reject returned attachments. Cancelling a request can abandon
 its reply after the service has received the moved memory.
 
+### Endpoint-close subscriptions
+
+`knytos:subscribe(Handle, closed)` submits a one-shot watch on a reusable
+handle and returns `{ok, Reference}`. Its registration result arrives as
+`{knytos_reply, Reference, ok}` or `{knytos_reply, Reference, {error, Reason}}`.
+Once registered, endpoint closure delivers
+`{knytos_event, Reference, closed}` and invalidates the handle. A terminal
+observation failure delivers `{knytos_event, Reference, {error, Reason}}`.
+The VM admits one watch and can use the request slot while it is pending.
+
+`knytos:unsubscribe(Reference)` lets the owner suppress future registration
+and event delivery. The reference becomes stale after terminal delivery or
+release. Results and events already in the mailbox remain available to
+receive. Explicit service close, garbage collection and owner exit also
+release the watch. Cancellation of the watch leaves the peer endpoint open.
+The worker owns native registration and cancellation. The scheduler rechecks
+the completion owner at its CQ-zero checkpoints, including before parking.
+
 Build `tests/native_service.erl`, `tests/active_cancel.erl` and
 `tests/shutdown_service.erl` with `--service-worker`. The signed runner
 builds and launches a scoped fixture service for `active_cancel`. It
 holds replies so the test can verify pending-call cancellation, timeout,
 and cleanup after normal exit or a kill signal. It also echoes binary
-payloads and returns malformed lengths for the client to reject.
+payloads, returns malformed lengths and closes its endpoint while the
+client waits for the subscription event.
 
 ```sh
 python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \

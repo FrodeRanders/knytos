@@ -17,12 +17,14 @@ use knytos_rt::{
     deadline::Deadline,
     owned::{
         CallResult,
+        Completion,
         Connection,
         IpcError,
         OwnedPayload,
         PendingCall,
     },
 };
+use lock_api::Mutex;
 
 use crate::{
     BUSY,
@@ -47,6 +49,13 @@ const NAMED_CALL: u32 = 1;
 const LOOKUP: u32 = 2;
 const BOUND_CALL: u32 = 3;
 const RELEASE: u32 = 4;
+const SUBSCRIBE: u32 = 5;
+const UNSUBSCRIBE: u32 = 6;
+
+// The close watch has its own completion owner. Registration and destruction
+// run on the worker. The scheduler observes it at the CQ-zero checkpoint.
+// The lock covers only custody transfer, never a syscall or a destructor.
+static CLOSE_WATCH: Mutex<knytos_rt::CountingMutex, Option<Completion>> = Mutex::new(None);
 
 #[repr(C)]
 pub struct ServiceCommand {
@@ -177,6 +186,35 @@ fn copy_reply(
     Ok(Reply::Bytes(length))
 }
 
+fn store_watch(watch: Completion) {
+    let previous = CLOSE_WATCH.lock().replace(watch);
+    if previous.is_some() {
+        knytos_rt::domain_abort();
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn knytos_service_watch_poll() -> i32 {
+    let watch = CLOSE_WATCH.lock().take();
+    let Some(mut watch) = watch else {
+        return UNAVAILABLE;
+    };
+    match watch.poll() {
+        Ok(Some(result)) if result == knytos_rt::abi::IPC_REPLY_ENDPOINT_CLOSED => OK,
+        Ok(Some(_)) => UNAVAILABLE,
+        Ok(None) => {
+            store_watch(watch);
+            BUSY
+        }
+        Err(_) => {
+            // The scheduler will detach delivery and send the owner back to
+            // the worker for cancellation if observation preserved it.
+            store_watch(watch);
+            UNAVAILABLE
+        }
+    }
+}
+
 fn invoke<C: Borrow<Connection>>(
     worker: workers::Participant,
     connection: C,
@@ -216,8 +254,8 @@ fn invoke<C: Borrow<Connection>>(
 /// The callbacks run on this worker. For lookup and named call commands, the
 /// producer retains the name buffer until the completion callback. Any nonnull
 /// byte buffer is exclusively accessible to the worker until completion. The
-/// producer writes the command before returning any operation other than stop
-/// or release.
+/// producer writes the command for calls, lookup and subscription. Stop,
+/// release and unsubscribe require no initialized command.
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn knytos_service_worker_run(
     next: unsafe extern "C" fn(*mut ServiceCommand) -> u32,
@@ -232,11 +270,16 @@ pub unsafe extern "C" fn knytos_service_worker_run(
         let mut command = core::mem::MaybeUninit::uninit();
         let kind = unsafe { next(command.as_mut_ptr()) };
         match kind {
-            STOP => return,
-            RELEASE => {
-                // Only this thread can borrow the session for IPC. Its exact
-                // pending call settles before the worker can reach this arm.
-                drop(session.take());
+            STOP | RELEASE | UNSUBSCRIBE => {
+                let watch = CLOSE_WATCH.lock().take();
+                drop(watch);
+                if kind == STOP {
+                    return;
+                }
+                if kind == RELEASE {
+                    // The worker reaches here after settling its pending call.
+                    drop(session.take());
+                }
                 complete(kind, OK, 0);
                 continue;
             }
@@ -261,6 +304,11 @@ pub unsafe extern "C" fn knytos_service_worker_run(
                         Reply::Scalar(0)
                     }),
                 LOOKUP => Err(BUSY),
+                SUBSCRIBE => session.as_ref().ok_or(UNAVAILABLE).and_then(|connection| {
+                    let watch = connection.watch_closed().map_err(|_| WAIT_REJECTED)?;
+                    store_watch(watch);
+                    Ok(Reply::Scalar(0))
+                }),
                 BOUND_CALL => session.as_ref().ok_or(UNAVAILABLE).and_then(|connection| {
                     invoke(worker, connection, &command, bytes, &deadline, cancelled)
                 }),

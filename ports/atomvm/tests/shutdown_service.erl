@@ -10,6 +10,10 @@ start() ->
 
 start_busy(Service) ->
     put(service, Service),
+    {ok, Watch} = knytos:subscribe(Service, closed),
+    receive {knytos_reply, Watch, ok} -> ok
+    after 5000 -> error(watch_registration_failed)
+    end,
     Parent = self(),
     spawn_opt(fun() ->
         Reference = submit(),

@@ -73,7 +73,7 @@ void sys_poll_events(GlobalContext *global, int timeout_ms) {
 #endif
     if (timeout_ms == SYS_POLL_EVENTS_DO_NOT_WAIT
 #ifdef KNYTOS_SERVICE_WORKER
-        || knytos_service_reply_ready()
+        || knytos_service_needs_scan()
 #endif
     ) {
         // Continually runnable processes can keep the elected scheduler out
@@ -81,13 +81,15 @@ void sys_poll_events(GlobalContext *global, int timeout_ms) {
         // VM's ready-list and scheduler locks.
         if (knytos_shutdown_requested()) {
             reactor_shutdown(global, "[atomvm] reactor shutdown source=nonblocking\n");
+            return;
         }
 #ifdef KNYTOS_SERVICE_WORKER
-        else {
-            knytos_service_deliver(global);
-        }
-#endif
+        bool delivered = knytos_service_deliver(global);
+        knytos_service_flush_cleanup();
+        if (delivered || timeout_ms == SYS_POLL_EVENTS_DO_NOT_WAIT) return;
+#else
         return;
+#endif
     }
 #ifndef AVM_NO_SMP
     // AtomVM serializes this role with its scheduler mutex and publishes the
@@ -209,6 +211,8 @@ const struct Nif *platform_nifs_get_nif(const char *name) {
     if (!strcmp(name, "knytos:cancel/1")) return &knytos_cancel_nif;
     if (!strcmp(name, "knytos:lookup/1")) return &knytos_lookup_nif;
     if (!strcmp(name, "knytos:close/1")) return &knytos_close_nif;
+    if (!strcmp(name, "knytos:subscribe/2")) return &knytos_subscribe_nif;
+    if (!strcmp(name, "knytos:unsubscribe/1")) return &knytos_unsubscribe_nif;
 #endif
     return !strcmp(name, "atomvm:platform/0") ? &platform_nif : NULL;
 }
