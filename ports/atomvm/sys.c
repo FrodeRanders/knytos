@@ -68,6 +68,9 @@ void sys_free_platform(GlobalContext *global) {
 void platform_defaultatoms_init(GlobalContext *global) { (void)global; }
 
 void sys_poll_events(GlobalContext *global, int timeout_ms) {
+#ifdef KNYTOS_SERVICE_WORKER
+    knytos_service_flush_cleanup();
+#endif
     if (timeout_ms == SYS_POLL_EVENTS_DO_NOT_WAIT
 #ifdef KNYTOS_SERVICE_WORKER
         || knytos_service_reply_ready()
@@ -203,6 +206,8 @@ const struct Nif *platform_nifs_get_nif(const char *name) {
 #ifdef KNYTOS_SERVICE_WORKER
     if (!strcmp(name, "knytos:request/3")) return &knytos_request_nif;
     if (!strcmp(name, "knytos:cancel/1")) return &knytos_cancel_nif;
+    if (!strcmp(name, "knytos:lookup/1")) return &knytos_lookup_nif;
+    if (!strcmp(name, "knytos:close/1")) return &knytos_close_nif;
 #endif
     return !strcmp(name, "atomvm:platform/0") ? &platform_nif : NULL;
 }

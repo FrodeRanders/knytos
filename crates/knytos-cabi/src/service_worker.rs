@@ -1,4 +1,6 @@
 //! Scoped scalar calls on a native worker, outside the VM scheduler.
+use core::borrow::Borrow;
+
 use knytos_app::{
     Application,
     grant,
@@ -21,6 +23,7 @@ use knytos_rt::{
 };
 
 use crate::{
+    BUSY,
     DEADLINE,
     INVALID,
     OK,
@@ -35,12 +38,43 @@ const UNEXPECTED_REPLY: i32 = 9;
 const CANCELLED: i32 = 10;
 const REQUEST_BUDGET_MS: u64 = 1_000;
 
-struct InFlightScalar {
-    pending: PendingCall<'static>,
-    _connection: Connection,
+const STOP: u32 = 0;
+const NAMED_CALL: u32 = 1;
+const LOOKUP: u32 = 2;
+const BOUND_CALL: u32 = 3;
+const RELEASE: u32 = 4;
+
+#[repr(C)]
+pub struct ServiceCommand {
+    name: *const u8,
+    length: usize,
+    argument: i64,
+    opcode: u32,
 }
 
-impl InFlightScalar {
+impl ServiceCommand {
+    /// The scheduler's name storage stays live until result publication.
+    unsafe fn name(&self) -> Result<&[u8], i32> {
+        if self.name.is_null()
+            || self.length == 0
+            || self.length > knytos_launch::deployment::MAX_SERVICE_NAME_LEN
+        {
+            return Err(INVALID);
+        }
+        let name = unsafe { core::slice::from_raw_parts(self.name, self.length) };
+        if name.iter().any(|byte| !(0x21..=0x7e).contains(byte)) {
+            return Err(INVALID);
+        }
+        Ok(name)
+    }
+}
+
+struct InFlightScalar<C> {
+    pending: PendingCall<'static>,
+    _connection: C,
+}
+
+impl<C> InFlightScalar<C> {
     fn observe(
         mut self,
         worker: workers::Participant,
@@ -48,7 +82,7 @@ impl InFlightScalar {
         cancelled: extern "C" fn() -> bool,
     ) -> Result<i64, i32> {
         // The worker holds no VM or runtime metadata guard. Early returns
-        // close the exact pending owner before releasing the connection.
+        // close the exact pending owner within the connection owner's scope.
         self.pending.bind_cq(worker.queue()).map_err(|error| match error {
             IpcError::Status(ipc_status::RESOURCE_LIMIT) => WAIT_REJECTED,
             _ => UNAVAILABLE,
@@ -105,70 +139,86 @@ fn grant_status(error: grant_client::Error) -> i32 {
     }
 }
 
-fn invoke(
+fn acquire(context: &Context, service: &[u8], deadline: &Deadline) -> Result<Connection, i32> {
+    let app = Application::from_context(context).map_err(|_| UNAVAILABLE)?;
+    app.acquire(service, knytos_launch::deployment::RIGHT_CALL, deadline).map_err(grant_status)
+}
+
+fn invoke<C: Borrow<Connection>>(
     worker: workers::Participant,
-    service: &[u8],
-    opcode: u32,
-    argument: i64,
+    connection: C,
+    command: &ServiceCommand,
+    deadline: &Deadline,
     cancelled: extern "C" fn() -> bool,
 ) -> Result<i64, i32> {
     if cancelled() {
         return Err(CANCELLED);
     }
-    let context = Context;
-    let app = Application::from_context(&context).map_err(|_| UNAVAILABLE)?;
-    let deadline = Deadline::after(REQUEST_BUDGET_MS);
-    let connection = app
-        .acquire(service, knytos_launch::deployment::RIGHT_CALL, &deadline)
-        .map_err(grant_status)?;
-    if cancelled() {
-        return Err(CANCELLED);
-    }
-    let pending = Admission::with_lifecycle(&deadline, context.lifecycle())
-        .call(connection.as_ref(), opcode, argument as u64)
+    let pending = Admission::with_lifecycle(deadline, Context.lifecycle())
+        .call(connection.borrow().as_ref(), command.opcode, command.argument as u64)
         .map_err(admission_status)?;
     InFlightScalar {
         pending,
         _connection: connection,
     }
-    .observe(worker, &deadline, cancelled)
+    .observe(worker, deadline, cancelled)
 }
 
 /// # Safety
-/// The name and output are separate live C buffers for the call's duration.
-/// The callback is nonblocking and leaves those buffers live.
+/// The callbacks run on this worker. For lookup and named call commands, the
+/// producer retains the name buffer until the completion callback. It writes
+/// the command before returning any operation other than stop or release.
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn knytos_worker_call_scalar(
-    name: *const u8,
-    length: usize,
-    opcode: u32,
-    argument: i64,
-    cancelled: Option<extern "C" fn() -> bool>,
-    output: *mut i64,
-) -> i32 {
-    let Some(cancelled) = cancelled else {
-        return INVALID;
-    };
+pub unsafe extern "C" fn knytos_service_worker_run(
+    next: unsafe extern "C" fn(*mut ServiceCommand) -> u32,
+    complete: extern "C" fn(u32, i32, i64),
+    cancelled: extern "C" fn() -> bool,
+) {
     let Some(worker) = workers::participant().filter(|worker| worker.slot != 0) else {
-        return INVALID;
+        knytos_rt::domain_abort();
     };
-    if name.is_null()
-        || length == 0
-        || length > knytos_launch::deployment::MAX_SERVICE_NAME_LEN
-        || output.is_null()
-        || !(output as usize).is_multiple_of(core::mem::align_of::<i64>())
-    {
-        return INVALID;
-    }
-    let service = unsafe { core::slice::from_raw_parts(name, length) };
-    if service.iter().any(|byte| !(0x21..=0x7e).contains(byte)) {
-        return INVALID;
-    }
-    match invoke(worker, service, opcode, argument, cancelled) {
-        Ok(result) => {
-            unsafe { output.write(result) };
-            OK
+    let mut session = None;
+    loop {
+        let mut command = core::mem::MaybeUninit::uninit();
+        let kind = unsafe { next(command.as_mut_ptr()) };
+        match kind {
+            STOP => return,
+            RELEASE => {
+                // Only this thread can borrow the session for IPC. Its exact
+                // pending call settles before the worker can reach this arm.
+                drop(session.take());
+                complete(kind, OK, 0);
+                continue;
+            }
+            _ => {}
         }
-        Err(status) => status,
+        let result = if cancelled() {
+            Err(CANCELLED)
+        } else {
+            let command = unsafe { command.assume_init() };
+            let deadline = Deadline::after(REQUEST_BUDGET_MS);
+            match kind {
+                NAMED_CALL => unsafe { command.name() }
+                    .and_then(|name| acquire(&Context, name, &deadline))
+                    .and_then(|connection| {
+                        invoke(worker, connection, &command, &deadline, cancelled)
+                    }),
+                LOOKUP if session.is_none() => unsafe { command.name() }
+                    .and_then(|name| acquire(&Context, name, &deadline))
+                    .map(|connection| {
+                        session = Some(connection);
+                        0
+                    }),
+                LOOKUP => Err(BUSY),
+                BOUND_CALL => session.as_ref().ok_or(UNAVAILABLE).and_then(|connection| {
+                    invoke(worker, connection, &command, &deadline, cancelled)
+                }),
+                _ => Err(INVALID),
+            }
+        };
+        match result {
+            Ok(result) => complete(kind, OK, result),
+            Err(status) => complete(kind, status, 0),
+        }
     }
 }

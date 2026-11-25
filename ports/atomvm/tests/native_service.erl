@@ -43,8 +43,83 @@ start() ->
     {ok, Last} = knytos:request(<<"time">>, 255, 0),
     {ok, -3} = result(Last),
     erlang:display({m4, abandoned_slot_reused}),
+    ok = reusable_service(),
     erlang:display({m4, native_service, pass}),
     ok.
+
+reusable_service() ->
+    {ok, Denied} = knytos:lookup(<<"rng">>),
+    {error, unauthorized} = result(Denied),
+    {ok, Lookup} = knytos:lookup(<<"time">>),
+    {ok, Service} = result(Lookup),
+    {error, busy} = knytos:lookup(<<"time">>),
+    ok = scalar_request(Service),
+    ok = scalar_request(Service),
+    Parent = self(),
+    {Peer, Monitor} = spawn_opt(fun() ->
+        receive {service, Handle} ->
+            {error, not_found} = knytos:request(Handle, 255, 0),
+            {error, not_found} = knytos:close(Handle)
+        end
+    end, [monitor]),
+    Peer ! {service, Service},
+    receive {'DOWN', Monitor, process, Peer, normal} -> ok
+    after 5000 -> error(foreign_handle)
+    end,
+    Encoded = binary_to_term(term_to_binary(Service)),
+    try knytos:request(Encoded, 255, 0) of
+        _ -> error(encoded_handle_accepted)
+    catch
+        error:badarg -> ok
+    end,
+    erlang:display({m4, reusable_resource_is_scoped}),
+    ok = knytos:close(Service),
+    {error, not_found} = knytos:close(Service),
+    {ok, Replacement} = lookup_time(),
+    {error, not_found} = knytos:request(Service, 255, 0),
+    ok = scalar_request(Replacement),
+    ok = knytos:close(Replacement),
+    erlang:display({m4, closed_resource_is_stale}),
+
+    ok = forget_service(),
+    true = erlang:garbage_collect(),
+    {ok, AfterGc} = lookup_time(),
+    ok = knytos:close(AfterGc),
+    erlang:display({m4, resource_gc_reclaimed_slot}),
+
+    {Owner, OwnerMonitor} = spawn_opt(fun() ->
+        {ok, Owned} = lookup_time(),
+        Parent ! {orphan, Owned}
+    end, [monitor]),
+    Orphan = receive {orphan, Token} -> Token after 5000 -> error(no_handle) end,
+    receive {'DOWN', OwnerMonitor, process, Owner, normal} -> ok
+    after 5000 -> error(owner_still_alive)
+    end,
+    {ok, AfterExit} = lookup_time(),
+    {error, not_found} = knytos:request(Orphan, 255, 0),
+    ok = scalar_request(AfterExit),
+    ok = knytos:close(AfterExit),
+    erlang:display({m4, resource_owner_exit_reclaimed_slot}),
+    ok.
+
+scalar_request(Service) ->
+    {ok, Ref} = knytos:request(Service, 255, 0),
+    {ok, -3} = result(Ref),
+    ok.
+
+forget_service() ->
+    {ok, Service} = lookup_time(),
+    scalar_request(Service).
+
+lookup_time() ->
+    lookup_time(erlang:monotonic_time(millisecond) + 750).
+
+lookup_time(Deadline) ->
+    true = erlang:monotonic_time(millisecond) < Deadline,
+    case knytos:lookup(<<"time">>) of
+        {error, busy} -> receive after 20 -> lookup_time(Deadline) end;
+        {ok, Ref} -> result(Ref)
+    end.
 
 result(Reference) ->
     receive {knytos_reply, Reference, Result} -> Result

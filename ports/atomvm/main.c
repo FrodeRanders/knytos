@@ -58,7 +58,7 @@ int main(void) {
     knytos_schedulers_prepare(global);
 #endif
 #ifdef KNYTOS_SERVICE_WORKER
-    knytos_service_worker_start();
+    knytos_service_worker_start(global);
 #endif
     context_execute_loop(context, module, "start", 0);
 #ifndef AVM_NO_SMP

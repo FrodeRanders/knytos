@@ -342,6 +342,8 @@ def main():
                 grants.extend(("time=call", "observe=call"))
             if number == active_cancel_case:
                 grants.append("m4.hold=call")
+            if number in retirement_cases and number in service_workers:
+                grants.append("time=call")
             command([signer, "deployment-sign", output / (name + ".cdep"), name, "fixture/" + name,
                      image, "0", "1", "64" if number in vm_cases else "16",
                      thread_limit, "5000", key, *grants], name + "-descriptor")
@@ -550,7 +552,9 @@ def main():
                             for stage in ("scalar_reply", "unauthorized", "attachment_rejected",
                                           "timer_with_pending_call", "abandoned_slot_reused",
                                           "foreign_cancel_rejected", "cancelled_reply_suppressed",
-                                          "cancelled_slot_reused"):
+                                          "cancelled_slot_reused", "reusable_resource_is_scoped",
+                                          "closed_resource_is_stale", "resource_gc_reclaimed_slot",
+                                          "resource_owner_exit_reclaimed_slot"):
                                 assert f"{{m4,{stage}}}" in text, stage
                             assert "[atomvm] service worker joined" in text and "[atomvm] return=ok" in text, name
                         if number == active_cancel_case:

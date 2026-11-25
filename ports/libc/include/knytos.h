@@ -59,13 +59,20 @@ int32_t knytos_rwlock_unlock(const struct knytos_rwlock *lock);
 #endif
 #ifdef KNYTOS_SERVICE_WORKER
 enum { KNYTOS_SERVICE_UNAUTHORIZED = 8, KNYTOS_SERVICE_UNEXPECTED_REPLY = 9 };
-enum { KNYTOS_SERVICE_CANCELLED = 10 };
-/* Worker-only scalar call using the signed scoped deployment grant.
- * The worker owns admission, observation and cleanup under one native budget.
- * The caller keeps the name and the separate output live until return.
- * The predicate is nonblocking and may be checked before grant or invocation. */
-int32_t knytos_worker_call_scalar(const uint8_t *name, size_t length, uint32_t opcode,
-                                  int64_t argument, bool (*cancelled)(void), int64_t *output);
+enum { KNYTOS_SERVICE_CANCELLED = 10, KNYTOS_SERVICE_NOT_FOUND = 11 };
+enum { KNYTOS_SERVICE_STOP, KNYTOS_SERVICE_NAMED_CALL, KNYTOS_SERVICE_LOOKUP,
+    KNYTOS_SERVICE_BOUND_CALL, KNYTOS_SERVICE_RELEASE };
+struct knytos_service_command {
+    const uint8_t *name;
+    size_t length;
+    int64_t argument;
+    uint32_t opcode;
+};
+/* The worker owns all connections. next initializes a command for lookup
+ * or call. The name stays live until complete. cancelled is nonblocking. */
+void knytos_service_worker_run(uint32_t (*next)(struct knytos_service_command *),
+                               void (*complete)(uint32_t, int32_t, int64_t),
+                               bool (*cancelled)(void));
 #endif
 struct knytos_allocation_stats { uint64_t blocks, requested_bytes, peak_requested_bytes; };
 struct knytos_abi_pair { uint64_t unsigned_value; int64_t signed_value; double floating_value; };

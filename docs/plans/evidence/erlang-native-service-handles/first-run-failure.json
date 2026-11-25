@@ -1,0 +1,30 @@
+{
+  "outcome": "failed",
+  "completed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request"
+  ],
+  "failed_fixture": "avm-native-service",
+  "kernel_sha256": "5f7f6b1bad610a9e94244b74cf59c456ad06ae8062504ed386d909675c872b61",
+  "signed_elf_sha256": "ed1f5177760d8c23113a6cdb1c965a8b550eb982b45050d9c71cbfacbece1f2c",
+  "signed_descriptor_sha256": "bbc166e483947f80894e7d56fdfae7a9b6ca66b8730f5f5195dccd667e1d21e5",
+  "serial_excerpt": [
+    "[+    15.836744] [EL0 LOG] lp=0 asid=28 [atomvm] package_sha256=03bf73452e4253e29a349cb2159a3b0774aace7923068d0744b570079a09f990 bytes=26384",
+    "[+    21.460877] [EL0 LOG] lp=0 asid=28 {m4,abandoned_slot_reused}",
+    "[+    21.462002] [EL0 LOG] lp=0 asid=28 CRASH",
+    "[+    21.465743] [EL0 LOG] lp=0 asid=28 [{native_service,reusable_service,0,[]},{native_service,start,0,[]}]",
+    "[+    21.468718] [EL0 LOG] lp=0 asid=28 x[0]: <<\"rng\">>",
+    "[+    21.469143] [EL0 LOG] lp=0 asid=28 x[1]: badarg",
+    "[+    21.479554] [EL0 LOG] lp=0 asid=28 [atomvm] return=<<\"rng\">>",
+    "[+    21.483143] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=1 released_blocks=23 remaining_blocks=0 heap_peak=12980 sampled_stack=1808"
+  ],
+  "diagnosis": "The first lookup returned badarg before starting native acquisition. A multi-statement AtomVM error macro followed an unbraced if, so its return executed unconditionally."
+}

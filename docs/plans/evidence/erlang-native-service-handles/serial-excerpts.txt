@@ -1,0 +1,70 @@
+[+     3.960028] BOOT COMPLETE: validation passed; local storage ready; services submitted
+== avm-native-service ==
+[+    15.550838] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-native-service" generation=1 asid=28 principal=0xecbb8a41eaf7ead0
+[+    15.541308] [EL0 LOG] lp=0 asid=28 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+    15.542108] [EL0 LOG] lp=0 asid=28 [atomvm] package_sha256=03bf73452e4253e29a349cb2159a3b0774aace7923068d0744b570079a09f990 bytes=26384
+[+    15.542678] [EL0 LOG] lp=0 asid=28 [atomvm] wake-before-wait passed
+[+    15.562411] [EL0 LOG] lp=0 asid=28 {m4,scalar_reply}
+[+    15.563820] [EL0 LOG] lp=0 asid=28 {m4,unauthorized}
+[+    15.566776] [EL0 LOG] lp=0 asid=28 {m4,attachment_rejected}
+[+    15.593254] [EL0 LOG] lp=0 asid=28 {m4,timer_with_pending_call}
+[+    16.575848] [EL0 LOG] lp=0 asid=28 {m4,foreign_cancel_rejected}
+[+    16.603521] [EL0 LOG] lp=0 asid=28 {m4,cancel_slot_busy}
+[+    18.109808] [EL0 LOG] lp=0 asid=28 {m4,cancelled_reply_suppressed}
+[+    18.120157] [EL0 LOG] lp=0 asid=28 {m4,cancel_slot_released}
+[+    19.623576] [EL0 LOG] lp=0 asid=28 {m4,cancelled_reply_suppressed}
+[+    19.633465] [EL0 LOG] lp=0 asid=28 {m4,cancelled_slot_reused}
+[+    21.149079] [EL0 LOG] lp=0 asid=28 {m4,abandoned_slot_reused}
+[+    21.164147] [EL0 LOG] lp=0 asid=28 {m4,reusable_resource_is_scoped}
+[+    21.191377] [EL0 LOG] lp=0 asid=28 {m4,closed_resource_is_stale}
+[+    21.243190] [EL0 LOG] lp=0 asid=28 {m4,resource_gc_reclaimed_slot}
+[+    21.297360] [EL0 LOG] lp=0 asid=28 {m4,resource_owner_exit_reclaimed_slot}
+[+    21.298191] [EL0 LOG] lp=0 asid=28 {m4,native_service,pass}
+[+    21.300981] [EL0 LOG] lp=0 asid=28 [atomvm] service worker joined
+[+    21.301734] [EL0 LOG] lp=0 asid=28 [atomvm] return=ok
+[+    21.302359] [EL0 LOG] lp=0 asid=28 [atomvm] reactor waits=55 deadlines=10
+[+    21.303152] [EL0 LOG] lp=0 asid=28 [atomvm] completed status=0
+[+    21.304985] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=24 remaining_blocks=0 heap_peak=13418 sampled_stack=1424
+== avm-active-cancel ==
+[+    21.508841] [EL0 LOG] lp=0 asid=16 [agent] launched "m4-hold-service" generation=1 asid=29 principal=0xd0f17238391291e9
+[+    22.156926] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-active-cancel" generation=1 asid=30 principal=0xc881470a6119ef89
+[+    21.512086] [EL0 LOG] lp=0 asid=29 [m4 hold] published
+[+    22.157492] [EL0 LOG] lp=0 asid=30 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+    22.158274] [EL0 LOG] lp=0 asid=30 [atomvm] package_sha256=de3fa67d750287d628561a5540fc58af9f903836ed2d1c2f3ec15ac5326ca86a bytes=23776
+[+    22.158829] [EL0 LOG] lp=0 asid=30 [atomvm] wake-before-wait passed
+[+    22.169905] [EL0 LOG] lp=0 asid=29 [m4 hold] accepted case=1
+[+    22.270027] [EL0 LOG] lp=0 asid=30 {m4,cancelling_accepted_call}
+[+    22.296769] [EL0 LOG] lp=0 asid=29 [m4 hold] late reply rejected case=1
+[+    22.299655] [EL0 LOG] lp=0 asid=30 {m4,accepted_cancel_reused_ms,133}
+[+    22.302043] [EL0 LOG] lp=0 asid=29 [m4 hold] accepted case=2
+[+    23.307590] [EL0 LOG] lp=0 asid=29 [m4 hold] late reply rejected case=2
+[+    23.308852] [EL0 LOG] lp=0 asid=30 {m4,accepted_call_timed_out}
+[+    23.313023] [EL0 LOG] lp=0 asid=29 [m4 hold] accepted case=3
+[+    23.415148] [EL0 LOG] lp=0 asid=30 {m4,releasing_request_owner,3}
+[+    23.443409] [EL0 LOG] lp=0 asid=29 [m4 hold] late reply rejected case=3
+[+    23.445087] [EL0 LOG] lp=0 asid=30 {m4,owner_exit_reused_ms,3,135}
+[+    23.448777] [EL0 LOG] lp=0 asid=29 [m4 hold] accepted case=4
+[+    23.549199] [EL0 LOG] lp=0 asid=30 {m4,releasing_request_owner,4}
+[+    23.579068] [EL0 LOG] lp=0 asid=29 [m4 hold] late reply rejected case=4
+[+    23.580797] [EL0 LOG] lp=0 asid=30 {m4,owner_exit_reused_ms,4,135}
+[+    23.581527] [EL0 LOG] lp=0 asid=30 {m4,active_cancel,pass}
+[+    23.583231] [EL0 LOG] lp=0 asid=30 [atomvm] service worker joined
+[+    23.583980] [EL0 LOG] lp=0 asid=30 [atomvm] return=ok
+[+    23.584644] [EL0 LOG] lp=0 asid=30 [atomvm] reactor waits=14 deadlines=6
+[+    23.585457] [EL0 LOG] lp=0 asid=30 [atomvm] completed status=0
+[+    23.587040] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=22 remaining_blocks=0 heap_peak=13011 sampled_stack=1424
+== avm-shutdown-busy-1 ==
+[+    25.117464] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy-1" generation=1 asid=32 principal=0xe670475d1c3ee286
+[+    25.108020] [EL0 LOG] lp=0 asid=32 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=1 interpreter=yes
+[+    25.108801] [EL0 LOG] lp=0 asid=32 [atomvm] package_sha256=4c71212090752cc1a2d1d5a8c24863a68aab1e788ba55244b035c56b7992d8ff bytes=22404
+[+    25.109341] [EL0 LOG] lp=0 asid=32 [atomvm] wake-before-wait passed
+[+    25.122307] [EL0 LOG] lp=0 asid=32 {m3_shutdown,busy}
+[+    28.521139] [EL0 LOG] lp=0 asid=32 [atomvm] reactor shutdown source=nonblocking
+[+    28.597771] [EL0 LOG] lp=0 asid=32 [atomvm] service worker joined
+[+    28.598141] [EL0 LOG] lp=0 asid=32 [atomvm] schedulers stopped for shutdown
+[+    28.599305] [EL0 LOG] lp=0 asid=32 [c-runtime] exit=0 released_blocks=37 remaining_blocks=0 heap_peak=11839 sampled_stack=1424
+[+    28.534648] [supervisor] node shutdown acknowledged asid=29 generation=1
+[+    28.606145] [supervisor] node shutdown acknowledged asid=32 generation=1
+[+    28.606347] [EL0 LOG] lp=0 asid=16 [agent] application domains drained; draining connectors
+[+    28.606562] [EL0 LOG] lp=0 asid=16 [agent] child domains drained for node shutdown
+[+    28.642522] [shutdown] POWER-OFF REQUESTED via PSCI Hvc

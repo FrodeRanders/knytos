@@ -3,6 +3,13 @@
 -export([start/0]).
 
 start() ->
+    {ok, Lookup} = knytos:lookup(<<"time">>),
+    receive {knytos_reply, Lookup, {ok, Service}} -> start_busy(Service)
+    after 5000 -> error(service_lookup_failed)
+    end.
+
+start_busy(Service) ->
+    put(service, Service),
     Parent = self(),
     spawn_opt(fun() ->
         Reference = submit(),

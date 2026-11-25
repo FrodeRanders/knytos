@@ -315,8 +315,9 @@ descriptor. The grant controller checks the exact signed deployment
 and the requested name.
 
 `knytos:request(Service, Opcode, Argument)` accepts a binary service
-name, a u32 opcode and a signed 64-bit scalar argument. It returns
-`{ok, Reference}` immediately after submitting the fixed request slot.
+name or an open service handle, a u32 opcode and a signed 64-bit scalar
+argument. It returns `{ok, Reference}` immediately after submitting the
+fixed request slot.
 Invalid types, name lengths and opcode ranges raise `badarg`. When the
 slot is occupied, submission returns `{error, busy}`. The caller receives
 `{knytos_reply, Reference, {ok, Scalar}}` or
@@ -358,8 +359,26 @@ guards. Exiting unrelated processes leave the slot alone.
 Cancelled references receive no further reply. A stale, foreign or
 already delivered reference returns `{error, not_found}`. A reply
 already in the mailbox remains available to receive. Reusable service
-objects, payload attachments and the SMP Erlang scheduler profile
-remain separate M4 work.
+handles share the same request slot. Payload attachments and the SMP
+Erlang scheduler profile remain separate M4 work.
+
+`knytos:lookup(ServiceName)` uses the signed `service=call` grant and
+returns `{ok, Reference}`. Inspect `{knytos_reply, Reference, {ok, Handle}}`
+to obtain the handle, or `{knytos_reply, Reference, {error, Reason}}`
+for lookup failure. The VM admits one open handle and one outstanding
+request. A second lookup returns `{error, busy}` while the handle is
+open or being released. A named scalar request can still use the
+request slot while a handle is open.
+
+The handle belongs to the exact Erlang process that looked it up. Stale
+handles and handles held by other processes return `{error, not_found}`.
+AtomVM's external term encoding loses the resource identity. `knytos:close/1`
+invalidates the caller's handle immediately and schedules release on the
+worker. It returns `{error, busy}` while the request slot is occupied.
+The worker retains the connection through accepted calls and drops it
+after they settle. Garbage collection and owner exit also schedule its
+release. The finalizer only marks the release, and the scheduler signals
+the worker after leaving VM guards.
 
 Build `tests/native_service.erl`, `tests/active_cancel.erl` and
 `tests/shutdown_service.erl` with `--service-worker`. The signed runner
