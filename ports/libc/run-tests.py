@@ -31,7 +31,7 @@ def domain_logs(text, asid):
 
 
 def verify_active_cancel(text, server_asid, client_asid):
-    stages = (
+    stages = [
         (server_asid, "[m4 hold] accepted case=1"),
         (client_asid, "{m4,cancelling_accepted_call}"),
         (server_asid, "[m4 hold] late reply rejected case=1"),
@@ -39,7 +39,14 @@ def verify_active_cancel(text, server_asid, client_asid):
         (server_asid, "[m4 hold] accepted case=2"),
         (server_asid, "[m4 hold] late reply rejected case=2"),
         (client_asid, "{m4,accepted_call_timed_out}"),
-    )
+    ]
+    for case in (3, 4):
+        stages.extend((
+            (server_asid, f"[m4 hold] accepted case={case}"),
+            (client_asid, f"{{m4,releasing_request_owner,{case}}}"),
+            (server_asid, f"[m4 hold] late reply rejected case={case}"),
+            (client_asid, f"{{m4,owner_exit_reused_ms,{case},"),
+        ))
     offset = 0
     for asid, marker in stages:
         match = re.search(rf"\[EL0 LOG\] lp=\d+ asid={asid} {re.escape(marker)}", text[offset:])

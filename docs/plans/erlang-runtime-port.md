@@ -1199,8 +1199,10 @@ Native grant acquisition, call ownership and cleanup run in the worker.
 The submitting process can cancel reply delivery and release an
 unclaimed request. After native call acceptance, the worker observes
 reply readiness and cancellation on its private CQ. A claimed request
-keeps its worker and cleanup scope until settlement. Grant acquisition
-retains the original deadline. Reusable opaque service objects,
+keeps its worker and cleanup scope until settlement. Process exit
+detaches the exact submitter and triggers the same cancellation path
+before process-monitor delivery. Grant acquisition retains the original
+deadline. Reusable opaque service objects,
 returned attachments and subscriptions remain subsequent work. The
 [signed qualification](../reports/milestones/2026-11-25-atomvm-native-service.md)
 covers grant denial, busy admission, independent Erlang timer progress
@@ -1209,6 +1211,8 @@ and node shutdown of the worker profile. The
 covers caller authority, suppressed replies and reuse of the slot.
 The [accepted-call qualification](../reports/milestones/2026-11-25-atomvm-active-call-cancellation.md)
 covers cancellation and timeout while a signed native service holds a reply.
+The [process-exit qualification](../reports/milestones/2026-11-25-atomvm-service-owner-exit.md)
+covers normal exit, kill signals and unrelated process termination.
 
 ### 11.2. Erlang-facing API
 

@@ -332,9 +332,10 @@ discards unexpected returned capabilities and reports
 errors include `unauthorized`, `timeout`, `wait_rejected`,
 `shutdown`, `unavailable` and `badarg` for a rejected service name.
 CQ zero wakes the Erlang scheduler, which copies only the scalar
-result into the caller's mailbox. Delivery ends when the caller
-exits. The worker settles accepted work and startup joins it before
-acknowledging signed shutdown or disposing of the VM.
+result into the caller's mailbox. The scheduler tracks the exact
+submitting process until delivery or cancellation. The worker settles
+accepted work and startup joins it before acknowledging signed
+shutdown or disposing of the VM.
 
 The slot covers one request from submission through delivery.
 `knytos:cancel(Reference)` returns `ok` when the submitting Erlang
@@ -348,6 +349,12 @@ IPC accepts the call, the worker waits on its private CQ for reply readiness
 or a cancellation signal. Cancellation closes the exact pending call
 before releasing its connection. Remote effects can survive cancellation.
 
+When the submitting process exits, the scheduler detaches it and
+uses the same cancellation path before sending process-monitor
+notifications. It releases an unclaimed slot or wakes the worker to
+settle a claimed call. Cleanup stays with the worker, outside VM
+guards. Exiting unrelated processes leave the slot alone.
+
 Cancelled references receive no further reply. A stale, foreign or
 already delivered reference returns `{error, not_found}`. A reply
 already in the mailbox remains available to receive. Reusable service
@@ -357,7 +364,8 @@ remain separate M4 work.
 Build `tests/native_service.erl`, `tests/active_cancel.erl` and
 `tests/shutdown_service.erl` with `--service-worker`. The signed runner
 builds and launches a scoped fixture service for `active_cancel`. It
-holds replies so the test can verify pending-call cancellation and timeout.
+holds replies so the test can verify pending-call cancellation, timeout,
+and cleanup after normal exit or a kill signal.
 
 ```sh
 python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \

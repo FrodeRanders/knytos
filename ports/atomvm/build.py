@@ -157,6 +157,15 @@ def main():
         "    } while (result == NULL || global->scheduler_stop_all);\n\n#ifndef AVM_NO_SMP")
     if smp:
         scheduler = configure_smp(core, generated, scheduler)
+    if args.service_worker:
+        scheduler = replace_pinned(scheduler, '#include "sys.h"\n',
+            '#include "sys.h"\n#include "service_worker.h"\n')
+        # Notify after the ready-list guard and before the Context can be
+        # freed or publish process monitor notifications.
+        scheduler = replace_pinned(scheduler,
+            "    SMP_SPINLOCK_UNLOCK(&ctx->global->processes_spinlock);\n    if (!ctx->leader) {",
+            "    SMP_SPINLOCK_UNLOCK(&ctx->global->processes_spinlock);\n"
+            "    knytos_service_owner_terminated(ctx);\n    if (!ctx->leader) {")
     (generated / "scheduler.c").write_text(scheduler)
     for kind in ("bifs", "nifs"):
         definition = (generated if smp and kind == "nifs" else core) / (kind + ".gperf")
@@ -180,7 +189,7 @@ def main():
     if smp:
         flags.append("-DKNYTOS_NATIVE_WORKERS")
     if args.service_worker:
-        flags.extend(("-DKNYTOS_NATIVE_WORKERS", "-DKNYTOS_SERVICE_WORKER"))
+        flags.extend(("-DKNYTOS_NATIVE_WORKERS", "-DKNYTOS_SERVICE_WORKER", "-I", str(ROOT / "ports/atomvm")))
     # Mirror the exact release's upstream core source list, without POSIX
     # feature probes that could incorrectly succeed for static try-compiles.
     match = re.search(r"set\(SOURCE_FILES\s+(.*?)\)", (core / "CMakeLists.txt").read_text(), re.S)

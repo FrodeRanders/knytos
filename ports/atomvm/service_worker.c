@@ -17,7 +17,9 @@ enum RequestState { EMPTY, REQUESTED, RUNNING, REPLIED };
 static struct {
     _Atomic enum RequestState state;
     atomic_bool cancelled;
-    int32_t recipient;
+    // Borrowed by the sole scheduler until reply, cancellation or exit. The
+    // worker never reads it. Termination clears it before the Context dies.
+    Context *recipient;
     uint64_t reference;
     uint8_t service[MAX_SERVICE_NAME];
     size_t length;
@@ -67,6 +69,8 @@ void knytos_service_worker_join(void)
         || knytos_thread_join(WORKER_SLOT) != KNYTOS_OK) {
         abort();
     }
+    request.recipient = NULL;
+    atomic_store_explicit(&request.state, EMPTY, memory_order_release);
 }
 
 static term result_reason(GlobalContext *global, int status)
@@ -113,7 +117,6 @@ static term submit(Context *ctx, int argc, term argv[])
         request.length = length;
         request.opcode = (uint32_t) opcode;
         request.argument = term_maybe_unbox_int64(argv[2]);
-        request.recipient = ctx->process_id;
     }
     if (memory_ensure_free_opt(ctx, TUPLE_SIZE(2) + REF_SIZE, MEMORY_CAN_SHRINK) != MEMORY_GC_OK) {
         RAISE_ERROR(OUT_OF_MEMORY_ATOM);
@@ -121,6 +124,7 @@ static term submit(Context *ctx, int argc, term argv[])
     if (busy) {
         return result_pair(ERROR_ATOM, result_reason(ctx->global, KNYTOS_BUSY), &ctx->heap);
     }
+    request.recipient = ctx;
     request.reference = globalcontext_get_ref_ticks(ctx->global);
     term result = result_pair(OK_ATOM, term_from_ref_ticks(request.reference, &ctx->heap), &ctx->heap);
     atomic_store_explicit(&request.cancelled, false, memory_order_relaxed);
@@ -131,13 +135,33 @@ static term submit(Context *ctx, int argc, term argv[])
 
 const struct Nif knytos_request_nif = { .base.type = NIFFunctionType, .nif_ptr = submit };
 
+static void abandon_request(void)
+{
+    atomic_store_explicit(&request.cancelled, true, memory_order_release);
+    enum RequestState expected = REQUESTED;
+    // Only the scheduler can publish another request. A worker that lost
+    // this claim holds no borrowed slot data and can try the next request.
+    if (atomic_compare_exchange_strong_explicit(&request.state, &expected, EMPTY,
+            memory_order_acq_rel, memory_order_relaxed)) {
+        request.recipient = NULL;
+    } else if (expected == RUNNING && knytos_thread_signal(WORKER_SLOT) != KNYTOS_OK) {
+        abort();
+    }
+}
+
+void knytos_service_owner_terminated(Context *owner)
+{
+    if (request.recipient == owner) {
+        request.recipient = NULL;
+        abandon_request();
+    }
+}
+
 static term cancel(Context *ctx, int argc, term argv[])
 {
     (void) argc;
     VALIDATE_VALUE(argv[0], term_is_reference);
-    if (atomic_load_explicit(&request.state, memory_order_acquire) == EMPTY
-        || request.recipient != ctx->process_id
-        || request.reference != term_to_ref_ticks(argv[0])) {
+    if (request.recipient != ctx || request.reference != term_to_ref_ticks(argv[0])) {
         if (memory_ensure_free_opt(ctx, TUPLE_SIZE(2), MEMORY_CAN_SHRINK) != MEMORY_GC_OK) {
             RAISE_ERROR(OUT_OF_MEMORY_ATOM);
         }
@@ -145,15 +169,7 @@ static term cancel(Context *ctx, int argc, term argv[])
         return result_pair(ERROR_ATOM, reason, &ctx->heap);
     }
 
-    atomic_store_explicit(&request.cancelled, true, memory_order_release);
-    enum RequestState expected = REQUESTED;
-    // Only the scheduler can publish another request. A worker that lost
-    // this claim holds no borrowed slot data and can try the next request.
-    if (!atomic_compare_exchange_strong_explicit(&request.state, &expected, EMPTY,
-            memory_order_acq_rel, memory_order_relaxed)
-        && expected == RUNNING && knytos_thread_signal(WORKER_SLOT) != KNYTOS_OK) {
-        abort();
-    }
+    abandon_request();
     return OK_ATOM;
 }
 
@@ -167,6 +183,8 @@ bool knytos_service_reply_ready(void)
 void knytos_service_deliver(GlobalContext *global)
 {
     if (!knytos_service_reply_ready()) return;
+    Context *recipient = request.recipient;
+    request.recipient = NULL;
     if (atomic_load_explicit(&request.cancelled, memory_order_acquire)) {
         atomic_store_explicit(&request.state, EMPTY, memory_order_release);
         return;
@@ -180,9 +198,9 @@ void knytos_service_deliver(GlobalContext *global)
     term_put_tuple_element(message, 0, globalcontext_make_atom(global, ATOM_STR("\14", "knytos_reply")));
     term_put_tuple_element(message, 1, term_from_ref_ticks(request.reference, &heap));
     term_put_tuple_element(message, 2, payload);
-    // The VM copies into a live recipient's mailbox and discards delivery
-    // when the local PID has exited. The native operation is already settled.
-    globalcontext_send_message(global, request.recipient, message);
+    // Only the scheduler can terminate this recipient. Its exit hook
+    // detaches it and suppresses delivery before it can be destroyed.
+    globalcontext_send_message(global, recipient->process_id, message);
     END_WITH_STACK_HEAP(heap, global);
     atomic_store_explicit(&request.state, EMPTY, memory_order_release);
 }
