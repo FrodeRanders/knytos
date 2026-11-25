@@ -1,0 +1,399 @@
+diff --git a/crates/knytos-cabi/src/sync.rs b/crates/knytos-cabi/src/sync.rs
+index 1c6b83b8..773f6701 100644
+--- a/crates/knytos-cabi/src/sync.rs
++++ b/crates/knytos-cabi/src/sync.rs
+@@ -4,6 +4,104 @@
+ pub(crate) mod libc;
+ mod rwlock;
+
++pub(crate) mod handoff_profile {
++    use core::sync::atomic::{
++        AtomicU64,
++        Ordering,
++    };
++
++    use crate::workers::{
++        PARTICIPANT_COUNT,
++        Participant,
++    };
++
++    const SAMPLE_STRIDE: u64 = 64;
++    const LIMITS_US: [u64; 13] = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192];
++    type Histogram = [AtomicU64; LIMITS_US.len() + 1];
++    const EMPTY: Histogram = [const { AtomicU64::new(0) }; LIMITS_US.len() + 1];
++
++    #[repr(align(128))]
++    struct Slot {
++        waits: AtomicU64,
++        reacquired: AtomicU64,
++        contended: AtomicU64,
++        park_calls: AtomicU64,
++        wait_durations: Histogram,
++        lock_durations: Histogram,
++    }
++
++    static SLOTS: [Slot; PARTICIPANT_COUNT] = [const {
++        Slot {
++            waits: AtomicU64::new(0),
++            reacquired: AtomicU64::new(0),
++            contended: AtomicU64::new(0),
++            park_calls: AtomicU64::new(0),
++            wait_durations: EMPTY,
++            lock_durations: EMPTY,
++        }
++    }; PARTICIPANT_COUNT];
++
++    fn row(caller: Participant) -> &'static Slot {
++        &SLOTS[caller.slot as usize]
++    }
++
++    fn add(counter: &AtomicU64, count: u64) {
++        // Each live roster slot has one writer; read the counters after join.
++        counter.store(counter.load(Ordering::Relaxed) + count, Ordering::Relaxed);
++    }
++
++    pub(super) fn begin(caller: Participant) -> Option<(u64, u64)> {
++        let count = &row(caller).waits;
++        add(count, 1);
++        (count.load(Ordering::Relaxed) % SAMPLE_STRIDE == 0).then(knytos_rt::abi::monotonic_clock)
++    }
++
++    pub(super) fn selected(caller: Participant, start: Option<(u64, u64)>) -> Option<(u64, u64)> {
++        start.map(|start| finish(&row(caller).wait_durations, start))
++    }
++
++    pub(super) fn reacquired(caller: Participant, start: Option<(u64, u64)>, parks: u64) {
++        let row = row(caller);
++        if let Some(start) = start {
++            finish(&row.lock_durations, start);
++        }
++        add(&row.reacquired, 1);
++        add(&row.contended, u64::from(parks != 0));
++        add(&row.park_calls, parks);
++    }
++
++    fn finish(histogram: &Histogram, (start, frequency): (u64, u64)) -> (u64, u64) {
++        let (end, observed_frequency) = knytos_rt::abi::monotonic_clock();
++        assert!(end >= start && frequency != 0 && frequency == observed_frequency);
++        let usec = (end - start).saturating_mul(1_000_000).div_ceil(frequency);
++        add(&histogram[LIMITS_US.partition_point(|&limit| limit < usec)], 1);
++        (end, frequency)
++    }
++
++    pub(crate) fn report() {
++        for (slot, row) in SLOTS.iter().enumerate() {
++            knytos_rt::logln!(
++                "[cabi-handoff] slot={} waits={} reacquired={} contended={} parks={}",
++                slot,
++                row.waits.load(Ordering::Relaxed),
++                row.reacquired.load(Ordering::Relaxed),
++                row.contended.load(Ordering::Relaxed),
++                row.park_calls.load(Ordering::Relaxed),
++            );
++            knytos_rt::logln!(
++                "[cabi-handoff] slot={} wait_us={:?}",
++                slot,
++                row.wait_durations.each_ref().map(|value| value.load(Ordering::Relaxed))
++            );
++            knytos_rt::logln!(
++                "[cabi-handoff] slot={} lock_us={:?}",
++                slot,
++                row.lock_durations.each_ref().map(|value| value.load(Ordering::Relaxed))
++            );
++        }
++    }
++}
++
+ use knytos_rt::{
+     CountingMutex,
+     deadline::Deadline,
+@@ -57,10 +155,16 @@ impl NativeMutex {
+     }
+
+     fn lock(&self, caller: Participant, deadline: &Deadline) -> i32 {
+-        self.lock_inner(caller, deadline, false)
++        self.lock_inner(caller, deadline, false, None)
+     }
+
+-    fn lock_inner(&self, caller: Participant, deadline: &Deadline, recursive: bool) -> i32 {
++    fn lock_inner(
++        &self,
++        caller: Participant,
++        deadline: &Deadline,
++        recursive: bool,
++        mut park_count: Option<&mut u64>,
++    ) -> i32 {
+         let bit = caller.bit();
+         loop {
+             let remaining = deadline.remaining_ms();
+@@ -90,6 +194,9 @@ impl NativeMutex {
+                     Some(_) => state.waiting |= bit,
+                 }
+             }
++            if let Some(count) = park_count.as_deref_mut() {
++                *count += 1;
++            }
+             let status = park(caller, deadline.remaining_ms());
+             if status != OK && status != DEADLINE {
+                 self.0.lock().waiting &= !bit;
+@@ -120,6 +227,7 @@ impl NativeMutex {
+ struct ConditionState {
+     pending: u8,
+     signaled: u8,
++    in_flight: u8,
+ }
+
+ pub struct Condition(Mutex<CountingMutex, ConditionState>);
+@@ -131,7 +239,9 @@ impl Condition {
+         caller: Participant,
+         deadline: Option<&Deadline>,
+         reacquire_ms: u32,
++        parks: &mut u64,
+     ) -> i32 {
++        let sampled = handoff_profile::begin(caller);
+         let bit = caller.bit();
+         let waiting = {
+             // Register while still owning the application mutex. This is
+@@ -141,7 +251,7 @@ impl Condition {
+                 return INVALID;
+             }
+             let mut state = self.0.lock();
+-            assert_eq!((state.pending | state.signaled) & bit, 0);
++            assert_eq!((state.pending | state.signaled | state.in_flight) & bit, 0);
+             state.pending |= bit;
+             held.owner = None;
+             held.depth = 0;
+@@ -167,9 +277,11 @@ impl Condition {
+                 let mut state = self.0.lock();
+                 state.pending &= !bit;
+                 state.signaled &= !bit;
++                state.in_flight &= !bit;
+                 return status;
+             }
+         }
++        let selected = handoff_profile::selected(caller, sampled);
+         // Timed callers share their original budget with reacquisition.
+         // Event-only callers start a separate lock budget upon selection.
+         let lock_deadline;
+@@ -180,7 +292,12 @@ impl Condition {
+                 &lock_deadline
+             }
+         };
+-        mutex.lock(caller, deadline)
++        let status = mutex.lock_inner(caller, deadline, false, Some(parks));
++        self.0.lock().in_flight &= !bit;
++        if status == OK {
++            handoff_profile::reacquired(caller, selected, *parks);
++        }
++        status
+     }
+
+     fn signal(&self, all: bool) {
+@@ -193,6 +310,7 @@ impl Condition {
+             };
+             state.pending &= !selected;
+             state.signaled |= selected;
++            state.in_flight |= selected;
+             selected
+         };
+         wake_waiters(selected);
+@@ -293,7 +411,7 @@ pub unsafe extern "C" fn knytos_condition_wait(
+     else {
+         return INVALID;
+     };
+-    condition.wait(mutex, caller, Some(&Deadline::after(u64::from(timeout_ms))), 0)
++    condition.wait(mutex, caller, Some(&Deadline::after(u64::from(timeout_ms))), 0, &mut 0)
+ }
+
+ /// Safety: both objects stay live through the wait and mutex reacquisition.
+@@ -309,7 +427,36 @@ pub unsafe extern "C" fn knytos_condition_wait_event(
+     else {
+         return INVALID;
+     };
+-    condition.wait(mutex, caller, None, reacquire_ms)
++    condition.wait(mutex, caller, None, reacquire_ms, &mut 0)
++}
++
++/// Safety: the condition stays live and the caller holds the scheduler mutex.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn knytos_handoff_waiter_state(condition: *const Condition) -> u32 {
++    let state = unsafe { &*condition }.0.lock();
++    u32::from(state.pending != 0) | (u32::from(state.in_flight != 0) << 1)
++}
++
++/// Safety: both lock objects and the diagnostic output remain live throughout
++/// the operation. Only the caller has access to the output.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn knytos_handoff_condition_wait_event(
++    condition: *const Condition,
++    mutex: *const NativeMutex,
++    reacquire_ms: u32,
++    waited: *mut u32,
++) -> i32 {
++    let (Some(condition), Some(mutex), Some(caller), Some(waited)) =
++        (unsafe { condition.as_ref() }, unsafe { mutex.as_ref() }, participant(), unsafe {
++            waited.as_mut()
++        })
++    else {
++        return INVALID;
++    };
++    let mut parks = 0;
++    let status = condition.wait(mutex, caller, None, reacquire_ms, &mut parks);
++    *waited = u32::from(parks != 0);
++    status
+ }
+
+ /// Safety: unless null, the pointer names a live object throughout the call.
+diff --git a/crates/knytos-cabi/src/sync/libc.rs b/crates/knytos-cabi/src/sync/libc.rs
+index ab72c091..c0c4b35d 100644
+--- a/crates/knytos-cabi/src/sync/libc.rs
++++ b/crates/knytos-cabi/src/sync/libc.rs
+@@ -68,7 +68,7 @@ fn acquire(lock: &NativeMutex, recursive: bool) {
+     let Some(caller) = participant() else {
+         abort("lock outside the worker roster");
+     };
+-    if lock.lock_inner(caller, &Deadline::after(LOCK_BUDGET_MS), recursive) != OK {
++    if lock.lock_inner(caller, &Deadline::after(LOCK_BUDGET_MS), recursive, None) != OK {
+         abort("libc lock acquisition failed");
+     }
+ }
+diff --git a/crates/knytos-cabi/src/workers.rs b/crates/knytos-cabi/src/workers.rs
+index 35671f63..2798dbfc 100644
+--- a/crates/knytos-cabi/src/workers.rs
++++ b/crates/knytos-cabi/src/workers.rs
+@@ -294,4 +294,5 @@ pub(crate) fn require_joined() {
+         knytos_rt::logln!("[c-runtime] exit with an unjoined worker");
+         knytos_rt::domain_abort();
+     }
++    crate::sync::handoff_profile::report();
+ }
+diff --git a/ports/atomvm/build.py b/ports/atomvm/build.py
+index 470ed1d3..14d09f5a 100644
+--- a/ports/atomvm/build.py
++++ b/ports/atomvm/build.py
+@@ -74,6 +74,35 @@ def configure_smp(core, generated, scheduler):
+         entry = next(line for line in nifs_gperf.splitlines() if line.startswith(f"atomvm:{name},"))
+         nifs_gperf = replace_pinned(nifs_gperf, entry + "\n", "")
+     (generated / "nifs.gperf").write_text(nifs_gperf)
++    scheduler = replace_pinned(scheduler, "static Context *scheduler_run0(GlobalContext *global)",
++        "extern void knytos_handoff_fresh(CondVar *);\n"
++        "extern bool knytos_handoff_wait(CondVar *, Mutex *);\n"
++        "extern void knytos_handoff_return(bool, bool);\n"
++        "extern void knytos_handoff_first_scan(bool);\n\n"
++        "static Context *scheduler_run0(GlobalContext *global)")
++    scheduler = replace_pinned(scheduler,
++        "    if (is_waiting) {\n        global->waiting_scheduler = true;\n    }",
++        "    if (is_waiting) {\n"
++        "        knytos_handoff_fresh(global->schedulers_cv);\n"
++        "        global->waiting_scheduler = true;\n    }")
++    scheduler = replace_pinned(scheduler, "    bool main_thread = smp_is_main_thread(global);",
++        "    bool main_thread = smp_is_main_thread(global);\n"
++        "    bool handoff_scan = false;")
++    scheduler = replace_pinned(scheduler,
++        "                smp_condvar_wait(global->schedulers_cv, global->schedulers_mutex);\n"
++        "                is_waiting = !global->waiting_scheduler;",
++        "                bool waited = knytos_handoff_wait(global->schedulers_cv, global->schedulers_mutex);\n"
++        "                is_waiting = !global->waiting_scheduler;\n"
++        "                knytos_handoff_return(is_waiting, waited);\n"
++        "                handoff_scan = is_waiting;")
++    scheduler = replace_pinned(scheduler, "        if (result == NULL && !global->scheduler_stop_all) {",
++        "#ifndef AVM_NO_SMP\n"
++        "        if (handoff_scan) {\n"
++        "            knytos_handoff_first_scan(result != NULL);\n"
++        "            handoff_scan = false;\n"
++        "        }\n"
++        "#endif\n"
++        "        if (result == NULL && !global->scheduler_stop_all) {")
+     return scheduler
+
+
+diff --git a/ports/atomvm/smp.c b/ports/atomvm/smp.c
+index 10c3f470..11e71543 100644
+--- a/ports/atomvm/smp.c
++++ b/ports/atomvm/smp.c
+@@ -18,6 +18,46 @@ static struct SchedulerWorker {
+
+ static atomic_uint scheduled_workers;
+
++static _Atomic uint64_t elected_immediate;
++static _Atomic uint64_t busy_immediate;
++static _Atomic uint64_t elected_waited;
++static _Atomic uint64_t busy_waited;
++static _Atomic uint64_t scan_runnable;
++static _Atomic uint64_t scan_empty;
++
++// The scheduler mutex protects this diagnostic state. Print it after join.
++enum PollerOrigin { POLLER_UNOBSERVED, POLLER_FRESH, POLLER_CONDITION };
++static enum PollerOrigin poller_origin;
++static uint64_t fresh_by_waiter_state[4];
++static uint64_t misses_by_origin[3];
++
++extern uint32_t knytos_handoff_waiter_state(const struct knytos_condition *);
++
++void knytos_handoff_fresh(CondVar *condition)
++{
++    uint32_t state = knytos_handoff_waiter_state((struct knytos_condition *) condition);
++    ++fresh_by_waiter_state[state];
++    poller_origin = POLLER_FRESH;
++}
++
++void knytos_handoff_return(bool elected, bool waited)
++{
++    _Atomic uint64_t *counter = waited
++        ? (elected ? &elected_waited : &busy_waited)
++        : (elected ? &elected_immediate : &busy_immediate);
++    atomic_fetch_add_explicit(counter, 1, memory_order_relaxed);
++    if (elected) {
++        poller_origin = POLLER_CONDITION;
++    } else {
++        ++misses_by_origin[poller_origin];
++    }
++}
++
++void knytos_handoff_first_scan(bool runnable)
++{
++    atomic_fetch_add_explicit(runnable ? &scan_runnable : &scan_empty, 1, memory_order_relaxed);
++}
++
+ static void require_ok(const char *operation, int status)
+ {
+     if (status == KNYTOS_SHUTDOWN) {
+@@ -83,6 +123,17 @@ void smp_condvar_wait(CondVar *condition, Mutex *mutex)
+         (struct knytos_mutex *) mutex, LOCK_TIMEOUT_MS));
+ }
+
++extern int32_t knytos_handoff_condition_wait_event(const struct knytos_condition *,
++    const struct knytos_mutex *, uint32_t, uint32_t *);
++
++bool knytos_handoff_wait(CondVar *condition, Mutex *mutex)
++{
++    uint32_t waited = 0;
++    require_ok("condition wait", knytos_handoff_condition_wait_event(
++        (struct knytos_condition *) condition, (struct knytos_mutex *) mutex, LOCK_TIMEOUT_MS, &waited));
++    return waited != 0;
++}
++
+ void smp_condvar_signal(CondVar *condition)
+ {
+     require_ok("condition signal", knytos_condition_signal((struct knytos_condition *) condition, 0));
+@@ -184,4 +235,20 @@ void knytos_schedulers_join(void)
+     }
+     printf("[atomvm] schedulers joined=%u activated=%u\n", AVM_KNYTOS_SCHEDULERS - 1,
+         atomic_load_explicit(&scheduled_workers, memory_order_relaxed));
++    printf("[atomvm-handoff-overlap] elected_immediate=%llu busy_immediate=%llu elected_waited=%llu busy_waited=%llu runnable=%llu empty=%llu\n",
++        (unsigned long long) atomic_load_explicit(&elected_immediate, memory_order_relaxed),
++        (unsigned long long) atomic_load_explicit(&busy_immediate, memory_order_relaxed),
++        (unsigned long long) atomic_load_explicit(&elected_waited, memory_order_relaxed),
++        (unsigned long long) atomic_load_explicit(&busy_waited, memory_order_relaxed),
++        (unsigned long long) atomic_load_explicit(&scan_runnable, memory_order_relaxed),
++        (unsigned long long) atomic_load_explicit(&scan_empty, memory_order_relaxed));
++    printf("[atomvm-election] fresh_no_waiter=%llu fresh_pending=%llu fresh_selected=%llu fresh_both=%llu "
++        "miss_fresh=%llu miss_returning=%llu miss_unknown=%llu\n",
++        (unsigned long long) fresh_by_waiter_state[0],
++        (unsigned long long) fresh_by_waiter_state[1],
++        (unsigned long long) fresh_by_waiter_state[2],
++        (unsigned long long) fresh_by_waiter_state[3],
++        (unsigned long long) misses_by_origin[POLLER_FRESH],
++        (unsigned long long) misses_by_origin[POLLER_CONDITION],
++        (unsigned long long) misses_by_origin[POLLER_UNOBSERVED]);
+ }

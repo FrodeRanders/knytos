@@ -136,6 +136,15 @@ VM/GC locks. Only confirmed completion/cancellation authorizes physical release;
 uncertain cleanup retains the owner under the existing fail-closed policy.
 Dropping a reference does not undo remote effects or authorize replay.
 
+The optional [AtomVM service worker](../../ports/atomvm/README.md#scoped-native-service-calls)
+accepts one scalar job in a fixed C slot. The worker borrows the launch
+grant controller and descriptor through `Context`. Rust retains the
+acquired connection through terminal observation or cancellation of
+its call and disposes of unused returned capabilities before publishing
+the scalar result. The VM copies a value into its mailbox from CQ zero
+readiness. Startup joins the worker before acknowledging shutdown or
+releasing its local C graph.
+
 ## Clocks and events
 
 Monotonic time is a checked conversion from the kernel counter/frequency.

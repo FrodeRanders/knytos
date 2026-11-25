@@ -75,7 +75,10 @@ def main():
                         help="enable the experimental worker ABI with restricted worker callbacks")
     profile.add_argument("--worker-libc", action="store_true",
                          help="enable worker ABI, participant errno, and fixed-stream locking")
+    profile.add_argument("--service-worker", action="store_true",
+                         help="enable worker libc and scoped scalar IPC on native workers")
     args = parser.parse_args()
+    worker_libc = args.worker_libc or args.service_worker
     source = args.picolibc_source.resolve()
     if not source.exists() and args.fetch:
         source.parent.mkdir(parents=True, exist_ok=True)
@@ -85,9 +88,9 @@ def main():
     if revision != PIN or dirty:
         raise SystemExit("Picolibc must be the clean pinned 1.8.12 source; pass --picolibc-source or --fetch")
     work = ROOT / "target/c-runtime"
-    libc = work / ("picolibc-aarch64-workers-v1" if args.worker_libc else "picolibc-aarch64-v1")
+    libc = work / ("picolibc-aarch64-workers-v1" if worker_libc else "picolibc-aarch64-v1")
     libc_options = ["-D__SINGLE_THREAD=ON", "-D__GLOBAL_ERRNO=ON"]
-    if args.worker_libc:
+    if worker_libc:
         libc_options = ["-D__SINGLE_THREAD=OFF", "-D__GLOBAL_ERRNO=OFF",
                         "-D__PICOLIBC_ERRNO_FUNCTION=knytos_errno_location",
                         "-DKNYTOS_WORKER_LIBC=ON"]
@@ -104,7 +107,8 @@ def main():
         "-D__THREAD_LOCAL_STORAGE=OFF", *libc_options,
         "-DENABLE_MALLOC=OFF", "-DTESTS=OFF", "-DPOSIX_CONSOLE=OFF", cwd=ROOT)
     run("cmake", "--build", libc, "-j", "6")
-    crate_feature = "worker-libc" if args.worker_libc else "native-workers" if args.native_workers else None
+    crate_feature = "service-worker" if args.service_worker else (
+        "worker-libc" if worker_libc else "native-workers" if args.native_workers else None)
     run("cargo", "build", "--locked", "-p", "knytos-cabi", "--release",
         "--target", ROOT / "crates/knytos-services/aarch64-unknown-none.json",
         *(["--features", crate_feature] if crate_feature else []),
@@ -116,8 +120,10 @@ def main():
     common.extend(flag for directory in args.include for flag in ("-I", str(directory.resolve())))
     if crate_feature:
         common.append("-DKNYTOS_NATIVE_WORKERS")
-    if args.worker_libc:
+    if worker_libc:
         common.extend(("-D__STDIO_LOCKING", "-DKNYTOS_WORKER_LIBC"))
+    if args.service_worker:
+        common.append("-DKNYTOS_SERVICE_WORKER")
     run(*common, *["-D" + d for d in args.define], "-Dmain=knytos_c_main", "-c", args.source.resolve(), "-o", objects / "application.o")
     check_elf(objects / "application.o", relocatable=True)
     run(*common, "-c", ROOT / "ports/libc/bridge.c", "-o", objects / "bridge.o")
@@ -128,7 +134,7 @@ def main():
         "__fini_array_start = .; KEEP(*(SORT_BY_INIT_PRIORITY(.fini_array.*))) KEEP(*(.fini_array)) "
         "KEEP(*(.fini_array_onexit)) __fini_array_end = .; } :rodata")
     (objects / "link.x").write_text(linker)
-    link_map = ["-Map=" + str(objects / "link-map.txt")] if args.worker_libc else []
+    link_map = ["-Map=" + str(objects / "link-map.txt")] if worker_libc else []
     run(llvm / "rust-lld", "-flavor", "gnu", "-m", "aarch64elf", "--gc-sections", "--entry=_start", *link_map,
         "-T", objects / "link.x", "-o", output, "--start-group", objects / "application.o", objects / "bridge.o",
         *[p.resolve() for p in args.library],
@@ -145,15 +151,22 @@ def main():
                 "defines": args.define, "profile": "aarch64-static-c11-single-thread-no-tls", "signed": False}
     if args.native_workers:
         evidence["profile"] = "aarch64-static-c11-native-workers-restricted-libc-no-tls"
-    if args.worker_libc:
+    if worker_libc:
         evidence["profile"] = "aarch64-static-c11-worker-libc-no-tls"
         evidence["link_map_sha256"] = hashlib.sha256((objects / "link-map.txt").read_bytes()).hexdigest()
+    if args.service_worker:
+        evidence["profile"] = "aarch64-static-c11-service-worker-no-tls"
     evidence["libraries_sha256"] = {str(p.resolve()): hashlib.sha256(p.read_bytes()).hexdigest() for p in args.library}
     inputs = [ROOT / "Cargo.lock", ROOT / "Cargo.toml", ROOT / "ports/libc/build.py",
               ROOT / "ports/libc/bridge.c", ROOT / "ports/libc/include/knytos.h",
               ROOT / "ports/libc/aarch64-clang.cmake", ROOT / "crates/knytos-services/link.x",
               ROOT / "crates/knytos-services/aarch64-unknown-none.json", ROOT / "crates/knytos-cabi/Cargo.toml"]
-    for crate in ("knytos-cabi", "knytos-rt", "knytos-launch", "knytos-lifecycle", "knytos-syscall"):
+    crates = ["knytos-cabi", "knytos-rt", "knytos-launch", "knytos-lifecycle", "knytos-syscall"]
+    if args.service_worker:
+        for crate in ("knytos-app", "knytos-protocol-grant"):
+            crates.append(crate)
+            inputs.append(ROOT / "crates" / crate / "Cargo.toml")
+    for crate in crates:
         inputs.extend((ROOT / "crates" / crate / "src").rglob("*.rs"))
     evidence["inputs_sha256"] = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(inputs)}
     output.with_suffix(".build.json").write_text(json.dumps(evidence, indent=2) + "\n")

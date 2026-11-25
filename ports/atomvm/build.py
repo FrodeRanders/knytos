@@ -84,6 +84,8 @@ def main():
     parser.add_argument("--picolibc-source", required=True, type=Path)
     parser.add_argument("--worker-libc", action="store_true",
                         help="qualify the worker libc closure with the single-scheduler interpreter")
+    parser.add_argument("--service-worker", action="store_true",
+                        help="enable signed scalar service calls on a dedicated native worker")
     parser.add_argument("--schedulers", type=int, choices=(1, 2, 4), default=1,
                         help="build a fixed native scheduler roster (2 or 4 implies worker libc)")
     parser.add_argument("--output", required=True, type=Path)
@@ -92,7 +94,9 @@ def main():
                         help="include the pinned erlang wrappers, gen_server and supervisor")
     args = parser.parse_args()
     smp = args.schedulers > 1
-    worker_libc = args.worker_libc or smp
+    if args.service_worker and smp:
+        parser.error("The service worker requires a single AtomVM scheduler")
+    worker_libc = args.worker_libc or smp or args.service_worker
     atomvm, otp = args.atomvm_source.resolve(), args.otp_source.resolve()
     for source, pin in ((atomvm, ATOMVM_PIN), (otp, OTP_PIN)):
         if subprocess.check_output(["git", "-C", source, "rev-parse", "HEAD"], text=True).strip() != pin:
@@ -159,7 +163,7 @@ def main():
         with (generated / (kind + "_hash.h")).open("w") as target:
             run("gperf", "-t", definition, stdout=target)
     # Reuse the M1 runtime/toolchain and its libc configuration.
-    libc_profile = ["--worker-libc"] if worker_libc else []
+    libc_profile = ["--service-worker"] if args.service_worker else ["--worker-libc"] if worker_libc else []
     libc_dir = "picolibc-aarch64-workers-v1" if worker_libc else "picolibc-aarch64-v1"
     run("python3", ROOT / "ports/libc/build.py", ROOT / "ports/libc/tests/empty.c",
         "--output", work / "libc-probe.elf", "--picolibc-source", args.picolibc_source, *libc_profile)
@@ -175,6 +179,8 @@ def main():
         flags.append("-D__STDIO_LOCKING")
     if smp:
         flags.append("-DKNYTOS_NATIVE_WORKERS")
+    if args.service_worker:
+        flags.extend(("-DKNYTOS_NATIVE_WORKERS", "-DKNYTOS_SERVICE_WORKER"))
     # Mirror the exact release's upstream core source list, without POSIX
     # feature probes that could incorrectly succeed for static try-compiles.
     match = re.search(r"set\(SOURCE_FILES\s+(.*?)\)", (core / "CMakeLists.txt").read_text(), re.S)
@@ -184,6 +190,8 @@ def main():
     sources = [generated / path.name if path.name in adapted else path for path in sources]
     if smp:
         sources.append(ROOT / "ports/atomvm/smp.c")
+    if args.service_worker:
+        sources.append(ROOT / "ports/atomvm/service_worker.c")
     def compile_source(source):
         obj = work / (source.stem + ".o")
         run("clang", *flags, "-c", source, "-o", obj)
@@ -207,12 +215,15 @@ def main():
               *upstream_sources, *sources, *libraries]
     if smp:
         inputs.extend((core / "nifs.gperf", generated / "nifs.gperf"))
+    if args.service_worker:
+        inputs.append(ROOT / "ports/atomvm/service_worker.h")
     profile = "fixed-smp" if smp else "single-scheduler"
     manifest = {"atomvm_revision": ATOMVM_PIN, "otp_revision": OTP_PIN,
         "otp_version": "27.3.4.19", "package_sha256": sha(package), "package_bytes": len(data),
         "unsigned_elf_sha256": sha(output), "unsigned_elf_bytes": output.stat().st_size,
         "profile": f"interpreter-{profile}-no-tls-no-posix",
-        "schedulers": args.schedulers, "worker_libc": worker_libc,
+                "schedulers": args.schedulers, "worker_libc": worker_libc,
+                "service_worker": args.service_worker,
         "inputs_sha256": {str(p): sha(p) for p in inputs},
         "core_flags": flags, "host_reference": str(host / "src/AtomVM")}
     output.with_suffix(".atomvm.json").write_text(json.dumps(manifest, indent=2) + "\n")

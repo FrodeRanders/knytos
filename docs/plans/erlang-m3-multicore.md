@@ -36,6 +36,8 @@ pairs each mutex reacquisition outcome with the ensuing poller election.
 The [wake-order comparison](../reports/milestones/2026-11-25-atomvm-scheduler-wake-order.md)
 measures the effect of releasing the scheduler mutex before the normal
 condition notification.
+The [poller-origin profile](../reports/milestones/2026-11-25-atomvm-poller-origin.md)
+records waiter state at fresh elections and the active poller at each miss.
 
 | Pinned AtomVM requirement | Knytos boundary and remaining qualification |
 | --- | --- |
@@ -57,12 +59,15 @@ with the scheduler count. Over 99.9% of winning condition handoffs
 selected a process on the first scan, while 51% of four-scheduler
 condition returns found another poller already elected. Releasing the
 mutex before the normal notification reduced reacquisition CQ wait
-calls per message. Contention remains when schedulers compete for
-election after publication. Measure how often a newly arriving
-scheduler claims the poller role before a notified waiter, and check
-whether this pattern holds under sustained and compute-heavy workloads.
-Separate allocator lock spins from C runtime metadata lock spins and
-compare physical hardware before closing M3.
+calls per message. At four schedulers 95.3% of fresh elections occurred
+while a selected waiter was still returning, and fresh pollers were
+active at 74.7% of condition election misses. Defer scheduler tuning
+until native service integration supplies representative workloads.
+Keep these measurements as a baseline for sustained and compute-heavy
+workloads and physical hardware. A future waiter-priority experiment
+must preserve progress if a selected waiter is delayed in reacquisition.
+Allocator and C runtime metadata lock spins still need separate
+accounting for performance attribution.
 Exercise wait admission rejection while an SMP VM has
 active and parked workers. Keep the signed thread and stack limits
 explicit for each run. See the

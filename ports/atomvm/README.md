@@ -305,3 +305,49 @@ Run one image per guest and set `--smp` to its scheduler count to
 measure configurations with matching guest and scheduler counts.
 On normal SMP exit, `kernel_wakes` counts CQ zero wake calls from
 the VM's elected-poller signal path.
+
+## Scoped native service calls
+
+Build with `--service-worker` and one Erlang scheduler. The signed
+descriptor allows two native threads. The worker uses guest LP 1.
+Each callable service needs a `service=call` grant in the
+descriptor. The grant controller checks the exact signed deployment
+and the requested name.
+
+`knytos:request(Service, Opcode, Argument)` accepts a binary service
+name, a u32 opcode and a signed 64-bit scalar argument. It returns
+`{ok, Reference}` immediately after submitting the fixed request slot.
+Invalid types, name lengths and opcode ranges raise `badarg`. When the
+slot is occupied, submission returns `{error, busy}`. The caller receives
+`{knytos_reply, Reference, {ok, Scalar}}` or
+`{knytos_reply, Reference, {error, Reason}}`. A service's scalar
+error codes are carried as scalar results.
+
+The one-second native budget starts when the worker takes the slot and
+covers both grant acquisition and call observation. The worker owns
+the native connection and accepted call through completion or
+cancellation. Remote effects can survive a timeout. The worker
+discards unexpected returned capabilities and reports
+`unexpected_reply`. Other asynchronous
+errors include `unauthorized`, `timeout`, `wait_rejected`,
+`shutdown`, `unavailable` and `badarg` for a rejected service name.
+CQ zero wakes the Erlang scheduler, which copies only the scalar
+result into the caller's mailbox. Delivery ends when the caller
+exits. The worker settles accepted work and startup joins it before
+acknowledging signed shutdown or disposing of the VM.
+
+The slot covers one request from submission through delivery. It
+exposes no connection capability or caller-controlled cleanup token.
+Explicit Erlang cancellation, reusable service objects, payload
+attachments and the SMP Erlang scheduler profile remain separate
+M4 work.
+
+Build `tests/native_service.erl` and `tests/shutdown_service.erl` with
+`--service-worker`. Pass their images to the signed runner.
+
+```sh
+python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
+  --atomvm-service-elf target/atomvm/native_service.elf \
+  --atomvm-shutdown-busy-elf target/atomvm/shutdown_service.elf \
+  --atomvm-node-shutdown --smp 2 --output target/atomvm/service-validation
+```

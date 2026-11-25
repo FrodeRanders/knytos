@@ -10,6 +10,9 @@
 #include "scheduler.h"
 #include "sys.h"
 #include "knytos.h"
+#ifdef KNYTOS_SERVICE_WORKER
+#include "service_worker.h"
+#endif
 
 static _Atomic uint64_t waits;
 static _Atomic uint64_t deadlines;
@@ -65,13 +68,22 @@ void sys_free_platform(GlobalContext *global) {
 void platform_defaultatoms_init(GlobalContext *global) { (void)global; }
 
 void sys_poll_events(GlobalContext *global, int timeout_ms) {
-    if (timeout_ms == SYS_POLL_EVENTS_DO_NOT_WAIT) {
+    if (timeout_ms == SYS_POLL_EVENTS_DO_NOT_WAIT
+#ifdef KNYTOS_SERVICE_WORKER
+        || knytos_service_reply_ready()
+#endif
+    ) {
         // Continually runnable processes can keep the elected scheduler out
         // of CQ waits. This is an existing scheduling checkpoint outside the
         // VM's ready-list and scheduler locks.
         if (knytos_shutdown_requested()) {
             reactor_shutdown(global, "[atomvm] reactor shutdown source=nonblocking\n");
         }
+#ifdef KNYTOS_SERVICE_WORKER
+        else {
+            knytos_service_deliver(global);
+        }
+#endif
         return;
     }
 #ifndef AVM_NO_SMP
@@ -188,5 +200,8 @@ static term platform(Context *context, int argc, term argv[]) {
 }
 static const struct Nif platform_nif = { .base.type = NIFFunctionType, .nif_ptr = platform };
 const struct Nif *platform_nifs_get_nif(const char *name) {
+#ifdef KNYTOS_SERVICE_WORKER
+    if (!strcmp(name, "knytos:request/3")) return &knytos_request_nif;
+#endif
     return !strcmp(name, "atomvm:platform/0") ? &platform_nif : NULL;
 }

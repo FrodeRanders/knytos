@@ -45,7 +45,7 @@ def retirement_instance(text, name, generation, mode, schedulers):
     return launch[1]
 
 
-def verify_vm_shutdown(text, name, asid, mode, count, reason):
+def verify_vm_shutdown(text, name, asid, mode, count, reason, service_worker=False):
     acknowledgements = list(re.finditer(
         rf"\[supervisor\] {reason} shutdown acknowledged asid={asid} generation=(\d+)\b", text))
     assert len(acknowledgements) == 1, (name, domain_logs(text, asid))
@@ -53,13 +53,15 @@ def verify_vm_shutdown(text, name, asid, mode, count, reason):
     old_lines = domain_logs(text[:acknowledgement.start()], asid)
     assert "[atomvm] runtime=" not in old_lines, name
     source = "cq-wait" if mode == "parked" else "nonblocking"
-    if mode == "busy" and count > 1 and "shutdown source=cq-wait" in old_lines:
+    if mode == "busy" and (count > 1 or service_worker) and "shutdown source=cq-wait" in old_lines:
         source = "cq-wait"
     stages = [f"[atomvm] reactor shutdown source={source}",
               "[atomvm] schedulers stopped for shutdown", "[c-runtime] exit=0 "]
     if count > 1:
         activated = count - 1 if mode == "busy" else 0
         stages.insert(1, f"[atomvm] schedulers joined={count - 1} activated={activated}")
+    if service_worker:
+        stages.insert(1, "[atomvm] service worker joined")
     assert all(stage in old_lines for stage in stages), (name, old_lines)
     assert [old_lines.index(stage) for stage in stages] == sorted(
         old_lines.index(stage) for stage in stages), (name, old_lines)
@@ -129,6 +131,8 @@ def main():
     parser.add_argument("--atomvm-utc-elf", type=Path)
     parser.add_argument("--atomvm-semantics-elf", type=Path)
     parser.add_argument("--atomvm-overflow-elf", type=Path)
+    parser.add_argument("--atomvm-service-elf", type=Path,
+                        help="run the scoped native-service fixture with signed test grants")
     parser.add_argument("--atomvm-scheduler-elf", action="append", type=Path, default=[],
                         help="add an AtomVM scheduler workload using its adjacent build manifest")
     parser.add_argument("--atomvm-idle-scheduler-elf", type=Path,
@@ -152,15 +156,24 @@ def main():
         12: ("avm-semantics", args.atomvm_semantics_elf, "[atomvm] completed status=0"),
         13: ("avm-overflow", args.atomvm_overflow_elf, "[atomvm] unsupported: timer deadline overflow"),
     }
-    def scheduler_count(image):
+    def scheduler_manifest(image):
         manifest = json.loads(image.with_suffix(".atomvm.json").read_text())
         count = manifest["schedulers"]
         if count not in (1, 2, 4) or count > args.smp or digest(image) != manifest["unsigned_elf_sha256"]:
             parser.error(f"Scheduler image does not match its manifest or guest CPU count: {image}")
-        return count
+        if manifest.get("service_worker") and (count != 1 or args.smp < 2):
+            parser.error("The service worker requires one Erlang scheduler and two guest CPUs")
+        return manifest
+    service_case = 35
+    service_workers = set()
+    if args.atomvm_service_elf:
+        if not scheduler_manifest(args.atomvm_service_elf).get("service_worker"):
+            parser.error("--atomvm-service-elf requires a service worker image")
+        service_workers.add(service_case)
+        vm_cases[service_case] = ("avm-native-service", args.atomvm_service_elf, "{m4,native_service,pass}")
     scheduler_cases = {}
     for image in args.atomvm_scheduler_elf:
-        count = scheduler_count(image)
+        count = scheduler_manifest(image)["schedulers"]
         number = 20 + count
         if number in scheduler_cases:
             parser.error(f"Duplicate scheduler count: {count}")
@@ -168,14 +181,14 @@ def main():
         vm_cases[number] = (f"avm-schedulers-{count}", image, "[atomvm] completed status=0")
     idle_case = 25
     if args.atomvm_idle_scheduler_elf:
-        count = scheduler_count(args.atomvm_idle_scheduler_elf)
+        count = scheduler_manifest(args.atomvm_idle_scheduler_elf)["schedulers"]
         if count == 1:
             parser.error("The idle scheduler fixture requires worker threads")
         scheduler_cases[idle_case] = count
         vm_cases[idle_case] = ("avm-idle-schedulers", args.atomvm_idle_scheduler_elf, "[atomvm] completed status=0")
     performance_cases = {}
     for image in args.atomvm_performance_elf:
-        count = scheduler_count(image)
+        count = scheduler_manifest(image)["schedulers"]
         number = 30 + count
         if number in performance_cases:
             parser.error(f"Duplicate performance fixture for {count} schedulers")
@@ -206,7 +219,8 @@ def main():
     for mode, image in retirement_images:
         if image is None:
             continue
-        count = scheduler_count(image)
+        manifest = scheduler_manifest(image)
+        count = manifest["schedulers"]
         if count not in ((1, 4) if mode == "busy" else (4,)):
             parser.error(f"Unsupported scheduler count for the {mode} retirement fixture: {count}")
         name, number = {
@@ -216,6 +230,8 @@ def main():
         }[mode, count]
         if number in retirement_cases:
             parser.error(f"Duplicate retirement fixture: {name}")
+        if manifest.get("service_worker"):
+            service_workers.add(number)
         scheduler_cases[number] = count
         retirement_cases[number] = mode
         vm_cases[number] = (name, image, f"{{m3_shutdown,{mode}}}")
@@ -272,13 +288,17 @@ def main():
         for name, number in cases:
             image = images / (name + ".elf")
             command([signer, "elf-sign", image, name, key, "service", "1", "1", "0x7", "-"], name + "-sign")
-            thread_limit = worker_cases[number][1] if number in worker_cases else scheduler_cases.get(number, 1)
+            thread_limit = (2 if number in service_workers else
+                            worker_cases[number][1] if number in worker_cases else scheduler_cases.get(number, 1))
+            grants = ["m4.missing=call"] if number in service_workers else []
+            if number == service_case:
+                grants.extend(("time=call", "observe=call"))
             command([signer, "deployment-sign", output / (name + ".cdep"), name, "fixture/" + name,
                      image, "0", "1", "64" if number in vm_cases else "16",
-                     thread_limit, "5000", key], name + "-descriptor")
+                     thread_limit, "5000", key, *grants], name + "-descriptor")
             if number in retirement_cases and not args.atomvm_node_shutdown:
                 command([signer, "deployment-sign", output / (name + "-replacement.cdep"),
-                         name, "fixture/" + name, image, "0", "2", "64", thread_limit, "5000", key],
+                         name, "fixture/" + name, image, "0", "2", "64", thread_limit, "5000", key, *grants],
                         name + "-replacement-descriptor")
         tampered = bytearray((images / "c-hello.elf").read_bytes())
         command([signer, "elf-verify", images / "c-hello.elf", "c-hello",
@@ -409,7 +429,8 @@ def main():
                             successor = retirement_instance(serial_text[replacement_start:], name, 2, mode, count)
                             retiring = serial_text[replacement_start:].split(
                                 f'[agent] launched "{name}" generation=2 asid=', 1)[0]
-                            checked = verify_vm_shutdown(retiring, name, asid, mode, count, "deployment")
+                            checked = verify_vm_shutdown(retiring, name, asid, mode, count, "deployment",
+                                                         number in service_workers)
                             record["cases"].append({
                                 "name": name, "case": number, "passed": True, **checked,
                                 "successor_asid": int(successor),
@@ -469,6 +490,11 @@ def main():
                             assert "{m3,pass}" in text and "[atomvm] return=ok" in text, name
                             reactor = re.search(r'\[atomvm\] reactor waits=(\d+) deadlines=(\d+)', text)
                             assert reactor and int(reactor[2]) >= 6, name
+                        if number == service_case:
+                            for stage in ("scalar_reply", "unauthorized", "attachment_rejected",
+                                          "timer_with_pending_call", "abandoned_slot_reused"):
+                                assert f"{{m4,{stage}}}" in text, stage
+                            assert "[atomvm] service worker joined" in text and "[atomvm] return=ok" in text, name
                         if number in scheduler_cases:
                             count = scheduler_cases[number]
                             assert f" schedulers={count} interpreter=yes" in text, name
@@ -543,7 +569,7 @@ def main():
                         vm_drain = stopping[positions[0]:positions[1]]
                         for name, number, asid, before in live:
                             checked = verify_vm_shutdown(vm_drain, name, asid, retirement_cases[number],
-                                                         scheduler_cases[number], "node")
+                                                         scheduler_cases[number], "node", number in service_workers)
                             record["cases"].append({"name": name, "case": number, "passed": True,
                                                     **checked, "observation": final[before:]})
                         admitted = [json.loads(line)["generation"]

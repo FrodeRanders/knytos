@@ -1,0 +1,97 @@
+{
+  "kernel_sha256": "11c541ddc72e7563c1b84c5e7532e52e1e4f214ad18d9f60ab6623e3b9f12f65",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "boot_image_sha256": "459e35b65b010678bd7c46ef02df3d873d0beafb8e83c02463520cbe8f4436e9",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "initial_disk_sha256": "228b3fcbdddd3ddc11637f9caea0f3ef11f7693395c218a223113d4aabe55245",
+  "node_shutdown": {
+    "admitted_generation": 1,
+    "target_node": "0x42e21edb",
+    "intent_sha256": "c295d56dc2b05d37d15807a8f5a0f11a1ba3d61b58157358a05316c326f65e6a",
+    "qmp_event": {
+      "timestamp": {
+        "seconds": 1795640533,
+        "microseconds": 313513
+      },
+      "event": "SHUTDOWN",
+      "data": {
+        "guest": true,
+        "reason": "guest-shutdown"
+      }
+    },
+    "qemu_exit_status": 0
+  },
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "base_commit": "25220ffadc3682a8a49c0181ef50fec48e346cc9",
+  "guest_cpus": 2,
+  "signed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request",
+    "avm-native-service",
+    "c-survivor",
+    "avm-shutdown-busy-1"
+  ],
+  "harness_sha256": "1f02919ef474333c12b06d975234a7771783e4fd15850b525557f275c27df4fd",
+  "fixtures": [
+    {
+      "name": "avm-native-service",
+      "asid": 28,
+      "schedulers": 1,
+      "max_native_threads": 2,
+      "grants": [
+        "m4.missing=call",
+        "time=call",
+        "observe=call"
+      ],
+      "package_sha256": "d27f7085e6ca07647ab98738279f84a6168eba9403970f0b89272e5f9e6ff7b0",
+      "unsigned_elf_sha256": "d81f58c6539ce5dcdeb918a39ffa6c46c0e2ddc7ab54dab16d88bfb56dffa944",
+      "signed_elf_sha256": "d6d79063586317707e35a005155aa75ac201cbc2ea54720ae8f5aa8ea587a9d8",
+      "signed_descriptor_sha256": "148a283485ef51282060ea5548742dbb17c7b87789c34cbde9e87b1b7835b3f7",
+      "fixture_source_sha256": "1112c6583ab4376b0b034d9ceae1dc2e5b18b7a25e4458fdf4a8b2dcef9e448a"
+    },
+    {
+      "name": "avm-shutdown-busy-1",
+      "asid": 30,
+      "schedulers": 1,
+      "max_native_threads": 2,
+      "grants": [
+        "m4.missing=call"
+      ],
+      "package_sha256": "522184b19d8215bf2a1efc3434dca4f8cdc73af312ca931344db4ed4054c7a74",
+      "unsigned_elf_sha256": "9470813e016194baae747ebe10dd30119b2a98be6738ecc3000e526307bf9582",
+      "signed_elf_sha256": "81c70cfbb154423fadb39e2598339da4b5560ab27047e8eca76e2e13d2862685",
+      "signed_descriptor_sha256": "f789283fc247653647f20685c97c113ea30105035712956da446104ea45d2ecd",
+      "fixture_source_sha256": "af29aed6c6fcd57cf30f57be9d00e2fdfe823f2dc6f757dbae21148501fc99e5",
+      "shutdown_source": "nonblocking",
+      "acknowledged_root_generation": 1
+    }
+  ],
+  "atomvm_revision": "ff993a80963298b532c1e573f883951ecaac9fef",
+  "otp_revision": "fc7e10af595f3ffd2c25c84c253a4d042734cfed",
+  "picolibc_revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff",
+  "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+  "rustc": "rustc 1.102.0-nightly (5f4effd57 2026-11-13)\nbinary: rustc\ncommit-hash: 5f4effd579500175af844241eb179e756190f1e7\ncommit-date: 2026-11-13\nhost: aarch64-apple-darwin\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5"
+}

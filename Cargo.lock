@@ -901,6 +901,7 @@ version = "0.1.0"
 name = "knytos-cabi"
 version = "0.1.0"
 dependencies = [
+ "knytos-app",
  "knytos-launch",
  "knytos-rt",
  "lock_api",

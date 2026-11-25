@@ -9,6 +9,9 @@
 #include "term.h"
 #include "knytos.h"
 #include "package.h"
+#ifdef KNYTOS_SERVICE_WORKER
+#include "service_worker.h"
+#endif
 
 bool knytos_atomvm_shutdown_pending(void);
 
@@ -54,14 +57,21 @@ int main(void) {
     if (knytos_shutdown_via_reactor() != KNYTOS_OK) abort();
     knytos_schedulers_prepare(global);
 #endif
+#ifdef KNYTOS_SERVICE_WORKER
+    knytos_service_worker_start();
+#endif
     context_execute_loop(context, module, "start", 0);
 #ifndef AVM_NO_SMP
     knytos_schedulers_join();
 #endif
+#ifdef KNYTOS_SERVICE_WORKER
+    knytos_service_worker_join();
+    puts("[atomvm] service worker joined");
+#endif
     if (knytos_atomvm_shutdown_pending()) {
-        // All native schedulers have exited. The package, its processes and
-        // its supported NIFs own only local C storage. Dispose that graph
-        // through the tracked heap, without replaying process exit callbacks.
+        // The joined workers have settled their native work. Dispose the
+        // remaining local VM graph through the tracked C heap, without
+        // replaying Erlang process exit callbacks.
         puts("[atomvm] schedulers stopped for shutdown");
         knytos_shutdown_complete();
     }

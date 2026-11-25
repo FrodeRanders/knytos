@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated.\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 scoped scalar invocation implemented.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -1190,6 +1190,17 @@ Exercise repeated scheduler sleep/wake transitions under concurrent message load
 ### 11.1. Objective
 
 Make Erlang applications useful as first-class participants in the Knytos service architecture.
+
+The first [native service profile](../../ports/atomvm/README.md#scoped-native-service-calls)
+uses one Erlang scheduler and one native worker for scoped scalar
+invocation. The signed deployment descriptor authorizes service names.
+The VM receives an Erlang reference and asynchronous scalar result.
+Native grant acquisition, call ownership and cleanup run in the worker.
+Reusable opaque service objects, explicit Erlang cancellation, returned
+attachments and subscriptions remain subsequent work. The
+[signed qualification](../reports/milestones/2026-11-25-atomvm-native-service.md)
+covers grant denial, busy admission, independent Erlang timer progress
+and node shutdown of the worker profile.
 
 ### 11.2. Erlang-facing API
 

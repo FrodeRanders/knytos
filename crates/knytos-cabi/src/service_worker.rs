@@ -1,0 +1,123 @@
+//! Scoped scalar calls on a native worker, outside the VM scheduler.
+use knytos_app::{
+    Application,
+    grant,
+    grant_client,
+};
+use knytos_rt::{
+    Context,
+    call::{
+        Admission,
+        AdmissionError,
+        ObservationError,
+    },
+    deadline::Deadline,
+    owned::{
+        Connection,
+        PendingCall,
+    },
+};
+
+use crate::{
+    DEADLINE,
+    INVALID,
+    OK,
+    SHUTDOWN,
+    UNAVAILABLE,
+    WAIT_REJECTED,
+    workers,
+};
+
+const UNAUTHORIZED: i32 = 8;
+const UNEXPECTED_REPLY: i32 = 9;
+const REQUEST_BUDGET_MS: u64 = 1_000;
+
+struct InFlightScalar {
+    pending: PendingCall<'static>,
+    _connection: Connection,
+}
+
+fn admission_status(error: AdmissionError) -> i32 {
+    match error {
+        AdmissionError::Deadline => DEADLINE,
+        AdmissionError::Shutdown(_) => SHUTDOWN,
+        _ => UNAVAILABLE,
+    }
+}
+
+fn observation_status(error: ObservationError) -> i32 {
+    match error {
+        ObservationError::Deadline => DEADLINE,
+        ObservationError::WaitRejected(_) => WAIT_REJECTED,
+        ObservationError::Ipc(_) => UNAVAILABLE,
+    }
+}
+
+fn grant_status(error: grant_client::Error) -> i32 {
+    match error {
+        grant_client::Error::Service(grant::ERR_UNAUTHORIZED) => UNAUTHORIZED,
+        grant_client::Error::Admission(error) => admission_status(error),
+        grant_client::Error::Observation(error) => observation_status(error),
+        grant_client::Error::Shutdown(_) => SHUTDOWN,
+        _ => UNAVAILABLE,
+    }
+}
+
+fn invoke(service: &[u8], opcode: u32, argument: i64) -> Result<i64, i32> {
+    let context = Context;
+    let app = Application::from_context(&context).map_err(|_| UNAVAILABLE)?;
+    let deadline = Deadline::after(REQUEST_BUDGET_MS);
+    let connection = app
+        .acquire(service, knytos_launch::deployment::RIGHT_CALL, &deadline)
+        .map_err(grant_status)?;
+    let pending = Admission::with_lifecycle(&deadline, context.lifecycle())
+        .call(connection.as_ref(), opcode, argument as u64)
+        .map_err(admission_status)?;
+    let operation = InFlightScalar {
+        pending,
+        _connection: connection,
+    };
+    // This worker holds no VM or C runtime metadata guard. Its pending owner
+    // performs fail-closed cancellation here even on a rejected wait.
+    let reply = operation
+        .pending
+        .observe_until(&deadline)
+        .cancel_on_failure()
+        .map_err(observation_status)?;
+    if reply.connection.is_some() || reply.memory.is_some() {
+        return Err(UNEXPECTED_REPLY);
+    }
+    Ok(reply.result)
+}
+
+/// # Safety
+/// The name and output are separate live C buffers for the call's duration.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn knytos_worker_call_scalar(
+    name: *const u8,
+    length: usize,
+    opcode: u32,
+    argument: i64,
+    output: *mut i64,
+) -> i32 {
+    if name.is_null()
+        || length == 0
+        || length > knytos_launch::deployment::MAX_SERVICE_NAME_LEN
+        || output.is_null()
+        || !(output as usize).is_multiple_of(core::mem::align_of::<i64>())
+        || !workers::participant().is_some_and(|worker| worker.slot != 0)
+    {
+        return INVALID;
+    }
+    let service = unsafe { core::slice::from_raw_parts(name, length) };
+    if service.iter().any(|byte| !(0x21..=0x7e).contains(byte)) {
+        return INVALID;
+    }
+    match invoke(service, opcode, argument) {
+        Ok(result) => {
+            unsafe { output.write(result) };
+            OK
+        }
+        Err(status) => status,
+    }
+}

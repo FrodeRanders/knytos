@@ -39,6 +39,8 @@ execution records. For current knowledge and work, use:
 
 ## Milestone records
 
+- [AtomVM scoped native service calls](milestones/2026-11-25-atomvm-native-service.md)
+- [AtomVM poller election origin](milestones/2026-11-25-atomvm-poller-origin.md)
 - [AtomVM scheduler wake order](milestones/2026-11-25-atomvm-scheduler-wake-order.md)
 - [AtomVM poller election and mutex wait overlap](milestones/2026-11-25-atomvm-scheduler-handoff-overlap.md)
 - [AtomVM scheduler handoff profile](milestones/2026-11-25-atomvm-scheduler-handoff.md)
