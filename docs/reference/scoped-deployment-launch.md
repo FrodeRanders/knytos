@@ -85,6 +85,12 @@ fallback requests forced retirement of its returned principal. Node shutdown
 keeps its existing enclosing-deadline and reason contract. Neither success
 receipt nor a scalar error authorizes replay of uncertain physical cleanup.
 
+After reclamation, the supervisor logs an acknowledged deployment
+retirement with its captured address-space identifier, generation and
+reason. A per-domain node-shutdown acknowledgement precedes the deployment
+agent's application-drained transition. The node coordinator still
+requires its own service and device reclamation receipts before poweroff.
+
 Retirement syscall 65 and its shared kernel state machine require a nonzero
 principal. Zero returns `u64::MAX` before acquiring or changing the deployment
 registry. The unused `retire_artifact()` wrapper and singleton-selection branch

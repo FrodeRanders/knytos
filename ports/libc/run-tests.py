@@ -14,6 +14,7 @@ import tempfile
 import time
 
 ROOT = Path(__file__).resolve().parents[2]
+GUEST_MAC = "52:54:00:12:34:56"
 CASES = [("c-hello", 0), ("c-memory", 1), ("c-format", 2), ("c-clock", 3),
          ("c-startup", 4), ("c-exit", 5), ("c-error", 6), ("c-abort", 7), ("c-empty", 8),
          ("c-shutdown-without-request", 9), ("c-survivor", 0)]
@@ -44,6 +45,30 @@ def retirement_instance(text, name, generation, mode, schedulers):
     return launch[1]
 
 
+def verify_vm_shutdown(text, name, asid, mode, count, reason):
+    acknowledgements = list(re.finditer(
+        rf"\[supervisor\] {reason} shutdown acknowledged asid={asid} generation=(\d+)\b", text))
+    assert len(acknowledgements) == 1, (name, domain_logs(text, asid))
+    acknowledgement = acknowledgements[0]
+    old_lines = domain_logs(text[:acknowledgement.start()], asid)
+    assert "[atomvm] runtime=" not in old_lines, name
+    source = "cq-wait" if mode == "parked" else "nonblocking"
+    if mode == "busy" and count > 1 and "shutdown source=cq-wait" in old_lines:
+        source = "cq-wait"
+    stages = [f"[atomvm] reactor shutdown source={source}",
+              "[atomvm] schedulers stopped for shutdown", "[c-runtime] exit=0 "]
+    if count > 1:
+        activated = count - 1 if mode == "busy" else 0
+        stages.insert(1, f"[atomvm] schedulers joined={count - 1} activated={activated}")
+    assert all(stage in old_lines for stage in stages), (name, old_lines)
+    assert [old_lines.index(stage) for stage in stages] == sorted(
+        old_lines.index(stage) for stage in stages), (name, old_lines)
+    assert "remaining_blocks=0" in old_lines and "[c-runtime] abort" not in old_lines, old_lines
+    assert not re.search(rf"Aborting user address space {asid}\b", text), name
+    return {"shutdown_source": source, "acknowledged_root_generation": int(acknowledgement[1]),
+            "retired_asid": int(asid)}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--picolibc-source", required=True, type=Path)
@@ -61,6 +86,8 @@ def main():
                         help="retire an AtomVM VM running continuous Erlang work (one or four schedulers)")
     parser.add_argument("--atomvm-shutdown-parked-elf", type=Path,
                         help="retire an AtomVM VM with unused native workers and no timers")
+    parser.add_argument("--atomvm-node-shutdown", action="store_true",
+                        help="drain all supplied AtomVM shutdown fixtures using one signed node shutdown")
     parser.add_argument("--native-workers", action="store_true")
     parser.add_argument("--worker-libc", action="store_true")
     parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
@@ -132,6 +159,8 @@ def main():
         retirement_cases[number] = mode
         vm_cases[number] = (name, image, f"{{m3_shutdown,{mode}}}")
         cases.append((name, number))
+    if args.atomvm_node_shutdown and not retirement_cases:
+        parser.error("--atomvm-node-shutdown requires at least one AtomVM shutdown fixture")
     def interrupted(_signal, _frame):
         raise SystemExit("C runtime campaign interrupted")
     signal.signal(signal.SIGTERM, interrupted)
@@ -186,7 +215,7 @@ def main():
             command([signer, "deployment-sign", output / (name + ".cdep"), name, "fixture/" + name,
                      image, "0", "1", "64" if number in vm_cases else "16",
                      thread_limit, "5000", key], name + "-descriptor")
-            if number in retirement_cases:
+            if number in retirement_cases and not args.atomvm_node_shutdown:
                 command([signer, "deployment-sign", output / (name + "-replacement.cdep"),
                          name, "fixture/" + name, image, "0", "2", "64", thread_limit, "5000", key],
                         name + "-replacement-descriptor")
@@ -224,6 +253,8 @@ def main():
         environment = dict(os.environ, KNYTOS_MANAGEMENT_CA_FILE=str(credentials / "ca.pem"),
                            KNYTOS_MANAGEMENT_CERT_FILE=str(credentials / "administrator.pem"),
                            KNYTOS_MANAGEMENT_KEY_FILE=str(credentials / "administrator.key"),
+                           KNYTOS_MANAGEMENT_READER_CERT_FILE=str(credentials / "reader.pem"),
+                           KNYTOS_MANAGEMENT_READER_KEY_FILE=str(credentials / "reader.key"),
                            KNYTOS_MANAGEMENT_SERVER_NAME="127.0.0.1")
         record.update(kernel_sha256=digest(output / "kernel.elf"), firmware_sha256=digest(firmware),
                       qemu_version=subprocess.check_output([qemu, "--version"], text=True).strip(),
@@ -243,7 +274,7 @@ def main():
                        "-drive", f"if=none,file={output / 'disk.img'},format=raw,id=nvme0",
                        "-device", "nvme,drive=nvme0,serial=cat0,max_ioqpairs=4,addr=2", "-nic", "none",
                        "-netdev", "user,id=knytos-net,hostfwd=tcp::28080-:443,hostfwd=tcp::28081-:7444",
-                       "-device", "virtio-net-pci,netdev=knytos-net,disable-legacy=on,iommu_platform=on,mac=52:54:00:12:34:56,addr=1,romfile=",
+                       "-device", f"virtio-net-pci,netdev=knytos-net,disable-legacy=on,iommu_platform=on,mac={GUEST_MAC},addr=1,romfile=",
                        "-display", "none", "-serial", f"file:{serial}",
                        "-qmp", f"unix:{transport}/qmp.sock,server=on,wait=off",
                        "-gdb", f"unix:{transport}/gdb.sock,server=on,wait=off"]
@@ -266,6 +297,7 @@ def main():
                 try:
                     wait_for(lambda s: "BOOT COMPLETE:" in s and "[deployd] listening" in s
                              and "[time] synchronized" in s and "[dns] proposed filtered capacity" in s, 180)
+                    live = []
                     for name, number in cases:
                         before = len(serial.read_text(errors="replace"))
                         command([signer, "deployment-notify", output / (name + ".cdep"), "127.0.0.1:28081"], name + "-admission", env=environment, timeout=40)
@@ -275,6 +307,11 @@ def main():
                             assert json.loads((output / (name + "-admission.txt")).read_text())["generation"] == 1
                             initial = wait_for(lambda s: retirement_instance(s[before:], name, 1, mode, count), 60)
                             asid = retirement_instance(initial[before:], name, 1, mode, count)
+                            if mode == "parked":
+                                assert "scheduler entered slot=" not in domain_logs(initial[before:], asid), name
+                            if args.atomvm_node_shutdown:
+                                live.append((name, number, asid, before))
+                                continue
                             replacement_start = len(initial)
                             command([signer, "deployment-notify", output / (name + "-replacement.cdep"),
                                      "127.0.0.1:28081"], name + "-replacement-admission",
@@ -285,32 +322,10 @@ def main():
                             successor = retirement_instance(serial_text[replacement_start:], name, 2, mode, count)
                             retiring = serial_text[replacement_start:].split(
                                 f'[agent] launched "{name}" generation=2 asid=', 1)[0]
-                            acknowledgement = re.search(
-                                rf"\[supervisor\] deployment shutdown acknowledged asid={asid} generation=(\d+)\b",
-                                retiring)
-                            assert acknowledgement, (name, domain_logs(retiring, asid))
-                            old_lines = domain_logs(retiring[:acknowledgement.start()], asid)
-                            assert "[atomvm] runtime=" not in old_lines, name
-                            source = "cq-wait" if mode == "parked" else "nonblocking"
-                            if mode == "busy" and count > 1 and "shutdown source=cq-wait" in old_lines:
-                                source = "cq-wait"
-                            stages = [f"[atomvm] reactor shutdown source={source}",
-                                      "[atomvm] schedulers stopped for shutdown", "[c-runtime] exit=0 "]
-                            if count > 1:
-                                activated = count - 1 if mode == "busy" else 0
-                                stages.insert(1, f"[atomvm] schedulers joined={count - 1} activated={activated}")
-                            assert all(stage in old_lines for stage in stages), (name, old_lines)
-                            assert [old_lines.index(stage) for stage in stages] == sorted(
-                                old_lines.index(stage) for stage in stages), (name, old_lines)
-                            assert "remaining_blocks=0" in old_lines and "[c-runtime] abort" not in old_lines, old_lines
-                            assert not re.search(rf"Aborting user address space {asid}\b", retiring), name
-                            if mode == "parked":
-                                assert "scheduler entered slot=" not in domain_logs(initial[before:], asid), name
-                                assert "scheduler entered slot=" not in old_lines, name
+                            checked = verify_vm_shutdown(retiring, name, asid, mode, count, "deployment")
                             record["cases"].append({
-                                "name": name, "case": number, "passed": True, "shutdown_source": source,
-                                "acknowledged_root_generation": int(acknowledgement[1]),
-                                "retired_asid": int(asid), "successor_asid": int(successor),
+                                "name": name, "case": number, "passed": True, **checked,
+                                "successor_asid": int(successor),
                                 "observation": serial_text[before:],
                             })
                             save()
@@ -403,6 +418,54 @@ def main():
                         record["cases"].append({"name": name, "case": number, "passed": True,
                                                 "observation": serial_text[before:]})
                         save()
+                    if args.atomvm_node_shutdown:
+                        drain = ROOT / "scripts/tests/test-management-drain.py"
+                        command([signer, "node-key", GUEST_MAC], "shutdown-node-key")
+                        node = (output / "shutdown-node-key.txt").read_text().strip()
+                        now = int(time.time())
+                        intent = output / "node.cshutdown"
+                        command([signer, "shutdown-sign", intent, now, node, now, now + 300,
+                                 60000, 5000, key], "shutdown-sign")
+                        initial = serial.read_text(errors="replace")
+                        for name, _, asid, before in live:
+                            assert "[c-runtime] exit=" not in domain_logs(initial[before:], asid), name
+                        qmp = diagnostic.Qmp(transport + "/qmp.sock")
+                        try:
+                            deadline = time.monotonic() + 90
+                            command(["python3", drain, "submit", "--intent", intent,
+                                     "--client-tool", signer, "--status-port", 28080,
+                                     "--deployment-port", 28081, "--serial-log", serial],
+                                    "shutdown-admission", env=environment, timeout=50)
+                            event = qmp.receive(deadline)
+                            while event.get("event") != "SHUTDOWN":
+                                event = qmp.receive(deadline)
+                            assert event["data"]["guest"] is True and event["data"]["reason"] == "guest-shutdown", event
+                            assert process.wait(timeout=max(0, deadline - time.monotonic())) == 0
+                        finally:
+                            qmp.close()
+                        command(["python3", drain, "verify", serial], "shutdown-ingress-verify")
+                        final = serial.read_text(errors="replace")
+                        stopping = final[len(initial):]
+                        ordered = ["[agent] node shutdown requested deadline_ms=",
+                                   "[agent] application domains drained; draining connectors",
+                                   "[agent] child domains drained for node shutdown",
+                                   "[shutdown] DeploymentAgent: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2",
+                                   "[shutdown] POWER-OFF REQUESTED via PSCI"]
+                        positions = [stopping.index(stage) for stage in ordered]
+                        assert positions == sorted(positions), positions
+                        vm_drain = stopping[positions[0]:positions[1]]
+                        for name, number, asid, before in live:
+                            checked = verify_vm_shutdown(vm_drain, name, asid, retirement_cases[number],
+                                                         scheduler_cases[number], "node")
+                            record["cases"].append({"name": name, "case": number, "passed": True,
+                                                    **checked, "observation": final[before:]})
+                        admitted = [json.loads(line)["generation"]
+                                    for line in (output / "shutdown-admission.txt").read_text().splitlines()
+                                    if line.startswith("{")]
+                        assert admitted == [1], admitted
+                        record["node_shutdown"] = {"admitted_generation": admitted[0], "target_node": node,
+                                                   "intent_sha256": digest(intent), "qmp_event": event,
+                                                   "qemu_exit_status": process.returncode}
                     record["outcome"] = "passed"
                 except BaseException:
                     record["snapshot"] = diagnostic.capture(output, {"serial_log": str(serial), "transport": transport, "cpus": args.smp}, "C-runtime-fixture-failure")

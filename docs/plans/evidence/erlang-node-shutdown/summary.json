@@ -1,0 +1,148 @@
+{
+  "baseline_commit": "9824e613",
+  "guest_cpus": 4,
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "host_script_checks": 32,
+  "harness_sha256": "c77bfc9eeefd7a8c4f9dc366be8f0eb123e81b12960140de91614ec7874bc8d4",
+  "node_shutdown": {
+    "admitted_generation": 1,
+    "target_node": "0x42e21edb",
+    "intent_sha256": "fd62c2cfcce3e026a392db77df152b39b6ae947ca6fefe4aee03755b59353f1c",
+    "qmp_event": {
+      "timestamp": {
+        "seconds": 1795587748,
+        "microseconds": 192901
+      },
+      "event": "SHUTDOWN",
+      "data": {
+        "guest": true,
+        "reason": "guest-shutdown"
+      }
+    },
+    "qemu_exit_status": 0,
+    "kernel_sha256": "9ca0a03d08c681d4ac0c26b4647c909acb90d06808ca6db7b8335b6e8e2dd730",
+    "outcome": "passed",
+    "passed_cases": [
+      "c-hello",
+      "c-memory",
+      "c-format",
+      "c-clock",
+      "c-startup",
+      "c-exit",
+      "c-error",
+      "c-abort",
+      "c-empty",
+      "c-shutdown-without-request",
+      "avm-schedulers-1",
+      "avm-schedulers-2",
+      "avm-schedulers-4",
+      "avm-idle-schedulers",
+      "c-workers",
+      "c-unjoined",
+      "c-worker-reuse",
+      "c-sync",
+      "c-rwlock",
+      "c-worker-libc",
+      "c-worker-libc-close",
+      "c-survivor",
+      "avm-shutdown-parked",
+      "avm-shutdown-busy"
+    ],
+    "negative_controls": [
+      {
+        "name": "tls-rejected",
+        "expected_diagnostic": "TLS is unsupported",
+        "passed": true
+      },
+      {
+        "name": "unsupported-rejected",
+        "expected_diagnostic": "undefined symbol: open",
+        "passed": true
+      },
+      {
+        "name": "signature-rejected",
+        "passed": true
+      }
+    ],
+    "retirements": {
+      "avm-shutdown-parked": {
+        "shutdown_source": "cq-wait",
+        "retired_asid": 40,
+        "acknowledged_root_generation": 1,
+        "schedulers": 4,
+        "stack_pages_per_thread": 64,
+        "shutdown_grace_ms": 5000,
+        "package_sha256": "f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612",
+        "unsigned_elf_sha256": "a50825cd17738e2d0eccba00b41d8d70dac287679aa3aea4a25a83c71c002a56",
+        "signed_elf_sha256": "7c3d99fe58820249c02a26bfc7195322d52b4d33dbd7e0b7eeb4ae46eabfa0e5",
+        "signed_elf_bytes": 755584,
+        "descriptor_sha256": "6abbf860fe3fc03a5079f7ffedbe5c342eb2d0d4ca0fa7b7a6a5cea5370c3dc6"
+      },
+      "avm-shutdown-busy": {
+        "shutdown_source": "nonblocking",
+        "retired_asid": 41,
+        "acknowledged_root_generation": 1,
+        "schedulers": 4,
+        "stack_pages_per_thread": 64,
+        "shutdown_grace_ms": 5000,
+        "package_sha256": "cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b",
+        "unsigned_elf_sha256": "d75c6a9b7c5c8fed47195d99c5b38f56c8ea5f9e157bab1f45d5641e683b20e0",
+        "signed_elf_sha256": "1bb02d3e99ced66b1fedb8c6f2ba7db1fcfb7d717425370eedc5752ce61dd4ee",
+        "signed_elf_bytes": 755584,
+        "descriptor_sha256": "0a2e4354b36c296617f79cda6ab1c511bf628bd99458e538143dacb6e4234005"
+      }
+    }
+  },
+  "deployment_replacement": {
+    "kernel_sha256": "374746184fb820f6b85644751669be22b8bce6511328a23d431db76aedb40c0f",
+    "outcome": "passed",
+    "passed_cases": [
+      "c-hello",
+      "c-memory",
+      "c-format",
+      "c-clock",
+      "c-startup",
+      "c-exit",
+      "c-error",
+      "c-abort",
+      "c-empty",
+      "c-shutdown-without-request",
+      "c-survivor",
+      "avm-shutdown-parked",
+      "avm-shutdown-busy"
+    ],
+    "negative_controls": [
+      {
+        "name": "tls-rejected",
+        "expected_diagnostic": "TLS is unsupported",
+        "passed": true
+      },
+      {
+        "name": "unsupported-rejected",
+        "expected_diagnostic": "undefined symbol: open",
+        "passed": true
+      },
+      {
+        "name": "signature-rejected",
+        "passed": true
+      }
+    ],
+    "retirements": {
+      "avm-shutdown-parked": {
+        "shutdown_source": "cq-wait",
+        "retired_asid": 29,
+        "acknowledged_root_generation": 1,
+        "successor_asid": 29,
+        "signed_elf_sha256": "7c3d99fe58820249c02a26bfc7195322d52b4d33dbd7e0b7eeb4ae46eabfa0e5"
+      },
+      "avm-shutdown-busy": {
+        "shutdown_source": "nonblocking",
+        "retired_asid": 30,
+        "acknowledged_root_generation": 1,
+        "successor_asid": 30,
+        "signed_elf_sha256": "1bb02d3e99ced66b1fedb8c6f2ba7db1fcfb7d717425370eedc5752ce61dd4ee"
+      }
+    }
+  }
+}

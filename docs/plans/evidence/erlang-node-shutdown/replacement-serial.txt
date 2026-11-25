@@ -1,0 +1,12 @@
+[+    16.328094] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-parked" generation=1 asid=29 principal=0xb83ba1c706cf8ffb
+[+    16.874000] [EL0 LOG] lp=0 asid=29 [atomvm] reactor shutdown source=cq-wait
+[+    16.876922] [EL0 LOG] lp=0 asid=29 [atomvm] schedulers joined=3 activated=0
+[+    16.878406] [EL0 LOG] lp=0 asid=29 [c-runtime] exit=0 released_blocks=44 remaining_blocks=0 heap_peak=11857 sampled_stack=1440
+[+    16.915172] [supervisor] deployment shutdown acknowledged asid=29 generation=1
+[+    17.038064] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-parked" generation=2 asid=29 principal=0xb83ba1c706cf8ffb
+[+    17.694642] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy" generation=1 asid=30 principal=0xe998b4f07d2af16f
+[+    18.612230] [EL0 LOG] lp=0 asid=30 [atomvm] reactor shutdown source=nonblocking
+[+    18.614548] [EL0 LOG] lp=0 asid=30 [atomvm] schedulers joined=3 activated=3
+[+    18.616172] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=76 remaining_blocks=0 heap_peak=23620 sampled_stack=1440
+[+    18.644800] [supervisor] deployment shutdown acknowledged asid=30 generation=1
+[+    18.775706] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy" generation=2 asid=30 principal=0xe998b4f07d2af16f

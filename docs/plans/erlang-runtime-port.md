@@ -1025,8 +1025,11 @@ and supervisor recovery. Its [qualification record](../reports/milestones/2026-1
 includes the AtomVM and OTP comparisons. The fixed native profile runs the
 same message and timer workload with 1, 2 and 4 schedulers on a four-CPU
 guest. [Cooperative deployment retirement](../reports/milestones/2026-11-24-atomvm-cooperative-retirement.md)
-joins busy and parked schedulers before acknowledgement. Performance, sustained load and
-whole-node shutdown remain part of the [multicore qualification](erlang-m3-multicore.md).
+joins busy and parked schedulers before acknowledgement.
+[Signed whole-node shutdown](../reports/milestones/2026-11-25-atomvm-node-shutdown.md)
+drained both kinds of deployment on the same guest before PSCI poweroff.
+Performance and sustained load remain part of the
+[multicore qualification](erlang-m3-multicore.md).
 
 ### 10.1. Objective
 

@@ -1,0 +1,43 @@
+[+    24.337006] [EL0 LOG] lp=0 asid=40 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    24.337836] [EL0 LOG] lp=0 asid=40 [atomvm] package_sha256=f9e2c34735f780c9ca2cbfe349710446cb139109ea0ed671dd69080eccb0a612 bytes=21660
+[+    24.338419] [EL0 LOG] lp=0 asid=40 [atomvm] wake-before-wait passed
+[+    24.347672] [EL0 LOG] lp=0 asid=40 {m3_shutdown,parked}
+[+    24.348803] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-parked" generation=1 asid=40 principal=0xb83ba1c706cf8ffb
+[+    25.027309] [EL0 LOG] lp=0 asid=41 [atomvm] runtime=AtomVM version=0.6.6 platform=Knytos arch=AArch64 adapter=1 schedulers=4 interpreter=yes
+[+    25.028127] [EL0 LOG] lp=0 asid=41 [atomvm] package_sha256=cdef178aaa44c6b9cca0fc370d9e3444aa62f82d5767ecc1eeb9a719a23df57b bytes=22136
+[+    25.028663] [EL0 LOG] lp=0 asid=41 [atomvm] wake-before-wait passed
+[+    25.038924] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-shutdown-busy" generation=1 asid=41 principal=0xe998b4f07d2af16f
+[+    25.041179] [EL0 LOG] lp=1 asid=41 [atomvm] scheduler entered slot=1
+[+    25.041899] [EL0 LOG] lp=2 asid=41 [atomvm] scheduler entered slot=2
+[+    25.042717] [EL0 LOG] lp=3 asid=41 [atomvm] scheduler entered slot=3
+[+    25.051337] [EL0 LOG] lp=1 asid=41 {m3_shutdown,busy}
+[+    27.930980] [EL0 LOG] lp=0 asid=16 [agent] accepted cluster shutdown sequence=1795587744 generation=1 node_grace_ms=60000 phase_grace_ms=5000
+[+    27.943045] [EL0 LOG] lp=0 asid=17 [deployd] management drain begin inputs=2 controls=0 outputs=0 listeners=2 closes=0
+[+    27.960623] [EL0 LOG] lp=0 asid=17 [deployd] management drain complete inputs=0 controls=0 outputs=0 listeners=0 closes=0
+[+    27.983307] [shutdown] DeploymentIngress: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    28.000173] [shutdown] DeploymentControl: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    28.413860] [EL0 LOG] lp=0 asid=16 [agent] node shutdown requested deadline_ms=38667
+[+    28.415821] [EL0 LOG] lp=1 asid=41 [atomvm] reactor shutdown source=nonblocking
+[+    28.421993] [EL0 LOG] lp=0 asid=41 [atomvm] schedulers joined=3 activated=3
+[+    28.422300] [EL0 LOG] lp=0 asid=41 [atomvm] schedulers stopped for shutdown
+[+    28.422716] [EL0 LOG] lp=0 asid=40 [atomvm] reactor shutdown source=cq-wait
+[+    28.424679] [EL0 LOG] lp=0 asid=40 [atomvm] schedulers joined=3 activated=0
+[+    28.424974] [EL0 LOG] lp=0 asid=40 [atomvm] schedulers stopped for shutdown
+[+    28.425739] [EL0 LOG] lp=0 asid=40 [c-runtime] exit=0 released_blocks=44 remaining_blocks=0 heap_peak=11857 sampled_stack=1440
+[+    28.426733] [EL0 LOG] lp=0 asid=41 [c-runtime] exit=0 released_blocks=76 remaining_blocks=0 heap_peak=23620 sampled_stack=912
+[+    28.431453] [supervisor] node shutdown acknowledged asid=41 generation=1
+[+    28.431818] [supervisor] node shutdown acknowledged asid=40 generation=1
+[+    28.432008] [EL0 LOG] lp=0 asid=16 [agent] application domains drained; draining connectors
+[+    28.432602] [EL0 LOG] lp=0 asid=16 [agent] child domains drained for node shutdown
+[+    28.433507] [shutdown] DeploymentAgent: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    28.433970] [EL0 LOG] lp=0 asid=13 [http] management drain begin inputs=2 outputs=0 listeners=2 closes=0
+[+    28.435969] [EL0 LOG] lp=0 asid=13 [http] management drain complete inputs=0 outputs=0 listeners=0 closes=0
+[+    28.437993] [shutdown] HttpIngress: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    28.441063] [shutdown] Time: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    28.447436] [shutdown] ClusterCatalog: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    28.452790] [shutdown] ReliableMessaging: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    28.456405] [shutdown] Discovery: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    28.458283] [shutdown] TcpIp: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    28.460505] [shutdown] FrameRouter: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    28.462596] [shutdown] ObjectStore: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2
+[+    28.472039] [shutdown] POWER-OFF REQUESTED via PSCI Hvc

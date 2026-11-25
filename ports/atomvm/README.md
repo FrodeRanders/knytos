@@ -241,5 +241,26 @@ After the original VM reaches its workload marker, the runner submits one
 signed replacement of that deployment with sequence two. It checks the
 original domain's shutdown observation, exact joins, local heap disposal
 and supervisor acknowledgement before the succeeding generation's workload
-marker. The signed grace period is five seconds. Whole-node shutdown and
-future NIFs that own external resources require separate qualification.
+marker. The signed grace period is five seconds. Future NIFs that own
+external resources require separate qualification.
+
+## Signed whole-node shutdown
+
+Add `--atomvm-node-shutdown` to keep the supplied retirement fixtures
+alive for a single node shutdown. For example, use the four-scheduler
+busy and parked images on the same guest.
+
+```sh
+python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
+  --atomvm-shutdown-parked-elf target/atomvm/shutdown-parked-4.elf \
+  --atomvm-shutdown-busy-elf target/atomvm/shutdown-busy-4.elf \
+  --atomvm-node-shutdown --smp 4 --output target/atomvm/node-shutdown-validation
+```
+
+The runner waits for both workloads, then submits a signed node shutdown
+intent over the management deployment ingress. It holds idle client
+connections on both management ingresses and checks their drain. It
+verifies each VM's join and heap cleanup before the supervisor's
+acknowledgement, then checks the deployment agent's cooperative exit,
+the PSCI marker and a guest-originated QMP shutdown with QEMU exit status
+zero.

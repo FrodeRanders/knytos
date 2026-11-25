@@ -19,6 +19,8 @@ The [deployment retirement results](../reports/milestones/2026-11-24-atomvm-depl
 cover an authenticated external request under runnable work and with parked workers.
 The [cooperative retirement results](../reports/milestones/2026-11-24-atomvm-cooperative-retirement.md)
 cover exact scheduler joins, local disposal and supervisor acknowledgement.
+The [whole-node shutdown results](../reports/milestones/2026-11-25-atomvm-node-shutdown.md)
+cover simultaneous busy and parked four-scheduler deployments through PSCI poweroff.
 
 | Pinned AtomVM requirement | Knytos boundary and remaining qualification |
 | --- | --- |
@@ -26,7 +28,7 @@ cover exact scheduler joins, local disposal and supervisor acknowledgement.
 | Mutex, try-lock, condition variable and read/write lock | The adapter uses the worker ABI. Conditions wait on the participant's private CQ and return to the VM with the mutex reacquired. Failed waits and lock calls abort. Contention and waiter-admission limits need targeted stress tests. |
 | Event poll interruption through `sys_signal` | AtomVM elects one poller. The C runtime guards its CQ zero cursor against overlap. Private waiters have their own cursors. Signed deployment retirement reached the CQ wait with parked workers and the nonblocking checkpoint when processes remained runnable. |
 | Thread-safe C library | The Picolibc worker profile supplies participant errno and fixed streams. The remaining linked environment and timezone mutators sit behind the unavailable wall-clock call. Dynamic AVM package operations and the private-data NIF are excluded in the SMP lookup. The full concurrent NIF and libc surface needs additional auditing. |
-| Process and VM teardown | The VM count can reach zero while native callbacks are returning. Startup wakes and joins every exact worker before freeing VM state. Join failure retains the worker owner through domain abort. On external deployment retirement the heap-only profile stops schedulers, completes C cleanup and acknowledges before startup exits. The agent retains the launch owner through reclamation. Whole-node shutdown and cleanup for external NIF resources remain open. |
+| Process and VM teardown | The VM count can reach zero while native callbacks are returning. Startup wakes and joins every exact worker before freeing VM state. Join failure retains the worker owner through domain abort. The heap-only profile stops schedulers, completes C cleanup and acknowledges before startup exits. Signed deployment replacement and whole-node shutdown exercised this path. The agent retains each launch owner through reclamation. Cleanup for external NIF resources remains open. |
 
 Use the existing scheduler suite to confirm kernel thread behavior. It covers
 cross-LP abort, migration, retirement and timer affinity, independently of

@@ -1,0 +1,4 @@
+management drain: holding two idle TLS peers on each ingress
+{"generation":1}
+PASS: signed shutdown submitted once; all four held peers closed
+PASS: active status/deployment clients drained before cooperative retirement and PSCI

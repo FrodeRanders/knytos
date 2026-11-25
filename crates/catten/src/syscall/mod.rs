@@ -2380,7 +2380,8 @@ pub(crate) fn retire_deployed_artifact_with_registry<const N: usize>(
     let retired = deployed.remove(position);
     drop(deployed);
     let acknowledged = retired.retirement_acknowledged;
-    if retired.retirement_reason == knytos_launch::lifecycle::REASON_NODE_SHUTDOWN {
+    let node_shutdown = retired.retirement_reason == knytos_launch::lifecycle::REASON_NODE_SHUTDOWN;
+    if node_shutdown {
         if retired.force_requested {
             crate::service::supervisor::NODE_SHUTDOWN_FORCED_RETIREMENTS
                 .fetch_add(1, core::sync::atomic::Ordering::Relaxed);
@@ -2394,8 +2395,15 @@ pub(crate) fn retire_deployed_artifact_with_registry<const N: usize>(
     } else if acknowledged {
         crate::service::supervisor::DEPLOYMENT_ACKNOWLEDGED_RETIREMENTS
             .fetch_add(1, core::sync::atomic::Ordering::Relaxed);
+    }
+    if acknowledged && !retired.force_requested {
         crate::logln!(
-            "[supervisor] deployment shutdown acknowledged asid={} generation={}",
+            "[supervisor] {} shutdown acknowledged asid={} generation={}",
+            if node_shutdown {
+                "node"
+            } else {
+                "deployment"
+            },
             domain.address_space.id(),
             domain.address_space.generation()
         );
