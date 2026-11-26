@@ -54,12 +54,19 @@ def verify_active_cancel(text, server_asid, client_asid, successor_asid):
             (client_asid, f"{{m4,owner_exit_reused_ms,{case},"),
         ))
     stages.extend((
+        (client_asid, "{m4,sync_call_results}"),
+        (server_asid, "[m4 hold] accepted case=5 payload=true"),
+        (client_asid, "{m4,sync_call_timeout}"),
+        (server_asid, "[m4 hold] late reply rejected case=5"),
+        (client_asid, "{m4,sync_call_mailbox_clean}"),
         (client_asid, "{m4,byte_payload_roundtrip}"),
         (client_asid, "{m4,byte_payload_bounds}"),
+        (client_asid, "{m4,mailbox_backpressure}"),
         (client_asid, "{m4,close_watch_scope}"),
         (server_asid, "[m4 hold] reported sequence=1"),
         (client_asid, "{m4,awaiting_replacement}"),
         (server_asid, "[m4 hold] retiring sequence=1"),
+        (client_asid, "{m4,watch_delivery_reserved}"),
         (client_asid, "{m4,replaced_handle_stale}"),
         (successor_asid, "[m4 hold] reported sequence=2"),
         (client_asid, "{m4,replacement_reacquired}"),
@@ -585,12 +592,20 @@ def main():
                             assert reactor and int(reactor[2]) >= 6, name
                         if number == service_case:
                             for stage in ("scalar_reply", "unauthorized", "attachment_rejected",
-                                          "timer_with_pending_call", "abandoned_slot_reused",
+                                          "timer_with_pending_call", "diagnostics_validated",
+                                          "abandoned_slot_reused",
                                           "foreign_cancel_rejected", "cancelled_reply_suppressed",
                                           "cancelled_slot_reused", "reusable_resource_is_scoped",
                                           "closed_resource_is_stale", "resource_gc_reclaimed_slot",
                                           "resource_owner_exit_reclaimed_slot"):
                                 assert f"{{m4,{stage}}}" in text, stage
+                            records = re.findall(r"\[EL0 LOG\] lp=\d+ asid=\d+ (.*)", text)
+                            for line in ("[atomvm debug] m4 diagnostic debug",
+                                         "[atomvm info] m4 diagnostic \u03bb",
+                                         "[atomvm warning] " + "x" * 239,
+                                         "[atomvm error] m4 diagnostic error"):
+                                assert records.count(line) == 1, line
+                            assert "m4 rejected" not in text, name
                             for stage in ("lookup_cancel_reused_ms", "lookup_exit_reused_ms"):
                                 reuse = re.search(rf"\{{m4,{stage},(\d+)\}}", text)
                                 assert reuse and int(reuse[1]) < 750, stage

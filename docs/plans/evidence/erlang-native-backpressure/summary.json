@@ -1,0 +1,135 @@
+{
+  "kernel_sha256": "178311dd64cc332e3b5856fd223d6afa3e3103501dbde1a2eae384a5ed0a80ef",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "boot_image_sha256": "e8db812a7c090bbc5573ec1bd4c3e21491887f61a002b1a6808e068836822950",
+  "initial_disk_sha256": "2405a8a0328fb0a36c06ab446b3ce887a7372396e1f06eb9f8f383b3c28a11c0",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "node_shutdown": {
+    "admitted_generation": 1,
+    "target_node": "0x42e21edb",
+    "intent_sha256": "05cdf7bc995d14390f7a14e83cde17c1b5fd6e41ef4049e3e5e7c369911f5f25",
+    "qmp_event": {
+      "timestamp": {
+        "seconds": 1795709859,
+        "microseconds": 622200
+      },
+      "event": "SHUTDOWN",
+      "data": {
+        "guest": true,
+        "reason": "guest-shutdown"
+      }
+    },
+    "qemu_exit_status": 0
+  },
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "service_replacement": {
+    "retired_asid": 29,
+    "retired_root_generation": 1,
+    "successor_asid": 29,
+    "successor_sequence": 2,
+    "successor_descriptor_sha256": "df8e6ce9577e3e19ff8fe77531384fd1ff67c13fe815d33b5c963526bbf64170"
+  },
+  "base_commit": "2816f387ae53cf25702433f29c94abe6f78bc293",
+  "guest_cpus": 2,
+  "signed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request",
+    "avm-native-service",
+    "avm-active-cancel",
+    "c-survivor",
+    "avm-shutdown-busy-1"
+  ],
+  "source_sha256": {
+    "crates/knytos-app/examples/atomvm_cancel_fixture.rs": "7845845d5988c11f48b11c307c43e207d98e33767298f14a4b5641ef90ad93cf",
+    "crates/knytos-cabi/src/service_worker.rs": "b439d558e2cb17411257cdb96ec5b11e928723aa9353f2a490c46cdf720b9e5f",
+    "ports/atomvm/build.py": "4b674b715c2f3a039a192a96a30af0f91fbf98d0f84a6234ce301a055c21267d",
+    "ports/atomvm/lib/knytos.erl": "8ac8d502b7dd05ed422c4e3e8851e229fb3be7a2f3a5df21359a2745d4bf0ffe",
+    "ports/atomvm/service_worker.c": "e4b99352d337ba1e8f966ab44a850ec60963fe3dac3d33479bfb1bfb88b9a83b",
+    "ports/atomvm/service_worker.h": "d256ee97285625dcce84bd7f583bb1995c888aae15a4967525588e39cc76e394",
+    "ports/atomvm/sys.c": "0c62833fa0dee7adc8d25568eccdb29d9aadf0d01aa90698781e083ba62edba3",
+    "ports/libc/run-tests.py": "3794932289430a952b8de361d7b007a94983adaa8daa4d54e7835be88feaf60d"
+  },
+  "fixtures": [
+    {
+      "name": "avm-native-service",
+      "asid": 28,
+      "schedulers": 1,
+      "package_sha256": "8c08a93efe11b910b9abac208e590568dd10bc0b0cc716d755579efa985634c8",
+      "unsigned_elf_sha256": "1b5173154e3f5c29ec822bca4dbf7557586e9f3dd8b42061cb1088d3bb2da399",
+      "signed_elf_sha256": "0c2471cbde8cc29e9378b8a754763996eb5bb5feee6a6a0c8439f7c84f0e72a4",
+      "signed_descriptor_sha256": "49ff0e32d81122144db0e84ecaf41d343e679ccc8552d2dfc32e93b6d6c05223",
+      "fixture_source_sha256": "c00e3aae78b4af6c8e9917879ec45fb895bade4b54a3b0655023657c93ca3cd1",
+      "mailbox_sha256": {
+        "libAtomVM": "2b7410a0bab09b5f4fbba63d79d1168894fa09842bd2838cf97af9ecf8b331aa",
+        "generated": "97c81977a2a7f66290934c6d558d26b946ce4c5426638d4a1e116e32162574d5"
+      }
+    },
+    {
+      "name": "avm-active-cancel",
+      "asid": 30,
+      "schedulers": 1,
+      "package_sha256": "f33cecefb271ec3606c760dbf0547340e915026e4a9cc4c580af0c185df00254",
+      "unsigned_elf_sha256": "ff722fd70dba1cd9d6f318867c4e254ec9501120045d0812aecc29829f63266d",
+      "signed_elf_sha256": "fcfc7a807edbaa81143726783060848ec04517fc09c4d1745c3f81504bafd939",
+      "signed_descriptor_sha256": "775504ffd64575f5df2e4c6f3fa444db7b3fee850dff3d0ab5a30e91d5d439e3",
+      "fixture_source_sha256": "69bba666b6dffa2ae1a051c519f72366c7fba79b822c5e15f9c91d5a7bdb3361",
+      "mailbox_sha256": {
+        "libAtomVM": "2b7410a0bab09b5f4fbba63d79d1168894fa09842bd2838cf97af9ecf8b331aa",
+        "generated": "97c81977a2a7f66290934c6d558d26b946ce4c5426638d4a1e116e32162574d5"
+      },
+      "grants": [
+        "m4.hold=call"
+      ],
+      "mailbox_limit": 8,
+      "unread_replies_at_close_event": 7,
+      "backpressure_markers": [
+        "mailbox_backpressure",
+        "watch_delivery_reserved"
+      ],
+      "hold_service_signed_elf_sha256": "6727842ec80670ced4d583ffaac7588e1ba5635bfb161798269b006d1a6a4381",
+      "hold_service_descriptor_sha256": "88dae478d7301440af9a16e702ded662e2a5d6d3d5d78a3821a2e8a1495025b2"
+    },
+    {
+      "name": "avm-shutdown-busy-1",
+      "asid": 32,
+      "schedulers": 1,
+      "package_sha256": "9e7484c4ca66452a481717f08d79b3ac7e960fd130d2e6e32f3b3b64eb448303",
+      "unsigned_elf_sha256": "97a2637573a8c5c61f8fcd7134ac87002c035866de4623903611f25a6c1e6567",
+      "signed_elf_sha256": "c85c5c60e07412a8579afbbbf2caae5d8a21bc4f645ed00e9c7054204f4307c6",
+      "signed_descriptor_sha256": "40a82bc52af5ed1a1457ecd36a9caeec11dad552bc4ef04599a214a847bb1575",
+      "fixture_source_sha256": "1c4fbec6e8044eb849e54ddbc1df3c03c03813b3bc5ebf15f9a77dee32864079",
+      "mailbox_sha256": {
+        "libAtomVM": "2b7410a0bab09b5f4fbba63d79d1168894fa09842bd2838cf97af9ecf8b331aa",
+        "generated": "97c81977a2a7f66290934c6d558d26b946ce4c5426638d4a1e116e32162574d5"
+      }
+    }
+  ],
+  "atomvm_revision": "ff993a80963298b532c1e573f883951ecaac9fef",
+  "otp_revision": "fc7e10af595f3ffd2c25c84c253a4d042734cfed",
+  "picolibc_revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff",
+  "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+  "rustc": "rustc 1.102.0-nightly (5f4effd57 2026-11-13)\nbinary: rustc\ncommit-hash: 5f4effd579500175af844241eb179e756190f1e7\ncommit-date: 2026-11-13\nhost: aarch64-apple-darwin\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5"
+}

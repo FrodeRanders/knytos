@@ -1,0 +1,15 @@
+[+     4.003828] BOOT COMPLETE: validation passed; local storage ready; services submitted
+[+    15.600048] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-native-service" generation=1 asid=28 principal=0xecbb8a41eaf7ead0
+[+    15.636878] [EL0 LOG] lp=0 asid=28 {m4,timer_with_pending_call}
+[+    15.637462] [EL0 LOG] lp=0 asid=28 [atomvm debug] m4 diagnostic debug
+[+    15.637754] [EL0 LOG] lp=0 asid=28 [atomvm info] m4 diagnostic λ
+[+    15.638140] [EL0 LOG] lp=0 asid=28 [atomvm warning] xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+[+    15.638800] [EL0 LOG] lp=0 asid=28 [atomvm error] m4 diagnostic error
+[+    15.639550] [EL0 LOG] lp=0 asid=28 {m4,diagnostics_validated}
+[+    19.874914] [EL0 LOG] lp=0 asid=28 {m4,native_service,pass}
+[+    19.878168] [EL0 LOG] lp=0 asid=28 [atomvm] service worker joined
+[+    19.880876] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=24 remaining_blocks=0 heap_peak=14182 sampled_stack=1424
+[+    27.812590] [supervisor] node shutdown acknowledged asid=32 generation=1
+[+    27.812786] [EL0 LOG] lp=0 asid=16 [agent] application domains drained; draining connectors
+[+    27.813004] [EL0 LOG] lp=0 asid=16 [agent] child domains drained for node shutdown
+[+    27.846188] [shutdown] POWER-OFF REQUESTED via PSCI Hvc

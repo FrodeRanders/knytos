@@ -9,7 +9,7 @@
 #include "nifs.h"
 #include "service_worker.h"
 
-enum { WORKER_SLOT = 1, MAX_SERVICE_NAME = 128 };
+enum { WORKER_SLOT = 1, MAX_SERVICE_NAME = 128, MAX_DELIVERIES = 8 };
 enum RequestState { EMPTY, REQUESTED, RUNNING, REPLIED };
 
 /* The scheduler and worker compete once for REQUESTED. Cancellation can
@@ -49,6 +49,38 @@ static struct {
     Context *owner;
     uint64_t reference;
 } subscription;
+
+// The sole scheduler tracks only messages in mailboxes. Copying a term
+// or retaining it after receive does not retain the mailbox reservation.
+static MailboxMessage *queued_deliveries[MAX_DELIVERIES];
+static size_t queued_count;
+
+static bool delivery_full(size_t needed)
+{
+    // A live watch reserves its terminal event independently of the request
+    // slot. Starting a watch needs both its registration reply and its event.
+    return queued_count + (subscription.owner != NULL) + needed > MAX_DELIVERIES;
+}
+
+static void publish_delivery(Context *recipient, term message)
+{
+    if (queued_count == MAX_DELIVERIES) abort();
+    MailboxMessage *queued = mailbox_message_create_from_term(NormalMessage, message);
+    if (!queued) abort();
+    queued_deliveries[queued_count++] = queued;
+    knytos_service_post_message(recipient, queued);
+}
+
+void knytos_service_message_removed(MailboxMessage *message)
+{
+    for (size_t i = 0; i < queued_count; i++) {
+        if (queued_deliveries[i] == message) {
+            queued_deliveries[i] = queued_deliveries[--queued_count];
+            queued_deliveries[queued_count] = NULL;
+            return;
+        }
+    }
+}
 
 static void signal_worker(void)
 {
@@ -259,7 +291,7 @@ static term submit(Context *ctx, int argc, term argv[])
     } else if (length == 0 || length > MAX_SERVICE_NAME) {
         RAISE_ERROR(BADARG_ATOM);
     }
-    if (request_busy()) return error_reply(ctx, KNYTOS_BUSY);
+    if (request_busy() || delivery_full(1)) return error_reply(ctx, KNYTOS_BUSY);
     request.length = length;
     request.opcode = (uint32_t) opcode;
     request.argument = term_maybe_unbox_int64(argv[2]);
@@ -285,7 +317,8 @@ static term lookup(Context *ctx, int argc, term argv[])
     if (length == 0 || length > MAX_SERVICE_NAME) {
         RAISE_ERROR(BADARG_ATOM);
     }
-    if (request_busy() || session.handle || atomic_load_explicit(&release_connection, memory_order_acquire)) {
+    if (request_busy() || delivery_full(1) || session.handle
+        || atomic_load_explicit(&release_connection, memory_order_acquire)) {
         return error_reply(ctx, KNYTOS_BUSY);
     }
     request.handle = enif_alloc_resource(service_type, 0);
@@ -330,7 +363,8 @@ static term subscribe(Context *ctx, int argc, term argv[])
         RAISE_ERROR(BADARG_ATOM);
     }
     if (!owns_handle(ctx, handle)) return error_reply(ctx, KNYTOS_SERVICE_NOT_FOUND);
-    if (request_busy() || subscription.owner || atomic_load_explicit(&release_watch, memory_order_acquire)) {
+    if (request_busy() || delivery_full(2) || subscription.owner
+        || atomic_load_explicit(&release_watch, memory_order_acquire)) {
         return error_reply(ctx, KNYTOS_BUSY);
     }
     enif_keep_resource(handle);
@@ -452,7 +486,7 @@ static bool deliver_reply(GlobalContext *global)
     term_put_tuple_element(message, 2, payload);
     // Only the scheduler can terminate this recipient. Its exit hook
     // detaches it and suppresses delivery before it can be destroyed.
-    globalcontext_send_message(global, recipient->process_id, message);
+    publish_delivery(recipient, message);
     END_WITH_STACK_HEAP(heap, global);
     release_request_handle();
     atomic_store_explicit(&request.state, EMPTY, memory_order_release);
@@ -479,7 +513,7 @@ static bool deliver_watch(GlobalContext *global)
     term_put_tuple_element(message, 0, globalcontext_make_atom(global, ATOM_STR("\14", "knytos_event")));
     term_put_tuple_element(message, 1, term_from_ref_ticks(reference, &heap));
     term_put_tuple_element(message, 2, event);
-    globalcontext_send_message(global, recipient->process_id, message);
+    publish_delivery(recipient, message);
     END_WITH_STACK_HEAP(heap, global);
     return true;
 }

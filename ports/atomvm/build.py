@@ -96,6 +96,8 @@ def main():
     smp = args.schedulers > 1
     if args.service_worker and smp:
         parser.error("The service worker requires a single AtomVM scheduler")
+    if args.service_worker and args.application.stem == "knytos":
+        parser.error("The service worker bundles the knytos module")
     worker_libc = args.worker_libc or smp or args.service_worker
     atomvm, otp = args.atomvm_source.resolve(), args.otp_source.resolve()
     for source, pin in ((atomvm, ATOMVM_PIN), (otp, OTP_PIN)):
@@ -126,6 +128,8 @@ def main():
     libraries = [atomvm / "libs/estdlib/src" / (name + ".erl")
                  for name in ("io", "io_lib", "lists", "string", "unicode", "proplists")]
     libraries += [atomvm / "libs/eavmlib/src/console.erl", atomvm / "libs/eavmlib/src/atomvm.erl"]
+    if args.service_worker:
+        libraries.append(ROOT / "ports/atomvm/lib/knytos.erl")
     if args.otp_behaviours:
         libraries += [atomvm / "libs/estdlib/src" / (name + ".erl")
                       for name in ("erlang", "gen_server", "supervisor")]
@@ -166,6 +170,17 @@ def main():
             "    SMP_SPINLOCK_UNLOCK(&ctx->global->processes_spinlock);\n    if (!ctx->leader) {",
             "    SMP_SPINLOCK_UNLOCK(&ctx->global->processes_spinlock);\n"
             "    knytos_service_owner_terminated(ctx);\n    if (!ctx->leader) {")
+        mailbox = replace_pinned((core / "mailbox.c").read_text(),
+            '#include "scheduler.h"\n', '#include "scheduler.h"\n#include "service_worker.h"\n')
+        # Selective receive and process teardown both remove normal messages
+        # here, before the mailbox allocation becomes a process heap fragment.
+        mailbox = replace_pinned(mailbox, "        case NormalMessage: {\n",
+            "        case NormalMessage: {\n            knytos_service_message_removed(m);\n")
+        mailbox = replace_pinned(mailbox, "void mailbox_send(Context *c, term t)\n",
+            "void knytos_service_post_message(Context *c, MailboxMessage *message)\n"
+            "{\n    mailbox_post_message(c, message);\n}\n\n"
+            "void mailbox_send(Context *c, term t)\n")
+        (generated / "mailbox.c").write_text(mailbox)
     (generated / "scheduler.c").write_text(scheduler)
     for kind in ("bifs", "nifs"):
         definition = (generated if smp and kind == "nifs" else core) / (kind + ".gperf")
@@ -196,6 +211,8 @@ def main():
     sources = [core / name for name in match[1].split()] + [ROOT / "ports/atomvm/sys.c"]
     upstream_sources = sources.copy()
     adapted = {"scheduler.c", "nifs.c"} if smp else {"scheduler.c"}
+    if args.service_worker:
+        adapted.add("mailbox.c")
     sources = [generated / path.name if path.name in adapted else path for path in sources]
     if smp:
         sources.append(ROOT / "ports/atomvm/smp.c")

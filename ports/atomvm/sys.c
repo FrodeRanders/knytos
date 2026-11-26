@@ -11,6 +11,7 @@
 #include "sys.h"
 #include "knytos.h"
 #ifdef KNYTOS_SERVICE_WORKER
+#include "nifs.h"
 #include "service_worker.h"
 #endif
 
@@ -204,8 +205,35 @@ static term platform(Context *context, int argc, term argv[]) {
     return globalcontext_make_atom(context->global, ATOM_STR("\6", "knytos"));
 }
 static const struct Nif platform_nif = { .base.type = NIFFunctionType, .nif_ptr = platform };
+
+#ifdef KNYTOS_SERVICE_WORKER
+static term log_diagnostic(Context *ctx, int argc, term argv[]) {
+    (void)argc;
+    static const AtomString levels[] = {
+        [KNYTOS_LOG_DEBUG] = ATOM_STR("\5", "debug"),
+        [KNYTOS_LOG_INFO] = ATOM_STR("\4", "info"),
+        [KNYTOS_LOG_WARNING] = ATOM_STR("\7", "warning"),
+        [KNYTOS_LOG_ERROR] = ATOM_STR("\5", "error"),
+    };
+    VALIDATE_VALUE(argv[1], term_is_binary);
+    for (uint32_t level = 0; level < sizeof(levels) / sizeof(levels[0]); level++) {
+        if (globalcontext_is_term_equal_to_atom_string(ctx->global, argv[0], levels[level])) {
+            const uint8_t *bytes = (const uint8_t *)term_binary_data(argv[1]);
+            if (knytos_atomvm_log(level, bytes, term_binary_size(argv[1])) == KNYTOS_OK) {
+                return OK_ATOM;
+            }
+            break;
+        }
+    }
+    RAISE_ERROR(BADARG_ATOM);
+}
+
+static const struct Nif log_nif = { .base.type = NIFFunctionType, .nif_ptr = log_diagnostic };
+#endif
+
 const struct Nif *platform_nifs_get_nif(const char *name) {
 #ifdef KNYTOS_SERVICE_WORKER
+    if (!strcmp(name, "knytos:log/2")) return &log_nif;
     if (!strcmp(name, "knytos:request/3")) return &knytos_request_nif;
     if (!strcmp(name, "knytos:request/4")) return &knytos_request_nif;
     if (!strcmp(name, "knytos:cancel/1")) return &knytos_cancel_nif;

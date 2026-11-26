@@ -363,6 +363,37 @@ already in the mailbox remains available to receive. Reusable service
 handles share the same request slot. The SMP Erlang scheduler profile
 remains separate M4 work.
 
+### Mailbox backpressure
+
+The VM admits eight native deliveries across all Erlang processes. Each
+accepted request or lookup reserves one reply. A close subscription
+reserves its registration reply and its terminal event. When the remaining
+capacity cannot cover a submission, it returns `{error, busy}` before
+publishing any native work.
+
+A queued reply or event holds its reservation until selective receive
+removes that message or the recipient's mailbox is destroyed. Copied
+and ordinary Erlang messages use the ordinary VM mailbox path. Once a
+message is received, any retained terms are part of the application's
+heap. Cancellation releases delivery interest separately from native
+worker settlement.
+
+### Calls with an Erlang timeout
+
+The service profile bundles [the `knytos` Erlang module](lib/knytos.erl).
+`knytos:call(Service, Request)` submits one request and waits for its reply
+using the worker's native deadline. `Request` is `{Opcode, Argument}` or
+`{Opcode, Argument, Bytes}`. A finite timeout can be passed as the third
+argument in milliseconds from 0 through 4,294,967,295. `infinity` selects
+the same behavior as `call/2`. Invalid timeouts raise `badarg` before
+submission. Admission errors such as `{error, busy}` return immediately.
+
+If the finite receive selects the timeout, the caller cancels its own
+reference, discards a matching reply that may already be queued, and
+returns `{error, timeout}`. Unrelated mailbox messages remain available.
+The request slot becomes available after the native worker settles the
+operation and the scheduler observes settlement.
+
 `knytos:lookup(ServiceName)` uses the signed `service=call` grant and
 returns `{ok, Reference}`. Inspect `{knytos_reply, Reference, {ok, Handle}}`
 to obtain the handle, or `{knytos_reply, Reference, {error, Reason}}`
@@ -380,6 +411,14 @@ The worker retains the connection through accepted calls and drops it
 after they settle. Garbage collection and owner exit also schedule its
 release. The finalizer only marks the release, and the scheduler signals
 the worker after leaving VM guards.
+
+### Diagnostics
+
+`knytos:log(Level, Message)` returns `ok` after writing one record to the
+Knytos EL0 log. The supported levels are `debug`, `info`, `warning` and
+`error`. Pass a UTF-8 binary of at most 239 bytes. Control characters
+and Unicode line and paragraph separators raise `badarg`, as do other
+invalid arguments. Logging works while a service request is pending.
 
 ### Binary service payloads
 

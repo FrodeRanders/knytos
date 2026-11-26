@@ -1,0 +1,16 @@
+[+     3.991078] BOOT COMPLETE: validation passed; local storage ready; services submitted
+[+    21.115286] [EL0 LOG] lp=0 asid=16 [agent] launched "avm-active-cancel" generation=1 asid=30 principal=0xc881470a6119ef89
+[+    22.841858] [EL0 LOG] lp=0 asid=30 {m4,mailbox_backpressure}
+[+    22.993922] [EL0 LOG] lp=0 asid=30 {m4,awaiting_replacement}
+[+    23.284010] [EL0 LOG] lp=0 asid=30 {m4,watch_delivery_reserved}
+[+    23.284380] [EL0 LOG] lp=0 asid=30 {m4,replaced_handle_stale}
+[+    23.320654] [supervisor] deployment shutdown acknowledged asid=29 generation=1
+[+    23.348638] [EL0 LOG] lp=0 asid=16 [agent] launched "m4-hold-service" generation=2 asid=29 principal=0xd0f17238391291e9
+[+    23.394546] [EL0 LOG] lp=0 asid=30 {m4,replacement_reacquired}
+[+    23.519666] [EL0 LOG] lp=0 asid=30 {m4,close_watch_event}
+[+    23.522594] [EL0 LOG] lp=0 asid=30 [atomvm] service worker joined
+[+    23.526064] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=35 remaining_blocks=0 heap_peak=24785 sampled_stack=1424
+[+    27.787324] [supervisor] node shutdown acknowledged asid=32 generation=1
+[+    27.787524] [EL0 LOG] lp=0 asid=16 [agent] application domains drained; draining connectors
+[+    27.787738] [EL0 LOG] lp=0 asid=16 [agent] child domains drained for node shutdown
+[+    27.821746] [shutdown] POWER-OFF REQUESTED via PSCI Hvc

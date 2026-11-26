@@ -144,6 +144,35 @@ fn flush(console: &mut Console) {
     }
 }
 
+/// # Safety
+/// `bytes` must be readable for `length` bytes throughout this call.
+#[cfg(feature = "service-worker")]
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn knytos_atomvm_log(level: u32, bytes: *const u8, length: usize) -> i32 {
+    sample_stack();
+    // Reserve room for the longest level prefix in the 256-byte EL0 record.
+    const MAX_MESSAGE: usize = 256 - "[atomvm warning] ".len();
+    if bytes.is_null() || length > MAX_MESSAGE {
+        return INVALID;
+    }
+    let level = match level {
+        0 => "debug",
+        1 => "info",
+        2 => "warning",
+        3 => "error",
+        _ => return INVALID,
+    };
+    let bytes = unsafe { core::slice::from_raw_parts(bytes, length) };
+    let Ok(message) = core::str::from_utf8(bytes) else {
+        return INVALID;
+    };
+    if message.chars().any(|ch| ch.is_control() || matches!(ch, '\u{2028}' | '\u{2029}')) {
+        return INVALID;
+    }
+    knytos_rt::logln!("[atomvm {}] {}", level, message);
+    OK
+}
+
 /// Single-threaded C reactor borrows launch CQ zero. No resource is adopted.
 #[unsafe(no_mangle)]
 pub extern "C" fn knytos_event_wait(timeout_ms: i64) -> i32 {

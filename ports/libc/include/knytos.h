@@ -58,6 +58,9 @@ int32_t knytos_rwlock_write(const struct knytos_rwlock *lock, uint32_t timeout_m
 int32_t knytos_rwlock_unlock(const struct knytos_rwlock *lock);
 #endif
 #ifdef KNYTOS_SERVICE_WORKER
+enum { KNYTOS_LOG_DEBUG, KNYTOS_LOG_INFO, KNYTOS_LOG_WARNING, KNYTOS_LOG_ERROR };
+/* Write one diagnostic record in the caller's EL0 log context. */
+int32_t knytos_atomvm_log(uint32_t level, const uint8_t *bytes, size_t length);
 enum { KNYTOS_SERVICE_UNAUTHORIZED = 8, KNYTOS_SERVICE_UNEXPECTED_REPLY = 9 };
 enum { KNYTOS_SERVICE_CANCELLED = 10, KNYTOS_SERVICE_NOT_FOUND = 11 };
 enum { KNYTOS_SERVICE_BYTE_REPLY = 12, KNYTOS_SERVICE_MAX_PAYLOAD = 4096 };

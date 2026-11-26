@@ -24,6 +24,8 @@ start() ->
     receive after 25 -> ok end,
     {error, busy} = knytos:request(<<"time">>, 255, 0),
     erlang:display({m4, timer_with_pending_call}),
+    ok = diagnostics(),
+    {error, busy} = knytos:request(<<"time">>, 255, 0),
     {error, SlowReason} = result(Slow),
     true = SlowReason =:= timeout orelse SlowReason =:= unavailable,
     ok = cancel_running(),
@@ -48,6 +50,27 @@ start() ->
     ok = reusable_service(),
     erlang:display({m4, native_service, pass}),
     ok.
+
+diagnostics() ->
+    ok = knytos:log(debug, <<"m4 diagnostic debug">>),
+    ok = knytos:log(info, <<"m4 diagnostic ", 16#3BB/utf8>>),
+    ok = knytos:log(warning, binary:copy(<<"x">>, 239)),
+    ok = knytos:log(error, <<"m4 diagnostic error">>),
+    ok = expect_bad_log(notice, <<"m4 rejected level">>),
+    ok = expect_bad_log(info, "m4 rejected list"),
+    ok = expect_bad_log(info, <<"m4 rejected UTF-8 ", 255>>),
+    ok = expect_bad_log(info, <<"m4 rejected control", 10>>),
+    ok = expect_bad_log(info, <<"m4 rejected separator", 16#2028/utf8>>),
+    ok = expect_bad_log(info, binary:copy(<<"x">>, 240)),
+    erlang:display({m4, diagnostics_validated}),
+    ok.
+
+expect_bad_log(Level, Message) ->
+    try knytos:log(Level, Message) of
+        _ -> error(invalid_diagnostic_accepted)
+    catch
+        error:badarg -> ok
+    end.
 
 reusable_service() ->
     {ok, Denied} = knytos:lookup(<<"rng">>),

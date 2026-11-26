@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 scoped service calls, reusable handles, binary payloads and endpoint-close subscriptions implemented for the single-scheduler service profile.\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 prerequisite probes are recorded.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -1231,31 +1231,16 @@ The [signed replacement qualification](../reports/milestones/2026-11-26-atomvm-s
 covers same-name reacquisition and stale handles and subscriptions across ASID reuse.
 The [grant cancellation qualification](../reports/milestones/2026-11-26-atomvm-grant-cancellation.md)
 covers interruption of grant discovery, bounded retry delays and early slot reuse.
+The [synchronous call qualification](../reports/milestones/2026-11-26-atomvm-synchronous-calls.md)
+covers scalar and binary calls, Erlang timeouts and mailbox preservation.
+The [native diagnostic qualification](../reports/milestones/2026-11-26-atomvm-native-diagnostics.md)
+covers bounded log records and logging while a request is pending.
 
 ### 11.2. Erlang-facing API
 
-Introduce an Erlang module providing native service access.
-
-A possible interface is:
-
-```erlang
--module(knytos).
-
--export([
-    lookup/1,
-    call/2,
-    call/3,
-    request/2,
-    cancel/1,
-    subscribe/2,
-    unsubscribe/1,
-    close/1,
-    monotonic_time/0,
-    log/2
-]).
-```
-
-The actual API shall reflect existing Knytos abstractions.
+The service profile bundles [`knytos`](../../ports/atomvm/lib/knytos.erl)
+with `call/2`, `call/3`, `request/3`, `request/4`, `cancel/1`, `lookup/1`,
+`close/1`, `subscribe/2`, `unsubscribe/1`, and `log/2`.
 
 Avoid reproducing Unix descriptors or sockets where a capability-oriented abstraction is more appropriate.
 
@@ -1263,11 +1248,12 @@ Avoid reproducing Unix descriptors or sockets where a capability-oriented abstra
 
 Represent native capabilities using opaque runtime-managed objects.
 
-Conceptually:
-
 ```erlang
-{ok, Capability} =
-    knytos:lookup(<<"example.service">>).
+{ok, Ref} = knytos:lookup(<<"example.service">>),
+receive
+    {knytos_reply, Ref, {ok, Capability}} -> Capability;
+    {knytos_reply, Ref, {error, Reason}} -> error(Reason)
+end.
 ```
 
 A capability must not be represented solely as a freely constructible Erlang integer if this would permit arbitrary handle substitution.
@@ -1303,6 +1289,10 @@ The implementation shall provide:
 - Resource cleanup.
 - Native diagnostics.
 
+The service profile's [`log/2`](../../ports/atomvm/README.md#diagnostics)
+writes one bounded, level-tagged UTF-8 record to the Knytos EL0 log. It
+remains available while the request slot is occupied.
+
 Avoid blocking a normal Erlang scheduler while waiting for a potentially long-running native operation.
 
 The same rule applies to resource finalizers and process-down callbacks.
@@ -1324,7 +1314,7 @@ sequenceDiagram
     participant Q as Completion queue
     participant S as Native service
 
-    E->>V: knytos:request(Capability, Request)
+    E->>V: knytos:request(Capability, Opcode, Argument)
     V->>A: Submit native operation
     A->>S: Send request
     A-->>V: Operation reference
@@ -1336,29 +1326,12 @@ sequenceDiagram
     V-->>E: Result message
 ```
 
-A synchronous-looking Erlang API may be implemented over asynchronous native submission and Erlang receive semantics.
-
-For example:
-
-```erlang
-call(Capability, Request, Timeout) ->
-    case request(Capability, Request) of
-        {ok, Ref} ->
-            receive
-                {knytos_reply, Ref, Result} ->
-                    Result
-            after Timeout ->
-                cancel(Ref),
-                {error, timeout}
-            end;
-        Error ->
-            Error
-    end.
-```
-
-This example is conceptual.
-
-The production implementation must define how reply/timeout races, late completions and cancellation acknowledgements are resolved.
+`knytos:call/2,3` waits for the submitted reference using Erlang selective
+receive. A finite timeout applies to that receive. If timeout wins, the
+caller cancels the reference and removes any matching reply already queued.
+The worker retains native custody until settlement. Admission errors return
+without entering receive, and unrelated messages retain their place in the
+mailbox.
 
 ### 11.6. Operation ownership
 
@@ -1405,24 +1378,31 @@ remote side effects.
 
 ### 11.7. Backpressure
 
-Introduce explicit bounds for:
+The single-scheduler service profile admits one request, one reusable
+handle and one endpoint-close watch. A request and its completion share
+a fixed slot with one 4096-byte payload buffer.
 
-- Outstanding native operations.
-- Completion buffers.
-- Pending requests.
-- Event subscriptions.
-- Runtime handle tables.
-- Native-to-Erlang message delivery.
+[Mailbox admission](../../ports/atomvm/README.md#mailbox-backpressure)
+bounds native replies and events across the entire VM. The eight-message
+limit includes reservations for accepted deliveries. A subscription
+reserves both registration and terminal delivery, so an occupied mailbox
+cannot block an already accepted close event. Submission returns
+`{error, busy}` when the available capacity cannot cover the operation.
+Selective receive and mailbox destruction return the corresponding
+reservation. Received terms and ordinary Erlang messages follow the
+VM's usual heap and mailbox rules.
 
-A fast native service must not be able to exhaust the runtime's memory by producing completions more rapidly than Erlang processes consume them.
-
-Define overload behaviour and error reporting.
+The [signed backpressure qualification](../reports/milestones/2026-11-26-atomvm-mailbox-backpressure.md)
+covers VM-wide saturation, selective receive, recipient exit and
+terminal watch delivery while seven replies are queued.
 
 ### 11.8. Native interoperability demonstration
 
 Provide an example native Rust service and an Erlang client, or reuse an appropriate existing service.
 
-For example:
+The signed [Rust fixture](../../crates/knytos-app/examples/atomvm_cancel_fixture.rs)
+publishes `m4.hold` and echoes bytes with opcode 3. An Erlang client with a
+signed `m4.hold=call` grant can use it as follows.
 
 ```erlang
 -module(native_client).
@@ -1430,16 +1410,14 @@ For example:
 -export([start/0]).
 
 start() ->
-    {ok, Service} =
-        knytos:lookup(<<"example.echo">>),
-
-    {ok, Reply} =
-        knytos:call(
-            Service,
-            <<"Hello from Erlang">>,
-            5000
-        ),
-
+    {ok, Ref} = knytos:lookup(<<"m4.hold">>),
+    Service = receive
+        {knytos_reply, Ref, {ok, Handle}} -> Handle;
+        {knytos_reply, Ref, {error, Reason}} -> error(Reason)
+    end,
+    Bytes = <<"Hello from Erlang">>,
+    {ok, Reply} = knytos:call(Service, {3, byte_size(Bytes), Bytes}, 1000),
+    ok = knytos:close(Service),
     io:format("Received: ~p~n", [Reply]).
 ```
 
@@ -1459,6 +1437,10 @@ Verify:
 - Cross-domain memory isolation remains effective.
 
 ### 11.10. Acceptance criteria
+
+The [M4 completion report](../reports/milestones/2026-11-26-atomvm-m4-completion.md#acceptance-criteria)
+records the disposition of each criterion for the signed single-scheduler
+service profile.
 
 - Erlang can discover an authorized native service.
 - Erlang can invoke the service.
@@ -1481,7 +1463,11 @@ AtomVM shall remain independently supported during this milestone.
 
 ### 12.2. Upstream baseline
 
-Select an explicitly pinned, contemporary OTP release.
+The feasibility probes use OTP 29.1.2 at
+`d199a49a01a2079afb6f2c5c9ae047cd4555e68d`. The
+[ERTS preflight](../reports/milestones/2026-11-26-atomvm-m4-completion.md#erts-prerequisite-probes)
+records host tuple rejection and current C runtime boundaries. A target
+build needs a matching host bootstrap and an explicit Knytos backend.
 
 Do not use the historical OSE port as the runtime baseline.
 
@@ -2681,7 +2667,11 @@ flowchart TD
 
 The transition from M4 to M5 constitutes an explicit architectural decision point.
 
-Evaluate whether the AtomVM environment already satisfies the intended experimental objectives before committing to the substantially larger ERTS port.
+The qualified AtomVM profile supports local native-service experiments.
+The programme's conventional OTP application objective requires official
+ERTS. The [proposed M5 scope](../reports/milestones/2026-11-26-atomvm-m4-completion.md#proposed-scope-of-next-milestone)
+starts with target configuration and a native thread, event and TSD
+qualification before attempting an ERTS boot.
 
 ## 22. Milestone completion report format
 

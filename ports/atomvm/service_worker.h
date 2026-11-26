@@ -16,5 +16,7 @@ void knytos_service_owner_terminated(Context *owner);
 void knytos_service_flush_cleanup(void);
 bool knytos_service_needs_scan(void);
 bool knytos_service_deliver(GlobalContext *global);
+void knytos_service_post_message(Context *recipient, MailboxMessage *message);
+void knytos_service_message_removed(MailboxMessage *message);
 
 #endif
