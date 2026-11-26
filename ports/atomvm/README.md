@@ -344,11 +344,12 @@ process withdraws its delivery interest. A queued request can release
 its slot immediately if the worker has yet to claim it. Once claimed,
 the slot stays occupied until the worker settles its native resources
 and the scheduler observes the result. The worker checks cancellation
-before grant acquisition and again before invocation. Grant acquisition
-and call admission can run until the original native deadline. Once
-IPC accepts the call, the worker waits on its private CQ for reply readiness
-or a cancellation signal. Cancellation closes the exact pending call
-before releasing its connection. Remote effects can survive cancellation.
+before admission and binds accepted grant and service replies to its private
+CQ. Cancellation wakes that queue and closes the exact pending call.
+Grant discovery also uses that queue during its bounded availability backoff
+because the catalog lacks a publication notification for grant clients.
+Grant discovery, admission retries and service invocation share the original
+one-second deadline. Remote effects can survive cancellation.
 
 When the submitting process exits, the scheduler detaches it and
 uses the same cancellation path before sending process-monitor

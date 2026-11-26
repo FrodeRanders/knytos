@@ -78,6 +78,26 @@ impl<'ctx> Application<'ctx> {
         )
     }
 
+    /// Acquire a signed service grant while observing cancellation on the
+    /// caller's CQ. Catalog availability retries retain the same deadline.
+    pub fn acquire_interruptible(
+        &self,
+        service: &[u8],
+        rights: u16,
+        deadline: &deadline::Deadline,
+        wait: &knytos_rt::call::InterruptibleWait<'_>,
+    ) -> Result<owned::Connection, grant_client::Error> {
+        grant_client::acquire_interruptible(
+            self.context,
+            self.controller,
+            &self.descriptor,
+            service,
+            rights,
+            deadline,
+            wait,
+        )
+    }
+
     pub fn publish(
         &self,
         service: &[u8],

@@ -29,19 +29,21 @@ start() ->
     ok = cancel_running(),
     ok = cancel_immediately(),
     Parent = self(),
+    Started = erlang:monotonic_time(millisecond),
     {Child, Monitor} = spawn_opt(fun() ->
-        {ok, _} = knytos:request(<<"m4.missing">>, 255, 0),
-        Parent ! accepted
+        {ok, _} = knytos:lookup(<<"m4.missing">>),
+        Parent ! accepted,
+        receive finish -> ok after 5000 -> error(lookup_owner_still_running) end
     end, [monitor]),
     receive accepted -> ok after 5000 -> error(child_not_accepted) end,
+    receive after 25 -> ok end,
+    {error, busy} = knytos:request(<<"time">>, 255, 0),
+    Child ! finish,
     receive {'DOWN', Monitor, process, Child, normal} -> ok
     after 5000 -> error(child_still_alive)
     end,
-    %% A timer can run while the abandoned lookup's worker waits. Its
-    %% bounded native budget ends before this fixture checks slot reuse.
-    receive after 1500 -> ok end,
-    {ok, Last} = knytos:request(<<"time">>, 255, 0),
-    {ok, -3} = result(Last),
+    ok = reuse_slot(Started + 750),
+    erlang:display({m4, lookup_exit_reused_ms, erlang:monotonic_time(millisecond) - Started}),
     erlang:display({m4, abandoned_slot_reused}),
     ok = reusable_service(),
     erlang:display({m4, native_service, pass}),
@@ -127,7 +129,8 @@ result(Reference) ->
     end.
 
 cancel_running() ->
-    {ok, Reference} = knytos:request(<<"m4.missing">>, 255, 0),
+    Started = erlang:monotonic_time(millisecond),
+    {ok, Reference} = knytos:lookup(<<"m4.missing">>),
     Parent = self(),
     spawn_opt(fun() -> Parent ! {foreign_cancel, knytos:cancel(Reference)} end, []),
     receive {foreign_cancel, {error, not_found}} -> ok
@@ -137,8 +140,19 @@ cancel_running() ->
     receive after 25 -> ok end,
     {error, busy} = knytos:request(<<"time">>, 255, 0),
     ok = knytos:cancel(Reference),
-    check_replacement_after_cancel(),
+    ok = reuse_slot(Started + 750),
+    erlang:display({m4, lookup_cancel_reused_ms, erlang:monotonic_time(millisecond) - Started}),
     expect_no_reply(Reference).
+
+reuse_slot(Deadline) ->
+    true = erlang:monotonic_time(millisecond) < Deadline,
+    case knytos:request(<<"time">>, 255, 0) of
+        {error, busy} -> receive after 20 -> reuse_slot(Deadline) end;
+        {ok, Reference} ->
+            {ok, -3} = result(Reference),
+            true = erlang:monotonic_time(millisecond) < Deadline,
+            ok
+    end.
 
 cancel_immediately() ->
     {ok, Reference} = knytos:request(<<"time">>, 255, 0),

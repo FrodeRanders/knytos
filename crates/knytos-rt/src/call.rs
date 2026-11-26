@@ -4,6 +4,7 @@
 use crate::{
     Lifecycle,
     ShutdownRequest,
+    cq,
     deadline::Deadline,
     owned::{
         CallResult,
@@ -23,14 +24,16 @@ pub enum AdmissionError {
     Rejected(IpcError),
     Backoff(CompletionError),
     BackoffResult(i64),
+    Interrupted(InterruptError),
 }
 
 /// Bounded IPC admission. Queue capacity has no producer subscription yet, so
-/// rejected QUEUE_FULL submissions use one-millisecond owned timer backoff.
+/// rejected QUEUE_FULL submissions use one-millisecond backoff.
 /// Other failures return immediately. Lifecycle is rechecked between attempts.
 pub struct Admission<'a> {
     deadline: &'a Deadline,
     lifecycle: Option<Lifecycle<'a>>,
+    interrupt: Option<&'a InterruptibleWait<'a>>,
 }
 
 impl<'a> Admission<'a> {
@@ -38,6 +41,7 @@ impl<'a> Admission<'a> {
         Self {
             deadline,
             lifecycle: None,
+            interrupt: None,
         }
     }
 
@@ -45,7 +49,13 @@ impl<'a> Admission<'a> {
         Self {
             deadline,
             lifecycle: Some(lifecycle),
+            interrupt: None,
         }
+    }
+
+    pub fn interruptible(mut self, wait: &'a InterruptibleWait<'a>) -> Self {
+        self.interrupt = Some(wait);
+        self
     }
 
     pub fn call(
@@ -94,6 +104,9 @@ impl<'a> Admission<'a> {
         mut submit: impl FnMut() -> Result<T, IpcError>,
     ) -> Result<T, AdmissionError> {
         loop {
+            if let Some(wait) = self.interrupt {
+                wait.check().map_err(AdmissionError::Interrupted)?;
+            }
             if let Some(request) = self.lifecycle.and_then(|l| l.shutdown_requested()) {
                 return Err(AdmissionError::Shutdown(request));
             }
@@ -104,6 +117,10 @@ impl<'a> Admission<'a> {
             match submit() {
                 Ok(owner) => return Ok(owner),
                 Err(IpcError::Status(knytos_syscall::ipc_status::QUEUE_FULL)) => {
+                    if let Some(wait) = self.interrupt {
+                        wait.pause(self.deadline, 1).map_err(AdmissionError::Interrupted)?;
+                        continue;
+                    }
                     let pause =
                         Completion::timer(self.deadline.remaining_ms().min(remaining).min(1))
                             .map_err(AdmissionError::Backoff)?;
@@ -114,6 +131,81 @@ impl<'a> Admission<'a> {
                 }
                 Err(error) => return Err(AdmissionError::Rejected(error)),
             }
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum InterruptError {
+    Cancelled,
+    Wait(cq::WaitError),
+}
+
+/// Observe a reply and a caller-owned cancellation predicate on the same CQ.
+/// The producer must publish cancellation before waking this queue.
+pub struct InterruptibleWait<'a> {
+    queue: u32,
+    cancelled: &'a dyn Fn() -> bool,
+}
+
+impl<'a> InterruptibleWait<'a> {
+    pub const fn new(queue: u32, cancelled: &'a dyn Fn() -> bool) -> Self {
+        Self {
+            queue,
+            cancelled,
+        }
+    }
+
+    pub fn check(&self) -> Result<(), InterruptError> {
+        if (self.cancelled)() {
+            return Err(InterruptError::Cancelled);
+        }
+        Ok(())
+    }
+
+    fn wait(&self, remaining: u64) -> Result<(), InterruptError> {
+        cq::wait(Some(remaining), self.queue).map(|_| ()).map_err(InterruptError::Wait)
+    }
+
+    /// Keep a bounded backoff for a source with no readiness contract. Only
+    /// expiry of the original retry delay or total budget ends the pause.
+    pub fn pause(&self, deadline: &Deadline, delay_ms: u64) -> Result<(), InterruptError> {
+        let pause = Deadline::after(delay_ms);
+        loop {
+            self.check()?;
+            let remaining = pause.remaining_ms().min(deadline.remaining_ms());
+            if remaining == 0 {
+                return Ok(());
+            }
+            self.wait(remaining)?;
+        }
+    }
+
+    /// Consume the exact pending owner. Observation failure cancels through
+    /// its fail-closed Drop policy, which requires an unguarded caller scope.
+    pub fn observe(
+        &self,
+        mut pending: PendingCall<'_>,
+        deadline: &Deadline,
+    ) -> Result<CallResult, ObservationError> {
+        self.check().map_err(ObservationError::Interrupted)?;
+        pending.bind_cq(self.queue).map_err(|error| match error {
+            IpcError::Status(knytos_syscall::ipc_status::RESOURCE_LIMIT) => {
+                ObservationError::WaitRejected(error)
+            }
+            _ => ObservationError::Ipc(error),
+        })?;
+        loop {
+            self.check().map_err(ObservationError::Interrupted)?;
+            if let Some(reply) = pending.poll().map_err(ObservationError::Ipc)? {
+                self.check().map_err(ObservationError::Interrupted)?;
+                return Ok(reply);
+            }
+            let remaining = deadline.remaining_ms();
+            if remaining == 0 {
+                return Err(ObservationError::Deadline);
+            }
+            self.wait(remaining).map_err(ObservationError::Interrupted)?;
         }
     }
 }
@@ -136,6 +228,7 @@ pub enum ObservationError {
     Deadline,
     WaitRejected(IpcError),
     Ipc(IpcError),
+    Interrupted(InterruptError),
 }
 
 impl CallObservation<'_> {
@@ -182,6 +275,7 @@ impl<'memory> PendingCall<'memory> {
 #[cfg(test)]
 mod tests {
     extern crate std;
+    use core::cell::Cell;
     use std::collections::VecDeque;
 
     use super::*;
@@ -222,6 +316,42 @@ mod tests {
         });
         assert_eq!(error, Err(AdmissionError::Deadline));
         assert_eq!(attempts, 1);
+    }
+
+    #[test]
+    fn interrupted_queue_backoff_stops_before_resubmission() {
+        let _guard = kernel::serial();
+        kernel::reset();
+        let deadline = Deadline::at(0, 1000, 10);
+        let cancelled = Cell::new(false);
+        let interrupted = || cancelled.get();
+        let wait = InterruptibleWait::new(2, &interrupted);
+        let mut attempts = 0;
+        let error = Admission::new(&deadline).interruptible(&wait).submit::<()>(|| {
+            attempts += 1;
+            cancelled.set(true);
+            Err(IpcError::Status(knytos_syscall::ipc_status::QUEUE_FULL))
+        });
+        assert_eq!(error, Err(AdmissionError::Interrupted(InterruptError::Cancelled)));
+        assert_eq!(attempts, 1);
+        assert!(kernel::events().is_empty());
+    }
+
+    #[test]
+    fn interruption_after_binding_closes_the_exact_pending_call() {
+        let _guard = kernel::serial();
+        kernel::reset();
+        let connection = unsafe { Connection::from_raw(8) }.unwrap();
+        let memory = OwnedMemory::allocate(1).unwrap();
+        let pending = connection.call_borrow_read(1, 0, &memory).unwrap();
+        let checked = Cell::new(false);
+        let interrupted = || checked.replace(true);
+        let wait = InterruptibleWait::new(2, &interrupted);
+        let result = wait.observe(pending, &Deadline::at(0, 1000, 10));
+        assert!(matches!(result, Err(ObservationError::Interrupted(InterruptError::Cancelled))));
+        assert_eq!(kernel::events(), [Event::IpcReplyBindCq(30, 2), Event::IpcClose(30)]);
+        drop(memory);
+        assert_eq!(kernel::events().last(), Some(&Event::MemoryClose(10)));
     }
 
     #[test]

@@ -591,6 +591,9 @@ def main():
                                           "closed_resource_is_stale", "resource_gc_reclaimed_slot",
                                           "resource_owner_exit_reclaimed_slot"):
                                 assert f"{{m4,{stage}}}" in text, stage
+                            for stage in ("lookup_cancel_reused_ms", "lookup_exit_reused_ms"):
+                                reuse = re.search(rf"\{{m4,{stage},(\d+)\}}", text)
+                                assert reuse and int(reuse[1]) < 750, stage
                             assert "[atomvm] service worker joined" in text and "[atomvm] return=ok" in text, name
                         if number == active_cancel_case:
                             client_asid = int(re.search(r"\[EL0 LOG\] lp=\d+ asid=(\d+)", text)[1])

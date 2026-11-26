@@ -8,18 +8,19 @@ use knytos_app::{
 };
 use knytos_rt::{
     Context,
-    abi::ipc_status,
     call::{
         Admission,
         AdmissionError,
+        InterruptError,
+        InterruptibleWait,
         ObservationError,
     },
+    cq::WaitError,
     deadline::Deadline,
     owned::{
         CallResult,
         Completion,
         Connection,
-        IpcError,
         OwnedPayload,
         PendingCall,
     },
@@ -89,39 +90,11 @@ struct InFlightCall<C> {
     _connection: C,
 }
 
-impl<C> InFlightCall<C> {
-    fn observe(
-        mut self,
-        worker: workers::Participant,
-        deadline: &Deadline,
-        cancelled: extern "C" fn() -> bool,
-    ) -> Result<CallResult, i32> {
-        // The worker holds no VM or runtime metadata guard. Early returns
-        // close the exact pending owner within the connection owner's scope.
-        self.pending.bind_cq(worker.queue()).map_err(|error| match error {
-            IpcError::Status(ipc_status::RESOURCE_LIMIT) => WAIT_REJECTED,
-            _ => UNAVAILABLE,
-        })?;
-        loop {
-            if cancelled() {
-                return Err(CANCELLED);
-            }
-            if let Some(reply) = self.pending.poll().map_err(|_| UNAVAILABLE)? {
-                return Ok(reply);
-            }
-            let remaining = deadline.remaining_ms();
-            if remaining == 0 {
-                return Err(DEADLINE);
-            }
-            // Both the native reply and cancellation signal this CQ. Either
-            // wake, including expiry, requires a fresh check of both sources.
-            match workers::park(worker, remaining) {
-                OK | DEADLINE => {}
-                WAIT_REJECTED => return Err(WAIT_REJECTED),
-                SHUTDOWN => return Err(SHUTDOWN),
-                _ => return Err(UNAVAILABLE),
-            }
-        }
+fn interrupt_status(error: InterruptError) -> i32 {
+    match error {
+        InterruptError::Cancelled => CANCELLED,
+        InterruptError::Wait(WaitError::AdmissionRejected) => WAIT_REJECTED,
+        InterruptError::Wait(_) => UNAVAILABLE,
     }
 }
 
@@ -129,6 +102,7 @@ fn admission_status(error: AdmissionError) -> i32 {
     match error {
         AdmissionError::Deadline => DEADLINE,
         AdmissionError::Shutdown(_) => SHUTDOWN,
+        AdmissionError::Interrupted(error) => interrupt_status(error),
         _ => UNAVAILABLE,
     }
 }
@@ -138,6 +112,7 @@ fn observation_status(error: ObservationError) -> i32 {
         ObservationError::Deadline => DEADLINE,
         ObservationError::WaitRejected(_) => WAIT_REJECTED,
         ObservationError::Ipc(_) => UNAVAILABLE,
+        ObservationError::Interrupted(error) => interrupt_status(error),
     }
 }
 
@@ -151,9 +126,14 @@ fn grant_status(error: grant_client::Error) -> i32 {
     }
 }
 
-fn acquire(context: &Context, service: &[u8], deadline: &Deadline) -> Result<Connection, i32> {
-    let app = Application::from_context(context).map_err(|_| UNAVAILABLE)?;
-    app.acquire(service, knytos_launch::deployment::RIGHT_CALL, deadline).map_err(grant_status)
+fn acquire(
+    service: &[u8],
+    deadline: &Deadline,
+    wait: &InterruptibleWait<'_>,
+) -> Result<Connection, i32> {
+    let app = Application::from_context(&Context).map_err(|_| UNAVAILABLE)?;
+    app.acquire_interruptible(service, knytos_launch::deployment::RIGHT_CALL, deadline, wait)
+        .map_err(grant_status)
 }
 
 enum Reply {
@@ -216,37 +196,31 @@ pub extern "C" fn knytos_service_watch_poll() -> i32 {
 }
 
 fn invoke<C: Borrow<Connection>>(
-    worker: workers::Participant,
     connection: C,
     command: &ServiceCommand,
     bytes: Option<&mut [u8; MAX_PAYLOAD_BYTES]>,
     deadline: &Deadline,
-    cancelled: extern "C" fn() -> bool,
+    wait: &InterruptibleWait<'_>,
 ) -> Result<Reply, i32> {
-    if cancelled() {
-        return Err(CANCELLED);
-    }
-    let admission = Admission::with_lifecycle(deadline, Context.lifecycle());
+    wait.check().map_err(interrupt_status)?;
+    let admission = Admission::with_lifecycle(deadline, Context.lifecycle()).interruptible(wait);
     let target = connection.borrow().as_ref();
     let opcode = command.opcode;
     let argument = command.argument as u64;
     let pending = if let Some(bytes) = bytes.as_deref() {
         let input = bytes.get(..command.bytes_len).ok_or(INVALID)?;
         let payload = OwnedPayload::copy_from(input, MAX_PAYLOAD_BYTES).map_err(|_| UNAVAILABLE)?;
-        if cancelled() {
-            return Err(CANCELLED);
-        }
         let (memory, _) = payload.into_parts();
         admission.call_move(target, opcode, argument, memory).map_err(|(_, error)| error)
     } else {
         admission.call(target, opcode, argument)
     }
     .map_err(admission_status)?;
-    let reply = InFlightCall {
+    let operation = InFlightCall {
         pending,
         _connection: connection,
-    }
-    .observe(worker, deadline, cancelled)?;
+    };
+    let reply = wait.observe(operation.pending, deadline).map_err(observation_status)?;
     copy_reply(reply, bytes)
 }
 
@@ -265,6 +239,8 @@ pub unsafe extern "C" fn knytos_service_worker_run(
     let Some(worker) = workers::participant().filter(|worker| worker.slot != 0) else {
         knytos_rt::domain_abort();
     };
+    let interrupted = || cancelled();
+    let wait = InterruptibleWait::new(worker.queue(), &interrupted);
     let mut session = None;
     loop {
         let mut command = core::mem::MaybeUninit::uninit();
@@ -293,12 +269,10 @@ pub unsafe extern "C" fn knytos_service_worker_run(
             let deadline = Deadline::after(REQUEST_BUDGET_MS);
             match kind {
                 NAMED_CALL => unsafe { command.name() }
-                    .and_then(|name| acquire(&Context, name, &deadline))
-                    .and_then(|connection| {
-                        invoke(worker, connection, &command, bytes, &deadline, cancelled)
-                    }),
+                    .and_then(|name| acquire(name, &deadline, &wait))
+                    .and_then(|connection| invoke(connection, &command, bytes, &deadline, &wait)),
                 LOOKUP if session.is_none() => unsafe { command.name() }
-                    .and_then(|name| acquire(&Context, name, &deadline))
+                    .and_then(|name| acquire(name, &deadline, &wait))
                     .map(|connection| {
                         session = Some(connection);
                         Reply::Scalar(0)
@@ -309,9 +283,10 @@ pub unsafe extern "C" fn knytos_service_worker_run(
                     store_watch(watch);
                     Ok(Reply::Scalar(0))
                 }),
-                BOUND_CALL => session.as_ref().ok_or(UNAVAILABLE).and_then(|connection| {
-                    invoke(worker, connection, &command, bytes, &deadline, cancelled)
-                }),
+                BOUND_CALL => session
+                    .as_ref()
+                    .ok_or(UNAVAILABLE)
+                    .and_then(|connection| invoke(connection, &command, bytes, &deadline, &wait)),
                 _ => Err(INVALID),
             }
         };

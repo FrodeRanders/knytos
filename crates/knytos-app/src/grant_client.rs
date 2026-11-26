@@ -6,6 +6,7 @@ use knytos_rt::{
     call::{
         Admission,
         AdmissionError,
+        InterruptibleWait,
         ObservationError,
     },
     owned::{
@@ -51,7 +52,7 @@ pub fn acquire_until(
     rights: u16,
     deadline: &Deadline,
 ) -> Result<Connection, Error> {
-    acquire_inner(None, controller, descriptor, service, rights, deadline)
+    acquire_inner(None, controller, descriptor, service, rights, deadline, None)
 }
 
 /// Acquisition alone retries a confirmed remote unavailable reply, never an
@@ -66,7 +67,19 @@ pub fn acquire_with_context(
     rights: u16,
     deadline: &Deadline,
 ) -> Result<Connection, Error> {
-    acquire_inner(Some(context), controller, descriptor, service, rights, deadline)
+    acquire_inner(Some(context), controller, descriptor, service, rights, deadline, None)
+}
+
+pub(crate) fn acquire_interruptible(
+    context: &Context,
+    controller: ConnectionRef<'_>,
+    descriptor: &LaunchMemoryRef<'_>,
+    service: &[u8],
+    rights: u16,
+    deadline: &Deadline,
+    wait: &InterruptibleWait<'_>,
+) -> Result<Connection, Error> {
+    acquire_inner(Some(context), controller, descriptor, service, rights, deadline, Some(wait))
 }
 
 fn request(
@@ -88,8 +101,12 @@ fn acquire_inner(
     service: &[u8],
     rights: u16,
     deadline: &Deadline,
+    wait: Option<&InterruptibleWait<'_>>,
 ) -> Result<Connection, Error> {
     loop {
+        if let Some(wait) = wait {
+            wait.check().map_err(ObservationError::Interrupted).map_err(Error::Observation)?;
+        }
         if let Some(shutdown) = context.and_then(|c| c.lifecycle().shutdown_requested()) {
             return Err(Error::Shutdown(shutdown));
         }
@@ -101,11 +118,18 @@ fn acquire_inner(
             Some(context) => Admission::with_lifecycle(deadline, context.lifecycle()),
             None => Admission::new(deadline),
         };
+        let admission = match wait {
+            Some(wait) => admission.interruptible(wait),
+            None => admission,
+        };
         let pending = admission
             .call_move(controller, grant::OP_ACQUIRE, len as u64, memory)
             .map_err(|(_, error)| Error::Admission(error))?;
-        let reply =
-            pending.observe_until(deadline).cancel_on_failure().map_err(Error::Observation)?;
+        let reply = match wait {
+            Some(wait) => wait.observe(pending, deadline),
+            None => pending.observe_until(deadline).cancel_on_failure(),
+        }
+        .map_err(Error::Observation)?;
         if reply.memory.is_some() {
             return Err(Error::InvalidRequest);
         }
@@ -114,7 +138,13 @@ fn acquire_inner(
             && !deadline.expired()
         {
             // There is no publication-readiness producer contract to subscribe to.
-            crate::sleep_ms(deadline.remaining_ms().min(100));
+            match wait {
+                Some(wait) => wait
+                    .pause(deadline, 100)
+                    .map_err(ObservationError::Interrupted)
+                    .map_err(Error::Observation)?,
+                None => crate::sleep_ms(deadline.remaining_ms().min(100)),
+            }
             continue;
         }
         if reply.result < 0 {

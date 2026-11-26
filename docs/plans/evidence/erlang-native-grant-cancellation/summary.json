@@ -1,0 +1,164 @@
+{
+  "kernel_sha256": "ed2b195d427ea0559692813d5e2459d708ecee82718b192e2a4ce538d6ffd9e2",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "boot_image_sha256": "c4f499e2a11546c49bc323f7d19bb7a7dd71aff70d0aa082dc00d2b56117e4d9",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "initial_disk_sha256": "a2237d968c00d30a710a6641645b95d50083bd12922695b539c989fc354135cb",
+  "node_shutdown": {
+    "admitted_generation": 1,
+    "target_node": "0x42e21edb",
+    "intent_sha256": "d25f65995986a1d3639ca288f1c3b02792e6163b5d765563d386abb09d480d7f",
+    "qmp_event": {
+      "timestamp": {
+        "seconds": 1795674945,
+        "microseconds": 393999
+      },
+      "event": "SHUTDOWN",
+      "data": {
+        "guest": true,
+        "reason": "guest-shutdown"
+      }
+    },
+    "qemu_exit_status": 0
+  },
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "base_commit": "28b7c960f5829deeb50a5ee0a7fcb5fa11f8e209",
+  "guest_cpus": 2,
+  "host_tests_passed": 78,
+  "signed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request",
+    "avm-native-service",
+    "avm-active-cancel",
+    "c-survivor",
+    "avm-shutdown-busy-1"
+  ],
+  "source_sha256": {
+    "crates/knytos-app/examples/atomvm_cancel_fixture.rs": "7845845d5988c11f48b11c307c43e207d98e33767298f14a4b5641ef90ad93cf",
+    "crates/knytos-app/src/lib.rs": "fa1d7cf384223cf3f22299b0c1f53267255474100c019ef70f9a0b7f923b3192",
+    "crates/knytos-app/src/grant_client.rs": "d0a4abb13ae2477b25a4f82768b06ce3ed6e624d91ed566819e9775af6622b59",
+    "crates/knytos-rt/src/call.rs": "cfae1cf62f38e714d7cb1a2b14e29d6b67849cb416f281c108ce6e02c9e66dd6",
+    "crates/knytos-cabi/src/service_worker.rs": "b439d558e2cb17411257cdb96ec5b11e928723aa9353f2a490c46cdf720b9e5f",
+    "crates/knytos-cabi/src/workers.rs": "20179d95d377f3035a937de2a206efb83f2dd0b85123dc0468903e2edae51fbf",
+    "ports/atomvm/build.py": "179005a34669d3bb36be32f134528a9f3ee7a448864377b5f24f13406f579673",
+    "ports/atomvm/service_worker.c": "be1df528de243d79274e86e34cd6e4c0aa9089f9af416782057e4f1a92e6f045",
+    "ports/atomvm/service_worker.h": "b955a78f232f3876d5b904cfd4b566abc0e8ed86f47899d14936add8a9b1398d",
+    "ports/atomvm/sys.c": "c0aeef28a7ba4a32e125006659fa466a5c4a92ca1f07f2140d64dca729adc810",
+    "ports/libc/include/knytos.h": "b6f8ef62d4f87131f08a5c0769572f68061a4034ab8001e2e20c6674c2dea4b3",
+    "ports/libc/run-tests.py": "dffaa0d220cf394cd8f4dd3a8829f69cfa77a5ef6250f4cd471f02e88a26436c"
+  },
+  "fixtures": [
+    {
+      "name": "avm-native-service",
+      "asid": 28,
+      "schedulers": 1,
+      "max_native_threads": 2,
+      "grants": [
+        "m4.missing=call",
+        "time=call",
+        "observe=call"
+      ],
+      "package_sha256": "b9e6c28ea02164c3fbc6f3b04bac79fa473083b6a2a6f503e71f94f5fad4155a",
+      "unsigned_elf_sha256": "6bb4008e9150886acc2f51cae3c8703f72a71087d35132a16245bc3c135319c3",
+      "signed_elf_sha256": "134a4e66f62b75eccbd648fdfea556df6e86f1f221422feeaf996be80a47e9b4",
+      "signed_descriptor_sha256": "4faaabacd6a732572aeb9a9bddd691c33938a9b4032a35fb43856c6f5afb3632",
+      "fixture_source_sha256": "409a312adc4076c1bda116a55a24f6149215cec3ba16764ec83c609af05d0ca0",
+      "lookup_to_replacement_reply_ms": {
+        "cancel": 58,
+        "exit": 35
+      }
+    },
+    {
+      "name": "avm-active-cancel",
+      "asid": 30,
+      "schedulers": 1,
+      "max_native_threads": 2,
+      "grants": [
+        "m4.hold=call"
+      ],
+      "package_sha256": "67bca22f048e9d4e3c96e4f96dd3997b143216e021be33bc1718f6154787baf5",
+      "unsigned_elf_sha256": "0ac51921019280c1330671246c0c7a1641f85099b8b4037d275cc215e2cad1f2",
+      "signed_elf_sha256": "d0d8e6065b36954be48ab9d06c894271e9ed7c7e243dc68bd3e04dc912017544",
+      "signed_descriptor_sha256": "39e5addb89893dcff4ca1f24347ffa68da19da23ecf49d5f626dc1c1803a6a63",
+      "fixture_source_sha256": "82c5ac45bd50d0dc1587c318653b337b94a7a40be88569d0bc0d7241bd625921",
+      "hold_service": {
+        "name": "m4-hold-service",
+        "asid": 29,
+        "grants": [
+          "m4.hold=publish"
+        ],
+        "signed_elf_sha256": "6727842ec80670ced4d583ffaac7588e1ba5635bfb161798269b006d1a6a4381",
+        "signed_descriptor_sha256": "88dae478d7301440af9a16e702ded662e2a5d6d3d5d78a3821a2e8a1495025b2"
+      },
+      "service_replacement": {
+        "retired_asid": 29,
+        "retired_root_generation": 1,
+        "successor_asid": 29,
+        "successor_sequence": 2,
+        "successor_descriptor_sha256": "df8e6ce9577e3e19ff8fe77531384fd1ff67c13fe815d33b5c963526bbf64170"
+      },
+      "payload_markers": [
+        "byte_payload_roundtrip",
+        "byte_payload_bounds"
+      ],
+      "close_watch_markers": [
+        "close_watch_scope",
+        "awaiting_replacement",
+        "replaced_handle_stale",
+        "replacement_reacquired",
+        "awaiting_close_watch",
+        "close_watch_event"
+      ],
+      "submit_to_replacement_reply_ms": 131,
+      "owner_exit_submit_to_replacement_reply_ms": {
+        "normal": 134,
+        "killed": 134
+      }
+    },
+    {
+      "name": "avm-shutdown-busy-1",
+      "asid": 32,
+      "schedulers": 1,
+      "max_native_threads": 2,
+      "grants": [
+        "m4.missing=call",
+        "time=call"
+      ],
+      "package_sha256": "140fb273f3f6262d5737bb516b75ec1b6e48b169095022d31f339d3f7e05427d",
+      "unsigned_elf_sha256": "c81098022a69f0f581258519c24977d034e9250b654fd342f650eacd851beadf",
+      "signed_elf_sha256": "81dde80c577631d1811dd65fa565478bdf46d2239682ecbf5bb50c9a170cfc67",
+      "signed_descriptor_sha256": "c6977b6d62802ddd10dac5a6ddbeef3f277534548f16fa4507aacb28f1a71c73",
+      "fixture_source_sha256": "1c4fbec6e8044eb849e54ddbc1df3c03c03813b3bc5ebf15f9a77dee32864079",
+      "shutdown_source": "nonblocking",
+      "acknowledged_root_generation": 1
+    }
+  ],
+  "atomvm_revision": "ff993a80963298b532c1e573f883951ecaac9fef",
+  "otp_revision": "fc7e10af595f3ffd2c25c84c253a4d042734cfed",
+  "picolibc_revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff",
+  "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+  "rustc": "rustc 1.102.0-nightly (5f4effd57 2026-11-13)\nbinary: rustc\ncommit-hash: 5f4effd579500175af844241eb179e756190f1e7\ncommit-date: 2026-11-13\nhost: aarch64-apple-darwin\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5"
+}

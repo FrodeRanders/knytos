@@ -1197,12 +1197,13 @@ invocation. The signed deployment descriptor authorizes service names.
 The VM receives an Erlang reference and asynchronous scalar result.
 Native grant acquisition, call ownership and cleanup run in the worker.
 The submitting process can cancel reply delivery and release an
-unclaimed request. After native call acceptance, the worker observes
-reply readiness and cancellation on its private CQ. A claimed request
+unclaimed request. The worker observes grant and service replies and
+cancellation on its private CQ. A claimed request
 keeps its worker and cleanup scope until settlement. Process exit
 detaches the exact submitter and triggers the same cancellation path
-before process-monitor delivery. Grant acquisition retains the original
-deadline. The worker owns one reusable service connection at a time.
+before process-monitor delivery. Cancellation interrupts grant discovery
+backoff while grant and service calls retain the original deadline.
+The worker owns one reusable service connection at a time.
 Asynchronous lookup returns an AtomVM resource scoped to the submitting
 process. Explicit close, garbage collection and process exit release the
 worker's connection after outstanding calls settle. The four-argument
@@ -1228,6 +1229,8 @@ The [endpoint-close qualification](../reports/milestones/2026-11-26-atomvm-close
 covers owner scope, unsubscribe, event-only wakeup and shutdown with an armed watch.
 The [signed replacement qualification](../reports/milestones/2026-11-26-atomvm-service-replacement.md)
 covers same-name reacquisition and stale handles and subscriptions across ASID reuse.
+The [grant cancellation qualification](../reports/milestones/2026-11-26-atomvm-grant-cancellation.md)
+covers interruption of grant discovery, bounded retry delays and early slot reuse.
 
 ### 11.2. Erlang-facing API
 
