@@ -1,0 +1,17 @@
+000000000002608c <publish32>:
+   2608c:      	mov	w8, #0x1                // =1
+   26090:      	adrp	x9, 0x34000 <console>
+   26094:      	add	x9, x9, #0x468
+   26098:      	dmb	ish
+   2609c:      	stlr	w8, [x9]
+   260a0:      	dmb	ish
+   260a4:      	ret
+
+00000000000260a8 <publish_word>:
+   260a8:      	mov	x8, #0x10000000000      // =1099511627776
+   260ac:      	adrp	x9, 0x34000 <console>
+   260b0:      	add	x9, x9, #0x470
+   260b4:      	dmb	ish
+   260b8:      	stlr	x8, [x9]
+   260bc:      	dmb	ish
+   260c0:      	ret

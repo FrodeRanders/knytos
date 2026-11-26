@@ -1,0 +1,2 @@
+           26128            26128       3c     4         libknytos_ethread.a(ethr_event.o):(.text.ethr_event_init)
+           26294            26294       78     4         libknytos_ethread.a(ethr_thread.o):(.text.publish_name)

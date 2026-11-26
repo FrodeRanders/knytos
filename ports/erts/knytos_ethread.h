@@ -3,7 +3,8 @@
 #define KNYTOS_ETHREAD_H
 
 /* Standalone prerequisites. This header does not replace OTP's ethread.h
- * or claim its initialization, atomics and thread-specific event contracts. */
+ * or claim its initialization, double-word atomic and thread-event contracts. */
+#include "ethr_atomics.h"
 #include "ethr_thread.h"
 #include "ethr_tsd.h"
 #include "ethr_event.h"

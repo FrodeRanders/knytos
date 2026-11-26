@@ -302,6 +302,7 @@ def main():
         60: ("c-erts-init-rejected", 1, "ERTS INIT PASS"),
         61: ("c-erts-init-exit", 2, "[erts] thread exit during child initialization"),
         62: ("c-erts-stacklimit", 5, "ERTS STACKLIMIT PASS"),
+        63: ("c-erts-atomics", 5, "ERTS ATOMICS PASS"),
     } if args.erts_mutex else {}
     worker_cases.update(libc_cases)
     worker_cases.update(mutex_cases)
@@ -392,9 +393,10 @@ def main():
                           59: ROOT / "ports/erts/tests/init.c",
                           60: ROOT / "ports/erts/tests/init.c",
                           61: ROOT / "ports/erts/tests/init.c",
-                          62: ROOT / "ports/erts/tests/stacklimit.c"}.get(number, ROOT / "ports/libc/tests" / source)
+                          62: ROOT / "ports/erts/tests/stacklimit.c",
+                          63: ROOT / "ports/erts/tests/atomics.c"}.get(number, ROOT / "ports/libc/tests" / source)
                 libraries = (["--library", erts_library, "--include", ROOT / "ports/erts"]
-                             if number in (57, 58, 59, 60, 61, 62) else [])
+                             if number in (57, 58, 59, 60, 61, 62, 63) else [])
                 command(["python3", ROOT / "ports/libc/build.py", source,
                          profile, "--define", f"CASE={number}",
                          "--picolibc-source", args.picolibc_source,
@@ -790,6 +792,11 @@ def main():
                                            "isolated participants and fresh slot generation",
                                            "handlers destructors explicit exit and detached drain"):
                                 assert "ERTS STACKLIMIT " + marker in text, name
+                        if number == 63:
+                            for marker in ("all word and 32-bit variants old/new values and wrapping",
+                                           "four participants contended arithmetic",
+                                           "cross-CPU publication before join"):
+                                assert "ERTS ATOMICS " + marker in text, name
                         record["cases"].append({"name": name, "case": number, "passed": True,
                                                 "observation": serial_text[before:]})
                         save()

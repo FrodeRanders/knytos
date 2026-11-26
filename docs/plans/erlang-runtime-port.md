@@ -1567,7 +1567,7 @@ packages the current adapters as separate objects behind
 cover mutex-backed `ethr_spin*` and read/write-backed low-level locks.
 They retain the underlying objects through registered waits and require
 parking-capable callers with unlock and shutdown progress. Actual OTP
-header selection, initialization, atomics and thread-specific event
+header selection, initialization, double-word atomics and thread-specific event
 integration remain open.
 The [signed archive qualification](../reports/milestones/2026-11-26-erts-lock-archive.md)
 links all six adapter objects through public headers and covers fallback
@@ -1604,6 +1604,16 @@ not qualify ERTS recursion guards or native stack geometry.
 The [signed metadata qualification](../reports/milestones/2026-11-26-erts-stacklimit.md)
 covers one-time installation, participant isolation, handlers and
 destructors, explicit exit, detached drain and fresh slot generations.
+The [atomic adapter](../../ports/erts/README.md#atomic-operations) implements
+the 32-bit and word families with all seven barrier variants and address
+accessors. The first implementation uses full fences throughout, with
+unsigned arithmetic preserving signed bit patterns across wrapping.
+Double-word atomics, actual header selection and upstream atomic
+initialization remain open. No memory-ordering contract is weakened.
+The [signed atomic qualification](../reports/milestones/2026-11-26-erts-atomics.md)
+covers the 184 entry points, wrapping and return-value semantics, shared
+counter updates and publication before join. Host UBSan and selected
+AArch64 disassembly supplement those finite exercises.
 The [signed exit-handler qualification](../reports/milestones/2026-11-26-erts-exit-handlers.md)
 covers reverse registration order before TSD, normal and explicit exit,
 detached drain, registration limits and recursive-handler abort.

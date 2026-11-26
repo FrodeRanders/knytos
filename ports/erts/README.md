@@ -27,8 +27,43 @@ python3 ports/erts/build.py --picolibc-source /path/to/picolibc \
 Consumers include `knytos_ethread.h` and link the archive through
 `ports/libc/build.py --include ports/erts --library /path/to/libknytos_ethread.a`.
 The aggregate header exposes the standalone prerequisites. OTP's actual
-`ethread.h` selection, initialization, atomics and thread-specific events
+`ethread.h` selection, initialization, double-word atomics and thread-specific events
 still need integration. The configure thread-library gate remains open.
+
+## Atomic operations
+
+`ethr_atomics.h` provides the pinned interface's 32-bit and word-sized
+atomic families for the AArch64 C11 profile. Each family includes init,
+set, read, exchange, compare/exchange, arithmetic and bitwise operations
+with the unspecified, dependency, read, write, acquire, release and full
+barrier variants. The 184 entry points include the two address accessors.
+These are inline functions compiled into their consumers. The archive
+supplies the accompanying thread and event adapters.
+
+Every operation variant currently uses sequentially consistent atomic
+access and full fences before and after it. This deliberately exceeds the
+weaker variants' minimum ordering requirements. Exclusive initialization
+uses C11 `atomic_init` between those fences. Compile-time checks require
+native lock-free integer and word operations. Double-word atomics and
+upstream atomic-library initialization remain open.
+
+Unsigned backing preserves modular arithmetic without signed overflow.
+Compare/exchange returns the observed old value on either success or
+failure. Bitwise read-and/read-or return the old value, while add-read,
+increment-read and decrement-read return the new value. Storage remains
+caller-owned and correctly aligned throughout all accesses. The borrowed
+address accessor is for low-level interoperability; ordinary accesses
+through it require exclusion from concurrent atomic users.
+
+The signed fixture checks every operation/barrier combination, contended
+arithmetic across four participants, and atomic publication before join.
+Its publication flag has no CQ readiness source. A test-only observation
+loop has a fixed load bound, one monotonic deadline and terminal failure;
+production waiting still needs a concrete notification contract. The same
+value matrix also runs under host undefined-behavior sanitization.
+The [atomic qualification](../../docs/reports/milestones/2026-11-26-erts-atomics.md)
+records the complete API inventory, signed results and concrete AArch64
+publication fences.
 
 ## Native event adapter
 

@@ -1,0 +1,6 @@
+[+    27.746491] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-atomics" generation=1 asid=46 principal=0xfd63fdfb0ccab9dc
+[+    27.751500] [EL0 LOG] lp=0 asid=46 ERTS ATOMICS all word and 32-bit variants old/new values and wrapping
+[+    27.751924] [EL0 LOG] lp=0 asid=46 ERTS ATOMICS four participants contended arithmetic
+[+    27.752228] [EL0 LOG] lp=0 asid=46 ERTS ATOMICS cross-CPU publication before join
+[+    27.752453] [EL0 LOG] lp=0 asid=46 ERTS ATOMICS PASS
+[+    27.753021] [EL0 LOG] lp=0 asid=46 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=309 sampled_stack=512
