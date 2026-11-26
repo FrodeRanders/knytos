@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 prerequisite probes are recorded.\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 target configuration reaches the ERTS thread-library gate.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -1508,9 +1508,15 @@ Modern ERTS requires multiple categories of native runtime threads.
 
 ### 12.4. Cross-compilation
 
-Extend the OTP build configuration to recognize the Knytos platform.
+The [staged configure probe](../../ports/erts/configure.py) adds
+`aarch64-unknown-knytos` canonicalization to a pinned OTP export and
+uses the worker-libc SDK for real compile and link checks. OTP accepts
+the target and links the C test executable. It stops at its mandatory
+thread-library check. The [configure results](../reports/milestones/2026-11-26-erts-target-configure.md)
+record the command, artifact identities and remaining feature checks.
 
-A future configuration might resemble:
+A full OTP build will need to pass the target configuration through
+the top-level wrapper. An illustrative invocation is:
 
 ```bash
 ./configure \
