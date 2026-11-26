@@ -1,0 +1,9 @@
+[+    22.499216] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-event" generation=1 asid=38 principal=0x8f5431a9c01df32d
+[+    22.500114] [EL0 LOG] lp=0 asid=38 ERTS EVENT nanosecond timeout rounds up
+[+    22.500704] [EL0 LOG] lp=0 asid=38 ERTS EVENT retained state and signed timeout bounds
+[+    22.603864] [EL0 LOG] lp=0 asid=38 ERTS EVENT cross-CPU wait and destruction
+[+    22.604286] [EL0 LOG] lp=0 asid=38 ERTS EVENT PASS
+[+    22.605336] [EL0 LOG] lp=0 asid=38 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=103 sampled_stack=576
+[+    23.090640] [EL0 LOG] lp=0 asid=39 [erts] event operation failed
+[+    23.090956] [EL0 LOG] lp=0 asid=39 [c-runtime] abort
+[+    23.091872] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-event-invalid" generation=1 asid=39 principal=0xf62a80a62a51a259

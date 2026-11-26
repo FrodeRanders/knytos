@@ -15,6 +15,25 @@ typedef void (*knytos_thread_entry)(void *);
 int32_t knytos_thread_start(uint32_t slot, uint32_t lp, knytos_thread_entry entry, void *argument);
 int32_t knytos_thread_join(uint32_t slot);
 bool knytos_thread_is_startup(void);
+/* Terminal worker exit runs TSD destructors before dropping participant
+ * identity. No live Rust owner or guard may require stack unwinding.
+ * Startup and recursive exit from TSD cleanup abort the domain. */
+_Noreturn void knytos_thread_exit(void);
+/* Up to 16 live keys. Keys are never reused. Values are borrowed pointers,
+ * cleared at callback return or key deletion.
+ * The caller retains pointees and synchronizes key deletion with users. */
+int32_t knytos_tsd_key_create(uint64_t *key);
+/* Optional callback for non-NULL values after worker callback return. Values
+ * clear before invocation. Up to four passes allow callbacks to rearm values.
+ * Further rearming aborts the domain. Retain callback code and pointees through
+ * exit cleanup. Key deletion suppresses callbacks not yet captured by cleanup.
+ * Startup TSD values require explicit cleanup before terminal C exit. */
+typedef void (*knytos_tsd_destructor)(void *);
+int32_t knytos_tsd_key_create_with_destructor(uint64_t *key, knytos_tsd_destructor destructor);
+int32_t knytos_tsd_key_delete(uint64_t key);
+int32_t knytos_tsd_set(uint64_t key, void *value);
+/* NULL also denotes a stale key or a caller outside the worker roster. */
+void *knytos_tsd_get(uint64_t key);
 int32_t knytos_thread_wait(uint32_t timeout_ms);
 /* Arrange an explicit terminal path before using an event-only private wait. */
 int32_t knytos_thread_wait_event(void);
@@ -27,11 +46,24 @@ int32_t knytos_worker_event_wait(int64_t timeout_ms);
 int32_t knytos_shutdown_via_reactor(void);
 
 struct knytos_mutex;
+/* Manual-reset event, initially reset, with one waiter. Set persists until
+ * reset. Keep it live through waits. Indefinite waits need a terminal path.
+ * Destruction requires exclusive lifetime access and rejects a live waiter. */
+struct knytos_event;
+struct knytos_event *knytos_event_create(void);
+int32_t knytos_event_destroy(struct knytos_event *event);
+int32_t knytos_event_set(const struct knytos_event *event);
+int32_t knytos_event_reset(const struct knytos_event *event);
+/* -1 waits indefinitely, nonnegative milliseconds use one total deadline. */
+int32_t knytos_event_wait_on(const struct knytos_event *event, int64_t timeout_ms);
 struct knytos_condition;
 struct knytos_mutex *knytos_mutex_create(void);
 int32_t knytos_mutex_destroy(struct knytos_mutex *mutex);
 int32_t knytos_mutex_try_lock(const struct knytos_mutex *mutex);
 int32_t knytos_mutex_lock(const struct knytos_mutex *mutex, uint32_t timeout_ms);
+/* Event-only acquisition requires a retained mutex, an unlock producer and
+ * an explicit terminal path. Wait rejection and shutdown remain distinct. */
+int32_t knytos_mutex_lock_event(const struct knytos_mutex *mutex);
 int32_t knytos_mutex_unlock(const struct knytos_mutex *mutex);
 
 struct knytos_condition *knytos_condition_create(void);
@@ -44,6 +76,10 @@ int32_t knytos_condition_wait(const struct knytos_condition *condition,
  * its own timeout after selection. As above, only OK guarantees ownership. */
 int32_t knytos_condition_wait_event(const struct knytos_condition *condition,
                                    const struct knytos_mutex *mutex, uint32_t reacquire_ms);
+/* Selection and reacquisition both wait for events without deadlines. Retain
+ * both objects and provide selection, unlock and shutdown progress. */
+int32_t knytos_condition_wait_event_unbounded(const struct knytos_condition *condition,
+                                             const struct knytos_mutex *mutex);
 /* all == 0 selects one registered waiter. Nonzero selects all. */
 int32_t knytos_condition_signal(const struct knytos_condition *condition, uint32_t all);
 

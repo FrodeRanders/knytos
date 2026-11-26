@@ -1,0 +1,446 @@
+{
+  "outcome": "passed",
+  "kernel_sha256": "7378da726ce7390034bedefbe1cecb87b35eb6a6fb433cce5640e4b0f014d7c6",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "boot_image_sha256": "33eb3ce0943f22a004c39cbb390ef8efded8135df30710f2dc922843cebfddd6",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "guest_cpus": 2,
+  "base_commit": "af24f168f2962669a11d238fb5ba80c070223632",
+  "fixtures": [
+    {
+      "name": "c-hello",
+      "unsigned_elf_sha256": "159d218f5775ff3c1bd601b6fd326e43df953266a41ea8beb2a400d67c993e2e",
+      "signed_elf_sha256": "a9a51d8f364070a52de2aedb914ccd4f575045164fee2c37d9d3aedc7fb3987b",
+      "signed_descriptor_sha256": "6421a9230f0b430425222c24a1552c50b1a5f1db74f67fba30a4f4c0af7221a2",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=0"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-memory",
+      "unsigned_elf_sha256": "349d4d8496bf766c6ab6902ea4588b60221dd739e7fe4dabba576b68635d1f66",
+      "signed_elf_sha256": "4549fc4056bc64457fdb63bc7fa09ca4d4bcfbecca4a8f9e76627c9e2d404f24",
+      "signed_descriptor_sha256": "79a7d1ee87561e376d98efa3eb327236da00235b1624aca72f94c3637929b242",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=1"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-format",
+      "unsigned_elf_sha256": "61af04fe8bb29d5b4eea6e0a461f4986a642f4fd4d206bc76d13bb94c7337b37",
+      "signed_elf_sha256": "42207facd6bf5c9b18f8fed04e7175256eeea4a6fe06e6a430c2952aa69ddd9c",
+      "signed_descriptor_sha256": "122ff77e1fb0873b57320d977988aeeace303753622e489f8f036038d26703b5",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=2"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-clock",
+      "unsigned_elf_sha256": "c814feaa30f313df6cdf7245d174088f1c2075a6fa996ac47dad16666c658bb8",
+      "signed_elf_sha256": "ee81185830a6100a1d7ee93780ceabea52fd92a2b5011fd4c2ff2ad48439a4dc",
+      "signed_descriptor_sha256": "9902edb9670051ac671d4e08efed0cf18f301552b8aca6755fcdc7409abe5bb5",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=3"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-startup",
+      "unsigned_elf_sha256": "2d8ae5876cf848528756b6e5af980ec67a1209830bbe5e1ee38f32f621c8f6e8",
+      "signed_elf_sha256": "c1673059a29985c8850a7fbe3f84b2faa6fc8d4f6a0de562f65a32960a6ffd0c",
+      "signed_descriptor_sha256": "dfc5d2c0f0460b427499ad580460361cedc151b6eda01e540b16679f7998cb09",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=4"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-exit",
+      "unsigned_elf_sha256": "7f95ca16f1bda5e7ac07e87919dae0994d391174159c16817da1bf5ff97b6d1c",
+      "signed_elf_sha256": "d5f9ea2cbe804b86bb9f7df61c956afbfe01a8c8352ab7682683c34d4f2ba73c",
+      "signed_descriptor_sha256": "f4d59c216515ae6feaff8609dd80aae5a44f27c51e1c1be328e2211d582a4c38",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=5"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-error",
+      "unsigned_elf_sha256": "149b20e6adb811ae6b0a20cb727f36be5f5460980affe011cd7d81b40849ce6c",
+      "signed_elf_sha256": "36f06d19e381fc2033bfc14b25831b14588499352648e5dc09fb870eb89c3d8e",
+      "signed_descriptor_sha256": "f96f45c23fa12985497b935d636cefb4f868ee28c9b3614fb8775e9b2411fb73",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=6"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-abort",
+      "unsigned_elf_sha256": "77fbbeb389b1199fb41758cb76abb6c85874b13512eafcd627c43e3c79158735",
+      "signed_elf_sha256": "b7e4f35afb90cb5252345db5093392a5689ae0a3ec497f625cfc983e909ba4fd",
+      "signed_descriptor_sha256": "db01efd3a9a55d4137bcfec7f0c4678fab12937c874e18e29a3225cbc8f81585",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=7"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-empty",
+      "unsigned_elf_sha256": "212dafe3e263c0448aa5f545a8defdfe0771eaff071189ee5d618a023df972f5",
+      "signed_elf_sha256": "0c66ee04015c7c292809b5520f0048c8f48f31202d07a7010a82ca7347a0b9d6",
+      "signed_descriptor_sha256": "13806df6f63cfb101dc967a874ed9b937ba9b3748f0965b016d242d4bebc5a12",
+      "source_sha256": "be66a796c42fdbf6b4cb7fab59d09471849354d10f91ae2749e7ae91752a510b",
+      "defines": [
+        "CASE=8"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-shutdown-without-request",
+      "unsigned_elf_sha256": "706584295303cb38cadf55c9f19676dbc9461ccd6ff5fe36676296d801d84799",
+      "signed_elf_sha256": "1ee255fffaf0d87f6bafb493a40f1df689685e6bf40a1bc49aeee67624b45258",
+      "signed_descriptor_sha256": "5723a616b48aeaac4765e50e2ea402fdf1adbb4e2adf239bf20b8813eca0cea3",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=9"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-workers",
+      "unsigned_elf_sha256": "70dbd5f5c2d80faf8de436e05c2028224230fb6fbdd465359926c139d01777c2",
+      "signed_elf_sha256": "110ced586078614fd4692386b9835ea234c57cb606787339cd0df6410f373e4a",
+      "signed_descriptor_sha256": "b30ef2f88650c00fd6672f01e73317e6b08e978420656ea02d8ae3adca541d1a",
+      "source_sha256": "fc399047605d9ab4d85f664a860837a7c7b50704a2786accca099347c2c0b6d1",
+      "defines": [
+        "CASE=14"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-unjoined",
+      "unsigned_elf_sha256": "b5f38743de22f18cbae0be59fd85d0d3d432d5cfa0dc902d6e805dd02d8389ba",
+      "signed_elf_sha256": "5497df970f56a45ffe8596b106d64adbf7f17fcd5bbbb2cd7bc2455cd01a9c56",
+      "signed_descriptor_sha256": "3bcf440b7606d562bcc71f7b7d15c88d72c1acac8542a5793d480671591b4e12",
+      "source_sha256": "fc399047605d9ab4d85f664a860837a7c7b50704a2786accca099347c2c0b6d1",
+      "defines": [
+        "CASE=15"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-worker-reuse",
+      "unsigned_elf_sha256": "c300a8a5998a308b6a784a8d98c9dabb04821fcaebfce2beef3d38b5ecd10a64",
+      "signed_elf_sha256": "9e789243e105c04abfaef5ea748a1c21cf5fbbce4a85ed022314fb58ed39c466",
+      "signed_descriptor_sha256": "84a16be72ad4b2ef592b7457d190c31ea9706c79ffecaf280b0add68be7c16ab",
+      "source_sha256": "fc399047605d9ab4d85f664a860837a7c7b50704a2786accca099347c2c0b6d1",
+      "defines": [
+        "CASE=16"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-sync",
+      "unsigned_elf_sha256": "bb76ecd6516aa4e8d0f91fad6546fde788e07759eed49e0680170887c79b2789",
+      "signed_elf_sha256": "13b5252dfefe839feb7fa71f0370596cea0ed508c6fc035769bf684514fa6a5a",
+      "signed_descriptor_sha256": "2298c1d828c45ba90be028a33eab89f5e8cf3cd693c6ee12504475470dcfd768",
+      "source_sha256": "0c7cbb5846092fb4a75eecddb610981e8b3a49800e96c8f7d60494bcd9aa558e",
+      "defines": [
+        "CASE=17"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-rwlock",
+      "unsigned_elf_sha256": "99d51570ca93372db17ffcca8108a077007b072f99463e63b1314abfff50d087",
+      "signed_elf_sha256": "2ccb55f8a51c6deaedc2dafc9f24a94ef6c05264391aae99bec051a0cf6229e2",
+      "signed_descriptor_sha256": "764b2e8ff59ab0ce2bb7560b0c6551548d9298829316acf0d06146eaa941d079",
+      "source_sha256": "8875e2a1bb1b1926dca7c65c63eaad7db467b022749476f822f790baffcfaf02",
+      "defines": [
+        "CASE=18"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-events",
+      "unsigned_elf_sha256": "b38c9ba754aec2d6a83ac1359f5a281a3389b1bf741d3cff9c47163c87eb0b72",
+      "signed_elf_sha256": "3e9b617db765dfa2e8e091a83ed532aafc68d55f5d76068d89f2dd844b1db945",
+      "signed_descriptor_sha256": "ad5b50ffa3b0e847bf5b44374a4e6e6ca2fdbfd597eb4cadd648e8756bbc84a5",
+      "source_sha256": "4ecaa14bf4d240e99a0c9e1539a7a4f5a268ca5f161aea5d2922ddf67637fb4b",
+      "defines": [
+        "CASE=37"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-worker-libc",
+      "unsigned_elf_sha256": "182b2d0920f61b986d8af1ae9b65a73018f47e7cfb23f2234f207858c76cb2d8",
+      "signed_elf_sha256": "8e556d5b5bc1b891b77126250a2051642699e5db9e2971bf3022f8f409267335",
+      "signed_descriptor_sha256": "c4d964c81d311aed303707947de6b8471ce992711993e167ea7e4cb9ac7b69a7",
+      "source_sha256": "7c7ec856abe604d49b8c71998f1fc6162ffeb59fa964b926c9bad6c5d88f1cc1",
+      "defines": [
+        "CASE=19"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-worker-libc-close",
+      "unsigned_elf_sha256": "0369f74ff4e83b9319528f91a919be40864a4d85ae6430779b158f8482bb1192",
+      "signed_elf_sha256": "3a9fd4f10a3e52d6fc45b1d8002fa92859d14d39ce9d87adbbb91de431cf4957",
+      "signed_descriptor_sha256": "f002bec78a807bff64cffae2239a57458974b6b2056d2e659ec53a1dcdc0805b",
+      "source_sha256": "7c7ec856abe604d49b8c71998f1fc6162ffeb59fa964b926c9bad6c5d88f1cc1",
+      "defines": [
+        "CASE=20"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-tsd-cleanup",
+      "unsigned_elf_sha256": "a583da2d1d22d156535a090f6e648aab177714711b8a2971420886fe209f8ee6",
+      "signed_elf_sha256": "a289cdce7257e3788caf6cf69ba4544c1c839c9aa035972ec1c457294977e32f",
+      "signed_descriptor_sha256": "0209f0072dbbcfdf76b3da6f2ac6c299d099e5900114631f58508b4fdea2d954",
+      "source_sha256": "6c65723aab182235068b85b51d2c0daf07dede7fc14367d76709c0bec49e9231",
+      "defines": [
+        "CASE=38"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-tsd-cleanup-bound",
+      "unsigned_elf_sha256": "90679e87b0fe20746c568aa9e83596e4878125ca188a6f78ecc19ef42368c4bf",
+      "signed_elf_sha256": "de4648440a1635f884c923c02d4c1177f7eaa2eb91d49f058079a10c9acd95fc",
+      "signed_descriptor_sha256": "45c617ff831cdb74d48c16604bd6030dfdf0c6ca4567b2836838124a47daa28d",
+      "source_sha256": "6c65723aab182235068b85b51d2c0daf07dede7fc14367d76709c0bec49e9231",
+      "defines": [
+        "CASE=39"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-event",
+      "unsigned_elf_sha256": "da6be2c1f8dd4b309d1d7e3861a6e8253f5e3b149da5ed9744a31ac63ac722c8",
+      "signed_elf_sha256": "faa24fff6d7fc52ff369839ad9c930fff92f18edb3a90e30ad06977c53860ebb",
+      "signed_descriptor_sha256": "c42fa196240bb780c13236fa310e389aa3a5b8230a7d09f49037cd4290580643",
+      "source_sha256": "0085fc03e515b4793c38e54b8e6b7955680a608b35e2bfe2d14f64b3e6dfba1a",
+      "defines": [
+        "CASE=40"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-event-invalid",
+      "unsigned_elf_sha256": "8762136d98d872ccf56c34f33ba3309a54ffd6b0b8180b56584aeb806b8f7f21",
+      "signed_elf_sha256": "b593e995a0553937ec63b5570e0dd74a6a5552890d2b753b08e06e8c6d31899f",
+      "signed_descriptor_sha256": "9992ff5629fbe84f9bf82d61646bcf301187a99e7887bca05716e0f3d131f80d",
+      "source_sha256": "0085fc03e515b4793c38e54b8e6b7955680a608b35e2bfe2d14f64b3e6dfba1a",
+      "defines": [
+        "CASE=41"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-tsd",
+      "unsigned_elf_sha256": "38122f9b332ebf1ad1ce2a1c0ce886dabf87af7a8d1a376e228dc47ae3f4389c",
+      "signed_elf_sha256": "4a00176dc3b84e417455bcd48a00e1209e80be4da982c7569e0385a1121470a9",
+      "signed_descriptor_sha256": "ef41cd4883e16cee1376a802a8cb016bc7eeb63ce2d0a8de3fb379978e5a7d1d",
+      "source_sha256": "5cc15c4b3bac205fc2d5bee2538390f1052039ce826b75ce15caed85a514c871",
+      "defines": [
+        "CASE=42"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-thread",
+      "unsigned_elf_sha256": "4f9ea94e2d858b92c0e892740f27b379ba4945c7e5dc84b7161fb7d1dfacaf68",
+      "signed_elf_sha256": "f0864c139f9d08a86d7e09a306f9f83a397f0cda5e56298b3f1795be7c3a89b1",
+      "signed_descriptor_sha256": "1f91c5a645d36df6285326870cf7b7d47392fae925625d4b7fa05d8dc8f7ab1e",
+      "source_sha256": "01296f625a6a5894e136464bfdc8f6201cc8cd1dbe6007d899afab0effffd9db",
+      "defines": [
+        "CASE=43"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-detached",
+      "unsigned_elf_sha256": "322e691f53ade5c33559f1a957f85a70e36086d3138832e91d301e538fcf8fea",
+      "signed_elf_sha256": "4fa843dcf6fac1994b00021a5dfd44023fac348fa36a86aeb126ff33c83520df",
+      "signed_descriptor_sha256": "6be1858d7025f00d12ff2cdd7bfd1f8c15d57aa7390b46c76fe147b9b55ce794",
+      "source_sha256": "4af814da50ba26739abf180af57908bfc2cb48ff0684e511b468cb3c1ca5a4fe",
+      "defines": [
+        "CASE=44"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-names",
+      "unsigned_elf_sha256": "931c4b5e1c6446470d3d4247dfc12d362d629c95e36cb6037d1fcea20c5513ef",
+      "signed_elf_sha256": "31ac48d0361e5b40ba73c89851c44cbf8a3d5f89eab5625aa31bedf799ad0a1e",
+      "signed_descriptor_sha256": "c23ac30121f201b720ca24898b5054dc48e6a846656bf27627db7c4376049ceb",
+      "source_sha256": "293a4591182ecabadfa73e45605ffb2c37c31feea0f4e347eac7c72cd8b9e21e",
+      "defines": [
+        "CASE=45"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-exit",
+      "unsigned_elf_sha256": "bef74f77b06406c9083ce1f3f67064de683cf012b68a0161f1f0d0afe23be77b",
+      "signed_elf_sha256": "610bc6da802c7d74b2040374b22a15da4b89701aadff8dabb545df2e01a5b74f",
+      "signed_descriptor_sha256": "3ed7ba3eb6cec06fda1a760f8b022fff0763c3daac05554db5293d4246bc2afd",
+      "source_sha256": "99fbcca2b5fd6c682d6ff84071a23f28275c2a920aecc590718a8e33c4610bbf",
+      "defines": [
+        "CASE=46"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-exit-recursive",
+      "unsigned_elf_sha256": "10c3973efe2369977865f961621ae9cef48b37c9e47307149e59ec72c1e822ad",
+      "signed_elf_sha256": "05fadb3fc7676156736bac7fe25dd145c69cfa3d31b5965b25d6884168f97323",
+      "signed_descriptor_sha256": "95f36045d8d82a0d01d946b4b7e137931c8b4fdfec7489a5f18c8a5dd499616b",
+      "source_sha256": "99fbcca2b5fd6c682d6ff84071a23f28275c2a920aecc590718a8e33c4610bbf",
+      "defines": [
+        "CASE=47"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-exit-handlers",
+      "unsigned_elf_sha256": "e8bbbb7990943ec87aca6a3a86cb75026f0655b187445873293abc822364c2e8",
+      "signed_elf_sha256": "3a11580903bfcafdd64ce68055c0df8779fbd2c455b3cfa4f6f2a65630973c36",
+      "signed_descriptor_sha256": "9e3f663cdae1b2338225ec7753a9c400534a8dc019a6b5f6fa5947b90658bf58",
+      "source_sha256": "16a926c16cd373ced61d323a6bd856c2c53f6ec629050bc097cf32ab74cd7e59",
+      "defines": [
+        "CASE=48"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-handler-recursive",
+      "unsigned_elf_sha256": "10e7043e6022d1f20d9fb52892c94702b6349781a6e9c14a26c3ea2b7ef034db",
+      "signed_elf_sha256": "5c99a4726e6c60da194a7cd7c68ac17d440c785b0bce64d9ef66f14089c91ae5",
+      "signed_descriptor_sha256": "9e4519eab35f46b78f5ada275858553ffb100cd3d6f88c558110531ac3bb6971",
+      "source_sha256": "16a926c16cd373ced61d323a6bd856c2c53f6ec629050bc097cf32ab74cd7e59",
+      "defines": [
+        "CASE=49"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-handler-limit",
+      "unsigned_elf_sha256": "41eae18f8fd8b0d02ab96720edbb257b03fda84a9a0fd06d044899a4bebc4bb6",
+      "signed_elf_sha256": "dd25310f48e30e3a54941e22c42cdb9c8716850611c4d02dd0f43fe468760c8e",
+      "signed_descriptor_sha256": "7532f8e1dce849020ef207ddb9f3cac5806bfaf41234de76be147362e26d8b20",
+      "source_sha256": "16a926c16cd373ced61d323a6bd856c2c53f6ec629050bc097cf32ab74cd7e59",
+      "defines": [
+        "CASE=50"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-survivor",
+      "unsigned_elf_sha256": "159d218f5775ff3c1bd601b6fd326e43df953266a41ea8beb2a400d67c993e2e",
+      "signed_elf_sha256": "8baeead1f146f11a086268e35e6145637cba978a14733fb58b987f2c38b0d610",
+      "signed_descriptor_sha256": "5e28b53cf3f2f50ba82d8f98f20e4f9e6d12a0f852ebfc2a126d4c5f547eea39",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=0"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    }
+  ],
+  "inputs_sha256": {
+    "Cargo.lock": "3d1d83994a48de28029d2bebc77bbcca67dc7043cc21952a7f8fa0bcdbc8e16a",
+    "Cargo.toml": "34cfdef777b84e4cbad80468d1dd089bb2174e71b7d3c7ee2d39cba6c50a0880",
+    "crates/knytos-cabi/Cargo.toml": "20a149f48bf0dc1ff8c1c53156c4619a000dd2da044f9337118477147bba439b",
+    "crates/knytos-cabi/src/allocation.rs": "3d1d9d3685ddc890609abb4395227fb6c8ef9255ee2fdcb1f1cb5c9a18ea035a",
+    "crates/knytos-cabi/src/lib.rs": "3ec8ec8f59bd6cb0cb60788b6d5c255d29945a81538e4af803cfff8fc69e23b9",
+    "crates/knytos-cabi/src/native.rs": "e157972b408dd86390a0d9f9f72b1b5dcb0e82ee6fb6ae6334e9d8c7d9dfd22a",
+    "crates/knytos-cabi/src/service_worker.rs": "b439d558e2cb17411257cdb96ec5b11e928723aa9353f2a490c46cdf720b9e5f",
+    "crates/knytos-cabi/src/sync/event.rs": "d7c3993de3e1ebc4b61937e0f8671947fb4ee378758077e8af090d79792c54fd",
+    "crates/knytos-cabi/src/sync/libc.rs": "e3f9cbdd36f7d92f3b1bc441f65cb7526655b3f9d5b92826e3ad45f645420bba",
+    "crates/knytos-cabi/src/sync/rwlock.rs": "3a58043c9847980bf2af49ce1359e4519d51a9078a96e33dc652d02e6d62d3c3",
+    "crates/knytos-cabi/src/sync.rs": "0eea63809b134974f1adcfaff36091dad8f2d665bb032c113f6762fec907481d",
+    "crates/knytos-cabi/src/tsd.rs": "e18c1e46595ebeb7cd53b3276b87c01b120472056847cc72593ddd59d0ef6169",
+    "crates/knytos-cabi/src/workers.rs": "ce13ffad9983383aef7b29ce0d9218256d25ad80701f8fb2ed88c47865d44f71",
+    "crates/knytos-launch/src/deployment.rs": "23e17427f23c5e18015b8f42dad6f6652786bb06a5b8db042b1d8378f3e66771",
+    "crates/knytos-launch/src/execution_target.rs": "83def014b58185cebd0fb8d40ac4f999126a2494a634e1db9e78fae5ef69b784",
+    "crates/knytos-launch/src/ingress.rs": "e929ad9906786d2cee4b0cb0efb847b5ebf99c4dcb22f1985b894e430b66da25",
+    "crates/knytos-launch/src/ingress_policy.rs": "b8a215ab3babd9998255812c792860910b9bbed22dfb0209b3ab2d56c5187fdd",
+    "crates/knytos-launch/src/lib.rs": "ad99f908f72e769f72916d5aebf8556d0ca4a24cce36d46e0e318d93429c0725",
+    "crates/knytos-launch/src/management/limits.rs": "b6c804bff30e6f5a853c2b443240d27f9e50b572d3058c4758cb42c0e1e60238",
+    "crates/knytos-launch/src/management/sealed.rs": "33aa276b109c2bf07f16b920890d379a89aa25b7c1fd171f803ed9ea9f7d7c72",
+    "crates/knytos-launch/src/management.rs": "21b154941435a8666adacda811bc326500a9a155996cdefea8539f33be096433",
+    "crates/knytos-launch/src/operations.rs": "3f92ca92b8b19b4c1dc802e442f0a25e4bf4c4107f62469fba6a4f1026f2722c",
+    "crates/knytos-launch/src/operations_bundle.rs": "b9ca112cbcca534e3056ace201c225629f09f25d5fdacae590f039040bdff139",
+    "crates/knytos-launch/src/operations_pickup.rs": "707cc735894520eed1ee7a2eea432f98bab6607a110f261bb9884e0bd5b8e144",
+    "crates/knytos-launch/src/otlp.rs": "00d1947e34309b2546aaa62b65ad9e4d00bfbe881562e19971abbedf2de098dc",
+    "crates/knytos-launch/src/placement.rs": "ef0e341ece74b9d9694cf50ba7ebe97afa41e30483254a4b50b70b2300693efd",
+    "crates/knytos-launch/src/release.rs": "56ec61085e336e20f018d45859823a05b7b63568a035f2e1346760b11a8d95d8",
+    "crates/knytos-launch/src/release_admission.rs": "55f35232f630f43bf123f7f921f7aa37117bea869d3740725680b73acda71379",
+    "crates/knytos-launch/src/sha256.rs": "2e58fd347dd77e93576325bd06f32300fcd752cf927266b80628325607807c30",
+    "crates/knytos-launch/src/shutdown.rs": "ccdbbb2a1216fc52b3d87a38dca0493d28965bc7b30d7f59ac0db2e704925160",
+    "crates/knytos-launch/src/signature_note.rs": "d3808d6a41027d9d6c8dae795c90d5275188352396198f1faec2f43d2f3f978a",
+    "crates/knytos-launch/src/telemetry.rs": "8836a6815b40b87b53c2bd7b18f005815a60b69fd0a4ef3f9baaef29dbdbbc6e",
+    "crates/knytos-launch/src/trust/production.rs": "cc2c1366b61fbe4bfae0227edf58c2002d36b6422c0cac63199ff2e439dbcee4",
+    "crates/knytos-launch/src/trust/signed_policy.rs": "16ee22d8e8feb9ea4016b748d464ced817d02256d3ea46adb3e471e17207b505",
+    "crates/knytos-launch/src/trust.rs": "5a774bc15ab299f74cf3883dde63d8fc11144865c688fc4f601c3e4a595542b8",
+    "crates/knytos-launch/src/user_address.rs": "01694cc89dbb2f6b1bdcc0caafb8dd0b744de89b5dffb7f699ff4f007d7969d4",
+    "crates/knytos-lifecycle/src/iommu.rs": "ecfc027c086ffbe8cfb538ffe30d23740904b087603d80516034f022a85b37d6",
+    "crates/knytos-lifecycle/src/irq.rs": "99ccca6de685131bdeb1dc90cb65695992999e654581335d89187c29b29f0fde",
+    "crates/knytos-lifecycle/src/lib.rs": "b096889d01e7b3aa1719c3f73a48741838bb862ac1e98557515dadd745221935",
+    "crates/knytos-lifecycle/src/resources.rs": "9ec29fce823650806ede3dc1a9539543dd5ccc784bbadee05d8478844a247270",
+    "crates/knytos-lifecycle/src/shootdown.rs": "fa30c25adfd41531dd3b90b7ecc107a6aea4dceb4abc778928f6615ec782ac1f",
+    "crates/knytos-rt/src/call.rs": "cfae1cf62f38e714d7cb1a2b14e29d6b67849cb416f281c108ce6e02c9e66dd6",
+    "crates/knytos-rt/src/config.rs": "298bcd8dc756f44e2ecf97d8cf4989dd3fa32b6dacb729ad3ce124a9319b8ff7",
+    "crates/knytos-rt/src/cq.rs": "fa949ca29d05cd120e602d61e85a0c2f322a1913fc1ebfb699a22fea4cb2b203",
+    "crates/knytos-rt/src/deadline.rs": "8ccb6ee937b69bff58ee4abdfbdcc205b73c2c6130c94463333b9ead78b322df",
+    "crates/knytos-rt/src/entropy.rs": "8fcfa4503fe72411f7ed2f2415c69a465c2889d7c424acb90169c48bff518872",
+    "crates/knytos-rt/src/lib.rs": "b3f88fbab4b7d2b33b06f69b1634394c1eb95e940e84fa2033fb3682946d0617",
+    "crates/knytos-rt/src/log.rs": "6023af537e9675d0aefce289a2cbb6337da04acc9d53d65ca7bae9653c360aa7",
+    "crates/knytos-rt/src/owned/completion.rs": "42007c22cb363fe7cec39457e76ccf32fa385dc6d8531e6aae2fff13f6567fcb",
+    "crates/knytos-rt/src/owned/device.rs": "963fea5b752cc4e581b608c8c16fcbcfa6620a7382ddbf9dba4cfded5aecd5d3",
+    "crates/knytos-rt/src/owned/ipc.rs": "355d1672b4c27c9791245fd8df8ad2011a8145437811ca04abf124aa5840f693",
+    "crates/knytos-rt/src/owned/memory.rs": "6036a7dc2930f401e4a083fd96f15acb43a1b2f92735be8f5dc1ee8f08c1e3aa",
+    "crates/knytos-rt/src/owned/payload.rs": "7b6925dd3376cfa445849a0af28b763f86f76a1ff91b21603c7f0394e7ba8510",
+    "crates/knytos-rt/src/owned.rs": "bfc76b1d0f9371aebedf1462a4f628f625dad1fb80815cdbece380641682f094",
+    "crates/knytos-services/aarch64-unknown-none.json": "415cfb1a689387d0454d9f91a91b0e1a4c4676fe33c17d1a83c0eb4176bf2ea9",
+    "crates/knytos-services/link.x": "f5a321cceea0c9881652583bb01e190115eddaf1ed3ee5d7cb1d7ce0adf5e2a3",
+    "crates/knytos-syscall/src/cq_ring_tests.rs": "b7d03a0597a776a31d1bde5dd46e3a778ec13f85cba8fdde82da554c1779d48c",
+    "crates/knytos-syscall/src/lib.rs": "bf3bb8739f906f78c6530a392c1906c690cc5cb5fdc52340fcb9242a7bf2800f",
+    "crates/knytos-syscall/src/metadata_pools/tests.rs": "31b2869464675a8075e2e790437bb249212ff09c9942f56fd15d8b6b3924f464",
+    "crates/knytos-syscall/src/metadata_pools.rs": "4d226d4e741ef991e73a50111d797a1094c77f504be8e2a0f04ae7cacc087bed",
+    "ports/libc/aarch64-clang.cmake": "d710f462eef199aa1d819ecc36c1c2eb921aa460e8092649f15aee0a57c09625",
+    "ports/libc/bridge.c": "93ebdc100d4843274dded2fc030a2bdf7d93a74c66237dff362a62b9094e2c6a",
+    "ports/libc/build.py": "307c984a7cd71dc4984bec02d80ebb4a2c4a6589b248e55bfd7f87c43e08bd98",
+    "ports/libc/include/knytos.h": "801e858329997ac1b329ea7147172d93fd3ec4542870f0171590855fad2fa2f0"
+  },
+  "runner_sha256": "d38a2e076399f67f9bee1e121894cd87c87ba218d3855ab4d6bf79f3c11792d6"
+}

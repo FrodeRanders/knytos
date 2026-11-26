@@ -12,6 +12,8 @@ mod service_worker;
 #[cfg(all(target_os = "none", feature = "native-workers"))]
 mod sync;
 #[cfg(all(target_os = "none", feature = "native-workers"))]
+mod tsd;
+#[cfg(all(target_os = "none", feature = "native-workers"))]
 mod workers;
 
 use core::ptr;

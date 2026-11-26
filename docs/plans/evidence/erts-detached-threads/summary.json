@@ -1,0 +1,73 @@
+{
+  "kernel_sha256": "110a74d9c1e3352038e6c56e765d904f7dc22f911e76ecc0786b5a159643e278",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "boot_image_sha256": "bcceb36e49e98c62daaee65d6dbfd604d9095bafe1b7652108579f66edf16e15",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "base_commit": "af24f168f2962669a11d238fb5ba80c070223632",
+  "guest_cpus": 2,
+  "asid": 42,
+  "signed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request",
+    "c-workers",
+    "c-unjoined",
+    "c-worker-reuse",
+    "c-sync",
+    "c-rwlock",
+    "c-events",
+    "c-worker-libc",
+    "c-worker-libc-close",
+    "c-tsd-cleanup",
+    "c-tsd-cleanup-bound",
+    "c-erts-event",
+    "c-erts-event-invalid",
+    "c-erts-tsd",
+    "c-erts-thread",
+    "c-erts-detached",
+    "c-survivor"
+  ],
+  "source_sha256": {
+    "ports/erts/ethr_thread.h": "bd4b09cb5b3c86d1952a36060e5fc98d7c87a4c328b4845a3251e987e19876cc",
+    "ports/erts/ethr_thread.c": "74f8a5ac43f63938b67c24c87206160aee189c10a6e8847292145711a873ee2c",
+    "ports/erts/ethr_event.h": "ad0ccd542b5843f940fdf05424f79c9bf082b1973939af7c7166dd61c5015c63",
+    "ports/erts/ethr_event.c": "5609d16bdd48a0b53877462f2bea755bd93d9cacbf8e9db2e31943d76b31dd48",
+    "ports/erts/tests/detached.c": "4af814da50ba26739abf180af57908bfc2cb48ff0684e511b468cb3c1ca5a4fe",
+    "ports/libc/run-tests.py": "5cc3e41ffe7dcc8a7fa417de0e978d14064836dc6c15a44ad86c5b3cbaa534a5",
+    "crates/knytos-cabi/src/tsd.rs": "e18c1e46595ebeb7cd53b3276b87c01b120472056847cc72593ddd59d0ef6169",
+    "crates/knytos-cabi/src/workers.rs": "fdd5e94baf7baafe18378aa99b216430723eefc0ca82e77bf81e739b98853f83",
+    "crates/knytos-cabi/src/sync/event.rs": "d7c3993de3e1ebc4b61937e0f8671947fb4ee378758077e8af090d79792c54fd",
+    "ports/libc/include/knytos.h": "b6fa72383590ffb90026a0a80af4854c832be9fa142f2482be21729c5e24316c"
+  },
+  "unsigned_elf_sha256": "47948c672ff6cc48867f10a524ae041c8cbebd3d117206e83a1dab1e37e7a942",
+  "signed_elf_sha256": "526544406e8a9475d3f871148bbb636493ab4d28da4d3fab5761a16bea5f3688",
+  "signed_descriptor_sha256": "06f0fb25964b5d9903c7a233e4c02985dcba42280402c71769ebbbba4b825923",
+  "otp_revision": "d199a49a01a2079afb6f2c5c9ae047cd4555e68d",
+  "upstream_sha256": {
+    "erts/include/internal/ethread.h": "57fe81370be50ec93a93a3b901ed9e1b5d9bc39f8d5e798ae449f985efa18de1",
+    "erts/lib_src/pthread/ethread.c": "cffbb2b86da168007e72f7fa2620d7a00ebdd3de1aabf62f1c65650b369450f2"
+  }
+}

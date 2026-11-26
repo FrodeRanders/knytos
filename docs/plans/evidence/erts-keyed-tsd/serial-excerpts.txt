@@ -1,0 +1,22 @@
+[+    19.470148] [EL0 LOG] lp=0 asid=16 [agent] launched "c-worker-libc" generation=1 asid=33 principal=0xc3ab20ffe1f7f400
+[+    19.471072] [EL0 LOG] lp=0 asid=33 WORKER LIBC held record
+[+    19.471592] [EL0 LOG] lp=1 asid=33 WORKER LIBC worker acquired stream
+[+    19.472730] [EL0 LOG] lp=0 asid=33 WORKER LIBC startup row=0 text=clear
+[+    19.473158] [EL0 LOG] lp=1 asid=33 WORKER LIBC worker row=0 text=clear
+[+    19.473614] [EL0 LOG] lp=0 asid=33 WORKER LIBC startup row=1 text=clear
+[+    19.474090] [EL0 LOG] lp=0 asid=33 WORKER LIBC startup row=2 text=clear
+[+    19.474572] [EL0 LOG] lp=0 asid=33 WORKER LIBC startup row=3 text=clear
+[+    19.475028] [EL0 LOG] lp=0 asid=33 WORKER LIBC startup row=4 text=clear
+[+    19.475482] [EL0 LOG] lp=0 asid=33 WORKER LIBC startup row=5 text=clear
+[+    19.475936] [EL0 LOG] lp=0 asid=33 WORKER LIBC startup row=6 text=clear
+[+    19.476386] [EL0 LOG] lp=0 asid=33 WORKER LIBC startup row=7 text=clear
+[+    19.476878] [EL0 LOG] lp=1 asid=33 WORKER LIBC worker row=1 text=clear
+[+    19.477344] [EL0 LOG] lp=1 asid=33 WORKER LIBC worker row=2 text=clear
+[+    19.477798] [EL0 LOG] lp=1 asid=33 WORKER LIBC worker row=3 text=clear
+[+    19.478276] [EL0 LOG] lp=1 asid=33 WORKER LIBC worker row=4 text=clear
+[+    19.478614] [EL0 LOG] lp=1 asid=33 WORKER LIBC worker row=5 text=clear
+[+    19.478944] [EL0 LOG] lp=1 asid=33 WORKER LIBC worker row=6 text=clear
+[+    19.479276] [EL0 LOG] lp=1 asid=33 WORKER LIBC worker row=7 text=clear
+[+    19.481164] [EL0 LOG] lp=0 asid=33 WORKER LIBC TSD isolation deletion reuse and admission
+[+    19.481526] [EL0 LOG] lp=0 asid=33 WORKER LIBC PASS
+[+    19.482198] [EL0 LOG] lp=0 asid=33 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=254 sampled_stack=896

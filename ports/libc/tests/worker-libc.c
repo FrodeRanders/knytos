@@ -12,6 +12,8 @@
 #endif
 
 struct shared {
+    uint64_t key;
+    uint64_t deleted_key;
     atomic_uint entered;
     atomic_uint complete;
     atomic_uint reset;
@@ -21,6 +23,10 @@ struct shared {
 static void libc_worker(void *argument)
 {
     struct shared *s = argument;
+    assert(knytos_tsd_get(s->key) == NULL);
+    assert(knytos_tsd_set(s->key, &s->complete) == KNYTOS_OK);
+    assert(knytos_tsd_get(s->key) == &s->complete);
+    assert(knytos_tsd_set(s->deleted_key, s) == KNYTOS_OK);
     int valid = errno == 0;
     volatile size_t impossible = SIZE_MAX;
     void *rejected = calloc(impossible, 2);
@@ -35,6 +41,9 @@ static void libc_worker(void *argument)
     knytos_thread_signal(0);
     /* Startup already has the output lock. stderr uses the same stream. */
     valid = fprintf(stderr, "WORKER LIBC worker acquired stream\n") > 0 && valid;
+    assert(knytos_tsd_get(s->deleted_key) == NULL);
+    assert(knytos_tsd_set(s->deleted_key, s) == KNYTOS_INVALID);
+    assert(knytos_tsd_get(s->key) == &s->complete);
     for (unsigned i = 0; i < 8; ++i) {
         char *buffer = malloc(64);
         if (!buffer) {
@@ -53,6 +62,8 @@ static void libc_worker(void *argument)
 static void different_generation(void *argument)
 {
     struct shared *s = argument;
+    assert(knytos_tsd_get(s->key) == NULL);
+    assert(knytos_tsd_set(s->key, &s->reset) == KNYTOS_OK);
     int fresh = errno == 0;
     errno = EAGAIN;
     atomic_store_explicit(&s->reset, fresh ? 1 : 2, memory_order_release);
@@ -82,12 +93,22 @@ int main(void)
     }
 
     struct shared s = {0};
+    assert(knytos_tsd_key_create(NULL) == KNYTOS_INVALID);
+    assert(knytos_tsd_key_create(&s.key) == KNYTOS_OK);
+    assert(knytos_tsd_key_create(&s.deleted_key) == KNYTOS_OK);
+    assert(knytos_tsd_get(s.key) == NULL);
+    assert(knytos_tsd_set(s.key, &s.entered) == KNYTOS_OK);
     errno = EDOM;
     flockfile(stdout);
     flockfile(stderr);
     assert(fputs("WORKER LIBC held ", stdout) >= 0);
     assert(knytos_thread_start(1, 1, libc_worker, &s) == KNYTOS_OK);
     assert(await_entry(&s) == 1);
+    assert(knytos_tsd_get(s.key) == &s.entered);
+    assert(knytos_tsd_key_delete(s.deleted_key) == KNYTOS_OK);
+    uint64_t replacement;
+    assert(knytos_tsd_key_create(&replacement) == KNYTOS_OK);
+    assert(replacement != s.deleted_key && knytos_tsd_get(replacement) == NULL);
     assert(errno == EDOM);
     assert(atomic_load(&s.errno_address) != (uintptr_t)&errno);
     funlockfile(stdout);
@@ -106,6 +127,21 @@ int main(void)
     assert(knytos_thread_start(1, 1, different_generation, &s) == KNYTOS_OK);
     assert(knytos_thread_join(1) == KNYTOS_OK && atomic_load(&s.reset) == 1);
     assert(errno == EDOM);
+    assert(knytos_tsd_get(s.key) == &s.entered);
+    assert(knytos_tsd_set(s.key, NULL) == KNYTOS_OK);
+    assert(knytos_tsd_get(s.key) == NULL);
+    assert(knytos_tsd_key_delete(s.key) == KNYTOS_OK);
+    assert(knytos_tsd_key_delete(s.key) == KNYTOS_INVALID);
+    assert(knytos_tsd_key_delete(replacement) == KNYTOS_OK);
+    uint64_t keys[16];
+    for (unsigned i = 0; i < 16; ++i)
+        assert(knytos_tsd_key_create(&keys[i]) == KNYTOS_OK);
+    uint64_t unchanged = UINT64_MAX;
+    assert(knytos_tsd_key_create(&unchanged) == KNYTOS_UNAVAILABLE);
+    assert(unchanged == UINT64_MAX);
+    for (unsigned i = 0; i < 16; ++i)
+        assert(knytos_tsd_key_delete(keys[i]) == KNYTOS_OK);
+    puts("WORKER LIBC TSD isolation deletion reuse and admission");
     struct knytos_allocation_stats stats;
     assert(knytos_allocation_stats(&stats) == KNYTOS_OK && stats.blocks == 0);
     puts("WORKER LIBC PASS");

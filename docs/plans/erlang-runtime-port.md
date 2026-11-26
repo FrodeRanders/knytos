@@ -1561,6 +1561,88 @@ Implement the platform functionality required by the selected version.
 
 Adapt ERTS threading facilities to native Knytos primitives.
 
+The [bounded ERTS thread adapter](../../ports/erts/README.md#bounded-thread-adapter)
+retains three worker records through exact native join and
+uses generation-qualified identities across slot reuse. It currently
+accepts startup creation with default stacks and bounded names. Full ERTS
+thread count, background detached-thread reaping, stack handling and
+thread-progress integration remain open.
+The [explicit exit adapter](../../ports/erts/README.md#explicit-thread-exit)
+stores a worker result before entering native TSD cleanup and terminal
+exit. Join and detached drain retain exact ownership through that path.
+The adapter invokes up to sixteen startup-registered exit handlers in
+reverse registration order before TSD teardown. ERTS-specific callbacks
+and thread-progress cleanup still need wiring.
+The [signed exit-handler qualification](../reports/milestones/2026-11-26-erts-exit-handlers.md)
+covers reverse registration order before TSD, normal and explicit exit,
+detached drain, registration limits and recursive-handler abort.
+The [signed explicit-exit qualification](../reports/milestones/2026-11-26-erts-explicit-exit.md)
+covers nested exit, pointer and null results, TSD cleanup, slot reuse,
+detached drain and recursive-exit abort.
+Detached workers stay in adapter custody until an explicit shutdown drain
+fences creation and confirms joins. The backend must publish terminal
+predicates and wakes before invoking that drain.
+The [signed detached-thread qualification](../reports/milestones/2026-11-26-erts-detached-threads.md)
+covers retained admission after cleanup notification, public join rejection,
+confirmed drain and fenced creation.
+The [signed thread-adapter qualification](../reports/milestones/2026-11-26-erts-thread-adapter.md)
+covers bounded admission, results, identities during destructors and
+stale-generation rejection after slot reuse.
+The [signed name qualification](../reports/milestones/2026-11-26-erts-thread-names.md)
+covers copied creation names, bounded rename snapshots, buffer errors,
+destructor lookup and retired generations.
+
+The [C keyed TSD API](../../ports/libc/README.md#thread-specific-data)
+provides bounded per-participant borrowed values, fresh worker generations
+and permanently retired key identities. The [ERTS TSD adapter](../../ports/erts/README.md#thread-specific-data-adapter)
+implements `ethr_tsd_key_create/delete` and `ethr_tsd_set/get` over it.
+The [signed combined adapter qualification](../reports/milestones/2026-11-26-erts-tsd-adapter.md)
+covers errno results, key exhaustion, per-worker values and event-state
+destruction before join through the two adapter components.
+OTP's internal
+thread-event key also uses a thread-exit destructor. The C worker trampoline
+now invokes optional keyed destructors outside runtime guards while the
+participant remains registered. An ERTS adapter must bind its internal
+event cleanup to that lifetime. The configure thread-library gate remains open.
+The [signed TSD qualification](../reports/milestones/2026-11-26-erts-keyed-tsd.md)
+covers cross-CPU isolation, deletion, key exhaustion and callback-slot reuse.
+The [signed destructor qualification](../reports/milestones/2026-11-26-erts-tsd-destructors.md)
+covers reentrant cleanup, event disposal, fresh worker generations and
+terminal abort when values keep rearming beyond four passes.
+
+The [manual-reset event primitive](../../ports/libc/README.md#manual-reset-events)
+provides a retained set state, one waiter and private-queue notification.
+Timed waits carry one monotonic deadline across unrelated queue hints.
+The [ERTS event adapter](../../ports/erts/README.md#native-event-adapter)
+converts its nanosecond timeout contract to the native millisecond budget.
+It returns `ETIMEDOUT` on deadline and aborts on unexpected native errors.
+The enclosing ERTS thread backend still needs to select and link it.
+The [signed ERTS event qualification](../reports/milestones/2026-11-26-erts-event-adapter.md)
+covers nanosecond conversion, signed timeout bounds, retained readiness,
+cross-CPU waiting and fatal invalid-input handling.
+The [signed event qualification](../reports/milestones/2026-11-26-erts-native-events.md)
+covers early set, retained readiness, reset, cross-CPU payload publication
+and deadline preservation under unrelated private-queue wakes.
+
+The [ERTS mutex adapter](../../ports/erts/README.md#mutex-adapter) uses
+the native mutex's event-only acquisition path, sharing readiness and
+unlock notifications with timed callers. Trylock reports busy for held
+mutexes, and destruction retains a live object on busy rejection.
+The [signed mutex qualification](../reports/milestones/2026-11-26-erts-mutex-adapter.md)
+covers cross-CPU publication, busy destruction and fatal foreign unlock,
+with the timed worker suite repeated in a separate guest. The initial
+combined campaign's object-store fragmentation failure remains open in
+that record.
+The [condition-variable adapter](../../ports/erts/README.md#condition-variable-adapter)
+provides initialization, destruction, signal, broadcast and wait over the
+same native objects. Wait registers before releasing the caller's mutex
+and retains both objects through event-only selection and reacquisition.
+Successful return owns the mutex. Full backend selection, thread progress
+and coordinated shutdown remain open.
+The [signed condition qualification](../reports/milestones/2026-11-26-erts-condition-adapter.md)
+covers single selection, three-worker broadcast, mutex reacquisition,
+busy destruction and fatal wait without ownership.
+
 Support required:
 
 - Scheduler threads.

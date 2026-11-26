@@ -1,0 +1,61 @@
+{
+  "kernel_sha256": "4a169b2952b7eb436963a9c27380c41645bbee08028a6da8e0fbd2b32fb8690a",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "boot_image_sha256": "eec87d49ec5bfc5704698066a88f08a1d682e79e1399a4e75dd8ac11109ab90c",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "base_commit": "af24f168f2962669a11d238fb5ba80c070223632",
+  "guest_cpus": 2,
+  "host_tests_passed": 78,
+  "elapsed_ns": 101686992,
+  "signed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request",
+    "c-workers",
+    "c-unjoined",
+    "c-worker-reuse",
+    "c-sync",
+    "c-rwlock",
+    "c-events",
+    "c-worker-libc",
+    "c-worker-libc-close",
+    "c-survivor"
+  ],
+  "signed_elf_sha256": "e078fc47dc6caba149843cf648739607dfcf6b4c99c6194be27a4d45a6cca30d",
+  "asid": 33,
+  "unsigned_elf_sha256": "3bfdbbffb0fb5d370db4d26d3020b6d33a43c45a28957da0cd0fb187ce2759fe",
+  "signed_descriptor_sha256": "6e4329e81165078882e62d9fc74ae6e5b7b46d5cca4bd3a9b649e2a7dadf098b",
+  "fixture_build_profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls",
+  "source_sha256": {
+    "crates/knytos-cabi/src/sync.rs": "581a39a67ae52f51abb1268b48433e806ffd9aab808376df80b9a7c9e682954c",
+    "crates/knytos-cabi/src/sync/event.rs": "d7c3993de3e1ebc4b61937e0f8671947fb4ee378758077e8af090d79792c54fd",
+    "crates/knytos-cabi/src/workers.rs": "e6617e56af1b25b2990179c2ff456062f432f5f1938772cd9b87f5fd2d906de8",
+    "crates/knytos-cabi/src/lib.rs": "3ec8ec8f59bd6cb0cb60788b6d5c255d29945a81538e4af803cfff8fc69e23b9",
+    "ports/libc/include/knytos.h": "44f221cd6eab749dcb8f77a0d54e637ba04250870c328291e488f8b035cac52a",
+    "ports/libc/tests/events.c": "4ecaa14bf4d240e99a0c9e1539a7a4f5a268ca5f161aea5d2922ddf67637fb4b",
+    "ports/libc/run-tests.py": "bcdf795c14a70870b893632f003274f8f22fe29d12402e1c683b7653f764706e"
+  }
+}

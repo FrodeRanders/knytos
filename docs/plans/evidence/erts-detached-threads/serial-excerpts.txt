@@ -1,0 +1,5 @@
+[+    25.334566] [EL0 LOG] lp=0 asid=42 ERTS DETACHED retained admission and join rejection
+[+    25.335548] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-detached" generation=1 asid=42 principal=0xa2673d8791b1cdc3
+[+    25.337544] [EL0 LOG] lp=0 asid=42 ERTS DETACHED shutdown joined destructors and fenced creation
+[+    25.337814] [EL0 LOG] lp=0 asid=42 ERTS DETACHED PASS
+[+    25.338464] [EL0 LOG] lp=0 asid=42 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=618 sampled_stack=576

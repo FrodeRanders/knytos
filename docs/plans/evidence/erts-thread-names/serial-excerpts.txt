@@ -1,0 +1,5 @@
+[+    25.399850] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-names" generation=1 asid=43 principal=0x8c21f6c881b61dcd
+[+    25.411836] [EL0 LOG] lp=0 asid=43 ERTS NAMES copied names coherent snapshots and buffer bounds
+[+    25.412308] [EL0 LOG] lp=0 asid=43 ERTS NAMES destructor lookup and stale generations
+[+    25.412570] [EL0 LOG] lp=0 asid=43 ERTS NAMES PASS
+[+    25.413154] [EL0 LOG] lp=0 asid=43 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=309 sampled_stack=576

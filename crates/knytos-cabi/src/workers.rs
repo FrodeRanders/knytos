@@ -79,6 +79,7 @@ struct Worker {
     generation: u64,
     tid: Option<u64>,
     handle: Option<ThreadHandle>,
+    exiting: bool,
 }
 
 static WORKERS: Mutex<knytos_rt::CountingMutex, [Option<Worker>; MAX_WORKERS]> =
@@ -136,9 +137,37 @@ extern "C" fn worker_entry<const INDEX: usize>() {
     // SAFETY: the startup thread published Start before spawning and must
     // retain the callback's argument until this exact thread has exited.
     unsafe { (start.entry)(start.argument) };
+    // Only Copy start metadata remains in this Rust frame. Explicit C exit
+    // may bypass it through the same terminal path.
+    unsafe { knytos_thread_exit() }
+}
+
+/// # Safety
+/// The C caller must leave no Rust owner or guard requiring stack unwinding
+/// above this terminal boundary. Its argument and callback storage remain retained
+/// by startup until exact join. Exit from TSD cleanup is terminal misuse.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn knytos_thread_exit() -> ! {
+    let Some(caller) = participant().filter(|caller| caller.slot != 0) else {
+        knytos_rt::logln!("[c-runtime] thread exit outside worker");
+        knytos_rt::domain_abort();
+    };
+    let index = caller.slot as usize - 1;
+    let recursive = {
+        let mut workers = WORKERS.lock();
+        let worker = workers[index].as_mut().expect("exiting worker");
+        let recursive = worker.exiting;
+        worker.exiting = true;
+        recursive
+    };
+    if recursive {
+        knytos_rt::logln!("[c-runtime] recursive worker exit");
+        knytos_rt::domain_abort();
+    }
+    crate::tsd::finish_worker(index + 1);
     // Stop advertising this non-owning TID before the kernel can recycle it.
-    WORKERS.lock()[INDEX].as_mut().expect("running worker").tid = None;
-    // The callback returned, so its C frames and local Rust owners are gone.
+    WORKERS.lock()[index].as_mut().expect("running worker").tid = None;
+    // Cleanup finished and no runtime guard or closeable local owner remains.
     unsafe { knytos_rt::abi::thread_exit() }
 }
 
@@ -180,6 +209,7 @@ pub unsafe extern "C" fn knytos_thread_start(
             generation,
             tid: None,
             handle: None,
+            exiting: false,
         });
     }
     const TRAMPOLINES: [extern "C" fn(); MAX_WORKERS] =

@@ -134,6 +134,85 @@ that join. Join confirms execution has ended. The kernel can still hold a
 stack charge, so a subsequent start may return `KNYTOS_UNAVAILABLE` even
 after the same slot became available.
 
+### Thread-specific data
+
+The worker profile provides `knytos_tsd_key_create`, `knytos_tsd_key_delete`,
+`knytos_tsd_set` and `knytos_tsd_get` for up to sixteen live keys.
+Each registered participant has an initially null value per key. Setting
+a value stores a borrowed pointer. The caller retains the pointee and
+synchronizes key deletion with its users.
+
+Deleting a key clears all its values and retires its identity permanently.
+Stale keys return `KNYTOS_INVALID` from set/delete and null from get.
+Key exhaustion returns `KNYTOS_UNAVAILABLE` and leaves the output unchanged.
+Identity exhaustion returns `KNYTOS_OVERFLOW`. Worker callback return
+clears that participant's values before its exit, and startup retains the
+exact worker owner through join before reusing the slot. The API runs
+without allocation.
+
+`knytos_tsd_key_create_with_destructor` optionally registers a callback
+for a non-null worker value. The runtime clears the value before calling
+its destructor after the worker callback returns. The participant remains
+registered during cleanup, so destructors can use TSD and worker APIs.
+Callbacks run outside table and roster guards. The caller retains callback
+code and pointees through cleanup.
+
+Values in ordinary keys remain available until all destructor passes
+finish. This keeps participant identity and related borrowed context
+available to destructors regardless of key allocation order.
+
+Cleanup makes four passes to support destructors that rearm values.
+Rearming beyond that bound aborts the domain. Deleting a key suppresses
+destructors that cleanup has yet to capture. Callers synchronize deletion
+and callback lifetime with every worker using the key. Startup values
+require explicit cleanup before terminal C exit.
+
+ERTS can use these primitives for its keyed TSD and thread-event cleanup.
+The native thread backend still requires integration.
+
+### Explicit worker exit
+
+`knytos_thread_exit` is a terminal C boundary for a registered worker.
+It runs the same TSD cleanup as callback return, clears participant identity
+after cleanup and exits the native thread. Startup retains the exact worker
+owner and argument borrow until successful join. Calls from startup and
+recursive exit from a TSD destructor abort the domain.
+
+The caller must leave no live Rust owner or guard that requires stack
+unwinding above this boundary. The original C worker trampoline retains
+its start metadata in a Copy-only Rust frame. Native capabilities remain
+in their existing owners, and thread exit does not observe their completion.
+
+### Manual-reset events
+
+`knytos_event_create` allocates an initially reset event. The caller owns
+its storage until `knytos_event_destroy` succeeds. Set persists across
+waits until an explicit reset. The event admits one registered waiter,
+and a competing waiter returns `KNYTOS_BUSY`.
+
+`knytos_event_wait_on(Event, Milliseconds)` accepts -1 for an indefinite
+wait or a nonnegative total timeout. A set event returns `KNYTOS_OK`,
+including when the signal preceded the wait. A reset event with a zero
+timeout returns `KNYTOS_DEADLINE`. Unrelated queue hints trigger a readiness
+recheck with the remaining monotonic budget. Wait-admission rejection and
+shutdown retain their distinct statuses. An indefinite wait requires a
+producer and an explicit terminal wake path.
+
+Retain the event throughout all calls. Destruction needs external lifetime
+synchronization that excludes new calls and producer access. A registered
+waiter makes destruction return `KNYTOS_BUSY`. Set publishes state before
+notifying the captured waiter, after releasing the metadata guard. Reset
+and set are serialized. A reset can clear a set before the waiter observes
+it, so callers must coordinate resets with their protocol.
+
+### Private waits
+
+`knytos_mutex_lock_event` acquires a retained native mutex without a timeout.
+It shares waiter registration and unlock notification with the timed mutex
+API. The caller must arrange an unlock producer and a terminal path before
+using it. Unrelated private-queue hints recheck ownership, and wait rejection
+or shutdown returns its distinct status after removing waiter interest.
+
 Each participant has a private launch CQ. Slot zero denotes startup, and
 its private queue is distinct from the application reactor on CQ zero.
 Publish an application predicate with appropriate synchronization before
@@ -197,6 +276,10 @@ waiting and reacquisition. For a caller that provides a terminal path,
 `knytos_condition_wait_event` waits for selection without a deadline and
 starts its reacquisition timeout after selection. Keep both objects live
 until the operation returns, including while reacquisition is pending.
+`knytos_condition_wait_event_unbounded` also waits for mutex readiness
+without a deadline. Its caller supplies selection, unlock and shutdown
+progress for both phases. Unexpected wait rejection still removes waiter
+interest and returns without claiming mutex ownership.
 
 Read/write locks use the same object lifetime rules. Shared acquisition can
 nest within a participant, with one unlock required for each acquisition.

@@ -1,0 +1,6 @@
+[+    19.482576] [EL0 LOG] lp=0 asid=33 EVENT retained set reset and wake-before-wait
+[+    19.484290] [EL0 LOG] lp=0 asid=16 [agent] launched "c-events" generation=1 asid=33 principal=0xd63ac3f765c407de
+[+    19.805248] [EL0 LOG] lp=0 asid=33 EVENT unrelated wakes preserve deadline elapsed_ns=101686992
+[+    19.812392] [EL0 LOG] lp=0 asid=33 EVENT cross-CPU publication and event-only wait
+[+    19.813124] [EL0 LOG] lp=0 asid=33 EVENT PASS
+[+    19.814850] [EL0 LOG] lp=0 asid=33 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=103 sampled_stack=640

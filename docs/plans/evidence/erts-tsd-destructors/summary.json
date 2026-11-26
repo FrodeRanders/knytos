@@ -1,0 +1,65 @@
+{
+  "kernel_sha256": "84af36bcabfab20a555f2d72a2d0b32b594dd32a8b0bc1a7c5a2626d87126566",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "boot_image_sha256": "15a4c1a291fa05e1afa8838511367654c87027195795473f7115ca61c20dba47",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "base_commit": "af24f168f2962669a11d238fb5ba80c070223632",
+  "guest_cpus": 2,
+  "host_tests_passed": 78,
+  "signed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request",
+    "c-workers",
+    "c-unjoined",
+    "c-worker-reuse",
+    "c-sync",
+    "c-rwlock",
+    "c-events",
+    "c-worker-libc",
+    "c-worker-libc-close",
+    "c-tsd-cleanup",
+    "c-tsd-cleanup-bound",
+    "c-survivor"
+  ],
+  "signed_elf_sha256": "ffab117cb9d554be7e80fc83a55108a3a16d2a03da2f13fe0a51bb9672fa2fd2",
+  "bound_descriptor_sha256": "fbf2d37cd97ccf49297f5e4e50005b1338f5013f441b857d5d952599d04a0011",
+  "bound_asid": 37,
+  "bound_signed_elf_sha256": "4c3945dc6a270f030baac0fbb3d302601f4c9b41d84365cdde1732507ba5cd9c",
+  "asid": 36,
+  "unsigned_elf_sha256": "5c8768a7d6b80a7e9ded9448e414d5f9eb97bc72455f860bc5bee669d83c26c5",
+  "signed_descriptor_sha256": "c1faf9c1dd2962576e422f12c36472b5a1ebd3abe2b1ea33fc3b98307372858e",
+  "fixture_build_profile": "aarch64-static-c11-worker-libc-no-tls",
+  "source_sha256": {
+    "crates/knytos-cabi/src/tsd.rs": "0ee46f3139351f60c3fe6ba1abc8ec314668a9f68b76c1b0b461fd6199ccffb7",
+    "crates/knytos-cabi/src/workers.rs": "fdd5e94baf7baafe18378aa99b216430723eefc0ca82e77bf81e739b98853f83",
+    "crates/knytos-cabi/src/lib.rs": "3ec8ec8f59bd6cb0cb60788b6d5c255d29945a81538e4af803cfff8fc69e23b9",
+    "ports/libc/include/knytos.h": "b6fa72383590ffb90026a0a80af4854c832be9fa142f2482be21729c5e24316c",
+    "ports/libc/tests/tsd-cleanup.c": "6c65723aab182235068b85b51d2c0daf07dede7fc14367d76709c0bec49e9231",
+    "crates/knytos-cabi/src/sync/event.rs": "d7c3993de3e1ebc4b61937e0f8671947fb4ee378758077e8af090d79792c54fd",
+    "ports/libc/run-tests.py": "c618eef3f129e5e7673cf6db207211d71f972617c871122fac515eb965d267d7"
+  }
+}

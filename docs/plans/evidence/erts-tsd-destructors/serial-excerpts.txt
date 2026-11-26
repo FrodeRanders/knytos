@@ -1,0 +1,10 @@
+[+     9.895553] [EL0 LOG] lp=0 asid=18 CABI PASS case=0
+[+    21.414126] [EL0 LOG] lp=0 asid=16 [agent] launched "c-tsd-cleanup" generation=1 asid=36 principal=0xec8bd183d691e433
+[+    21.417453] [EL0 LOG] lp=0 asid=36 TSD CLEANUP cleared values rearmed callbacks and event disposal
+[+    21.418392] [EL0 LOG] lp=0 asid=36 TSD CLEANUP exact join and fresh generation
+[+    21.418654] [EL0 LOG] lp=0 asid=36 TSD CLEANUP PASS
+[+    21.419343] [EL0 LOG] lp=0 asid=36 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=103 sampled_stack=576
+[+    22.009831] [EL0 LOG] lp=0 asid=16 [agent] launched "c-tsd-cleanup-bound" generation=1 asid=37 principal=0x9c42c117d728b2e5
+[+    22.010974] [EL0 LOG] lp=1 asid=37 [c-runtime] TSD destructor iteration limit
+[+    22.588890] [EL0 LOG] lp=0 asid=38 CABI PASS case=0
+[+    22.590700] [EL0 LOG] lp=0 asid=16 [agent] launched "c-survivor" generation=1 asid=38 principal=0xd9b34b84697e2d4d

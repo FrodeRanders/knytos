@@ -1,0 +1,89 @@
+{
+  "kernel_sha256": "aee3ef77662c6d0ed61d327842bab86232e2dd5a50b19a98016ea0312807259f",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "boot_image_sha256": "4b0bab544e56af0222817dee21d57d06754ce6fe0ec8ddfe62ef9c75764cd15a",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "host_tests_passed": 78,
+  "base_commit": "af24f168f2962669a11d238fb5ba80c070223632",
+  "guest_cpus": 2,
+  "signed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request",
+    "c-workers",
+    "c-unjoined",
+    "c-worker-reuse",
+    "c-sync",
+    "c-rwlock",
+    "c-events",
+    "c-worker-libc",
+    "c-worker-libc-close",
+    "c-tsd-cleanup",
+    "c-tsd-cleanup-bound",
+    "c-erts-event",
+    "c-erts-event-invalid",
+    "c-erts-tsd",
+    "c-erts-thread",
+    "c-erts-detached",
+    "c-erts-names",
+    "c-erts-exit",
+    "c-erts-exit-recursive",
+    "c-survivor"
+  ],
+  "source_sha256": {
+    "ports/erts/ethr_thread.c": "f3cc795012492abde96b522d8efabcd2114bfe9d7073ee8e42430e830da20f49",
+    "ports/erts/ethr_thread.h": "78ea12961e8b77c4d0b5bee69ad740e807f0f6f42032efe882b1b456e7ac07e5",
+    "ports/erts/tests/exit.c": "99fbcca2b5fd6c682d6ff84071a23f28275c2a920aecc590718a8e33c4610bbf",
+    "ports/erts/ethr_event.c": "5609d16bdd48a0b53877462f2bea755bd93d9cacbf8e9db2e31943d76b31dd48",
+    "ports/erts/ethr_event.h": "ad0ccd542b5843f940fdf05424f79c9bf082b1973939af7c7166dd61c5015c63",
+    "crates/knytos-cabi/src/workers.rs": "ce13ffad9983383aef7b29ce0d9218256d25ad80701f8fb2ed88c47865d44f71",
+    "crates/knytos-cabi/src/tsd.rs": "e18c1e46595ebeb7cd53b3276b87c01b120472056847cc72593ddd59d0ef6169",
+    "ports/libc/run-tests.py": "e9c5a0443e1c81f5f3018545e37f9f32a969ea4cd9c0f93881c5debe4b738cf4",
+    "ports/libc/include/knytos.h": "2e2e2d5b75f4e6f7a0c5eb6c8f18382cecfef395ce087d25c2f88cfc9cadce22",
+    "crates/knytos-cabi/src/sync/event.rs": "d7c3993de3e1ebc4b61937e0f8671947fb4ee378758077e8af090d79792c54fd"
+  },
+  "fixtures": [
+    {
+      "name": "c-erts-exit",
+      "asid": 44,
+      "unsigned_elf_sha256": "b618ee04fda03c541651670c926ee246ed116a281e0d4fcec0f76bc819dfe38c",
+      "signed_elf_sha256": "2add1e2902df45d063862626d222a21a942ddca39f034e8afb13229a50a65cbe",
+      "signed_descriptor_sha256": "193d5de96a5f3d0945e95acabf0ecae67305c5d65e1b555de8887d9444e80910"
+    },
+    {
+      "name": "c-erts-exit-recursive",
+      "asid": 45,
+      "unsigned_elf_sha256": "5286f9ecfd0b8f7d9cec98da4b1f5ca19e3d34596c5c0139e144d3e8c0a06381",
+      "signed_elf_sha256": "6dcbed4dcfb2fde90ce34184dc57239c2ea04217d90b72c9e2a600eb893597db",
+      "signed_descriptor_sha256": "1f58980288c1129c2548ba02f046cf8fd6fdefd316eaf836a44749550007545a"
+    }
+  ],
+  "otp_revision": "d199a49a01a2079afb6f2c5c9ae047cd4555e68d",
+  "upstream_sha256": {
+    "erts/lib_src/pthread/ethread.c": "cffbb2b86da168007e72f7fa2620d7a00ebdd3de1aabf62f1c65650b369450f2",
+    "erts/include/internal/ethread.h": "57fe81370be50ec93a93a3b901ed9e1b5d9bc39f8d5e798ae449f985efa18de1"
+  }
+}

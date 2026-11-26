@@ -1,0 +1,8 @@
+[+    20.164992] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-mutex" generation=1 asid=34 principal=0xefc8f9b0c2a70c5e
+[+    20.178484] [EL0 LOG] lp=0 asid=34 ERTS MUTEX contended event-only wait and publication
+[+    20.178874] [EL0 LOG] lp=0 asid=34 ERTS MUTEX trylock busy and destruction
+[+    20.179098] [EL0 LOG] lp=0 asid=34 ERTS MUTEX PASS
+[+    20.179726] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=309 sampled_stack=576
+[+    20.751826] [EL0 LOG] lp=1 asid=35 [erts] mutex operation failed
+[+    20.752198] [EL0 LOG] lp=1 asid=35 [c-runtime] abort
+[+    20.752848] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-mutex-foreign" generation=1 asid=35 principal=0x8eba748e77edb2b5

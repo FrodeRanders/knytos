@@ -1,0 +1,186 @@
+{
+  "outcome": "failed",
+  "error": "RuntimeError('c-erts-mutex-foreign-admission: unexpected exit 1')",
+  "kernel_sha256": "13ce19deab34fc86c87bc3415e159d9553584755bd5b7677750113f929c6c1e4",
+  "boot_image_sha256": "c7ea8fb62eac91fb97d1a20971a542502b8e087aa3c79d4872a95e26cc0b39e9",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "passed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request",
+    "c-workers",
+    "c-unjoined",
+    "c-worker-reuse",
+    "c-sync",
+    "c-rwlock",
+    "c-events",
+    "c-worker-libc",
+    "c-worker-libc-close",
+    "c-tsd-cleanup",
+    "c-tsd-cleanup-bound",
+    "c-erts-event",
+    "c-erts-event-invalid",
+    "c-erts-tsd",
+    "c-erts-thread",
+    "c-erts-detached",
+    "c-erts-names",
+    "c-erts-exit",
+    "c-erts-exit-recursive",
+    "c-erts-exit-handlers",
+    "c-erts-handler-recursive",
+    "c-erts-handler-limit",
+    "c-erts-mutex"
+  ],
+  "failed_admission": "error: deployment notification failed: HTTP/1.1 503 Service Unavailable\nContent-Type: application/json\nContent-Length: 14\nConnection: close\n\n{\"error\":-22}\n",
+  "disk_sha256": "47eb1fbacf62792c47360184fba09911f354136cc882d429e3e38426b8463537",
+  "free_blocks": 11256,
+  "free_runs": [
+    [
+      21486,
+      1
+    ],
+    [
+      21492,
+      1
+    ],
+    [
+      21497,
+      2
+    ],
+    [
+      21500,
+      1
+    ],
+    [
+      21502,
+      1
+    ],
+    [
+      21504,
+      1
+    ],
+    [
+      21506,
+      1
+    ],
+    [
+      21508,
+      1
+    ],
+    [
+      21511,
+      1
+    ],
+    [
+      21513,
+      1
+    ],
+    [
+      21515,
+      1
+    ],
+    [
+      21517,
+      1
+    ],
+    [
+      21519,
+      2
+    ],
+    [
+      21522,
+      1
+    ],
+    [
+      21524,
+      1
+    ],
+    [
+      21526,
+      1
+    ],
+    [
+      21529,
+      1
+    ],
+    [
+      21531,
+      11237
+    ]
+  ],
+  "requested_log_bytes": 9583,
+  "requested_log_blocks": 19,
+  "extent_limit": 16,
+  "blocks_in_first_16_free_runs_after_header": 18,
+  "images_sha256": {
+    "agent.elf": "22667c2961410fd43edc3683efdde7865abe5a8229f12d3ebd9ffd237e422a5c",
+    "c-abort.elf": "b7e4f35afb90cb5252345db5093392a5689ae0a3ec497f625cfc983e909ba4fd",
+    "c-clock.elf": "ee81185830a6100a1d7ee93780ceabea52fd92a2b5011fd4c2ff2ad48439a4dc",
+    "c-empty.elf": "0c66ee04015c7c292809b5520f0048c8f48f31202d07a7010a82ca7347a0b9d6",
+    "c-error.elf": "36f06d19e381fc2033bfc14b25831b14588499352648e5dc09fb870eb89c3d8e",
+    "c-erts-detached.elf": "4fa843dcf6fac1994b00021a5dfd44023fac348fa36a86aeb126ff33c83520df",
+    "c-erts-event-invalid.elf": "b593e995a0553937ec63b5570e0dd74a6a5552890d2b753b08e06e8c6d31899f",
+    "c-erts-event.elf": "faa24fff6d7fc52ff369839ad9c930fff92f18edb3a90e30ad06977c53860ebb",
+    "c-erts-exit-handlers.elf": "3a11580903bfcafdd64ce68055c0df8779fbd2c455b3cfa4f6f2a65630973c36",
+    "c-erts-exit-recursive.elf": "05fadb3fc7676156736bac7fe25dd145c69cfa3d31b5965b25d6884168f97323",
+    "c-erts-exit.elf": "610bc6da802c7d74b2040374b22a15da4b89701aadff8dabb545df2e01a5b74f",
+    "c-erts-handler-limit.elf": "dd25310f48e30e3a54941e22c42cdb9c8716850611c4d02dd0f43fe468760c8e",
+    "c-erts-handler-recursive.elf": "5c99a4726e6c60da194a7cd7c68ac17d440c785b0bce64d9ef66f14089c91ae5",
+    "c-erts-mutex-foreign.elf": "b32041c66e1e7713dac11e97d31de85edad0edda95037f4b1ecb9d67d0b96d74",
+    "c-erts-mutex.elf": "72e7f4e21ea6e28265e4e8bed0a6596ff0d7e7765670f2c7060a55afc5cbc6a7",
+    "c-erts-names.elf": "31ac48d0361e5b40ba73c89851c44cbf8a3d5f89eab5625aa31bedf799ad0a1e",
+    "c-erts-thread.elf": "f0864c139f9d08a86d7e09a306f9f83a397f0cda5e56298b3f1795be7c3a89b1",
+    "c-erts-tsd.elf": "4a00176dc3b84e417455bcd48a00e1209e80be4da982c7569e0385a1121470a9",
+    "c-events.elf": "3e9b617db765dfa2e8e091a83ed532aafc68d55f5d76068d89f2dd844b1db945",
+    "c-exit.elf": "d5f9ea2cbe804b86bb9f7df61c956afbfe01a8c8352ab7682683c34d4f2ba73c",
+    "c-format.elf": "42207facd6bf5c9b18f8fed04e7175256eeea4a6fe06e6a430c2952aa69ddd9c",
+    "c-hello.elf": "a9a51d8f364070a52de2aedb914ccd4f575045164fee2c37d9d3aedc7fb3987b",
+    "c-memory.elf": "4549fc4056bc64457fdb63bc7fa09ca4d4bcfbecca4a8f9e76627c9e2d404f24",
+    "c-rwlock.elf": "2ccb55f8a51c6deaedc2dafc9f24a94ef6c05264391aae99bec051a0cf6229e2",
+    "c-shutdown-without-request.elf": "1ee255fffaf0d87f6bafb493a40f1df689685e6bf40a1bc49aeee67624b45258",
+    "c-startup.elf": "c1673059a29985c8850a7fbe3f84b2faa6fc8d4f6a0de562f65a32960a6ffd0c",
+    "c-survivor.elf": "8baeead1f146f11a086268e35e6145637cba978a14733fb58b987f2c38b0d610",
+    "c-sync.elf": "13b5252dfefe839feb7fa71f0370596cea0ed508c6fc035769bf684514fa6a5a",
+    "c-tsd-cleanup-bound.elf": "de4648440a1635f884c923c02d4c1177f7eaa2eb91d49f058079a10c9acd95fc",
+    "c-tsd-cleanup.elf": "a289cdce7257e3788caf6cf69ba4544c1c839c9aa035972ec1c457294977e32f",
+    "c-unjoined.elf": "5497df970f56a45ffe8596b106d64adbf7f17fcd5bbbb2cd7bc2455cd01a9c56",
+    "c-worker-libc-close.elf": "3a9fd4f10a3e52d6fc45b1d8002fa92859d14d39ce9d87adbbb91de431cf4957",
+    "c-worker-libc.elf": "8e556d5b5bc1b891b77126250a2051642699e5db9e2971bf3022f8f409267335",
+    "c-worker-reuse.elf": "9e789243e105c04abfaef5ea748a1c21cf5fbbce4a85ed022314fb58ed39c466",
+    "c-workers.elf": "110ced586078614fd4692386b9835ea234c57cb606787339cd0df6410f373e4a",
+    "clusterctl.elf": "faf62ff6168460f68c92bbc66d2bbb30628db2f08daf7ff0696bb4f880cdd5ed",
+    "deployd.elf": "46ccd4c2f46df3e3419b270fb9d474b1ef37ca0c641d2f53f9aa88e0f18040ca",
+    "disco.elf": "ea6eff7b1bfb82311e6ad6e673be83eecaa2c2bc645a6cce81312354545b627f",
+    "dns.elf": "0ea4ab19b985fff358facaacc676ff9c5336f180e1927314b60228140034f05b",
+    "frouter.elf": "9b472222f35c45c55fdbfac17300ed56f527b785804b2943697a2e9a873cc594",
+    "fs.elf": "22d8cf88421413bd67079a3862086b2c073010b97761df265f50c8d6c510d557",
+    "grantctl.elf": "7b98e798db5f8f0cdb6d7183e604dbc6bbe9901e990dd6ed6f1cc300d4ab7990",
+    "httpd.elf": "4995569b6b1c158f8ad2859461980802e74c6e2662554605dd9e29fbb5f5910e",
+    "kafka.elf": "c726a0053bc09a5e54e935fafff62a0a2fa1ac60c9c7730807e418c9d6030a17",
+    "kafka_step.elf": "c72eab32ffe1bff01fe1d2913148ce00ea56dc6e8e7dddecc192c4a6117ae8a6",
+    "net.elf": "439692e85d8cdacfdf5e54824b6e8cedb86fc4ba38f1ca74419fea5a7819df43",
+    "ns.elf": "1c695fb508455c61c6f23c65a0e3c3b35e4230ea0541aa5e094d93f16f1edebf",
+    "nvme.elf": "0b07b64a0d0633e4739fdbe770b6588cdcb2b71b1ff1cb66f11d11cd70da1d3b",
+    "objstore.elf": "fbda4ff0dfc3131c06671bc3f8d1bbc5dfbdbfcdf734ba4f82f749e2f42c9881",
+    "observe.elf": "41b52ccd2c247480e5971e910e5a6690b8114efd4a3e370a7befd363c26ae441",
+    "otlp.elf": "8752c1eb3293723ee145c855bb7b6170e1d45d4b10bc9abb7fe77986c27299aa",
+    "relmsg.elf": "2729db67bf5e20aa1c422cbcb2f81c7e3586a99ec6b8e182fdb5d838f6a3d47e",
+    "rng.elf": "de79a860f25572f3a902d41406a311a4222821a41dcf6f6a5fd9f3e5cc00ab56",
+    "s3.elf": "b5f8f2754f5a0f26d19bc5437e27500f0372cb901cf18c460408796d3e0c000f",
+    "tcpip.elf": "340109dccbcb4bde34bf7c313b77a544df33d70c8efadf881facafc4021c5367",
+    "time.elf": "829f9f536f2c65a4071eb3f8a3474b69186ba05522485c00cbcb9dc1e7aac9c0",
+    "uart.elf": "60a2c41c9873cf4b2bdcb601c67ce92df0fe4a0a8a9c93127f9beed6445532db"
+  },
+  "storage_source_sha256": {
+    "crates/knytos-services/src/bin/objstore.rs": "0f48a607633efcabb92323b9cbf9754deedccfde463b3bd4adeb2c290b4c661e",
+    "crates/knytos-protocol-objstore/src/lib.rs": "c9c2579454485d30e5a6341d6703a82e892440d30f9a7fe055e5b74604ca5f2b",
+    "scripts/make-nvme-image.py": "f467f22d9681f7da7ad70ab9bf1b33942f64b4c51e38e4dce69ba0d4c9dae7cc"
+  }
+}

@@ -1,0 +1,7 @@
+[+    26.678980] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-exit" generation=1 asid=44 principal=0xd3bcf3e8d6a4ffb8
+[+    26.680786] [EL0 LOG] lp=0 asid=44 ERTS EXIT nested exit results cleanup and slot reuse
+[+    26.682201] [EL0 LOG] lp=0 asid=44 ERTS EXIT detached exit settled by shutdown drain
+[+    26.682450] [EL0 LOG] lp=0 asid=44 ERTS EXIT PASS
+[+    26.683078] [EL0 LOG] lp=0 asid=44 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=206 sampled_stack=576
+[+    27.280752] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-exit-recursive" generation=1 asid=45 principal=0xe44b85aee8abe214
+[+    27.281072] [EL0 LOG] lp=1 asid=45 [c-runtime] recursive worker exit

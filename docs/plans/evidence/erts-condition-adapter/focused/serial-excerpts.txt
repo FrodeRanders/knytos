@@ -1,0 +1,16 @@
+[+    20.163769] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-mutex" generation=1 asid=34 principal=0xefc8f9b0c2a70c5e
+[+    20.178420] [EL0 LOG] lp=0 asid=34 ERTS MUTEX contended event-only wait and publication
+[+    20.178814] [EL0 LOG] lp=0 asid=34 ERTS MUTEX trylock busy and destruction
+[+    20.179039] [EL0 LOG] lp=0 asid=34 ERTS MUTEX PASS
+[+    20.179689] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=309 sampled_stack=576
+[+    20.755449] [EL0 LOG] lp=1 asid=35 [erts] mutex operation failed
+[+    20.755862] [EL0 LOG] lp=1 asid=35 [c-runtime] abort
+[+    20.757011] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-mutex-foreign" generation=1 asid=35 principal=0x8eba748e77edb2b5
+[+    21.334482] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-condition" generation=1 asid=36 principal=0x9074a381cceba9da
+[+    21.351674] [EL0 LOG] lp=0 asid=36 ERTS CONDITION signal selects one and broadcast releases peers
+[+    21.352172] [EL0 LOG] lp=0 asid=36 ERTS CONDITION event-only reacquisition and busy destruction
+[+    21.352470] [EL0 LOG] lp=0 asid=36 ERTS CONDITION PASS
+[+    21.353161] [EL0 LOG] lp=0 asid=36 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=375 sampled_stack=576
+[+    21.920855] [EL0 LOG] lp=0 asid=37 [erts] condition operation failed
+[+    21.921177] [EL0 LOG] lp=0 asid=37 [c-runtime] abort
+[+    21.922219] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-condition-unlocked" generation=1 asid=37 principal=0xfc58060cfadd9d04

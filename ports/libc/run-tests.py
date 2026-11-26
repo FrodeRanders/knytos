@@ -205,7 +205,10 @@ def main():
     parser.add_argument("--atomvm-node-shutdown", action="store_true",
                         help="drain all supplied AtomVM shutdown fixtures using one signed node shutdown")
     parser.add_argument("--native-workers", action="store_true")
-    parser.add_argument("--worker-libc", action="store_true")
+    worker_profile = parser.add_mutually_exclusive_group()
+    worker_profile.add_argument("--worker-libc", action="store_true")
+    worker_profile.add_argument("--erts-mutex", action="store_true",
+                                help="qualify ERTS mutex and condition adapters in a separate signed campaign")
     parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
     args = parser.parse_args()
     cases = CASES[:-1].copy()
@@ -267,17 +270,38 @@ def main():
         16: ("c-worker-reuse", 9, "WORKER exact join and slot reuse"),
         17: ("c-sync", 9, "SYNC PASS"),
         18: ("c-rwlock", 5, "RWLOCK PASS"),
+        37: ("c-events", 3, "EVENT PASS"),
     }
     libc_cases = {
         19: ("c-worker-libc", 3, "WORKER LIBC PASS"),
         20: ("c-worker-libc-close", 1, "WORKER LIBC expected fixed-stream close rejection"),
+        38: ("c-tsd-cleanup", 3, "TSD CLEANUP PASS"),
+        39: ("c-tsd-cleanup-bound", 2, "[c-runtime] TSD destructor iteration limit"),
+        40: ("c-erts-event", 2, "ERTS EVENT PASS"),
+        41: ("c-erts-event-invalid", 1, "[erts] event operation failed"),
+        42: ("c-erts-tsd", 3, "ERTS TSD PASS"),
+        43: ("c-erts-thread", 5, "ERTS THREAD PASS"),
+        44: ("c-erts-detached", 4, "ERTS DETACHED PASS"),
+        45: ("c-erts-names", 3, "ERTS NAMES PASS"),
+        46: ("c-erts-exit", 4, "ERTS EXIT PASS"),
+        47: ("c-erts-exit-recursive", 2, "[c-runtime] recursive worker exit"),
+        48: ("c-erts-exit-handlers", 4, "ERTS HANDLERS PASS"),
+        49: ("c-erts-handler-recursive", 2, "[erts] recursive exit handler"),
+        50: ("c-erts-handler-limit", 1, "ERTS HANDLERS bounded registration PASS"),
     } if args.worker_libc else {}
+    mutex_cases = {
+        51: ("c-erts-mutex", 2, "ERTS MUTEX PASS"),
+        52: ("c-erts-mutex-foreign", 2, "[erts] mutex operation failed"),
+        53: ("c-erts-condition", 4, "ERTS CONDITION PASS"),
+        54: ("c-erts-condition-unlocked", 1, "[erts] condition operation failed"),
+    } if args.erts_mutex else {}
     worker_cases.update(libc_cases)
-    if args.native_workers or args.worker_libc:
+    worker_cases.update(mutex_cases)
+    if args.native_workers or args.worker_libc or args.erts_mutex:
         if args.smp < 2:
             parser.error("worker fixtures need at least two guest CPUs")
         cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
-    abort_cases = (7, 9, 11, 13, 15, 20)
+    abort_cases = (7, 9, 11, 13, 15, 20, 39, 41, 47, 49, 52, 54)
     cases += CASES[-1:]
     retirement_cases = {}
     retirement_images = [("parked", args.atomvm_shutdown_parked_elf)]
@@ -328,11 +352,27 @@ def main():
                 shutil.copyfile(vm_cases[number][1], images / (name + ".elf"))
                 continue
             if number in worker_cases:
-                source = {17: "sync.c", 18: "rwlock.c"}.get(number, "workers.c")
+                source = {17: "sync.c", 18: "rwlock.c", 37: "events.c"}.get(number, "workers.c")
                 profile = "--native-workers"
-                if number in libc_cases:
-                    source, profile = "worker-libc.c", "--worker-libc"
-                command(["python3", ROOT / "ports/libc/build.py", ROOT / "ports/libc/tests" / source,
+                if number in libc_cases or number in mutex_cases:
+                    source = "tsd-cleanup.c" if number in (38, 39) else "worker-libc.c"
+                    profile = "--worker-libc"
+                source = {40: ROOT / "ports/erts/tests/event.c",
+                          41: ROOT / "ports/erts/tests/event.c",
+                          42: ROOT / "ports/erts/tests/tsd.c",
+                          43: ROOT / "ports/erts/tests/thread.c",
+                          44: ROOT / "ports/erts/tests/detached.c",
+                          45: ROOT / "ports/erts/tests/names.c",
+                          46: ROOT / "ports/erts/tests/exit.c",
+                          47: ROOT / "ports/erts/tests/exit.c",
+                          48: ROOT / "ports/erts/tests/exit-handlers.c",
+                          49: ROOT / "ports/erts/tests/exit-handlers.c",
+                          50: ROOT / "ports/erts/tests/exit-handlers.c",
+                          51: ROOT / "ports/erts/tests/mutex.c",
+                          52: ROOT / "ports/erts/tests/mutex.c",
+                          53: ROOT / "ports/erts/tests/condition.c",
+                          54: ROOT / "ports/erts/tests/condition.c"}.get(number, ROOT / "ports/libc/tests" / source)
+                command(["python3", ROOT / "ports/libc/build.py", source,
                          profile, "--define", f"CASE={number}",
                          "--picolibc-source", args.picolibc_source,
                          "--output", images / (name + ".elf")], name + "-build")
@@ -559,6 +599,10 @@ def main():
                                 terminal = "[c-runtime] exit with an unjoined worker"
                             if number == 20:
                                 terminal = "[worker-libc] libc lock close is unsupported"
+                            if number == 39:
+                                terminal = "[c-runtime] TSD destructor iteration limit"
+                            if number == 47:
+                                terminal = "[c-runtime] recursive worker exit"
                             if expected not in domain_lines or terminal not in domain_lines:
                                 return False
                             if number in (15, 20):
@@ -650,11 +694,58 @@ def main():
                                            "last reader releases writer"):
                                 assert "RWLOCK " + marker in text, name
                         if number == 19:
+                            assert "WORKER LIBC TSD isolation deletion reuse and admission" in text, name
                             assert text.index("WORKER LIBC held record") < text.index("WORKER LIBC worker acquired stream")
                             for role in ("worker", "startup"):
                                 for row in range(8):
                                     line = f"WORKER LIBC {role} row={row} text=clear"
                                     assert sum(entry.endswith(line) for entry in text.splitlines()) == 1, line
+                        if number == 37:
+                            for marker in ("retained set reset and wake-before-wait",
+                                           "unrelated wakes preserve deadline",
+                                           "cross-CPU publication and event-only wait"):
+                                assert "EVENT " + marker in text, name
+                        if number == 38:
+                            for marker in ("cleared values rearmed callbacks and event disposal",
+                                           "exact join and fresh generation"):
+                                assert "TSD CLEANUP " + marker in text, name
+                        if number == 40:
+                            for marker in ("nanosecond timeout rounds up",
+                                           "retained state and signed timeout bounds",
+                                           "cross-CPU wait and destruction"):
+                                assert "ERTS EVENT " + marker in text, name
+                        if number == 42:
+                            for marker in ("key exhaustion and stale errno results",
+                                           "isolated values and event destruction before join"):
+                                assert "ERTS TSD " + marker in text, name
+                        if number == 43:
+                            for marker in ("bounded roster results and destructor identity",
+                                           "stale identity and slot reuse"):
+                                assert "ERTS THREAD " + marker in text, name
+                        if number == 44:
+                            for marker in ("retained admission and join rejection",
+                                           "shutdown joined destructors and fenced creation"):
+                                assert "ERTS DETACHED " + marker in text, name
+                        if number == 45:
+                            for marker in ("copied names coherent snapshots and buffer bounds",
+                                           "destructor lookup and stale generations"):
+                                assert "ERTS NAMES " + marker in text, name
+                        if number == 46:
+                            for marker in ("nested exit results cleanup and slot reuse",
+                                           "detached exit settled by shutdown drain"):
+                                assert "ERTS EXIT " + marker in text, name
+                        if number == 48:
+                            for marker in ("reverse order before TSD and exact joins",
+                                           "normal explicit and detached exits"):
+                                assert "ERTS HANDLERS " + marker in text, name
+                        if number == 51:
+                            for marker in ("contended event-only wait and publication",
+                                           "trylock busy and destruction"):
+                                assert "ERTS MUTEX " + marker in text, name
+                        if number == 53:
+                            for marker in ("signal selects one and broadcast releases peers",
+                                           "event-only reacquisition and busy destruction"):
+                                assert "ERTS CONDITION " + marker in text, name
                         record["cases"].append({"name": name, "case": number, "passed": True,
                                                 "observation": serial_text[before:]})
                         save()
