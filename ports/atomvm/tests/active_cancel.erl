@@ -94,15 +94,28 @@ subscription_cases() ->
     {error, not_found} = knytos:unsubscribe(Old),
     Watch = subscribe_ready(Handle, erlang:monotonic_time(millisecond) + 750),
     erlang:display({m4, close_watch_scope}),
-    {ok, Close} = knytos:request(Handle, 5, 0),
+    1 = deployment_sequence(Handle),
+    erlang:display({m4, awaiting_replacement}),
+    ok = wait_closed(Watch),
+    {error, not_found} = knytos:request(Handle, 6, 0),
+    {error, not_found} = knytos:unsubscribe(Watch),
+    erlang:display({m4, replaced_handle_stale}),
+
+    Replacement = lookup_hold(erlang:monotonic_time(millisecond) + 750),
+    2 = deployment_sequence(Replacement),
+    {error, not_found} = knytos:request(Handle, 6, 0),
+    {error, not_found} = knytos:subscribe(Handle, closed),
+    ok = echo(Replacement, <<2, 255>>),
+    Current = subscribe_ready(Replacement, erlang:monotonic_time(millisecond) + 750),
+    {error, not_found} = knytos:unsubscribe(Watch),
+    erlang:display({m4, replacement_reacquired}),
+
+    {ok, Close} = knytos:request(Replacement, 5, 0),
     {ok, 0} = result(Close),
     erlang:display({m4, awaiting_close_watch}),
-    receive
-        {knytos_event, Watch, closed} -> ok;
-        {knytos_event, Watch, {error, Reason}} -> error({watch_failed, Reason})
-    end,
-    {error, not_found} = knytos:request(Handle, 255, 0),
-    {error, not_found} = knytos:unsubscribe(Watch),
+    ok = wait_closed(Current),
+    {error, not_found} = knytos:request(Replacement, 255, 0),
+    {error, not_found} = knytos:unsubscribe(Current),
     receive
         {knytos_event, _, _} -> error(unexpected_watch_event);
         {knytos_reply, Pending, _} -> error(cancelled_registration_delivered)
@@ -110,6 +123,17 @@ subscription_cases() ->
     end,
     erlang:display({m4, close_watch_event}),
     ok.
+
+deployment_sequence(Handle) ->
+    {ok, Ref} = knytos:request(Handle, 6, 0),
+    {ok, Sequence} = result(Ref),
+    Sequence.
+
+wait_closed(Watch) ->
+    receive
+        {knytos_event, Watch, closed} -> ok;
+        {knytos_event, Watch, {error, Reason}} -> error({watch_failed, Reason})
+    end.
 
 lookup_hold(Deadline) ->
     true = erlang:monotonic_time(millisecond) < Deadline,

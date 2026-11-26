@@ -1226,6 +1226,8 @@ The [binary payload qualification](../reports/milestones/2026-11-25-atomvm-byte-
 covers moved requests, copied replies, size rejection, cancellation and timeout.
 The [endpoint-close qualification](../reports/milestones/2026-11-26-atomvm-close-subscriptions.md)
 covers owner scope, unsubscribe, event-only wakeup and shutdown with an armed watch.
+The [signed replacement qualification](../reports/milestones/2026-11-26-atomvm-service-replacement.md)
+covers same-name reacquisition and stale handles and subscriptions across ASID reuse.
 
 ### 11.2. Erlang-facing API
 

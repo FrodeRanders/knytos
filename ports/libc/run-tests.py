@@ -30,7 +30,13 @@ def domain_logs(text, asid):
     return "\n".join(line for line in text.splitlines() if prefix.search(line))
 
 
-def verify_active_cancel(text, server_asid, client_asid):
+def published_hold_service(text, sequence):
+    launch = re.search(rf'\[agent\] launched "{HOLD_SERVICE}" generation={sequence} asid=(\d+)', text)
+    if launch and f"[m4 hold] published sequence={sequence}" in domain_logs(text, launch[1]):
+        return int(launch[1])
+
+
+def verify_active_cancel(text, server_asid, client_asid, successor_asid):
     stages = [
         (server_asid, "[m4 hold] accepted case=1 payload=true"),
         (client_asid, "{m4,cancelling_accepted_call}"),
@@ -51,8 +57,14 @@ def verify_active_cancel(text, server_asid, client_asid):
         (client_asid, "{m4,byte_payload_roundtrip}"),
         (client_asid, "{m4,byte_payload_bounds}"),
         (client_asid, "{m4,close_watch_scope}"),
+        (server_asid, "[m4 hold] reported sequence=1"),
+        (client_asid, "{m4,awaiting_replacement}"),
+        (server_asid, "[m4 hold] retiring sequence=1"),
+        (client_asid, "{m4,replaced_handle_stale}"),
+        (successor_asid, "[m4 hold] reported sequence=2"),
+        (client_asid, "{m4,replacement_reacquired}"),
         (client_asid, "{m4,awaiting_close_watch}"),
-        (server_asid, "[m4 hold] closing endpoint"),
+        (successor_asid, "[m4 hold] closing endpoint"),
         (client_asid, "{m4,close_watch_event}"),
     ))
     offset = 0
@@ -60,6 +72,11 @@ def verify_active_cancel(text, server_asid, client_asid):
         match = re.search(rf"\[EL0 LOG\] lp=\d+ asid={asid} {re.escape(marker)}", text[offset:])
         assert match is not None, marker
         offset += match.end()
+    acknowledgement, = re.finditer(
+        rf"\[supervisor\] deployment shutdown acknowledged asid={server_asid} generation=(\d+)\b", text)
+    replacement = re.search(rf'\[agent\] launched "{HOLD_SERVICE}" generation=2 asid={successor_asid}\b', text)
+    assert replacement is not None and acknowledgement.end() < replacement.start()
+    return int(acknowledgement[1])
 
 
 def retirement_instance(text, name, generation, mode, schedulers):
@@ -340,6 +357,10 @@ def main():
             command([signer, "deployment-sign", output / (HOLD_SERVICE + ".cdep"), HOLD_SERVICE,
                      "fixture/" + HOLD_SERVICE, hold_image, "0", "1", "16", "1", "5000", key,
                      "m4.hold=publish"], HOLD_SERVICE + "-descriptor")
+            hold_replacement = output / (HOLD_SERVICE + "-replacement.cdep")
+            command([signer, "deployment-sign", hold_replacement, HOLD_SERVICE,
+                     "fixture/" + HOLD_SERVICE, hold_image, "0", "2", "16", "1", "5000", key,
+                     "m4.hold=publish"], HOLD_SERVICE + "-replacement-descriptor")
         for name, number in cases:
             image = images / (name + ".elf")
             command([signer, "elf-sign", image, name, key, "service", "1", "1", "0x7", "-"], name + "-sign")
@@ -448,10 +469,8 @@ def main():
                         if number == active_cancel_case:
                             command([signer, "deployment-notify", output / (HOLD_SERVICE + ".cdep"),
                                      "127.0.0.1:28081"], HOLD_SERVICE + "-admission", env=environment, timeout=40)
-                            launch = re.compile(rf'\[agent\] launched "{HOLD_SERVICE}" generation=1 asid=(\d+)')
-                            started = wait_for(lambda s: launch.search(s) and
-                                               "[m4 hold] published" in domain_logs(s, launch.search(s)[1]), 60)
-                            hold_asid = int(launch.search(started)[1])
+                            started = wait_for(lambda s: published_hold_service(s, 1), 60)
+                            hold_asid = published_hold_service(started, 1)
                         before = len(serial.read_text(errors="replace"))
                         command([signer, "deployment-notify", output / (name + ".cdep"), "127.0.0.1:28081"], name + "-admission", env=environment, timeout=40)
                         if number in performance_cases:
@@ -518,6 +537,14 @@ def main():
                                 return ""
                             return "\n".join(line for line in tail.splitlines()
                                              if re.search(r'\[EL0 LOG\] lp=\d+ asid=' + launch[1] + r' ', line))
+                        if number == active_cancel_case:
+                            waiting = wait_for(lambda s: "{m4,awaiting_replacement}" in observation(s), 60)
+                            command([signer, "deployment-notify", hold_replacement, "127.0.0.1:28081"],
+                                    HOLD_SERVICE + "-replacement-admission", env=environment, timeout=40)
+                            receipt = json.loads((output / (HOLD_SERVICE + "-replacement-admission.txt")).read_text())
+                            assert receipt["generation"] == 2, receipt
+                            replaced = wait_for(lambda s: published_hold_service(s[len(waiting):], 2), 60)
+                            successor_asid = published_hold_service(replaced[len(waiting):], 2)
                         def complete(text):
                             domain_lines = observation(text)
                             terminal = "[c-runtime] abort" if number in abort_cases else f"[c-runtime] exit={17 if number == 6 else 0} "
@@ -567,7 +594,15 @@ def main():
                             assert "[atomvm] service worker joined" in text and "[atomvm] return=ok" in text, name
                         if number == active_cancel_case:
                             client_asid = int(re.search(r"\[EL0 LOG\] lp=\d+ asid=(\d+)", text)[1])
-                            verify_active_cancel(serial_text[before:], hold_asid, client_asid)
+                            retired_generation = verify_active_cancel(serial_text[before:], hold_asid,
+                                                                      client_asid, successor_asid)
+                            record["service_replacement"] = {
+                                "retired_asid": hold_asid,
+                                "retired_root_generation": retired_generation,
+                                "successor_asid": successor_asid,
+                                "successor_sequence": receipt["generation"],
+                                "successor_descriptor_sha256": digest(hold_replacement),
+                            }
                             assert "[atomvm] service worker joined" in text and "[atomvm] return=ok" in text, name
                         if number in scheduler_cases:
                             count = scheduler_cases[number]

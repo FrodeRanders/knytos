@@ -423,8 +423,11 @@ Build `tests/native_service.erl`, `tests/active_cancel.erl` and
 builds and launches a scoped fixture service for `active_cancel`. It
 holds replies so the test can verify pending-call cancellation, timeout,
 and cleanup after normal exit or a kill signal. It also echoes binary
-payloads, returns malformed lengths and closes its endpoint while the
-client waits for the subscription event.
+payloads and returns malformed lengths. The runner replaces the publisher
+through a second signed deployment while the same VM waits on its close
+subscription. The client looks up the replacement, checks its deployment
+sequence, and verifies that the old handle and subscription stay stale.
+The replacement then closes its own endpoint to exercise event-only wakeup.
 
 ```sh
 python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \

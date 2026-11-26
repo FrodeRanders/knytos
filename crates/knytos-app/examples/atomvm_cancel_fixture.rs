@@ -45,12 +45,21 @@ impl From<IpcError> for HandlerError {
     }
 }
 
+fn deployment_sequence(ctx: &Context) -> Result<i64, grant_client::Error> {
+    let profile = ctx.profile_memory().ok_or(grant_client::Error::InvalidRequest)?;
+    let mapping = profile.map_read_only().map_err(grant_client::Error::Memory)?;
+    let descriptor = knytos_launch::deployment::decode(mapping.as_slice())
+        .ok_or(grant_client::Error::InvalidRequest)?;
+    i64::try_from(descriptor.sequence).map_err(|_| grant_client::Error::InvalidRequest)
+}
+
 pub fn run(ctx: &Context) -> Result<AppExit, Error> {
     let app = Application::from_context(ctx).map_err(Error::Launch)?;
+    let sequence = deployment_sequence(ctx).map_err(Error::Grant)?;
     let endpoint = Endpoint::create(knytos_app::name(b"M4HOLD"), 1, 8).map_err(Error::Ipc)?;
     let mut server = Server::new(ctx, endpoint, 16).map_err(|(_, error)| Error::Ipc(error))?;
     server.publish(&app, b"m4.hold", &Deadline::after(5_000)).map_err(Error::Grant)?;
-    logln!("[m4 hold] published");
+    logln!("[m4 hold] published sequence={}", sequence);
 
     let mut held: Option<ReplyToken> = None;
     let result = server.serve(|mut message| {
@@ -85,6 +94,10 @@ pub fn run(ctx: &Context) -> Result<AppExit, Error> {
                 reply.reply(0)?;
                 return Err(HandlerError::CloseEndpoint);
             }
+            6 => {
+                logln!("[m4 hold] reported sequence={}", sequence);
+                sequence
+            }
             2 => {
                 if held.take().is_some_and(|previous| previous.reply(1).is_err()) {
                     logln!("[m4 hold] late reply rejected case={}", message.arg0);
@@ -98,8 +111,13 @@ pub fn run(ctx: &Context) -> Result<AppExit, Error> {
         reply.reply(result)?;
         Ok(())
     });
+    drop(held);
     match result {
-        Ok(shutdown) => Ok(AppExit::Shutdown(shutdown)),
+        Ok(shutdown) => {
+            logln!("[m4 hold] retiring sequence={}", sequence);
+            drop(server);
+            Ok(AppExit::Shutdown(shutdown))
+        }
         Err(ServeError::Handler(HandlerError::CloseEndpoint)) => {
             // Give the client the scalar acknowledgement first. Its next
             // wait has only the endpoint-close completion as a producer.
