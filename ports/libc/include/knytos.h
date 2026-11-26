@@ -85,10 +85,17 @@ int32_t knytos_condition_signal(const struct knytos_condition *condition, uint32
 
 struct knytos_rwlock;
 struct knytos_rwlock *knytos_rwlock_create(void);
+/* Requested heap bytes behind the opaque object, excluding allocator overhead. */
+size_t knytos_rwlock_storage_size(void);
 int32_t knytos_rwlock_destroy(struct knytos_rwlock *lock);
 /* Shared acquisition may nest for the same participant. A queued writer
  * blocks new readers. Exclusive acquisition cannot nest or upgrade. */
 int32_t knytos_rwlock_try_read(const struct knytos_rwlock *lock);
+int32_t knytos_rwlock_try_write(const struct knytos_rwlock *lock);
+/* Both event-only acquisitions retain the lock through the wait. Provide
+ * unlock producers and a terminal shutdown path before entering either. */
+int32_t knytos_rwlock_read_event(const struct knytos_rwlock *lock);
+int32_t knytos_rwlock_write_event(const struct knytos_rwlock *lock);
 int32_t knytos_rwlock_read(const struct knytos_rwlock *lock, uint32_t timeout_ms);
 int32_t knytos_rwlock_write(const struct knytos_rwlock *lock, uint32_t timeout_ms);
 int32_t knytos_rwlock_unlock(const struct knytos_rwlock *lock);

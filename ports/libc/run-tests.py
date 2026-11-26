@@ -208,7 +208,7 @@ def main():
     worker_profile = parser.add_mutually_exclusive_group()
     worker_profile.add_argument("--worker-libc", action="store_true")
     worker_profile.add_argument("--erts-mutex", action="store_true",
-                                help="qualify ERTS mutex and condition adapters in a separate signed campaign")
+                                help="qualify ERTS synchronization adapters in a separate signed campaign")
     parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
     args = parser.parse_args()
     cases = CASES[:-1].copy()
@@ -294,6 +294,14 @@ def main():
         52: ("c-erts-mutex-foreign", 2, "[erts] mutex operation failed"),
         53: ("c-erts-condition", 4, "ERTS CONDITION PASS"),
         54: ("c-erts-condition-unlocked", 1, "[erts] condition operation failed"),
+        55: ("c-erts-rwmutex", 4, "ERTS RWMUTEX PASS"),
+        56: ("c-erts-rwmutex-foreign", 2, "[erts] rwmutex operation failed"),
+        57: ("c-erts-locks", 5, "ERTS LOCKS PASS"),
+        58: ("c-erts-locks-foreign", 2, "[erts] mutex operation failed"),
+        59: ("c-erts-init", 4, "ERTS INIT PASS"),
+        60: ("c-erts-init-rejected", 1, "ERTS INIT PASS"),
+        61: ("c-erts-init-exit", 2, "[erts] thread exit during child initialization"),
+        62: ("c-erts-stacklimit", 5, "ERTS STACKLIMIT PASS"),
     } if args.erts_mutex else {}
     worker_cases.update(libc_cases)
     worker_cases.update(mutex_cases)
@@ -301,7 +309,7 @@ def main():
         if args.smp < 2:
             parser.error("worker fixtures need at least two guest CPUs")
         cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
-    abort_cases = (7, 9, 11, 13, 15, 20, 39, 41, 47, 49, 52, 54)
+    abort_cases = (7, 9, 11, 13, 15, 20, 39, 41, 47, 49, 52, 54, 56, 58, 61)
     cases += CASES[-1:]
     retirement_cases = {}
     retirement_images = [("parked", args.atomvm_shutdown_parked_elf)]
@@ -347,6 +355,11 @@ def main():
     try:
         images = output / "bundle"
         images.mkdir()
+        erts_library = output / "erts" / "libknytos_ethread.a"
+        if args.erts_mutex:
+            command(["python3", ROOT / "ports/erts/build.py",
+                     "--picolibc-source", args.picolibc_source,
+                     "--output", erts_library], "erts-library-build")
         for name, number in cases:
             if number in vm_cases:
                 shutil.copyfile(vm_cases[number][1], images / (name + ".elf"))
@@ -371,11 +384,21 @@ def main():
                           51: ROOT / "ports/erts/tests/mutex.c",
                           52: ROOT / "ports/erts/tests/mutex.c",
                           53: ROOT / "ports/erts/tests/condition.c",
-                          54: ROOT / "ports/erts/tests/condition.c"}.get(number, ROOT / "ports/libc/tests" / source)
+                          54: ROOT / "ports/erts/tests/condition.c",
+                          55: ROOT / "ports/erts/tests/rwmutex.c",
+                          56: ROOT / "ports/erts/tests/rwmutex.c",
+                          57: ROOT / "ports/erts/tests/locks.c",
+                          58: ROOT / "ports/erts/tests/locks.c",
+                          59: ROOT / "ports/erts/tests/init.c",
+                          60: ROOT / "ports/erts/tests/init.c",
+                          61: ROOT / "ports/erts/tests/init.c",
+                          62: ROOT / "ports/erts/tests/stacklimit.c"}.get(number, ROOT / "ports/libc/tests" / source)
+                libraries = (["--library", erts_library, "--include", ROOT / "ports/erts"]
+                             if number in (57, 58, 59, 60, 61, 62) else [])
                 command(["python3", ROOT / "ports/libc/build.py", source,
                          profile, "--define", f"CASE={number}",
                          "--picolibc-source", args.picolibc_source,
-                         "--output", images / (name + ".elf")], name + "-build")
+                         "--output", images / (name + ".elf"), *libraries], name + "-build")
                 continue
             command(["python3", ROOT / "ports/libc/build.py", ROOT / ("ports/libc/tests/empty.c" if number == 8 else "ports/libc/tests/suite.c"),
                      "--define", f"CASE={number}", "--picolibc-source", args.picolibc_source,
@@ -746,6 +769,27 @@ def main():
                             for marker in ("signal selects one and broadcast releases peers",
                                            "event-only reacquisition and busy destruction"):
                                 assert "ERTS CONDITION " + marker in text, name
+                        if number == 55:
+                            for marker in ("shared readers and last-reader writer release",
+                                           "event-only reader wake and publication",
+                                           "busy destruction and heap size"):
+                                assert "ERTS RWMUTEX " + marker in text, name
+                        if number == 57:
+                            for marker in ("archive-linked blocking spin fallback",
+                                           "shared readers writer wake and reader publication",
+                                           "public headers TSD and exact joins"):
+                                assert "ERTS LOCKS " + marker in text, name
+                        if number == 59:
+                            for marker in ("copied hooks and child-before-parent handshake",
+                                           "normal explicit detached exits and TSD cleanup"):
+                                assert "ERTS INIT " + marker in text, name
+                        if number == 60:
+                            assert "ERTS INIT rejected start parent cleanup and fenced reuse" in text, name
+                        if number == 62:
+                            for marker in ("unset null rejection and one-time installation",
+                                           "isolated participants and fresh slot generation",
+                                           "handlers destructors explicit exit and detached drain"):
+                                assert "ERTS STACKLIMIT " + marker in text, name
                         record["cases"].append({"name": name, "case": number, "passed": True,
                                                 "observation": serial_text[before:]})
                         save()

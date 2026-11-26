@@ -1,0 +1,25 @@
+[+    21.050746] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-mutex" generation=1 asid=34 principal=0xefc8f9b0c2a70c5e
+[+    21.063860] [EL0 LOG] lp=0 asid=34 ERTS MUTEX contended event-only wait and publication
+[+    21.064264] [EL0 LOG] lp=0 asid=34 ERTS MUTEX trylock busy and destruction
+[+    21.064500] [EL0 LOG] lp=0 asid=34 ERTS MUTEX PASS
+[+    21.065158] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=309 sampled_stack=512
+[+    21.653350] [EL0 LOG] lp=1 asid=35 [erts] mutex operation failed
+[+    21.653690] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-mutex-foreign" generation=1 asid=35 principal=0x8eba748e77edb2b5
+[+    21.654064] [EL0 LOG] lp=1 asid=35 [c-runtime] abort
+[+    22.259934] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-condition" generation=1 asid=36 principal=0x9074a381cceba9da
+[+    22.274966] [EL0 LOG] lp=0 asid=36 ERTS CONDITION signal selects one and broadcast releases peers
+[+    22.275444] [EL0 LOG] lp=0 asid=36 ERTS CONDITION event-only reacquisition and busy destruction
+[+    22.275726] [EL0 LOG] lp=0 asid=36 ERTS CONDITION PASS
+[+    22.276398] [EL0 LOG] lp=0 asid=36 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=375 sampled_stack=512
+[+    22.854868] [EL0 LOG] lp=0 asid=37 [erts] condition operation failed
+[+    22.855198] [EL0 LOG] lp=0 asid=37 [c-runtime] abort
+[+    22.856400] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-condition-unlocked" generation=1 asid=37 principal=0xfc58060cfadd9d04
+[+    23.455886] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-rwmutex" generation=1 asid=38 principal=0x8e8fa647a68e4eeb
+[+    23.494466] [EL0 LOG] lp=0 asid=38 ERTS RWMUTEX shared readers and last-reader writer release
+[+    23.494948] [EL0 LOG] lp=0 asid=38 ERTS RWMUTEX event-only reader wake and publication
+[+    23.495304] [EL0 LOG] lp=0 asid=38 ERTS RWMUTEX busy destruction and heap size
+[+    23.495562] [EL0 LOG] lp=0 asid=38 ERTS RWMUTEX PASS
+[+    23.496284] [EL0 LOG] lp=0 asid=38 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=540 sampled_stack=512
+[+    24.070706] [EL0 LOG] lp=1 asid=39 [erts] rwmutex operation failed
+[+    24.071162] [EL0 LOG] lp=1 asid=39 [c-runtime] abort
+[+    24.072140] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-rwmutex-foreign" generation=1 asid=39 principal=0xfeb9a09edf7f6b50

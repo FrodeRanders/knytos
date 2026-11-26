@@ -17,14 +17,69 @@ static struct thread_record {
     void *(*entry)(void *);
     void *argument;
     void *result;
+    void *prepared;
+    void (*child_init)(void *);
+    atomic_int child_initialized;
+    void *stack_limit;
 } threads[THREAD_SLOTS];
+static void *startup_stack_limit;
 static uint64_t next_generation = 1;
 static uint64_t identity_key;
 static int creation_closed;
+/* Startup is the sole writer. Each worker receives its immutable callback
+ * and prepared borrow in its retained record before native publication. */
+static ethr_init_data create_hooks;
+static int hooks_initialized;
+static int creation_started;
+static int creation_active;
 /* Startup appends immutable entries, then publishes their count. Each exit
  * captures one count before calling handlers in reverse registration order. */
 static void (*exit_handlers[EXIT_HANDLER_LIMIT])(void);
 static atomic_size_t exit_handler_count;
+
+static void **current_stack_limit(void)
+{
+    if (knytos_thread_is_startup()) return &startup_stack_limit;
+    struct thread_record *record = knytos_tsd_get(identity_key);
+    return record ? &record->stack_limit : NULL;
+}
+
+void *ethr_get_stacklimit(void)
+{
+    void **slot = current_stack_limit();
+    return slot ? *slot : NULL;
+}
+
+int ethr_set_stacklimit(void *limit)
+{
+    void **slot = current_stack_limit();
+    if (!slot) return EINVAL;
+    /* Preserve OTP's error precedence even for a NULL replacement. */
+    if (*slot) return EACCES;
+    if (!limit) return EINVAL;
+    *slot = limit;
+    return 0;
+}
+
+int knytos_ethr_threads_init(const ethr_init_data *data)
+{
+    if (!knytos_thread_is_startup()) return EACCES;
+    if (creation_closed) return ECANCELED;
+    if (creation_active || creation_started || hooks_initialized) return EBUSY;
+    create_hooks = data ? *data : (ethr_init_data) ETHR_INIT_DATA_DEFAULT_INITER;
+    hooks_initialized = 1;
+    return 0;
+}
+
+static void creation_require_ok(int status)
+{
+    if (status != KNYTOS_OK) {
+        static const char message[] = "[erts] child initialization handshake failed\n";
+        knytos_console_write(message, sizeof(message) - 1);
+        /* Accepted work and its callback borrows remain in the record. */
+        abort();
+    }
+}
 
 int ethr_install_exit_handler(void (*handler)(void))
 {
@@ -125,6 +180,9 @@ static void enter_thread(void *argument)
 {
     struct thread_record *record = argument;
     if (knytos_tsd_set(identity_key, record) != KNYTOS_OK) abort();
+    if (record->child_init) record->child_init(record->prepared);
+    atomic_store_explicit(&record->child_initialized, 1, memory_order_release);
+    creation_require_ok(knytos_thread_signal(0));
     record->result = record->entry(record->argument);
     run_exit_handlers(record);
 }
@@ -133,6 +191,11 @@ _Noreturn void ethr_thr_exit(void *result)
 {
     struct thread_record *record = knytos_tsd_get(identity_key);
     if (!record || knytos_thread_is_startup()) abort();
+    if (!atomic_load_explicit(&record->child_initialized, memory_order_acquire)) {
+        static const char message[] = "[erts] thread exit during child initialization\n";
+        knytos_console_write(message, sizeof(message) - 1);
+        abort();
+    }
     record->result = result;
     run_exit_handlers(record);
     knytos_thread_exit();
@@ -142,6 +205,7 @@ int ethr_thr_create(ethr_tid *tid, void *(*entry)(void *), void *argument, ethr_
 {
     if (!knytos_thread_is_startup()) return EACCES;
     if (creation_closed) return ECANCELED;
+    if (creation_active) return EBUSY;
     if (!tid || !entry) return EINVAL;
     if (options && options->suggested_stack_size != -1) return ENOTSUP;
     const char *name = options ? options->name : NULL;
@@ -156,19 +220,36 @@ int ethr_thr_create(ethr_tid *tid, void *(*entry)(void *), void *argument, ethr_
         if (status != KNYTOS_OK) return thread_status(status);
     }
     struct thread_record *record = &threads[index];
+    creation_started = 1;
+    creation_active = 1;
     *record = (struct thread_record) {
         .live = 1, .detached = options && options->detached,
         .tid = {index + 1, next_generation++},
         .entry = entry, .argument = argument,
+        .child_init = create_hooks.thread_create_child_func,
     };
+    atomic_init(&record->child_initialized, 0);
     publish_name(record->tid, name, name_length);
+    if (create_hooks.thread_create_prepare_func)
+        record->prepared = create_hooks.thread_create_prepare_func();
     int status = knytos_thread_start(record->tid.slot, 1, enter_thread, record);
+    if (status == KNYTOS_OK) {
+        /* The child publishes completion before posting a retained CQ hint.
+         * Recheck after every unrelated wake without releasing the record. */
+        while (!atomic_load_explicit(&record->child_initialized, memory_order_acquire))
+            creation_require_ok(knytos_thread_wait_event());
+    }
+    if (create_hooks.thread_create_parent_func)
+        create_hooks.thread_create_parent_func(record->prepared);
+    record->prepared = NULL;
     if (status != KNYTOS_OK) {
         publish_name((ethr_tid) {record->tid.slot, 0}, NULL, 0);
         *record = (struct thread_record) {0};
+        creation_active = 0;
         return thread_status(status);
     }
     *tid = record->tid;
+    creation_active = 0;
     return 0;
 }
 
@@ -180,6 +261,7 @@ int ethr_equal_tids(ethr_tid first, ethr_tid second)
 int ethr_thr_join(ethr_tid tid, void **result)
 {
     if (!knytos_thread_is_startup()) return EACCES;
+    if (creation_active) return EBUSY;
     if (!tid.slot || tid.slot > THREAD_SLOTS) return EINVAL;
     struct thread_record *record = &threads[tid.slot - 1];
     if (!record->live || record->detached || !ethr_equal_tids(record->tid, tid)) return EINVAL;
@@ -194,6 +276,7 @@ int ethr_thr_join(ethr_tid tid, void **result)
 int ethr_thr_detach(ethr_tid tid)
 {
     if (!knytos_thread_is_startup()) return EACCES;
+    if (creation_active) return EBUSY;
     if (!tid.slot || tid.slot > THREAD_SLOTS) return EINVAL;
     struct thread_record *record = &threads[tid.slot - 1];
     if (!record->live || record->detached || !ethr_equal_tids(record->tid, tid)) return EINVAL;
@@ -204,6 +287,7 @@ int ethr_thr_detach(ethr_tid tid)
 int knytos_ethr_threads_shutdown(void)
 {
     if (!knytos_thread_is_startup()) return EACCES;
+    if (creation_active) return EBUSY;
     creation_closed = 1;
     for (unsigned i = 0; i < THREAD_SLOTS; ++i) {
         struct thread_record *record = &threads[i];

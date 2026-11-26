@@ -1,0 +1,6 @@
+           20aac            20aac       3c     4         libknytos_ethread.a(ethr_event.o):(.text.ethr_event_init)
+           20c5c            20c5c       14     4         libknytos_ethread.a(ethr_tsd.o):(.text.ethr_tsd_key_create)
+           20cd0            20cd0       78     4         libknytos_ethread.a(ethr_thread.o):(.text.publish_name)
+           2119c            2119c       3c     4         libknytos_ethread.a(ethr_mutex.o):(.text.ethr_mutex_init)
+           212a0            212a0       3c     4         libknytos_ethread.a(ethr_rwmutex.o):(.text.ethr_rwmutex_init)
+           21170            21170        4     4         libknytos_ethread.a(ethr_lock.o):(.text.ethr_spinlock_init)

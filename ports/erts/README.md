@@ -12,6 +12,24 @@ target tuple recognition and runs its configure script against the
 Knytos worker-libc SDK. See the [configure results](../../docs/reports/milestones/2026-11-26-erts-target-configure.md)
 for arguments and the current thread-library rejection.
 
+## Standalone archive
+
+`build.py` compiles each adapter as a separate AArch64 object and packages
+them as `libknytos_ethread.a`. It prepares the pinned worker-libc SDK,
+uses the same freestanding C11 profile and emits an adjacent build manifest
+with archive, member and source hashes. Use a fresh output path.
+
+```sh
+python3 ports/erts/build.py --picolibc-source /path/to/picolibc \
+  --output target/erts/prerequisites/libknytos_ethread.a
+```
+
+Consumers include `knytos_ethread.h` and link the archive through
+`ports/libc/build.py --include ports/erts --library /path/to/libknytos_ethread.a`.
+The aggregate header exposes the standalone prerequisites. OTP's actual
+`ethread.h` selection, initialization, atomics and thread-specific events
+still need integration. The configure thread-library gate remains open.
+
 ## Native event adapter
 
 `ethr_event.h` and `ethr_event.c` implement the event portion of the
@@ -83,6 +101,65 @@ authoritative. Expanding the roster, background detached-thread reaping,
 stack limits and thread-progress integration remain
 backend work. The enclosing backend must also arrange terminal wakes and
 join every worker during cooperative shutdown.
+
+### Creation callbacks
+
+Startup may call `knytos_ethr_threads_init` once, before the first create
+attempt that reaches native submission. It copies the upstream
+`ethr_init_data` callback layout. Null selects empty hooks, and omitting
+this initializer also leaves the hooks empty. Registration returns
+`EBUSY` after registration or creation has started, `EACCES` from a worker
+and `ECANCELED` after the shutdown fence. This initializer covers the
+standalone adapter; upstream `ethr_init` and `ethr_late_init` remain open.
+
+Prepare runs on startup after local validation and record reservation.
+Its returned pointer stays in that record through native submission.
+The child establishes its adapter identity, invokes its captured child
+callback and publishes completion before waking startup's private CQ.
+Startup rechecks that completion after unrelated wakes and invokes parent
+cleanup only after the child callback returns. A rejected native start
+invokes parent cleanup without running the child callback. Preflight
+rejection invokes neither callback. Parent cleanup may overlap user entry;
+the child must stop using the prepared pointer before returning its hook.
+Callbacks retain responsibility for their pointees and code lifetimes.
+
+The record and exact worker owner remain retained through this handshake.
+An unexpected handshake-wait error aborts the domain without returning an
+unowned partial creation. Child initialization must return or abort; an
+adapter thread-exit request from that callback aborts. Reentrant create,
+join, detach, drain and callback registration from startup callbacks return
+`EBUSY`. Callbacks run outside runtime guards. Shutdown still needs child
+initialization progress before it can drain workers.
+The [signed initialization qualification](../../docs/reports/milestones/2026-11-26-erts-thread-init.md)
+records callback ordering, rejected-start cleanup, early wakes and the
+fatal child-exit control, with the earlier thread suite repeated separately.
+
+### Stack-limit metadata
+
+`ethr_get_stacklimit` and `ethr_set_stacklimit` implement the pinned public
+interface over participant-local borrowed metadata. Startup begins with a
+null value, and each new adapter worker generation also begins with null.
+Installing null returns `EINVAL`. After a non-null value is installed,
+every replacement, including null, returns `EACCES`, preserving upstream
+error precedence. A native worker outside the adapter has no stack-limit
+slot; get returns null and set returns `EINVAL`.
+
+Workers can install their value from the child-initialization hook. Their
+value remains available through user entry, exit handlers and TSD cleanup.
+Exact join or shutdown drain clears the retired record before slot reuse.
+Startup retains its own value for the domain lifetime. These operations
+allocate no storage and consume no additional TSD key. The caller retains
+the represented stack boundary's lifetime; stack backing stays owned by
+the native runtime and kernel.
+
+Automatic discovery of native stack bounds remains open. The backend must
+capture actual stack boundaries before running ERTS code that requires
+non-null limits. A sampled stack pointer or sampled high-water mark does
+not establish a reserved stack boundary. The signed metadata fixture uses
+address markers and qualifies no native stack geometry or overflow guard.
+The [signed stack-limit qualification](../../docs/reports/milestones/2026-11-26-erts-stacklimit.md)
+records participant isolation, error precedence, cleanup lifetime and
+fresh metadata after slot reuse.
 
 ### Thread names
 
@@ -176,7 +253,7 @@ removes only waiter interest before the adapter takes its fatal path.
 The enclosing ERTS backend still needs to select these types and entry
 points and qualify thread progress and shutdown.
 
-Run the mutex and condition checks in their own signed campaign.
+Run the mutex, condition and read/write checks in their own signed campaign.
 
 ```sh
 python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
@@ -217,3 +294,55 @@ terminal predicates, selection, unlock and exact joins before disposal.
 Full ERTS linkage and coordinated shutdown remain open.
 The [signed qualification](../../docs/reports/milestones/2026-11-26-erts-condition-adapter.md)
 records the condition fixtures and the separate timed-worker regression.
+
+## Read/write mutex adapter
+
+`ethr_rwmutex.h` and `ethr_rwmutex.c` implement the eleven upstream
+read/write mutex entry points. All supported type and lifetime options
+use the same native algorithm. Reader groups are unused hints, matching
+OTP's pthread backend. Spin counts go directly to registered waiting.
+Invalid option enums or spin counts below -1 return `EINVAL`, and
+allocation failure returns `ENOMEM`.
+
+Readers can share and nest acquisition. A queued writer blocks new
+readers, while an existing reader can nest. Each read acquisition requires
+one matching release. Exclusive acquisition cannot nest or upgrade a read
+lock. Try-lock reports held or incompatible ownership as `EBUSY`, and an
+absent native object as `EINVAL`. Both blocking acquisitions wait for
+events without deadlines. Unlock notifications follow guard release;
+waiters recheck lock state rather than treating a wake as acquisition.
+Selection and reacquisition have no FIFO guarantee.
+
+`ethr_rwmutex_size` reports the native heap storage beyond the embedded
+wrapper, excluding allocator overhead. Busy destruction preserves the
+object, and successful destruction clears its pointer. External lifetime
+synchronization keeps the object live through waits and excludes concurrent
+entry during destruction. Unexpected blocking or unlock errors abort the
+domain after native waiter-interest withdrawal. Callers pair read/write
+acquisitions with their corresponding release and supply unlock and terminal
+shutdown progress before entering an indefinite wait.
+
+Full ERTS type selection, linkage, thread progress and shutdown remain open.
+The [signed read/write qualification](../../docs/reports/milestones/2026-11-26-erts-rwmutex-adapter.md)
+records shared readers, both blocked access modes, heap size and fatal
+foreign release, with the timed worker suite repeated separately.
+
+## Low-level lock fallbacks
+
+`ethr_lock.h` and `ethr_lock.c` provide the four `ethr_spin*` entry points
+over `ethr_mutex`, and the six low-level `ethr_rwlock`/read/write entry
+points over `ethr_rwmutex`. This follows OTP's blocking fallback model.
+The types use registered event-only acquisition with the same owner,
+busy-destruction and error contracts as those underlying adapters.
+The backend must permit parking and provide unlock and terminal shutdown
+progress at each call site. These fallbacks advertise neither native
+spinlocks nor native read/write spinlocks. `ethr_compiler_barrier` uses
+a C11 sequentially consistent compiler fence.
+
+The signed archive fixture includes only the public aggregate header,
+links the separate objects, and retains its shared input through exact
+joins. The `--erts-mutex` profile qualifies blocking spin contention,
+shared readers, blocked readers and writers, busy destruction and fatal
+foreign release through these entry points.
+The [archive qualification](../../docs/reports/milestones/2026-11-26-erts-lock-archive.md)
+records the signed fixtures, archive members and separate-object link map.

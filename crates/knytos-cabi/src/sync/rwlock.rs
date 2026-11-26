@@ -16,7 +16,7 @@ use crate::{
     workers::{
         PARTICIPANT_COUNT,
         Participant,
-        park,
+        park_event,
         participant,
         wake_waiters,
     },
@@ -112,12 +112,21 @@ pub struct NativeRwLock(Mutex<CountingMutex, State>);
 
 impl NativeRwLock {
     fn acquire(&self, caller: Participant, access: Access, deadline: &Deadline) -> i32 {
+        self.acquire_until(caller, access, Some(deadline))
+    }
+
+    fn acquire_until(
+        &self,
+        caller: Participant,
+        access: Access,
+        deadline: Option<&Deadline>,
+    ) -> i32 {
         loop {
-            let remaining = deadline.remaining_ms();
+            let remaining = deadline.map(Deadline::remaining_ms);
             let (status, wake) = {
                 let mut state = self.0.lock();
                 let status = state.try_acquire(caller, access);
-                if status == BUSY && remaining != 0 {
+                if status == BUSY && remaining != Some(0) {
                     // Register against the same state read by unlock. A
                     // subsequent release leaves a retained CQ generation.
                     *state.waiters(access) |= caller.bit();
@@ -138,7 +147,7 @@ impl NativeRwLock {
             if status != BUSY {
                 return status;
             }
-            let status = park(caller, deadline.remaining_ms());
+            let status = park_event(caller, deadline.map(Deadline::remaining_ms));
             if status != OK && status != DEADLINE {
                 let wake = self.0.lock().withdraw(caller, access);
                 wake_waiters(wake);
@@ -175,6 +184,12 @@ pub extern "C" fn knytos_rwlock_create() -> *mut NativeRwLock {
     publish(NativeRwLock(Mutex::new(State::default())))
 }
 
+/// Requested heap storage behind one opaque C read/write lock.
+#[unsafe(no_mangle)]
+pub extern "C" fn knytos_rwlock_storage_size() -> usize {
+    core::mem::size_of::<NativeRwLock>()
+}
+
 /// Safety: unless null, this is a live object with externally exclusive
 /// access to its lifetime. No concurrent or subsequent call may use it
 /// after successful destruction.
@@ -204,6 +219,35 @@ pub unsafe extern "C" fn knytos_rwlock_try_read(lock: *const NativeRwLock) -> i3
         return INVALID;
     };
     lock.0.lock().try_acquire(caller, Access::Read)
+}
+
+/// Safety: unless null, the object remains live for the entire call.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn knytos_rwlock_try_write(lock: *const NativeRwLock) -> i32 {
+    let (Some(lock), Some(caller)) = (unsafe { lock.as_ref() }, participant()) else {
+        return INVALID;
+    };
+    lock.0.lock().try_acquire(caller, Access::Write)
+}
+
+/// Safety: retain the object through acquisition, and supply unlock and
+/// shutdown progress for this event-only wait.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn knytos_rwlock_read_event(lock: *const NativeRwLock) -> i32 {
+    let (Some(lock), Some(caller)) = (unsafe { lock.as_ref() }, participant()) else {
+        return INVALID;
+    };
+    lock.acquire_until(caller, Access::Read, None)
+}
+
+/// Safety: retain the object through acquisition, and supply unlock and
+/// shutdown progress for this event-only wait.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn knytos_rwlock_write_event(lock: *const NativeRwLock) -> i32 {
+    let (Some(lock), Some(caller)) = (unsafe { lock.as_ref() }, participant()) else {
+        return INVALID;
+    };
+    lock.acquire_until(caller, Access::Write, None)
 }
 
 /// Safety: unless null, the object remains live through the entire wait.

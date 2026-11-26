@@ -1,0 +1,386 @@
+{
+  "outcome": "passed",
+  "kernel_sha256": "b8359886e2de3c8ff0246fc69c61f7e8b97f58111d8494acd871bbb85f1698fa",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "boot_image_sha256": "5b4a8fcc3be102758500d5dd617afc8dbe18d2e46f5fb849272ba24bc1e6d45e",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "toolchain": {
+    "picolibc_revision": "2ae376c6cdf4fef90ca2388ecf7a07457fa63cff",
+    "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+    "rustc": "rustc 1.102.0-nightly (5f4effd57 2026-11-13)\nbinary: rustc\ncommit-hash: 5f4effd579500175af844241eb179e756190f1e7\ncommit-date: 2026-11-13\nhost: aarch64-apple-darwin\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5"
+  },
+  "base_commit": "a9810754bfadc4dba699cdb72a33314428e22276",
+  "guest_cpus": 2,
+  "fixtures": [
+    {
+      "name": "c-hello",
+      "unsigned_elf_sha256": "159d218f5775ff3c1bd601b6fd326e43df953266a41ea8beb2a400d67c993e2e",
+      "signed_elf_sha256": "a9a51d8f364070a52de2aedb914ccd4f575045164fee2c37d9d3aedc7fb3987b",
+      "descriptor_sha256": "6421a9230f0b430425222c24a1552c50b1a5f1db74f67fba30a4f4c0af7221a2",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=0"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-memory",
+      "unsigned_elf_sha256": "349d4d8496bf766c6ab6902ea4588b60221dd739e7fe4dabba576b68635d1f66",
+      "signed_elf_sha256": "4549fc4056bc64457fdb63bc7fa09ca4d4bcfbecca4a8f9e76627c9e2d404f24",
+      "descriptor_sha256": "79a7d1ee87561e376d98efa3eb327236da00235b1624aca72f94c3637929b242",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=1"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-format",
+      "unsigned_elf_sha256": "61af04fe8bb29d5b4eea6e0a461f4986a642f4fd4d206bc76d13bb94c7337b37",
+      "signed_elf_sha256": "42207facd6bf5c9b18f8fed04e7175256eeea4a6fe06e6a430c2952aa69ddd9c",
+      "descriptor_sha256": "122ff77e1fb0873b57320d977988aeeace303753622e489f8f036038d26703b5",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=2"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-clock",
+      "unsigned_elf_sha256": "c814feaa30f313df6cdf7245d174088f1c2075a6fa996ac47dad16666c658bb8",
+      "signed_elf_sha256": "ee81185830a6100a1d7ee93780ceabea52fd92a2b5011fd4c2ff2ad48439a4dc",
+      "descriptor_sha256": "9902edb9670051ac671d4e08efed0cf18f301552b8aca6755fcdc7409abe5bb5",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=3"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-startup",
+      "unsigned_elf_sha256": "2d8ae5876cf848528756b6e5af980ec67a1209830bbe5e1ee38f32f621c8f6e8",
+      "signed_elf_sha256": "c1673059a29985c8850a7fbe3f84b2faa6fc8d4f6a0de562f65a32960a6ffd0c",
+      "descriptor_sha256": "dfc5d2c0f0460b427499ad580460361cedc151b6eda01e540b16679f7998cb09",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=4"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-exit",
+      "unsigned_elf_sha256": "7f95ca16f1bda5e7ac07e87919dae0994d391174159c16817da1bf5ff97b6d1c",
+      "signed_elf_sha256": "d5f9ea2cbe804b86bb9f7df61c956afbfe01a8c8352ab7682683c34d4f2ba73c",
+      "descriptor_sha256": "f4d59c216515ae6feaff8609dd80aae5a44f27c51e1c1be328e2211d582a4c38",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=5"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-error",
+      "unsigned_elf_sha256": "149b20e6adb811ae6b0a20cb727f36be5f5460980affe011cd7d81b40849ce6c",
+      "signed_elf_sha256": "36f06d19e381fc2033bfc14b25831b14588499352648e5dc09fb870eb89c3d8e",
+      "descriptor_sha256": "f96f45c23fa12985497b935d636cefb4f868ee28c9b3614fb8775e9b2411fb73",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=6"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-abort",
+      "unsigned_elf_sha256": "77fbbeb389b1199fb41758cb76abb6c85874b13512eafcd627c43e3c79158735",
+      "signed_elf_sha256": "b7e4f35afb90cb5252345db5093392a5689ae0a3ec497f625cfc983e909ba4fd",
+      "descriptor_sha256": "db01efd3a9a55d4137bcfec7f0c4678fab12937c874e18e29a3225cbc8f81585",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=7"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-empty",
+      "unsigned_elf_sha256": "212dafe3e263c0448aa5f545a8defdfe0771eaff071189ee5d618a023df972f5",
+      "signed_elf_sha256": "0c66ee04015c7c292809b5520f0048c8f48f31202d07a7010a82ca7347a0b9d6",
+      "descriptor_sha256": "13806df6f63cfb101dc967a874ed9b937ba9b3748f0965b016d242d4bebc5a12",
+      "source_sha256": "be66a796c42fdbf6b4cb7fab59d09471849354d10f91ae2749e7ae91752a510b",
+      "defines": [
+        "CASE=8"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-shutdown-without-request",
+      "unsigned_elf_sha256": "706584295303cb38cadf55c9f19676dbc9461ccd6ff5fe36676296d801d84799",
+      "signed_elf_sha256": "1ee255fffaf0d87f6bafb493a40f1df689685e6bf40a1bc49aeee67624b45258",
+      "descriptor_sha256": "5723a616b48aeaac4765e50e2ea402fdf1adbb4e2adf239bf20b8813eca0cea3",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=9"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    },
+    {
+      "name": "c-workers",
+      "unsigned_elf_sha256": "2b235ca6c09dfbb3bbad4cb65e034c633ff6fea2b091575d47e2acc645ec4482",
+      "signed_elf_sha256": "e9624f9b1b67d7349e8a1a773e5b2ae8e468bb1603ecdd5baeee8ad9d150772d",
+      "descriptor_sha256": "7f6f816ee0606ddd08ebf8a7a788923ba88fd43688c99cb036e042965c1b7c7b",
+      "source_sha256": "fc399047605d9ab4d85f664a860837a7c7b50704a2786accca099347c2c0b6d1",
+      "defines": [
+        "CASE=14"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-unjoined",
+      "unsigned_elf_sha256": "cb6fb73ddc00258bbff7044ef7cefc58525005b799e4b7c5728da15edf7ac66a",
+      "signed_elf_sha256": "87d43cdb1138a69455807a392f9ddb910ce888075f21f38c3bfaa27ece74b9c0",
+      "descriptor_sha256": "37b65fe09ac1803636f65d51c39e0e5916f75c06e1aea3089779872b40f5677d",
+      "source_sha256": "fc399047605d9ab4d85f664a860837a7c7b50704a2786accca099347c2c0b6d1",
+      "defines": [
+        "CASE=15"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-worker-reuse",
+      "unsigned_elf_sha256": "e42699d3ba319eefe74c55794606487fa19e1666622d8696d884581d2087f48e",
+      "signed_elf_sha256": "381eb59c731721b122227d939a76e0804317597fe9ab672a73113a1aff33c761",
+      "descriptor_sha256": "da367e8a996be0d37efff69f9ff1a5dc56cc513932d81b8f54a07679ba0a9cf5",
+      "source_sha256": "fc399047605d9ab4d85f664a860837a7c7b50704a2786accca099347c2c0b6d1",
+      "defines": [
+        "CASE=16"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-sync",
+      "unsigned_elf_sha256": "00c3e5e0a7000467e9c0ac7441cef03fa9ac1a6523f4fb0aa513ec9ac2143086",
+      "signed_elf_sha256": "cec544db59ea5bbc51e844c8294ff999fa9c2bda386c2d2e937540074b49211e",
+      "descriptor_sha256": "8820bfdfbbfc93b09f7413dde33383adc739be25a09d733067f145deaf1336e2",
+      "source_sha256": "0c7cbb5846092fb4a75eecddb610981e8b3a49800e96c8f7d60494bcd9aa558e",
+      "defines": [
+        "CASE=17"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-rwlock",
+      "unsigned_elf_sha256": "982e1bd3a96e4ce86a0e44a020b83c10bcb1802b34069b7c1675f33d195d02ba",
+      "signed_elf_sha256": "f4f47343b03bf373c16d9787b38311ae118330847a57fefe446b5d97133f4e52",
+      "descriptor_sha256": "876b9695a52773131bcbc45d3b68b7b843bfb6304ab787ac493e7c4c2e66b656",
+      "source_sha256": "8875e2a1bb1b1926dca7c65c63eaad7db467b022749476f822f790baffcfaf02",
+      "defines": [
+        "CASE=18"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-events",
+      "unsigned_elf_sha256": "1dfd8b4dfdd52427fc6009740cf26c9278b56915e9699ed5eb69286e5178e190",
+      "signed_elf_sha256": "cfb63579b84c72e3cf9090220a55d76190d7cd0e3e9e43a5f1dff1959e2c22e2",
+      "descriptor_sha256": "0a9411616b87895eb210a86ce695437ba287476577303a4fac9f773065694f17",
+      "source_sha256": "4ecaa14bf4d240e99a0c9e1539a7a4f5a268ca5f161aea5d2922ddf67637fb4b",
+      "defines": [
+        "CASE=37"
+      ],
+      "profile": "aarch64-static-c11-native-workers-restricted-libc-no-tls"
+    },
+    {
+      "name": "c-erts-mutex",
+      "unsigned_elf_sha256": "41b692913cffd4c0e663d895755d6532e4769feebf0b2f19944d334835a49f0f",
+      "signed_elf_sha256": "9ccfbff8c19decc40074dd6af9a3eb28c40aca11209b9929c142a48aa7218666",
+      "descriptor_sha256": "ea06296c26bc2b8713c0d8e2c2562eac9e63bacd39371fc9fa7cf350e0d80f85",
+      "source_sha256": "c06bbfefdb74a944ef8596c799213b91fac316c79c9a6274a1ae7463248771bf",
+      "defines": [
+        "CASE=51"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-mutex-foreign",
+      "unsigned_elf_sha256": "a5f62017e3aa39c0c410342c44d3afa951cab90f59f35367802277cb3b8aa825",
+      "signed_elf_sha256": "9d3bcd93c9c6a84d0a61b9e0029dbdbaeb8048125967320c2f909e08ed8d07d0",
+      "descriptor_sha256": "db3f932d50b87a206e931058f9836343b72b50a0a91c13a0c08b04d8a2f56249",
+      "source_sha256": "c06bbfefdb74a944ef8596c799213b91fac316c79c9a6274a1ae7463248771bf",
+      "defines": [
+        "CASE=52"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-condition",
+      "unsigned_elf_sha256": "290a705b5c77b09c34320bcce5b23a1909547ce21c6914a832ed8368215f162a",
+      "signed_elf_sha256": "432c0d507acc9ea21ee79be329f48e564572030bd5eb6c24440e0023a87ced6f",
+      "descriptor_sha256": "bdd1c2d2686a2d359d5ff194c6348f60cbda877cef10ec57b6ab664840d77b49",
+      "source_sha256": "ef5918a603c202237cdd18877dc660ba12ef9ff022c127f23e84066483dcd0bd",
+      "defines": [
+        "CASE=53"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-condition-unlocked",
+      "unsigned_elf_sha256": "cd57e11ceb2f39d68f371e39998a9daaaeae7d73940140e3dd520d857b302dae",
+      "signed_elf_sha256": "f30e07b1148904f418292d8a4fc5cb1686d9da1abb80ba2cf99eef7ce420d760",
+      "descriptor_sha256": "45e0d5102b1060f992105bc25f957615abf4d26d9126b1d65dc56e4593470665",
+      "source_sha256": "ef5918a603c202237cdd18877dc660ba12ef9ff022c127f23e84066483dcd0bd",
+      "defines": [
+        "CASE=54"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-rwmutex",
+      "unsigned_elf_sha256": "4d789067d1f7bc243200aae9bfcaf3d34a8304359be5fc48943612d47247d6e3",
+      "signed_elf_sha256": "42b4e399e3baadd62997b67484ddb053836e037ffa884666a395a99ea45be10a",
+      "descriptor_sha256": "f7b3e62340805245d8d4f015ee485907b52efce13579fdd2a54b7586aa324785",
+      "source_sha256": "860b4fdb8a71fb52034968a98b0bb1751418b7472e0773b93cc6ba584b07c4fb",
+      "defines": [
+        "CASE=55"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-erts-rwmutex-foreign",
+      "unsigned_elf_sha256": "ebc703265ef74fb3bd22953e9ba23c7f9272b5a5aff9ef55e8293588751bcca3",
+      "signed_elf_sha256": "b90c7109b03749aaeebda72a307a67d496cdbb990da339a8ad74406112d10ac1",
+      "descriptor_sha256": "1a3b813cb75a0b787fd1c5c0fcbb249ccdda7e6d2efe6ce23deafe5671a8c10b",
+      "source_sha256": "860b4fdb8a71fb52034968a98b0bb1751418b7472e0773b93cc6ba584b07c4fb",
+      "defines": [
+        "CASE=56"
+      ],
+      "profile": "aarch64-static-c11-worker-libc-no-tls"
+    },
+    {
+      "name": "c-survivor",
+      "unsigned_elf_sha256": "159d218f5775ff3c1bd601b6fd326e43df953266a41ea8beb2a400d67c993e2e",
+      "signed_elf_sha256": "8baeead1f146f11a086268e35e6145637cba978a14733fb58b987f2c38b0d610",
+      "descriptor_sha256": "5e28b53cf3f2f50ba82d8f98f20e4f9e6d12a0f852ebfc2a126d4c5f547eea39",
+      "source_sha256": "873449c92d4c71fe3792b2de2d2ef2b0a19cd17e73b1399b1db34453a6164199",
+      "defines": [
+        "CASE=0"
+      ],
+      "profile": "aarch64-static-c11-single-thread-no-tls"
+    }
+  ],
+  "inputs_sha256": {
+    "Cargo.lock": "3d1d83994a48de28029d2bebc77bbcca67dc7043cc21952a7f8fa0bcdbc8e16a",
+    "Cargo.toml": "34cfdef777b84e4cbad80468d1dd089bb2174e71b7d3c7ee2d39cba6c50a0880",
+    "crates/knytos-cabi/Cargo.toml": "20a149f48bf0dc1ff8c1c53156c4619a000dd2da044f9337118477147bba439b",
+    "crates/knytos-cabi/src/allocation.rs": "3d1d9d3685ddc890609abb4395227fb6c8ef9255ee2fdcb1f1cb5c9a18ea035a",
+    "crates/knytos-cabi/src/lib.rs": "3ec8ec8f59bd6cb0cb60788b6d5c255d29945a81538e4af803cfff8fc69e23b9",
+    "crates/knytos-cabi/src/native.rs": "e157972b408dd86390a0d9f9f72b1b5dcb0e82ee6fb6ae6334e9d8c7d9dfd22a",
+    "crates/knytos-cabi/src/service_worker.rs": "b439d558e2cb17411257cdb96ec5b11e928723aa9353f2a490c46cdf720b9e5f",
+    "crates/knytos-cabi/src/sync/event.rs": "d7c3993de3e1ebc4b61937e0f8671947fb4ee378758077e8af090d79792c54fd",
+    "crates/knytos-cabi/src/sync/libc.rs": "e3f9cbdd36f7d92f3b1bc441f65cb7526655b3f9d5b92826e3ad45f645420bba",
+    "crates/knytos-cabi/src/sync/rwlock.rs": "a92ee69c6e7b20514dd4dcfa006dd1c61a51e15e5cab7f0d7acec494fe185945",
+    "crates/knytos-cabi/src/sync.rs": "0d1f5460e114ee8f5efc03a4c7fdb71e668e7b3a04f21f5eb0a99ac020248af4",
+    "crates/knytos-cabi/src/tsd.rs": "e18c1e46595ebeb7cd53b3276b87c01b120472056847cc72593ddd59d0ef6169",
+    "crates/knytos-cabi/src/workers.rs": "ce13ffad9983383aef7b29ce0d9218256d25ad80701f8fb2ed88c47865d44f71",
+    "crates/knytos-launch/src/deployment.rs": "23e17427f23c5e18015b8f42dad6f6652786bb06a5b8db042b1d8378f3e66771",
+    "crates/knytos-launch/src/execution_target.rs": "83def014b58185cebd0fb8d40ac4f999126a2494a634e1db9e78fae5ef69b784",
+    "crates/knytos-launch/src/ingress.rs": "e929ad9906786d2cee4b0cb0efb847b5ebf99c4dcb22f1985b894e430b66da25",
+    "crates/knytos-launch/src/ingress_policy.rs": "b8a215ab3babd9998255812c792860910b9bbed22dfb0209b3ab2d56c5187fdd",
+    "crates/knytos-launch/src/lib.rs": "ad99f908f72e769f72916d5aebf8556d0ca4a24cce36d46e0e318d93429c0725",
+    "crates/knytos-launch/src/management/limits.rs": "b6c804bff30e6f5a853c2b443240d27f9e50b572d3058c4758cb42c0e1e60238",
+    "crates/knytos-launch/src/management/sealed.rs": "33aa276b109c2bf07f16b920890d379a89aa25b7c1fd171f803ed9ea9f7d7c72",
+    "crates/knytos-launch/src/management.rs": "21b154941435a8666adacda811bc326500a9a155996cdefea8539f33be096433",
+    "crates/knytos-launch/src/operations.rs": "3f92ca92b8b19b4c1dc802e442f0a25e4bf4c4107f62469fba6a4f1026f2722c",
+    "crates/knytos-launch/src/operations_bundle.rs": "b9ca112cbcca534e3056ace201c225629f09f25d5fdacae590f039040bdff139",
+    "crates/knytos-launch/src/operations_pickup.rs": "707cc735894520eed1ee7a2eea432f98bab6607a110f261bb9884e0bd5b8e144",
+    "crates/knytos-launch/src/otlp.rs": "00d1947e34309b2546aaa62b65ad9e4d00bfbe881562e19971abbedf2de098dc",
+    "crates/knytos-launch/src/placement.rs": "ef0e341ece74b9d9694cf50ba7ebe97afa41e30483254a4b50b70b2300693efd",
+    "crates/knytos-launch/src/release.rs": "56ec61085e336e20f018d45859823a05b7b63568a035f2e1346760b11a8d95d8",
+    "crates/knytos-launch/src/release_admission.rs": "55f35232f630f43bf123f7f921f7aa37117bea869d3740725680b73acda71379",
+    "crates/knytos-launch/src/sha256.rs": "2e58fd347dd77e93576325bd06f32300fcd752cf927266b80628325607807c30",
+    "crates/knytos-launch/src/shutdown.rs": "ccdbbb2a1216fc52b3d87a38dca0493d28965bc7b30d7f59ac0db2e704925160",
+    "crates/knytos-launch/src/signature_note.rs": "d3808d6a41027d9d6c8dae795c90d5275188352396198f1faec2f43d2f3f978a",
+    "crates/knytos-launch/src/telemetry.rs": "8836a6815b40b87b53c2bd7b18f005815a60b69fd0a4ef3f9baaef29dbdbbc6e",
+    "crates/knytos-launch/src/trust/production.rs": "cc2c1366b61fbe4bfae0227edf58c2002d36b6422c0cac63199ff2e439dbcee4",
+    "crates/knytos-launch/src/trust/signed_policy.rs": "16ee22d8e8feb9ea4016b748d464ced817d02256d3ea46adb3e471e17207b505",
+    "crates/knytos-launch/src/trust.rs": "5a774bc15ab299f74cf3883dde63d8fc11144865c688fc4f601c3e4a595542b8",
+    "crates/knytos-launch/src/user_address.rs": "01694cc89dbb2f6b1bdcc0caafb8dd0b744de89b5dffb7f699ff4f007d7969d4",
+    "crates/knytos-lifecycle/src/iommu.rs": "ecfc027c086ffbe8cfb538ffe30d23740904b087603d80516034f022a85b37d6",
+    "crates/knytos-lifecycle/src/irq.rs": "99ccca6de685131bdeb1dc90cb65695992999e654581335d89187c29b29f0fde",
+    "crates/knytos-lifecycle/src/lib.rs": "b096889d01e7b3aa1719c3f73a48741838bb862ac1e98557515dadd745221935",
+    "crates/knytos-lifecycle/src/resources.rs": "9ec29fce823650806ede3dc1a9539543dd5ccc784bbadee05d8478844a247270",
+    "crates/knytos-lifecycle/src/shootdown.rs": "fa30c25adfd41531dd3b90b7ecc107a6aea4dceb4abc778928f6615ec782ac1f",
+    "crates/knytos-rt/src/call.rs": "cfae1cf62f38e714d7cb1a2b14e29d6b67849cb416f281c108ce6e02c9e66dd6",
+    "crates/knytos-rt/src/config.rs": "298bcd8dc756f44e2ecf97d8cf4989dd3fa32b6dacb729ad3ce124a9319b8ff7",
+    "crates/knytos-rt/src/cq.rs": "fa949ca29d05cd120e602d61e85a0c2f322a1913fc1ebfb699a22fea4cb2b203",
+    "crates/knytos-rt/src/deadline.rs": "8ccb6ee937b69bff58ee4abdfbdcc205b73c2c6130c94463333b9ead78b322df",
+    "crates/knytos-rt/src/entropy.rs": "8fcfa4503fe72411f7ed2f2415c69a465c2889d7c424acb90169c48bff518872",
+    "crates/knytos-rt/src/lib.rs": "b3f88fbab4b7d2b33b06f69b1634394c1eb95e940e84fa2033fb3682946d0617",
+    "crates/knytos-rt/src/log.rs": "6023af537e9675d0aefce289a2cbb6337da04acc9d53d65ca7bae9653c360aa7",
+    "crates/knytos-rt/src/owned/completion.rs": "42007c22cb363fe7cec39457e76ccf32fa385dc6d8531e6aae2fff13f6567fcb",
+    "crates/knytos-rt/src/owned/device.rs": "963fea5b752cc4e581b608c8c16fcbcfa6620a7382ddbf9dba4cfded5aecd5d3",
+    "crates/knytos-rt/src/owned/ipc.rs": "355d1672b4c27c9791245fd8df8ad2011a8145437811ca04abf124aa5840f693",
+    "crates/knytos-rt/src/owned/memory.rs": "6036a7dc2930f401e4a083fd96f15acb43a1b2f92735be8f5dc1ee8f08c1e3aa",
+    "crates/knytos-rt/src/owned/payload.rs": "7b6925dd3376cfa445849a0af28b763f86f76a1ff91b21603c7f0394e7ba8510",
+    "crates/knytos-rt/src/owned.rs": "bfc76b1d0f9371aebedf1462a4f628f625dad1fb80815cdbece380641682f094",
+    "crates/knytos-services/aarch64-unknown-none.json": "415cfb1a689387d0454d9f91a91b0e1a4c4676fe33c17d1a83c0eb4176bf2ea9",
+    "crates/knytos-services/link.x": "f5a321cceea0c9881652583bb01e190115eddaf1ed3ee5d7cb1d7ce0adf5e2a3",
+    "crates/knytos-syscall/src/cq_ring_tests.rs": "b7d03a0597a776a31d1bde5dd46e3a778ec13f85cba8fdde82da554c1779d48c",
+    "crates/knytos-syscall/src/lib.rs": "bf3bb8739f906f78c6530a392c1906c690cc5cb5fdc52340fcb9242a7bf2800f",
+    "crates/knytos-syscall/src/metadata_pools/tests.rs": "31b2869464675a8075e2e790437bb249212ff09c9942f56fd15d8b6b3924f464",
+    "crates/knytos-syscall/src/metadata_pools.rs": "4d226d4e741ef991e73a50111d797a1094c77f504be8e2a0f04ae7cacc087bed",
+    "ports/libc/aarch64-clang.cmake": "d710f462eef199aa1d819ecc36c1c2eb921aa460e8092649f15aee0a57c09625",
+    "ports/libc/bridge.c": "93ebdc100d4843274dded2fc030a2bdf7d93a74c66237dff362a62b9094e2c6a",
+    "ports/libc/build.py": "307c984a7cd71dc4984bec02d80ebb4a2c4a6589b248e55bfd7f87c43e08bd98",
+    "ports/libc/include/knytos.h": "8a3f02d3f806bd0faab9a0f2513e28e6a812e89cda8e6a40dc4bf86c718eab5d"
+  },
+  "adapter_source_sha256": {
+    "ports/erts/ethr_mutex.c": "ab88cb88bb0763683e5d7e0bcf40d201df0c096bab421ba8bb4f847f45dc05f1",
+    "ports/erts/ethr_mutex.h": "2163540f8f09543c28d81f5f42153a073d7358270ad6b8e74c9d23e75701beb5",
+    "ports/erts/tests/condition.c": "ef5918a603c202237cdd18877dc660ba12ef9ff022c127f23e84066483dcd0bd",
+    "ports/erts/ethr_rwmutex.c": "091dc527a42ac5852a4a976d3e9b8250f388accb600910990f3b2d7172a0e93f",
+    "ports/erts/ethr_rwmutex.h": "5f3f3ab9edd3886b8148b6f4e57e1496f9845d1ff5fe006d9c8b5140eb927071",
+    "ports/erts/tests/rwmutex.c": "860b4fdb8a71fb52034968a98b0bb1751418b7472e0773b93cc6ba584b07c4fb",
+    "ports/erts/tests/mutex.c": "c06bbfefdb74a944ef8596c799213b91fac316c79c9a6274a1ae7463248771bf",
+    "ports/erts/ethr_thread.c": "7c012fb32a19db6958d337a072cf7f936809237663cc36ea646ad39b16d770df",
+    "ports/erts/ethr_thread.h": "42ecd2afd0a4fee786afb684a66350c576b47fd16bceb656187e2d03d8cd2760",
+    "ports/erts/ethr_event.c": "5609d16bdd48a0b53877462f2bea755bd93d9cacbf8e9db2e31943d76b31dd48",
+    "ports/erts/ethr_event.h": "ad0ccd542b5843f940fdf05424f79c9bf082b1973939af7c7166dd61c5015c63",
+    "ports/libc/run-tests.py": "7490629540c372c26792ba01d87be0fbcbd39a2ba2aeda0f79941cf2047c366a"
+  },
+  "otp_revision": "d199a49a01a2079afb6f2c5c9ae047cd4555e68d",
+  "upstream_sha256": {
+    "erts/include/internal/ethr_mutex.h": "5742043a67b1e7dab864587ec2828ab74b21364c096db28bed06df4bacd6c698",
+    "erts/lib_src/common/ethr_mutex.c": "e7d1bc74cc108598bfbcf95563d5a23a717109e90a4f4b812c50bb383712af3b"
+  },
+  "host_validation": {
+    "packages": [
+      "knytos-rt",
+      "knytos-cabi",
+      "knytos-app"
+    ],
+    "features": [
+      "knytos-cabi/worker-libc",
+      "knytos-app/test-support"
+    ],
+    "unit_tests_passed": 77,
+    "compile_fail_doctests_passed": 1,
+    "ignored_doctests": 2,
+    "working_directory": "/tmp (outside repository target build-std configuration)",
+    "command": "cargo +nightly-2026-11-14 test --offline --locked --manifest-path /path/to/knytos/Cargo.toml --target-dir /tmp/knytos-host-target -p knytos-rt -p knytos-cabi -p knytos-app --features knytos-cabi/worker-libc,knytos-app/test-support"
+  }
+}

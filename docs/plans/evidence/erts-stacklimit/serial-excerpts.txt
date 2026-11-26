@@ -1,0 +1,6 @@
+[+    26.691816] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-stacklimit" generation=1 asid=45 principal=0xb74d6d7c7a2b3a43
+[+    26.712282] [EL0 LOG] lp=0 asid=45 ERTS STACKLIMIT unset null rejection and one-time installation
+[+    26.712746] [EL0 LOG] lp=0 asid=45 ERTS STACKLIMIT isolated participants and fresh slot generation
+[+    26.713148] [EL0 LOG] lp=0 asid=45 ERTS STACKLIMIT handlers destructors explicit exit and detached drain
+[+    26.713442] [EL0 LOG] lp=0 asid=45 ERTS STACKLIMIT PASS
+[+    26.714088] [EL0 LOG] lp=0 asid=45 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=412 sampled_stack=512

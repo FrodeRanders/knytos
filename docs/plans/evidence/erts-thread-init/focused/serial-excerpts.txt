@@ -1,0 +1,12 @@
+[+    25.306438] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-init" generation=1 asid=42 principal=0xec01ca72d4e77e0c
+[+    25.391846] [EL0 LOG] lp=0 asid=42 ERTS INIT copied hooks and child-before-parent handshake
+[+    25.392970] [EL0 LOG] lp=0 asid=42 ERTS INIT normal explicit detached exits and TSD cleanup
+[+    25.393334] [EL0 LOG] lp=0 asid=42 ERTS INIT PASS
+[+    25.394169] [EL0 LOG] lp=0 asid=42 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=507 sampled_stack=512
+[+    25.909487] [EL0 LOG] lp=0 asid=43 ERTS INIT rejected start parent cleanup and fenced reuse
+[+    25.909990] [EL0 LOG] lp=0 asid=43 ERTS INIT PASS
+[+    25.910605] [EL0 LOG] lp=0 asid=43 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=507 sampled_stack=512
+[+    25.911125] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-init-rejected" generation=1 asid=43 principal=0xfa594b45bf434740
+[+    26.527652] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-init-exit" generation=1 asid=44 principal=0xb55f1b529650056f
+[+    26.529705] [EL0 LOG] lp=1 asid=44 [erts] thread exit during child initialization
+[+    26.530162] [EL0 LOG] lp=1 asid=44 [c-runtime] abort

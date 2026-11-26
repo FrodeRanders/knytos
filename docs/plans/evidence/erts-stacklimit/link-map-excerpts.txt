@@ -1,0 +1,2 @@
+           20a18            20a18       3c     4         libknytos_ethread.a(ethr_event.o):(.text.ethr_event_init)
+           20b84            20b84       1c     4         libknytos_ethread.a(ethr_thread.o):(.text.ethr_get_stacklimit)

@@ -1,0 +1,2 @@
+           20c68            20c68       3c     4         libknytos_ethread.a(ethr_event.o):(.text.ethr_event_init)
+           20de0            20de0       a4     4         libknytos_ethread.a(ethr_thread.o):(.text.knytos_ethr_threads_init)

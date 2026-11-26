@@ -1,0 +1,9 @@
+[+    24.694218] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-locks" generation=1 asid=40 principal=0x978686069f0c35a2
+[+    24.731330] [EL0 LOG] lp=0 asid=40 ERTS LOCKS archive-linked blocking spin fallback
+[+    24.731804] [EL0 LOG] lp=0 asid=40 ERTS LOCKS shared readers writer wake and reader publication
+[+    24.732160] [EL0 LOG] lp=0 asid=40 ERTS LOCKS public headers TSD and exact joins
+[+    24.732402] [EL0 LOG] lp=0 asid=40 ERTS LOCKS PASS
+[+    24.733066] [EL0 LOG] lp=0 asid=40 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=643 sampled_stack=512
+[+    25.295252] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-locks-foreign" generation=1 asid=41 principal=0xb85d973fc859ce4f
+[+    25.296826] [EL0 LOG] lp=1 asid=41 [erts] mutex operation failed
+[+    25.297100] [EL0 LOG] lp=1 asid=41 [c-runtime] abort

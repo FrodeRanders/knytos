@@ -1,0 +1,84 @@
+[+    10.132987] [EL0 LOG] lp=0 asid=18 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=688
+[+    10.694124] [EL0 LOG] lp=0 asid=19 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=4133241 sampled_stack=1456
+[+    11.261736] [EL0 LOG] lp=0 asid=20 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=768
+[+    11.825008] [EL0 LOG] lp=0 asid=21 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=688
+[+    12.399425] [EL0 LOG] lp=0 asid=22 [c-runtime] exit=0 released_blocks=1 remaining_blocks=0 heap_peak=135 sampled_stack=752
+[+    12.963903] [EL0 LOG] lp=0 asid=23 [c-runtime] exit=0 released_blocks=1 remaining_blocks=0 heap_peak=103 sampled_stack=784
+[+    13.543795] [EL0 LOG] lp=0 asid=24 [c-runtime] exit=17 released_blocks=1 remaining_blocks=0 heap_peak=135 sampled_stack=688
+[+    14.699196] [EL0 LOG] lp=0 asid=26 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=576
+[+    15.867034] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=576
+[+    17.022091] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=752
+[+    17.636338] [EL0 LOG] lp=0 asid=31 SYNC mutex contention and timeout
+[+    17.641141] [EL0 LOG] lp=0 asid=31 SYNC condition signal and broadcast
+[+    18.098744] [EL0 LOG] lp=0 asid=31 SYNC one deadline through reacquisition
+[+    18.112586] [EL0 LOG] lp=0 asid=31 SYNC previous slot owner fenced
+[+    18.113363] [EL0 LOG] lp=0 asid=31 SYNC PASS
+[+    18.115793] [EL0 LOG] lp=0 asid=31 [c-runtime] exit=0 released_blocks=1 remaining_blocks=0 heap_peak=169 sampled_stack=576
+[+    18.754492] [EL0 LOG] lp=0 asid=32 RWLOCK shared and nested readers
+[+    19.211788] [EL0 LOG] lp=0 asid=32 RWLOCK writer timeout wakes readers
+[+    19.217529] [EL0 LOG] lp=0 asid=32 RWLOCK last reader releases writer
+[+    19.219162] [EL0 LOG] lp=0 asid=32 RWLOCK PASS
+[+    19.222095] [EL0 LOG] lp=0 asid=32 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=231 sampled_stack=576
+[+    19.898716] [EL0 LOG] lp=0 asid=33 EVENT retained set reset and wake-before-wait
+[+    20.226063] [EL0 LOG] lp=0 asid=33 EVENT unrelated wakes preserve deadline elapsed_ns=102662000
+[+    20.234483] [EL0 LOG] lp=0 asid=33 EVENT cross-CPU publication and event-only wait
+[+    20.235242] [EL0 LOG] lp=0 asid=33 EVENT PASS
+[+    20.237230] [EL0 LOG] lp=0 asid=33 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=103 sampled_stack=640
+[+    21.147040] [EL0 LOG] lp=0 asid=34 WORKER LIBC held record
+[+    21.147457] [EL0 LOG] lp=1 asid=34 WORKER LIBC worker acquired stream
+[+    21.148529] [EL0 LOG] lp=0 asid=34 WORKER LIBC startup row=0 text=clear
+[+    21.148984] [EL0 LOG] lp=1 asid=34 WORKER LIBC worker row=0 text=clear
+[+    21.149484] [EL0 LOG] lp=1 asid=34 WORKER LIBC worker row=1 text=clear
+[+    21.149991] [EL0 LOG] lp=1 asid=34 WORKER LIBC worker row=2 text=clear
+[+    21.150501] [EL0 LOG] lp=1 asid=34 WORKER LIBC worker row=3 text=clear
+[+    21.150999] [EL0 LOG] lp=1 asid=34 WORKER LIBC worker row=4 text=clear
+[+    21.151448] [EL0 LOG] lp=1 asid=34 WORKER LIBC worker row=5 text=clear
+[+    21.151915] [EL0 LOG] lp=1 asid=34 WORKER LIBC worker row=6 text=clear
+[+    21.152415] [EL0 LOG] lp=1 asid=34 WORKER LIBC worker row=7 text=clear
+[+    21.152880] [EL0 LOG] lp=0 asid=34 WORKER LIBC startup row=1 text=clear
+[+    21.153196] [EL0 LOG] lp=0 asid=34 WORKER LIBC startup row=2 text=clear
+[+    21.153711] [EL0 LOG] lp=0 asid=34 WORKER LIBC startup row=3 text=clear
+[+    21.154000] [EL0 LOG] lp=0 asid=34 WORKER LIBC startup row=4 text=clear
+[+    21.154295] [EL0 LOG] lp=0 asid=34 WORKER LIBC startup row=5 text=clear
+[+    21.154557] [EL0 LOG] lp=0 asid=34 WORKER LIBC startup row=6 text=clear
+[+    21.154814] [EL0 LOG] lp=0 asid=34 WORKER LIBC startup row=7 text=clear
+[+    21.156543] [EL0 LOG] lp=0 asid=34 WORKER LIBC TSD isolation deletion reuse and admission
+[+    21.156855] [EL0 LOG] lp=0 asid=34 WORKER LIBC PASS
+[+    21.158100] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=254 sampled_stack=896
+[+    21.733605] [EL0 LOG] lp=0 asid=35 WORKER LIBC expected fixed-stream close rejection
+[+    22.328736] [EL0 LOG] lp=0 asid=36 TSD CLEANUP cleared values rearmed callbacks and event disposal
+[+    22.329151] [EL0 LOG] lp=0 asid=36 TSD CLEANUP exact join and fresh generation
+[+    22.329390] [EL0 LOG] lp=0 asid=36 TSD CLEANUP PASS
+[+    22.330018] [EL0 LOG] lp=0 asid=36 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=103 sampled_stack=512
+[+    23.530337] [EL0 LOG] lp=0 asid=38 ERTS EVENT nanosecond timeout rounds up
+[+    23.530879] [EL0 LOG] lp=0 asid=38 ERTS EVENT retained state and signed timeout bounds
+[+    23.636505] [EL0 LOG] lp=0 asid=38 ERTS EVENT cross-CPU wait and destruction
+[+    23.636944] [EL0 LOG] lp=0 asid=38 ERTS EVENT PASS
+[+    23.638436] [EL0 LOG] lp=0 asid=38 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=103 sampled_stack=512
+[+    24.718245] [EL0 LOG] lp=0 asid=40 ERTS TSD key exhaustion and stale errno results
+[+    24.721916] [EL0 LOG] lp=0 asid=40 ERTS TSD isolated values and event destruction before join
+[+    24.722194] [EL0 LOG] lp=0 asid=40 ERTS TSD PASS
+[+    24.722828] [EL0 LOG] lp=0 asid=40 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=190 sampled_stack=512
+[+    25.311982] [EL0 LOG] lp=0 asid=41 ERTS THREAD bounded roster results and destructor identity
+[+    25.313325] [EL0 LOG] lp=0 asid=41 ERTS THREAD stale identity and slot reuse
+[+    25.313555] [EL0 LOG] lp=0 asid=41 ERTS THREAD PASS
+[+    25.314177] [EL0 LOG] lp=0 asid=41 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=309 sampled_stack=512
+[+    25.981240] [EL0 LOG] lp=0 asid=42 ERTS DETACHED retained admission and join rejection
+[+    25.983855] [EL0 LOG] lp=0 asid=42 ERTS DETACHED shutdown joined destructors and fenced creation
+[+    25.984138] [EL0 LOG] lp=0 asid=42 ERTS DETACHED PASS
+[+    25.984801] [EL0 LOG] lp=0 asid=42 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=618 sampled_stack=512
+[+    26.554250] [EL0 LOG] lp=0 asid=43 ERTS NAMES copied names coherent snapshots and buffer bounds
+[+    26.554686] [EL0 LOG] lp=0 asid=43 ERTS NAMES destructor lookup and stale generations
+[+    26.554930] [EL0 LOG] lp=0 asid=43 ERTS NAMES PASS
+[+    26.555503] [EL0 LOG] lp=0 asid=43 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=309 sampled_stack=512
+[+    27.158794] [EL0 LOG] lp=0 asid=44 ERTS EXIT nested exit results cleanup and slot reuse
+[+    27.159963] [EL0 LOG] lp=0 asid=44 ERTS EXIT detached exit settled by shutdown drain
+[+    27.160205] [EL0 LOG] lp=0 asid=44 ERTS EXIT PASS
+[+    27.160863] [EL0 LOG] lp=0 asid=44 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=206 sampled_stack=512
+[+    28.379184] [EL0 LOG] lp=0 asid=46 ERTS HANDLERS reverse order before TSD and exact joins
+[+    28.379597] [EL0 LOG] lp=0 asid=46 ERTS HANDLERS normal explicit and detached exits
+[+    28.379841] [EL0 LOG] lp=0 asid=46 ERTS HANDLERS PASS
+[+    28.380512] [EL0 LOG] lp=0 asid=46 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=206 sampled_stack=512
+[+    29.608111] [EL0 LOG] lp=0 asid=48 ERTS HANDLERS bounded registration PASS
+[+    29.608899] [EL0 LOG] lp=0 asid=48 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512
+[+    30.217921] [EL0 LOG] lp=0 asid=49 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=688

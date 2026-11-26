@@ -1561,6 +1561,18 @@ Implement the platform functionality required by the selected version.
 
 Adapt ERTS threading facilities to native Knytos primitives.
 
+The [standalone archive](../../ports/erts/README.md#standalone-archive)
+packages the current adapters as separate objects behind
+`knytos_ethread.h`. The [low-level lock fallbacks](../../ports/erts/README.md#low-level-lock-fallbacks)
+cover mutex-backed `ethr_spin*` and read/write-backed low-level locks.
+They retain the underlying objects through registered waits and require
+parking-capable callers with unlock and shutdown progress. Actual OTP
+header selection, initialization, atomics and thread-specific event
+integration remain open.
+The [signed archive qualification](../reports/milestones/2026-11-26-erts-lock-archive.md)
+links all six adapter objects through public headers and covers fallback
+lock contention, payload publication, TSD isolation and exact joins.
+
 The [bounded ERTS thread adapter](../../ports/erts/README.md#bounded-thread-adapter)
 retains three worker records through exact native join and
 uses generation-qualified identities across slot reuse. It currently
@@ -1573,6 +1585,25 @@ exit. Join and detached drain retain exact ownership through that path.
 The adapter invokes up to sixteen startup-registered exit handlers in
 reverse registration order before TSD teardown. ERTS-specific callbacks
 and thread-progress cleanup still need wiring.
+The [creation-callback initializer](../../ports/erts/README.md#creation-callbacks)
+copies the upstream hook layout before creation starts. The adapter retains
+prepared data and its exact worker record through a child-completion
+handshake before parent cleanup. Native start rejection still runs parent
+cleanup, and reentrant thread control is fenced during creation. This
+standalone initializer does not close upstream `ethr_init` or late-init
+work.
+The [signed initialization qualification](../reports/milestones/2026-11-26-erts-thread-init.md)
+covers copied hooks, early wakes, child-before-parent ordering,
+known-unstarted rejection and fatal child-initializer exit.
+The [stack-limit metadata API](../../ports/erts/README.md#stack-limit-metadata)
+provides participant-local get and one-time set with upstream error
+precedence. Values remain available through exit handlers and TSD cleanup,
+then clear with exact record retirement. Automatic capture of actual
+native stack boundaries remains open; non-null marker metadata alone does
+not qualify ERTS recursion guards or native stack geometry.
+The [signed metadata qualification](../reports/milestones/2026-11-26-erts-stacklimit.md)
+covers one-time installation, participant isolation, handlers and
+destructors, explicit exit, detached drain and fresh slot generations.
 The [signed exit-handler qualification](../reports/milestones/2026-11-26-erts-exit-handlers.md)
 covers reverse registration order before TSD, normal and explicit exit,
 detached drain, registration limits and recursive-handler abort.
@@ -1642,6 +1673,17 @@ and coordinated shutdown remain open.
 The [signed condition qualification](../reports/milestones/2026-11-26-erts-condition-adapter.md)
 covers single selection, three-worker broadcast, mutex reacquisition,
 busy destruction and fatal wait without ownership.
+
+The [read/write mutex adapter](../../ports/erts/README.md#readwrite-mutex-adapter)
+provides shared and exclusive event-only acquisition, try-locks, release,
+options and heap-size reporting. It retains the native lock through each
+wait and busy destruction. The existing native writer preference and
+waiter-withdrawal rules apply. Reader groups and type/lifetime options
+remain optimization hints. Full backend selection and shutdown still
+need qualification.
+The [signed read/write qualification](../reports/milestones/2026-11-26-erts-rwmutex-adapter.md)
+covers shared readers, last-reader writer release, blocked-reader
+publication, heap-size reporting and fatal foreign unlock.
 
 Support required:
 

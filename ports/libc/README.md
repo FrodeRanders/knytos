@@ -289,6 +289,13 @@ lock or acquiring again while holding it exclusively returns
 `KNYTOS_INVALID`. The lock allows competing writers to race for ownership
 after a wake. It provides no FIFO order.
 
+`knytos_rwlock_try_write` checks exclusive acquisition without waiting.
+`knytos_rwlock_read_event` and `knytos_rwlock_write_event` wait for unlock
+readiness without deadlines, using the same state guard and waiter
+withdrawal as timed callers. Retain the lock and supply unlock and shutdown
+progress throughout acquisition. `knytos_rwlock_storage_size` reports the
+opaque object's requested heap bytes, excluding allocator overhead.
+
 The finite read and write calls carry one monotonic budget through every
 recheck. If the last queued writer times out or its wait is rejected, the
 runtime withdraws that registration and wakes any readers that are now
