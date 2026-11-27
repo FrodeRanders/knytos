@@ -1,0 +1,27 @@
+[+    20.774590] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-locks" generation=1 asid=34 principal=0xae215e5cf62b4abf
+[+    20.856302] [EL0 LOG] lp=0 asid=34 ERTS LOCKS archive-linked blocking spin fallback
+[+    20.856964] [EL0 LOG] lp=0 asid=34 ERTS LOCKS shared readers writer wake and reader publication
+[+    20.857474] [EL0 LOG] lp=0 asid=34 ERTS LOCKS public headers TSD and exact joins
+[+    20.857832] [EL0 LOG] lp=0 asid=34 ERTS LOCKS PASS
+[+    20.858788] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=643 sampled_stack=512
+[+    21.356720] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-atomics" generation=1 asid=35 principal=0x888ed42ce4fb0b12
+[+    21.361942] [EL0 LOG] lp=0 asid=35 ERTS ATOMICS all word and 32-bit variants old/new values and wrapping
+[+    21.362400] [EL0 LOG] lp=0 asid=35 ERTS ATOMICS four participants contended arithmetic
+[+    21.362858] [EL0 LOG] lp=0 asid=35 ERTS ATOMICS cross-CPU publication before join
+[+    21.363098] [EL0 LOG] lp=0 asid=35 ERTS ATOMICS PASS
+[+    21.363712] [EL0 LOG] lp=0 asid=35 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=309 sampled_stack=512
+[+    21.946428] [EL0 LOG] lp=0 asid=36 ERTS TSE independent temporary owners busy peek and capacity
+[+    21.947586] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-tse" generation=1 asid=36 principal=0xca49ca5bba7e133a
+[+    21.954118] [EL0 LOG] lp=0 asid=36 ERTS TSE cross-CPU delivery destructor rearming and exact joins
+[+    21.954430] [EL0 LOG] lp=0 asid=36 ERTS TSE PASS
+[+    21.955086] [EL0 LOG] lp=0 asid=36 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=3815 sampled_stack=512
+[+    22.544870] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-config" generation=1 asid=37 principal=0x820d7b283a268786
+[+    22.549798] [EL0 LOG] lp=0 asid=37 ERTS TS CONFIG captured allocator prefix failure and reentry rejection
+[+    22.550302] [EL0 LOG] lp=0 asid=37 ERTS TS CONFIG participant status normal and explicit destructor cleanup
+[+    22.550700] [EL0 LOG] lp=0 asid=37 ERTS TS CONFIG PASS
+[+    22.551352] [EL0 LOG] lp=0 asid=37 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=739 sampled_stack=512
+[+    23.129788] [EL0 LOG] lp=0 asid=38 ERTS TSE independent temporary owners busy peek and capacity
+[+    23.131078] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-debug" generation=1 asid=38 principal=0xc1dd0dd1bf02515a
+[+    23.138318] [EL0 LOG] lp=0 asid=38 ERTS TSE cross-CPU delivery destructor rearming and exact joins
+[+    23.138632] [EL0 LOG] lp=0 asid=38 ERTS TSE PASS
+[+    23.139270] [EL0 LOG] lp=0 asid=38 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=3815 sampled_stack=512

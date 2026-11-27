@@ -1,0 +1,6 @@
+    Finished `release` profile [optimized] target(s) in 0.11s
+<output>/erts/c-erts-header-atomics.c:8:10: fatal error: 'atomics-values.h' file not found
+    8 | #include "atomics-values.h"
+      |          ^~~~~~~~~~~~~~~~~~
+1 error generated.
+Traceback (most recent call last):

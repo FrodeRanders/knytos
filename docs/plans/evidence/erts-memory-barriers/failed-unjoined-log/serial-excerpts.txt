@@ -1,0 +1,5 @@
+[+    16.284455] [EL0 LOG] lp=1 asid=29 WWORKER private queue entry
+[+    16.284766] [EL0 LOG] lp=0 asid=29 ORKER expected unjoined exit
+[+    16.285278] [EL0 LOG] lp=0 asid=29 [c-runtime] exit with an unjoined worker
+[+    16.285570] Aborting user address space 29
+[+    16.286313] [EL0 LOG] lp=0 asid=16 [agent] launched "c-unjoined" generation=1 asid=29 principal=0xb64b4758fb616923

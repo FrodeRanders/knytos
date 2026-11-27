@@ -4,6 +4,11 @@
 
 #include "knytos.h"
 
+/* Native locks park directly. CPU counts, reader groups and main-thread
+ * counts are optimization hints, with no library-global state to prepare. */
+int ethr_mutex_lib_init(int cpu_configured);
+int ethr_mutex_lib_late_init(int reader_groups, int main_threads);
+
 typedef struct {
     struct knytos_mutex *native;
 } ethr_mutex;

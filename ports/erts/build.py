@@ -9,7 +9,8 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCES = ("ethr_event.c", "ethr_tsd.c", "ethr_thread.c", "ethr_mutex.c",
-           "ethr_rwmutex.c", "ethr_lock.c")
+           "ethr_rwmutex.c", "ethr_lock.c", "ethr_ts_event.c", "ethr_atomic_info.c",
+           "ethr_diagnostics.c")
 
 
 def digest(path):

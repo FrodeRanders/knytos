@@ -1,0 +1,11 @@
+           22c68            22c68       3c     4         <output>/libknytos_ethread.a(ethr_event.o):(.text.ethr_event_init)
+           22e3c            22e3c       14     4         <output>/libknytos_ethread.a(ethr_tsd.o):(.text.ethr_tsd_key_create)
+           22eb0            22eb0       1c     4         <output>/libknytos_ethread.a(ethr_thread.o):(.text.ethr_get_stacklimit)
+           2380c            2380c       60     4         <output>/libknytos_ethread.a(ethr_mutex.o):(.text.ethr_mutex_init_opt)
+           23b6c            23b6c        8     4         <output>/libknytos_ethread.a(ethr_rwmutex.o):(.text.ethr_rwmutex_set_reader_group)
+           23dfc            23dfc        4     4         <output>/libknytos_ethread.a(ethr_lock.o):(.text.ethr_spinlock_init)
+           23e28            23e28       40     4         <output>/libknytos_ethread.a(ethr_ts_event.o):(.text.allocator_guard)
+           2e090            2e090        8     1                 ref_ethr_atomic32_cmpxchg_mb
+           2e4b0            2e4b0        8     1                 ref_ethr_atomic_read_acqb
+           2e788            2e788        8     1                 ref_ethr_thr_create
+           2e660            2e660        8     1                 ref_ethr_get_ts_event

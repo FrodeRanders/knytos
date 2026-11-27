@@ -1,0 +1,12 @@
+int ethr_mutex_lib_init(int);
+int ethr_mutex_lib_late_init(int, int);
+__attribute__((used, retain)) static __typeof__(&ethr_mutex_lib_init) const ref_ethr_mutex_lib_init = &ethr_mutex_lib_init;
+__attribute__((used, retain)) static __typeof__(&ethr_mutex_lib_late_init) const ref_ethr_mutex_lib_late_init = &ethr_mutex_lib_late_init;
+           245b4            245b4        8     4         libknytos_ethread.a(ethr_mutex.o):(.text.ethr_mutex_lib_init)
+           245b4            245b4        8     1                 ethr_mutex_lib_init
+           245bc            245bc        8     4         libknytos_ethread.a(ethr_mutex.o):(.text.ethr_mutex_lib_late_init)
+           245bc            245bc        8     1                 ethr_mutex_lib_late_init
+           2f7a0            2f7a0        8     8         /private/tmp/knytos-erts-mutex-init-run/erts/contract.build/application.o:(.rodata.ref_ethr_mutex_lib_init)
+           2f7a0            2f7a0        8     1                 ref_ethr_mutex_lib_init
+           2f7a8            2f7a8        8     8         /private/tmp/knytos-erts-mutex-init-run/erts/contract.build/application.o:(.rodata.ref_ethr_mutex_lib_late_init)
+           2f7a8            2f7a8        8     1                 ref_ethr_mutex_lib_late_init

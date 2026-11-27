@@ -1,0 +1,111 @@
+In file included from <native-probe>/build/knytos-ethread-link.c:40:
+../sdk/ethread-link-check.h:6:9: warning: 'ETHR_SIZEOF_INT' macro redefined [-Wmacro-redefined]
+    6 | #define ETHR_SIZEOF_INT __SIZEOF_INT__
+      |         ^
+<native-probe>/build/knytos-ethread-link.c:31:9: note: previous definition is here
+   31 | #define ETHR_SIZEOF_INT 4
+      |         ^
+In file included from <native-probe>/build/knytos-ethread-link.c:40:
+../sdk/ethread-link-check.h:7:9: warning: 'ETHR_SIZEOF_LONG' macro redefined [-Wmacro-redefined]
+    7 | #define ETHR_SIZEOF_LONG __SIZEOF_LONG__
+      |         ^
+<native-probe>/build/knytos-ethread-link.c:32:9: note: previous definition is here
+   32 | #define ETHR_SIZEOF_LONG 8
+      |         ^
+In file included from <native-probe>/build/knytos-ethread-link.c:40:
+../sdk/ethread-link-check.h:8:9: warning: 'ETHR_SIZEOF_LONG_LONG' macro redefined [-Wmacro-redefined]
+    8 | #define ETHR_SIZEOF_LONG_LONG __SIZEOF_LONG_LONG__
+      |         ^
+<native-probe>/build/knytos-ethread-link.c:33:9: note: previous definition is here
+   33 | #define ETHR_SIZEOF_LONG_LONG 8
+      |         ^
+In file included from <native-probe>/build/knytos-ethread-link.c:40:
+../sdk/ethread-link-check.h:9:9: warning: 'ETHR_SIZEOF_PTR' macro redefined [-Wmacro-redefined]
+    9 | #define ETHR_SIZEOF_PTR __SIZEOF_POINTER__
+      |         ^
+<native-probe>/build/knytos-ethread-link.c:30:9: note: previous definition is here
+   30 | #define ETHR_SIZEOF_PTR 8
+      |         ^
+4 warnings generated.
+ld.lld: error: undefined symbol: ethr_assert_failed
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_assert_failed)
+
+ld.lld: error: undefined symbol: ethr_compiler_barrier
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_compiler_barrier)
+
+ld.lld: error: undefined symbol: ethr_cond_broadcast
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_cond_broadcast)
+
+ld.lld: error: undefined symbol: ethr_cond_destroy
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_cond_destroy)
+
+ld.lld: error: undefined symbol: ethr_cond_init
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_cond_init)
+
+ld.lld: error: undefined symbol: ethr_cond_init_opt
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_cond_init_opt)
+
+ld.lld: error: undefined symbol: ethr_cond_signal
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_cond_signal)
+
+ld.lld: error: undefined symbol: ethr_cond_wait
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_cond_wait)
+
+ld.lld: error: undefined symbol: ethr_equal_tids
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_equal_tids)
+
+ld.lld: error: undefined symbol: ethr_event_destroy
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_event_destroy)
+
+ld.lld: error: undefined symbol: ethr_event_init
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_event_init)
+
+ld.lld: error: undefined symbol: ethr_event_prepare_timed
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_event_prepare_timed)
+
+ld.lld: error: undefined symbol: ethr_event_reset
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_event_reset)
+
+ld.lld: error: undefined symbol: ethr_event_set
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_event_set)
+
+ld.lld: error: undefined symbol: ethr_event_stwait
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_event_stwait)
+
+ld.lld: error: undefined symbol: ethr_event_swait
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_event_swait)
+
+ld.lld: error: undefined symbol: ethr_event_twait
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_event_twait)
+
+ld.lld: error: undefined symbol: ethr_event_wait
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_event_wait)
+
+ld.lld: error: undefined symbol: ethr_fatal_error__
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_fatal_error__)
+
+ld.lld: error: undefined symbol: ethr_free_ts_event__
+>>> referenced by knytos-ethread-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-ethread-link-ebf81c.o:(ref_ethr_free_ts_event__)
+
+ld.lld: error: too many errors emitted, stopping now (use --error-limit=0 to see all errors)
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

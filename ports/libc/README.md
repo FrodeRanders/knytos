@@ -309,6 +309,11 @@ python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
   --native-workers --smp 2 --output target/c-runtime/worker-validation
 ```
 
+The unjoined-worker control requires the runtime's unjoined-owner diagnostic
+and the same domain's kernel-abort diagnostic, with no ordinary C exit.
+Concurrent console writes can interleave, so its fixture print is not an
+acceptance marker. These diagnostics do not establish physical retirement.
+
 ## Picolibc profile for worker calls
 
 `build.py --worker-libc` builds a separate Picolibc archive with stdio

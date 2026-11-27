@@ -1,0 +1,4 @@
+[+    23.180153] [EL0 LOG] lp=0 asid=39 ERTS BARRIERS masks single evaluation expression and compiler ordering
+[+    23.182567] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-barriers" generation=1 asid=39 principal=0xb276a48c03b4bdd7
+[+    23.193576] [EL0 LOG] lp=0 asid=39 assertion "ethr_thr_create(&tid, publisher, &input, NULL) == 0" failed: file "/private/tmp/knytos-erts-barriers-qualified/erts/c-erts-header-barriers.c", line 137, function: knytos_c_main
+[+    23.194213] [EL0 LOG] lp=0 asid=39 [c-runtime] abort

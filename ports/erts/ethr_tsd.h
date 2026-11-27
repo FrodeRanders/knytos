@@ -2,10 +2,7 @@
 #ifndef KNYTOS_ETHR_TSD_H
 #define KNYTOS_ETHR_TSD_H
 
-#include <stdint.h>
-
-/* Runtime-local key identity. Values remain borrowed by the participant. */
-typedef uint64_t ethr_tsd_key;
+#include "ethr_native_types.h"
 
 int ethr_tsd_key_create(ethr_tsd_key *key, char *name);
 int ethr_tsd_key_delete(ethr_tsd_key key);

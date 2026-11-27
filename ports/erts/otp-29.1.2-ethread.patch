@@ -1,0 +1,149 @@
+--- a/erts/include/internal/ethread.h
++++ b/erts/include/internal/ethread.h
+@@ -117,7 +117,17 @@
+ # define ETHR_FALLTHROUGH()                    do {} while (0)  /* fallthrough */
+ #endif
+ 
+-#if defined(ETHR_PTHREADS)
++#if defined(ETHR_KNYTOS)
++
++#if defined(ETHR_PTHREADS) || defined(ETHR_WIN32_THREADS)
++#error "Knytos ethread cannot select another thread backend"
++#endif
++#if !defined(KNYTOS_NATIVE_WORKERS) || !defined(KNYTOS_WORKER_LIBC)
++#error "Knytos ethread requires the worker-libc profile"
++#endif
++#include "knytos/ethr_native_types.h"
++
++#elif defined(ETHR_PTHREADS)
+ /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
+  * The pthread implementation                                                *
+ \*                                                                           */
+@@ -369,6 +379,10 @@
+ 
+ 
+ extern ethr_runtime_t ethr_runtime__;
++
++#if defined(ETHR_KNYTOS)
++#include "knytos/ethr_atomics.h"
++#else
+ 
+ /* For native CPU-optimised atomics, spinlocks, and rwlocks. */
+ #if !defined(ETHR_DISABLE_NATIVE_IMPLS)
+@@ -415,6 +429,8 @@
+ 
+ #include "ethr_atomics.h" /* The atomics API */
+ 
++#endif /* ETHR_KNYTOS */
++
+ #if defined(__GNUC__)
+ #  ifndef ETHR_SPIN_BODY
+ #    if defined(__i386__) || defined(__x86_64__)
+@@ -465,7 +481,7 @@
+ /* mutex as fallback for spinlock for VALGRIND. */
+ #  undef ETHR_HAVE_NATIVE_SPINLOCKS
+ #  undef ETHR_HAVE_NATIVE_RWSPINLOCKS
+-#else
++#elif !defined(ETHR_KNYTOS)
+ #  include "ethr_optimized_fallbacks.h"
+ #endif
+ 
+@@ -514,7 +530,7 @@
+ #define ETHR_THR_OPTS_DEFAULT_INITER {0, -1, NULL}
+ #define ETHR_THR_NAME_MAX 15
+ 
+-#if !defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHR_AUX_IMPL__)
++#if !defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHR_AUX_IMPL__) || defined(ETHR_KNYTOS)
+ #  define ETHR_NEED_SPINLOCK_PROTOTYPES__
+ #  define ETHR_NEED_RWSPINLOCK_PROTOTYPES__
+ #endif
+@@ -552,7 +568,10 @@
+ 
+ void ethr_compiler_barrier(void);
+ 
+-#if defined(ETHR_HAVE_NATIVE_SPINLOCKS)
++#if defined(ETHR_KNYTOS)
++#include "knytos/ethr_mutex.h"
++typedef ethr_mutex ethr_spinlock_t;
++#elif defined(ETHR_HAVE_NATIVE_SPINLOCKS)
+ typedef ethr_native_spinlock_t ethr_spinlock_t;
+ #elif defined(__WIN32__)
+ typedef CRITICAL_SECTION ethr_spinlock_t;
+@@ -567,7 +586,7 @@
+ void ethr_spin_lock(ethr_spinlock_t *);
+ #endif
+ 
+-#if defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHR_AUX_IMPL__)
++#if !defined(ETHR_KNYTOS) && (defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHR_AUX_IMPL__))
+ 
+ static ETHR_INLINE int
+ ETHR_INLINE_FUNC_NAME_(ethr_spinlock_init)(ethr_spinlock_t *lock)
+@@ -629,7 +648,9 @@
+ 
+ typedef struct ethr_ts_event_ ethr_ts_event; /* Needed by ethr_mutex.h */
+ 
+-#if defined(ETHR_WIN32_THREADS)
++#if defined(ETHR_KNYTOS)
++#  include "knytos/ethr_event.h"
++#elif defined(ETHR_WIN32_THREADS)
+ #  include "win/ethr_event.h"
+ #elif defined(ETHR_PTHREADS)
+ #  include "pthread/ethr_event.h"
+@@ -661,7 +682,7 @@
+ int ethr_free_ts_event__(ethr_ts_event *tsep);
+ int ethr_make_ts_event__(ethr_ts_event **tsepp, int tmp);
+ 
+-#if !defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHREAD_IMPL__)
++#if !defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHREAD_IMPL__) || defined(ETHR_KNYTOS)
+ ethr_ts_event *ethr_lookup_ts_event__(int busy_dup);
+ ethr_ts_event *ethr_peek_ts_event(void);
+ void ethr_unpeek_ts_event(ethr_ts_event *);
+@@ -672,7 +693,7 @@
+ 
+ #if defined(ETHR_PTHREADS)
+ 
+-#if defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHREAD_IMPL__)
++#if !defined(ETHR_KNYTOS) && (defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHREAD_IMPL__))
+ 
+ extern pthread_key_t ethr_ts_event_key__;
+ 
+@@ -693,7 +714,7 @@
+ 
+ #elif defined(ETHR_WIN32_THREADS)
+ 
+-#if defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHREAD_IMPL__)
++#if !defined(ETHR_KNYTOS) && (defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHREAD_IMPL__))
+ 
+ extern DWORD ethr_ts_event_key__;
+ 
+@@ -714,7 +735,7 @@
+ 
+ #endif
+ 
+-#if defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHREAD_IMPL__)
++#if !defined(ETHR_KNYTOS) && (defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHREAD_IMPL__))
+ 
+ static ETHR_INLINE ethr_ts_event *
+ ETHR_INLINE_FUNC_NAME_(ethr_get_ts_event)(void)
+@@ -775,7 +796,12 @@
+ 
+ #endif
+ 
++#if defined(ETHR_KNYTOS)
++#include "knytos/ethr_mutex.h"
++#include "knytos/ethr_rwmutex.h"
++#else
+ #include "ethr_mutex.h" /* Need atomic declarations and tse */
++#endif
+ 
+ #ifdef ETHR_HAVE_NATIVE_RWSPINLOCKS
+ typedef ethr_native_rwlock_t ethr_rwlock_t;
+@@ -792,7 +818,7 @@
+ void ethr_write_lock(ethr_rwlock_t *);
+ #endif
+ 
+-#if defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHR_AUX_IMPL__)
++#if !defined(ETHR_KNYTOS) && (defined(ETHR_TRY_INLINE_FUNCS) || defined(ETHR_AUX_IMPL__))
+ 
+ static ETHR_INLINE int
+ ETHR_INLINE_FUNC_NAME_(ethr_rwlock_init)(ethr_rwlock_t *lock)

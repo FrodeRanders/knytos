@@ -1,0 +1,18 @@
+ETHR_PROTO_NORETURN__
+ethr_assert_failed(const char *file, int line, const char *func, const char *a);
+
+ETHR_PROTO_NORETURN__ ethr_fatal_error__(const char *file,
+					 int line,
+					 const char *func,
+					 int err);
+
+__attribute__((used, retain)) static __typeof__(&ethr_assert_failed) const ref_ethr_assert_failed = &ethr_assert_failed;
+__attribute__((used, retain)) static __typeof__(&ethr_fatal_error__) const ref_ethr_fatal_error__ = &ethr_fatal_error__;
+           255b0            255b0       8c     4         libknytos_ethread.a(ethr_diagnostics.o):(.text.ethr_assert_failed)
+           255b0            255b0       8c     1                 ethr_assert_failed
+           257a0            257a0       88     4         libknytos_ethread.a(ethr_diagnostics.o):(.text.ethr_fatal_error__)
+           257a0            257a0       88     1                 ethr_fatal_error__
+           2f000            2f000        8     8         <output>/erts/contract.build/application.o:(.rodata.ref_ethr_assert_failed)
+           2f000            2f000        8     1                 ref_ethr_assert_failed
+           2f738            2f738        8     8         <output>/erts/contract.build/application.o:(.rodata.ref_ethr_fatal_error__)
+           2f738            2f738        8     1                 ref_ethr_fatal_error__

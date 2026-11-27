@@ -1,0 +1,90 @@
+000000000002000c <knytos_dw_set>:
+   2000c:      	sub	sp, sp, #0x30
+   20010:      	str	x19, [sp, #0x20]
+   20014:      	mov	x19, x0
+   20018:      	mov	x0, sp
+   2001c:      	mov	w2, #0x10               // =16
+   20020:      	stp	x29, x30, [sp, #0x10]
+   20024:      	add	x29, sp, #0x10
+   20028:      	bl	0x29974 <memcpy>
+   2002c:      	ldp	x9, x8, [sp]
+   20030:      	tst	x19, #0xf
+   20034:      	dmb	ish
+   20038:      	cset	w10, ne
+   2003c:      	add	x10, x19, w10, uxtw #3
+   20040:      	ldaxp	xzr, x11, [x10]
+   20044:      	stlxp	w11, x9, x8, [x10]
+   20048:      	cbnz	w11, 0x20040 <knytos_dw_set+0x34>
+   2004c:      	dmb	ish
+   20050:      	ldp	x29, x30, [sp, #0x10]
+   20054:      	ldr	x19, [sp, #0x20]
+   20058:      	add	sp, sp, #0x30
+   2005c:      	ret
+00000000000200b4 <knytos_dw_read>:
+   200b4:      	sub	sp, sp, #0x20
+   200b8:      	stp	x29, x30, [sp, #0x10]
+   200bc:      	tst	x0, #0xf
+   200c0:      	add	x29, sp, #0x10
+   200c4:      	cset	w8, ne
+   200c8:      	dmb	ish
+   200cc:      	add	x10, x0, w8, uxtw #3
+   200d0:      	mov	x0, x1
+   200d4:      	ldaxp	x8, x9, [x10]
+   200d8:      	stlxp	w11, x8, x9, [x10]
+   200dc:      	cbnz	w11, 0x200d4 <knytos_dw_read+0x20>
+   200e0:      	mov	x1, sp
+   200e4:      	mov	w2, #0x10               // =16
+   200e8:      	dmb	ish
+   200ec:      	stp	x8, x9, [sp]
+   200f0:      	bl	0x29974 <memcpy>
+   200f4:      	ldp	x29, x30, [sp, #0x10]
+   200f8:      	add	sp, sp, #0x20
+   200fc:      	ret
+000000000002014c <knytos_dw_cas>:
+   2014c:      	sub	sp, sp, #0x40
+   20150:      	stp	x20, x19, [sp, #0x30]
+   20154:      	mov	x19, x2
+   20158:      	mov	x20, x0
+   2015c:      	mov	x0, sp
+   20160:      	mov	w2, #0x10               // =16
+   20164:      	stp	x29, x30, [sp, #0x10]
+   20168:      	stp	x22, x21, [sp, #0x20]
+   2016c:      	add	x29, sp, #0x10
+   20170:      	bl	0x29974 <memcpy>
+   20174:      	ldp	x22, x21, [sp]
+   20178:      	mov	x0, sp
+   2017c:      	mov	x1, x19
+   20180:      	mov	w2, #0x10               // =16
+   20184:      	bl	0x29974 <memcpy>
+   20188:      	tst	x20, #0xf
+   2018c:      	ldp	x11, x10, [sp]
+   20190:      	cset	w8, ne
+   20194:      	dmb	ish
+   20198:      	add	x12, x20, w8, uxtw #3
+   2019c:      	ldaxp	x9, x8, [x12]
+   201a0:      	cmp	x9, x11
+   201a4:      	cset	w13, ne
+   201a8:      	cmp	x8, x10
+   201ac:      	cinc	w13, w13, ne
+   201b0:      	cbz	w13, 0x201c0 <knytos_dw_cas+0x74>
+   201b4:      	stlxp	w13, x9, x8, [x12]
+   201b8:      	cbnz	w13, 0x2019c <knytos_dw_cas+0x50>
+   201bc:      	b	0x201c8 <knytos_dw_cas+0x7c>
+   201c0:      	stlxp	w13, x22, x21, [x12]
+   201c4:      	cbnz	w13, 0x2019c <knytos_dw_cas+0x50>
+   201c8:      	cmp	x9, x11
+   201cc:      	dmb	ish
+   201d0:      	ccmp	x8, x10, #0x0, eq
+   201d4:      	cset	w20, eq
+   201d8:      	b.eq	0x201f0 <knytos_dw_cas+0xa4>
+   201dc:      	mov	x1, sp
+   201e0:      	mov	x0, x19
+   201e4:      	mov	w2, #0x10               // =16
+   201e8:      	stp	x9, x8, [sp]
+   201ec:      	bl	0x29974 <memcpy>
+   201f0:      	mov	w0, w20
+   201f4:      	ldp	x20, x19, [sp, #0x30]
+   201f8:      	ldp	x22, x21, [sp, #0x20]
+   201fc:      	ldp	x29, x30, [sp, #0x10]
+   20200:      	add	sp, sp, #0x40
+   20204:      	ret

@@ -4,6 +4,25 @@
 
 #include "ethr_mutex.h"
 
+int ethr_mutex_lib_init(int cpu_configured)
+{
+    /* OTP uses this count to choose spin defaults and pthread attributes.
+     * Native parking and writer admission are properties of each owned
+     * object; neither requires a shared attribute or CPU-count snapshot. */
+    (void)cpu_configured;
+    return 0;
+}
+
+int ethr_mutex_lib_late_init(int reader_groups, int main_threads)
+{
+    /* The native rwlock has no reader-group arrays, and none of the native
+     * locks spin. These hints do not describe kernel admission or placement.
+     * In particular, repeat calls must not touch existing objects/waiters. */
+    (void)reader_groups;
+    (void)main_threads;
+    return 0;
+}
+
 static void mutex_require_ok(int status)
 {
     if (status != KNYTOS_OK) {

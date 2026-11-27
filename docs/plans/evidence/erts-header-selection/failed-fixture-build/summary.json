@@ -1,0 +1,14 @@
+{
+  "outcome": "failed-before-boot",
+  "reason": "Generated atomic fixture lost its source-directory include path",
+  "runner_sha256": "8d751c89862dde49d7f6600d61a3c6063bbeacfbecbd573a0709af215976fda4",
+  "result": {
+    "schema": "knytos.c-runtime-m1.v1",
+    "cases": [],
+    "negative_controls": [],
+    "outcome": "failed",
+    "error": "RuntimeError('c-erts-header-atomics-build: unexpected exit 1')"
+  },
+  "build_log_sha256": "2bddb6e27b9e6ed140a3d2bb8cfe9c8950d74b41c1f41ff0f88fc507513d2f96",
+  "generated_source_sha256": "26be4c7e444ced92b9ccc323be38c8d245979796e39e3c0ec01cac3dc9a1b1e4"
+}

@@ -1,0 +1,3 @@
+           210d0            210d0       3c     4         libknytos_ethread.a(ethr_event.o):(.text.ethr_event_init)
+           21280            21280       84     4         libknytos_ethread.a(ethr_thread.o):(.text.ethr_install_exit_handler)
+           21a54            21a54       84     4         libknytos_ethread.a(ethr_ts_event.o):(.text.knytos_ethr_ts_events_init)

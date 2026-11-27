@@ -1,0 +1,54 @@
+[+    16.248952] [EL0 LOG] lp=1 asid=29 WORKER private queue entry
+[+    16.249512] [EL0 LOG] lp=0 asid=16 [agent] launched "c-unjoined" generation=1 asid=29 principal=0xb64b4758fb616923
+[+    16.250518] [EL0 LOG] lp=0 asid=29 WORKER expected unjoined exit
+[+    16.250944] [EL0 LOG] lp=0 asid=29 [c-runtime] exit with an unjoined worker
+[+    16.251160] Aborting user address space 29
+[+    20.328070] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-locks" generation=1 asid=34 principal=0xae215e5cf62b4abf
+[+    20.413860] [EL0 LOG] lp=0 asid=34 ERTS LOCKS archive-linked blocking spin fallback
+[+    20.414524] [EL0 LOG] lp=0 asid=34 ERTS LOCKS shared readers writer wake and reader publication
+[+    20.415064] [EL0 LOG] lp=0 asid=34 ERTS LOCKS public headers TSD and exact joins
+[+    20.415452] [EL0 LOG] lp=0 asid=34 ERTS LOCKS PASS
+[+    20.416344] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=643 sampled_stack=512
+[+    20.927068] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-atomics" generation=1 asid=35 principal=0x888ed42ce4fb0b12
+[+    20.931842] [EL0 LOG] lp=0 asid=35 ERTS ATOMICS all word and 32-bit variants old/new values and wrapping
+[+    20.932256] [EL0 LOG] lp=0 asid=35 ERTS ATOMICS four participants contended arithmetic
+[+    20.932558] [EL0 LOG] lp=0 asid=35 ERTS ATOMICS cross-CPU publication before join
+[+    20.932782] [EL0 LOG] lp=0 asid=35 ERTS ATOMICS PASS
+[+    20.933370] [EL0 LOG] lp=0 asid=35 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=309 sampled_stack=512
+[+    21.530386] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-tse" generation=1 asid=36 principal=0xca49ca5bba7e133a
+[+    21.531824] [EL0 LOG] lp=0 asid=36 ERTS TSE independent temporary owners busy peek and capacity
+[+    21.539136] [EL0 LOG] lp=0 asid=36 ERTS TSE cross-CPU delivery destructor rearming and exact joins
+[+    21.539454] [EL0 LOG] lp=0 asid=36 ERTS TSE PASS
+[+    21.540120] [EL0 LOG] lp=0 asid=36 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=3815 sampled_stack=512
+[+    22.128156] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-config" generation=1 asid=37 principal=0x820d7b283a268786
+[+    22.144630] [EL0 LOG] lp=0 asid=37 ERTS TS CONFIG captured allocator prefix failure and reentry rejection
+[+    22.145148] [EL0 LOG] lp=0 asid=37 ERTS TS CONFIG participant status normal and explicit destructor cleanup
+[+    22.145534] [EL0 LOG] lp=0 asid=37 ERTS TS CONFIG PASS
+[+    22.146258] [EL0 LOG] lp=0 asid=37 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=739 sampled_stack=512
+[+    22.732284] [EL0 LOG] lp=0 asid=38 ERTS TSE independent temporary owners busy peek and capacity
+[+    22.733814] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-debug" generation=1 asid=38 principal=0xc1dd0dd1bf02515a
+[+    22.777774] [EL0 LOG] lp=0 asid=38 ERTS TSE cross-CPU delivery destructor rearming and exact joins
+[+    22.778130] [EL0 LOG] lp=0 asid=38 ERTS TSE PASS
+[+    22.778892] [EL0 LOG] lp=0 asid=38 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=3815 sampled_stack=512
+[+    23.327606] [EL0 LOG] lp=0 asid=39 ERTS BARRIERS masks single evaluation expression and compiler ordering
+[+    23.329638] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-barriers" generation=1 asid=39 principal=0xb276a48c03b4bdd7
+[+    23.347296] [EL0 LOG] lp=0 asid=39 ERTS BARRIERS four publication modes before acknowledgement and exact join
+[+    23.347590] [EL0 LOG] lp=0 asid=39 ERTS BARRIERS PASS
+[+    23.348202] [EL0 LOG] lp=0 asid=39 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=103 sampled_stack=512
+[+    23.922488] [EL0 LOG] lp=0 asid=40 ERTS BARRIERS masks single evaluation expression and compiler ordering
+[+    23.924114] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-barriers-debug" generation=1 asid=40 principal=0xf9e1f10a506ebd6e
+[+    23.943298] [EL0 LOG] lp=0 asid=40 ERTS BARRIERS four publication modes before acknowledgement and exact join
+[+    23.943608] [EL0 LOG] lp=0 asid=40 ERTS BARRIERS PASS
+[+    23.944274] [EL0 LOG] lp=0 asid=40 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=103 sampled_stack=512
+[+    24.523584] [EL0 LOG] lp=0 asid=41 ERTS DW all variants compare both halves expected-value and eight-byte alignment
+[+    24.525850] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-dw" generation=1 asid=41 principal=0xdc5533b7f9b168c7
+[+    24.539492] [EL0 LOG] lp=0 asid=41 ERTS DW four participants contended compare exchange
+[+    24.552932] [EL0 LOG] lp=0 asid=41 ERTS DW coherent set read and publication before exact joins
+[+    24.553194] [EL0 LOG] lp=0 asid=41 ERTS DW PASS
+[+    24.553764] [EL0 LOG] lp=0 asid=41 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=927 sampled_stack=512
+[+    25.134868] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-header-dw-debug" generation=1 asid=42 principal=0xe9c5285ac14c5c83
+[+    25.137906] [EL0 LOG] lp=0 asid=42 ERTS DW all variants compare both halves expected-value and eight-byte alignment
+[+    25.152738] [EL0 LOG] lp=0 asid=42 ERTS DW four participants contended compare exchange
+[+    25.155470] [EL0 LOG] lp=0 asid=42 ERTS DW coherent set read and publication before exact joins
+[+    25.155726] [EL0 LOG] lp=0 asid=42 ERTS DW PASS
+[+    25.156276] [EL0 LOG] lp=0 asid=42 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=927 sampled_stack=512

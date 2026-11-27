@@ -1,0 +1,13 @@
+[+    20.828964] [EL0 LOG] lp=0 asid=34 ERTS TSE independent temporary owners busy peek and capacity
+[+    20.830784] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-tse" generation=1 asid=34 principal=0xf1da0ea5f3c269fc
+[+    20.838848] [EL0 LOG] lp=0 asid=34 ERTS TSE cross-CPU delivery destructor rearming and exact joins
+[+    20.839200] [EL0 LOG] lp=0 asid=34 ERTS TSE PASS
+[+    20.839878] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=3791 sampled_stack=512
+[+    21.422448] [EL0 LOG] lp=0 asid=35 ERTS TSE rejected key admission and fresh initialization
+[+    21.422860] [EL0 LOG] lp=0 asid=35 ERTS TSE PASS
+[+    21.423546] [EL0 LOG] lp=0 asid=35 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=341 sampled_stack=512
+[+    21.424274] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-tse-key-limit" generation=1 asid=35 principal=0xd955bd620655edde
+[+    22.009218] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-tse-busy-exit" generation=1 asid=36 principal=0x87fe502a2e8cf0f2
+[+    22.010208] [EL0 LOG] lp=1 asid=36 [erts] thread event exit with live borrow
+[+    22.010524] [EL0 LOG] lp=1 asid=36 [erts] thread event lifecycle failed
+[+    22.010890] [EL0 LOG] lp=1 asid=36 [c-runtime] abort

@@ -209,8 +209,21 @@ def main():
     worker_profile.add_argument("--worker-libc", action="store_true")
     worker_profile.add_argument("--erts-mutex", action="store_true",
                                 help="qualify ERTS synchronization adapters in a separate signed campaign")
+    worker_profile.add_argument("--erts-tse", action="store_true",
+                                help="qualify ERTS thread-specific event ownership in a separate signed campaign")
+    worker_profile.add_argument("--erts-header", action="store_true",
+                                help="qualify adapters through the staged upstream ethread.h selection")
+    worker_profile.add_argument("--erts-diagnostics", action="store_true",
+                                help="qualify ERTS terminal diagnostics in a separate signed campaign")
+    worker_profile.add_argument("--erts-bootstrap", action="store_true",
+                                help="qualify bounded native ERTS early/late initialization")
+    parser.add_argument("--otp-source", type=Path,
+                        help="pinned OTP source required by the ERTS header and diagnostics profiles")
     parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
     args = parser.parse_args()
+    selected_headers = args.erts_header or args.erts_diagnostics or args.erts_bootstrap
+    if selected_headers and args.otp_source is None:
+        parser.error("ERTS header, diagnostics and bootstrap profiles require --otp-source")
     cases = CASES[:-1].copy()
     vm_cases = {
         10: ("avm-hello", args.atomvm_elf, "[atomvm] completed status=0"),
@@ -266,7 +279,9 @@ def main():
     cases.extend((name, number) for number, (name, path, _) in vm_cases.items() if path)
     worker_cases = {
         14: ("c-workers", 2, "WORKER PASS"),
-        15: ("c-unjoined", 2, "WORKER expected unjoined exit"),
+        # Startup/worker console writes may interleave. This control requires
+        # the runtime ownership diagnostic and the same domain's kernel abort.
+        15: ("c-unjoined", 2, "[c-runtime] exit with an unjoined worker"),
         16: ("c-worker-reuse", 9, "WORKER exact join and slot reuse"),
         17: ("c-sync", 9, "SYNC PASS"),
         18: ("c-rwlock", 5, "RWLOCK PASS"),
@@ -304,13 +319,49 @@ def main():
         62: ("c-erts-stacklimit", 5, "ERTS STACKLIMIT PASS"),
         63: ("c-erts-atomics", 5, "ERTS ATOMICS PASS"),
     } if args.erts_mutex else {}
+    tse_cases = {
+        64: ("c-erts-tse", 5, "ERTS TSE PASS"),
+        65: ("c-erts-tse-key-limit", 1, "ERTS TSE PASS"),
+        66: ("c-erts-tse-busy-exit", 2, "[erts] thread event exit with live borrow"),
+        67: ("c-erts-tse-config", 3, "ERTS TS CONFIG PASS"),
+        68: ("c-erts-tse-fallback", 1, "ERTS TS CONFIG PASS"),
+    } if args.erts_tse else {}
+    header_cases = {
+        57: ("c-erts-header-locks", 5, "ERTS LOCKS PASS"),
+        63: ("c-erts-header-atomics", 5, "ERTS ATOMICS PASS"),
+        64: ("c-erts-header-tse", 5, "ERTS TSE PASS"),
+        67: ("c-erts-header-config", 3, "ERTS TS CONFIG PASS"),
+        69: ("c-erts-header-debug", 5, "ERTS TSE PASS"),
+        70: ("c-erts-header-barriers", 2, "ERTS BARRIERS PASS"),
+        71: ("c-erts-header-barriers-debug", 2, "ERTS BARRIERS PASS"),
+        72: ("c-erts-header-dw", 5, "ERTS DW PASS"),
+        73: ("c-erts-header-dw-debug", 5, "ERTS DW PASS"),
+        74: ("c-erts-header-atomic-info", 4, "ERTS ATOMIC INFO PASS"),
+        75: ("c-erts-header-atomic-info-debug", 4, "ERTS ATOMIC INFO PASS"),
+    } if args.erts_header else {}
+    if args.erts_diagnostics:
+        header_cases = {
+            76: ("c-erts-assert-release", 1, "ERTS DIAGNOSTICS assertion macro evaluation PASS"),
+            77: ("c-erts-assert-worker", 2, "[erts] assertion failed"),
+            78: ("c-erts-fatal-worker", 2, "[erts] fatal error"),
+            79: ("c-erts-assert-debug", 1, "ERTS DIAGNOSTICS assertion macro evaluation PASS"),
+        }
+    if args.erts_bootstrap:
+        header_cases = {
+            80: ("c-erts-bootstrap", 4, "ERTS BOOTSTRAP PASS"),
+            81: ("c-erts-bootstrap-keys", 2, "ERTS BOOTSTRAP PASS"),
+            82: ("c-erts-bootstrap-worker-fail", 2, "[erts] worker thread event initialization failed"),
+            83: ("c-erts-bootstrap-debug", 4, "ERTS BOOTSTRAP PASS"),
+        }
     worker_cases.update(libc_cases)
     worker_cases.update(mutex_cases)
-    if args.native_workers or args.worker_libc or args.erts_mutex:
+    worker_cases.update(tse_cases)
+    worker_cases.update(header_cases)
+    if args.native_workers or args.worker_libc or args.erts_mutex or args.erts_tse or selected_headers:
         if args.smp < 2:
             parser.error("worker fixtures need at least two guest CPUs")
         cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
-    abort_cases = (7, 9, 11, 13, 15, 20, 39, 41, 47, 49, 52, 54, 56, 58, 61)
+    abort_cases = (7, 9, 11, 13, 15, 20, 39, 41, 47, 49, 52, 54, 56, 58, 61, 66, 77, 78, 82)
     cases += CASES[-1:]
     retirement_cases = {}
     retirement_images = [("parked", args.atomvm_shutdown_parked_elf)]
@@ -357,10 +408,14 @@ def main():
         images = output / "bundle"
         images.mkdir()
         erts_library = output / "erts" / "libknytos_ethread.a"
-        if args.erts_mutex:
+        if args.erts_mutex or args.erts_tse:
             command(["python3", ROOT / "ports/erts/build.py",
                      "--picolibc-source", args.picolibc_source,
                      "--output", erts_library], "erts-library-build")
+        if selected_headers:
+            command(["python3", ROOT / "ports/erts/check-interface.py", "--upstream-header",
+                     "--otp-source", args.otp_source, "--picolibc-source", args.picolibc_source,
+                     "--output", erts_library.parent], "erts-header-build")
         for name, number in cases:
             if number in vm_cases:
                 shutil.copyfile(vm_cases[number][1], images / (name + ".elf"))
@@ -368,7 +423,7 @@ def main():
             if number in worker_cases:
                 source = {17: "sync.c", 18: "rwlock.c", 37: "events.c"}.get(number, "workers.c")
                 profile = "--native-workers"
-                if number in libc_cases or number in mutex_cases:
+                if number in libc_cases or number in mutex_cases or number in tse_cases or number in header_cases:
                     source = "tsd-cleanup.c" if number in (38, 39) else "worker-libc.c"
                     profile = "--worker-libc"
                 source = {40: ROOT / "ports/erts/tests/event.c",
@@ -394,13 +449,55 @@ def main():
                           60: ROOT / "ports/erts/tests/init.c",
                           61: ROOT / "ports/erts/tests/init.c",
                           62: ROOT / "ports/erts/tests/stacklimit.c",
-                          63: ROOT / "ports/erts/tests/atomics.c"}.get(number, ROOT / "ports/libc/tests" / source)
+                          63: ROOT / "ports/erts/tests/atomics.c",
+                          64: ROOT / "ports/erts/tests/ts-event.c",
+                          65: ROOT / "ports/erts/tests/ts-event.c",
+                          66: ROOT / "ports/erts/tests/ts-event.c",
+                          67: ROOT / "ports/erts/tests/ts-config.c",
+                          68: ROOT / "ports/erts/tests/ts-config.c",
+                          69: ROOT / "ports/erts/tests/ts-event.c",
+                          70: ROOT / "ports/erts/tests/barriers.c",
+                          71: ROOT / "ports/erts/tests/barriers.c",
+                          72: ROOT / "ports/erts/tests/dw-atomics.c",
+                          73: ROOT / "ports/erts/tests/dw-atomics.c",
+                          74: ROOT / "ports/erts/tests/atomic-info.c",
+                          75: ROOT / "ports/erts/tests/atomic-info.c",
+                          76: ROOT / "ports/erts/tests/diagnostics.c",
+                          77: ROOT / "ports/erts/tests/diagnostics.c",
+                          78: ROOT / "ports/erts/tests/diagnostics.c",
+                          79: ROOT / "ports/erts/tests/diagnostics.c",
+                          80: ROOT / "ports/erts/tests/bootstrap.c",
+                          81: ROOT / "ports/erts/tests/bootstrap.c",
+                          82: ROOT / "ports/erts/tests/bootstrap.c",
+                          83: ROOT / "ports/erts/tests/bootstrap.c"}.get(number, ROOT / "ports/libc/tests" / source)
                 libraries = (["--library", erts_library, "--include", ROOT / "ports/erts"]
-                             if number in (57, 58, 59, 60, 61, 62, 63) else [])
+                             if number in (57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83) else [])
+                if number in header_cases:
+                    original = source.read_text()
+                    anchor = '#include "knytos_ethread.h"'
+                    assert original.count(anchor) == 1, source
+                    selected = output / "erts" / (name + ".c")
+                    selected.write_text(original.replace(anchor, '#include "header-profile.h"\n'
+                        '#include "ethread.h"\n#include "knytos/ethr_extensions.h"'))
+                    source = selected
+                    libraries.extend(("--include", erts_library.parent,
+                                      "--include", erts_library.parent / "otp/erts/include/internal",
+                                      "--include", ROOT / "ports/erts/tests",
+                                      "--define", "ETHR_TRY_INLINE_FUNCS=1"))
+                    if number in (69, 71, 73, 75, 77, 79, 83):
+                        libraries.extend(("--define", "DEBUG"))
                 command(["python3", ROOT / "ports/libc/build.py", source,
-                         profile, "--define", f"CASE={number}",
+                         profile, "--define", f"CASE={64 if number == 69 else 76 if number == 79 else 80 if number == 83 else number}",
                          "--picolibc-source", args.picolibc_source,
                          "--output", images / (name + ".elf"), *libraries], name + "-build")
+                if number in (70, 71):
+                    command(["python3", ROOT / "ports/erts/check-barriers.py",
+                             "--elf", images / (name + ".elf"),
+                             "--output", output / (name + "-codegen.json")], name + "-codegen-check")
+                if number in (72, 73):
+                    command(["python3", ROOT / "ports/erts/check-dw-atomics.py",
+                             "--elf", images / (name + ".elf"),
+                             "--output", output / (name + "-codegen.json")], name + "-codegen-check")
                 continue
             command(["python3", ROOT / "ports/libc/build.py", ROOT / ("ports/libc/tests/empty.c" if number == 8 else "ports/libc/tests/suite.c"),
                      "--define", f"CASE={number}", "--picolibc-source", args.picolibc_source,
@@ -630,7 +727,7 @@ def main():
                                 terminal = "[c-runtime] recursive worker exit"
                             if expected not in domain_lines or terminal not in domain_lines:
                                 return False
-                            if number in (15, 20):
+                            if number in (15, 20, 77, 78, 82):
                                 asid = re.search(r'\[EL0 LOG\] lp=\d+ asid=(\d+) ', domain_lines)[1]
                                 return re.search(r'Aborting user address space ' + asid + r'\b', text[before:]) is not None
                             return True
@@ -709,6 +806,24 @@ def main():
                             assert "WORKER cross-CPU handshake and admission" in text, name
                         if number == 15:
                             assert "[c-runtime] exit=" not in text, name
+                        if number in (77, 78):
+                            assert "[c-runtime] exit=" not in text, name
+                            assert "ERTS DIAGNOSTICS unexpected" not in text, name
+                            assert " function=worker" in text, name
+                            if number == 77:
+                                assert ' expression=0 && "native-worker-assertion"' in text, name
+                            else:
+                                assert re.search(r' error=\d+\b', text), name
+                        if number == 82:
+                            assert "[c-runtime] exit=" not in text, name
+                            assert "ERTS BOOTSTRAP unexpected" not in text, name
+                        if number in (80, 81, 83):
+                            for marker in ("late prefix rollback configuration and reentry fences",
+                                           "automatic events before child hooks and exit handlers",
+                                           "copied callbacks exact joins detached drain and zero owners"):
+                                assert "ERTS BOOTSTRAP " + marker in text, name
+                            if number == 81:
+                                assert "ERTS BOOTSTRAP key rejection rolls back before retry" in text, name
                         if number == 16:
                             assert "WORKER finalizer admission fenced" in text, name
                         if number == 17:
@@ -797,6 +912,18 @@ def main():
                                            "four participants contended arithmetic",
                                            "cross-CPU publication before join"):
                                 assert "ERTS ATOMICS " + marker in text, name
+                        if number == 64:
+                            for marker in ("independent temporary owners busy peek and capacity",
+                                           "cross-CPU delivery destructor rearming and exact joins"):
+                                assert "ERTS TSE " + marker in text, name
+                        if number == 65:
+                            assert "ERTS TSE rejected key admission and fresh initialization" in text, name
+                        if number == 67:
+                            for marker in ("captured allocator prefix failure and reentry rejection",
+                                           "participant status normal and explicit destructor cleanup"):
+                                assert "ERTS TS CONFIG " + marker in text, name
+                        if number == 68:
+                            assert "ERTS TS CONFIG incomplete allocator tuple uses whole fallback" in text, name
                         record["cases"].append({"name": name, "case": number, "passed": True,
                                                 "observation": serial_text[before:]})
                         save()

@@ -1,0 +1,135 @@
+c-erts-header-barriers unsigned ELF e9ec5811549e63701764809c6c46573269f53f092d14a117520ce69d0c9dc2c3
+000000000002000c <knytos_barrier_full>:
+   2000c:      	dmb	ish
+   20010:      	ret
+0000000000020014 <knytos_barrier_write>:
+   20014:      	dmb	ish
+   20018:      	ret
+000000000002001c <knytos_barrier_read>:
+   2001c:      	dmb	ish
+   20020:      	ret
+0000000000020024 <knytos_barrier_depend>:
+   20024:      	dmb	ish
+   20028:      	ret
+000000000002002c <knytos_barrier_mask_0>:
+   2002c:      	dmb	ish
+   20030:      	ret
+0000000000020034 <knytos_barrier_mask_1>:
+   20034:      	dmb	ish
+   20038:      	ret
+000000000002003c <knytos_barrier_mask_2>:
+   2003c:      	dmb	ish
+   20040:      	ret
+0000000000020044 <knytos_barrier_mask_3>:
+   20044:      	dmb	ish
+   20048:      	ret
+000000000002004c <knytos_barrier_mask_4>:
+   2004c:      	dmb	ish
+   20050:      	ret
+0000000000020054 <knytos_barrier_mask_5>:
+   20054:      	dmb	ish
+   20058:      	ret
+000000000002005c <knytos_barrier_mask_6>:
+   2005c:      	dmb	ish
+   20060:      	ret
+0000000000020064 <knytos_barrier_mask_7>:
+   20064:      	dmb	ish
+   20068:      	ret
+000000000002006c <knytos_barrier_mask_8>:
+   2006c:      	dmb	ish
+   20070:      	ret
+0000000000020074 <knytos_barrier_mask_9>:
+   20074:      	dmb	ish
+   20078:      	ret
+000000000002007c <knytos_barrier_mask_10>:
+   2007c:      	dmb	ish
+   20080:      	ret
+0000000000020084 <knytos_barrier_mask_11>:
+   20084:      	dmb	ish
+   20088:      	ret
+000000000002008c <knytos_barrier_mask_12>:
+   2008c:      	dmb	ish
+   20090:      	ret
+0000000000020094 <knytos_barrier_mask_13>:
+   20094:      	dmb	ish
+   20098:      	ret
+000000000002009c <knytos_barrier_mask_14>:
+   2009c:      	dmb	ish
+   200a0:      	ret
+00000000000200a4 <knytos_barrier_mask_15>:
+   200a4:      	dmb	ish
+   200a8:      	ret
+00000000000200ac <knytos_barrier_compiler>:
+   200ac:      	mov	w8, #0x29               // =41
+   200b0:      	str	w8, [x0]
+   200b4:      	ldr	w8, [x0]
+   200b8:      	str	w8, [x1]
+   200bc:      	ret
+
+c-erts-header-barriers-debug unsigned ELF 81d6c5fcd4f9e3408e21e76c93ff1289d93371dda652ca2ce368495c0b51629b
+000000000002000c <knytos_barrier_full>:
+   2000c:      	dmb	ish
+   20010:      	ret
+0000000000020014 <knytos_barrier_write>:
+   20014:      	dmb	ish
+   20018:      	ret
+000000000002001c <knytos_barrier_read>:
+   2001c:      	dmb	ish
+   20020:      	ret
+0000000000020024 <knytos_barrier_depend>:
+   20024:      	dmb	ish
+   20028:      	ret
+000000000002002c <knytos_barrier_mask_0>:
+   2002c:      	dmb	ish
+   20030:      	ret
+0000000000020034 <knytos_barrier_mask_1>:
+   20034:      	dmb	ish
+   20038:      	ret
+000000000002003c <knytos_barrier_mask_2>:
+   2003c:      	dmb	ish
+   20040:      	ret
+0000000000020044 <knytos_barrier_mask_3>:
+   20044:      	dmb	ish
+   20048:      	ret
+000000000002004c <knytos_barrier_mask_4>:
+   2004c:      	dmb	ish
+   20050:      	ret
+0000000000020054 <knytos_barrier_mask_5>:
+   20054:      	dmb	ish
+   20058:      	ret
+000000000002005c <knytos_barrier_mask_6>:
+   2005c:      	dmb	ish
+   20060:      	ret
+0000000000020064 <knytos_barrier_mask_7>:
+   20064:      	dmb	ish
+   20068:      	ret
+000000000002006c <knytos_barrier_mask_8>:
+   2006c:      	dmb	ish
+   20070:      	ret
+0000000000020074 <knytos_barrier_mask_9>:
+   20074:      	dmb	ish
+   20078:      	ret
+000000000002007c <knytos_barrier_mask_10>:
+   2007c:      	dmb	ish
+   20080:      	ret
+0000000000020084 <knytos_barrier_mask_11>:
+   20084:      	dmb	ish
+   20088:      	ret
+000000000002008c <knytos_barrier_mask_12>:
+   2008c:      	dmb	ish
+   20090:      	ret
+0000000000020094 <knytos_barrier_mask_13>:
+   20094:      	dmb	ish
+   20098:      	ret
+000000000002009c <knytos_barrier_mask_14>:
+   2009c:      	dmb	ish
+   200a0:      	ret
+00000000000200a4 <knytos_barrier_mask_15>:
+   200a4:      	dmb	ish
+   200a8:      	ret
+00000000000200ac <knytos_barrier_compiler>:
+   200ac:      	mov	w8, #0x29               // =41
+   200b0:      	str	w8, [x0]
+   200b4:      	ldr	w8, [x0]
+   200b8:      	str	w8, [x1]
+   200bc:      	ret

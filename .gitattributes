@@ -1,0 +1,3 @@
+# Preserve upstream patch context and the byte-exact Autoconf evidence capture.
+ports/erts/*.patch -whitespace
+docs/plans/evidence/erts-native-configure/native-link.c -whitespace

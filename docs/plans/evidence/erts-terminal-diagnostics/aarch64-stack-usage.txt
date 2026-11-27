@@ -1,0 +1,6 @@
+ports/erts/ethr_diagnostics.c:75:ethr_assert_failed	320	static
+ports/erts/ethr_diagnostics.c:24:text	0	static
+ports/erts/ethr_diagnostics.c:56:location	48	static
+ports/erts/ethr_diagnostics.c:66:terminate	16	static
+ports/erts/ethr_diagnostics.c:86:ethr_fatal_error__	320	static
+ports/erts/ethr_diagnostics.c:40:number	32	static

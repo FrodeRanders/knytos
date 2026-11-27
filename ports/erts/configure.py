@@ -3,9 +3,12 @@
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
+import re
+import shlex
 import shutil
 import subprocess
 
@@ -57,11 +60,121 @@ def prepare_sdk(picolibc, out):
     return sdk, control.with_suffix(".build.json")
 
 
+def prepare_native(source, picolibc, out, tree, sdk):
+    """Stage the qualified backend and its full retained-reference link probe."""
+    native = out / "native"
+    with (out / "native-interface.txt").open("w") as log:
+        subprocess.run(["python3", ROOT / "ports/erts/check-interface.py", "--upstream-header",
+                        "--otp-source", source, "--picolibc-source", picolibc,
+                        "--output", native], cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)
+    interface = json.loads((native / "result.json").read_text())
+    include = native / "otp/erts/include/internal"
+    shutil.copytree(include, sdk / "include/internal")
+    shutil.copy2(native / "libknytos_ethread.a", sdk)
+    contract = (native / "contract.c").read_text()
+    anchor = "\nint main(void) {\n"
+    if contract.count(anchor) != 1:
+        raise SystemExit("Unexpected retained-reference consumer")
+    (sdk / "ethread-link-check.h").write_text(contract.split(anchor)[0] + "\n")
+    # Use the same selected public headers in the exported OTP tree.
+    shutil.copy2(include / "ethread.h", tree / "erts/include/internal/ethread.h")
+    shutil.copytree(include / "knytos", tree / "erts/include/internal/knytos")
+    from build import SOURCES
+    backend = tree / "erts/lib_src/knytos"
+    backend.mkdir()
+    for name in (*SOURCES, *(path.name for path in sorted((ROOT / "ports/erts").glob("*.h")))):
+        shutil.copy2(ROOT / "ports/erts" / name, backend / name)
+    shutil.copy2(ROOT / "ports/erts/knytos-ethread.m4", tree / "make/autoconf/knytos-ethread.m4")
+    patch = ROOT / "ports/erts/otp-29.1.2-native-configure.patch"
+    subprocess.run(["patch", "-p1", "--batch", "--fuzz=0", "--input", patch], cwd=tree, check=True)
+    with (out / "autoconf.txt").open("w") as log:
+        subprocess.run(["autoconf", "-I", "../make/autoconf", "-o", "configure", "configure.ac"],
+                       cwd=tree / "erts", stdout=log, stderr=subprocess.STDOUT, check=True)
+    # Check the actual Make conditional without pretending a complete OTP
+    # Makefile was generated before configure reaches AC_OUTPUT.
+    def selected_sources(text, mode, label):
+        start = "ETHR_THR_LIB_BASE_DIR=@ETHR_THR_LIB_BASE_DIR@"
+        end = "ifneq ($(strip $(CREATE_DIRS)),)"
+        if text.count(start) != 1 or text.count(end) != 1:
+            raise SystemExit("Unexpected ethread Makefile boundaries")
+        fragment = start + text.split(start)[1].split(end)[0]
+        fragment = fragment.replace("@ETHR_THR_LIB_BASE_DIR@", mode).replace("@ETHR_X86_SSE2_ASM@", "no")
+        makefile = out / (label + ".mk")
+        makefile.write_text("ETHR_LIB_NAME=ethread\nUSING_VC=no\n" + fragment +
+                            "\n.PHONY: sources\nsources:\n\t@echo $(ETHREAD_LIB_SRC)\n")
+        return subprocess.check_output(["make", "--no-print-directory", "-f", makefile, "sources"],
+                                       cwd=tree / "erts/lib_src", text=True).split()
+    patched = (tree / "erts/lib_src/Makefile.in").read_text()
+    original = capture("git", "-C", source, "show", f"{OTP_PIN}:erts/lib_src/Makefile.in")
+    native_sources = selected_sources(patched, "knytos", "native-sources")
+    if native_sources != ["knytos/" + name for name in SOURCES]:
+        raise SystemExit("Native Make source list does not match the qualified archive")
+    pthread_sources = selected_sources(patched, "pthread", "pthread-sources")
+    if pthread_sources != selected_sources(original, "pthread", "original-pthread-sources"):
+        raise SystemExit("Native selection changed the pthread Make source list")
+    staged = out / "native-source-build"
+    staged.mkdir()
+    objects = []
+    with (out / "native-source-build.txt").open("w") as log:
+        for name in SOURCES:
+            obj = staged / Path(name).with_suffix(".o")
+            subprocess.run(["clang", *interface["archive"]["compiler_flags"], "-DETHR_KNYTOS",
+                            "-c", backend / name, "-o", obj], cwd=ROOT,
+                           stdout=log, stderr=subprocess.STDOUT, check=True)
+            objects.append(obj)
+    staged_archive = out / "libstaged_ethread.a"
+    subprocess.run([sdk / "llvm-ar", "rcs", staged_archive, *objects], check=True)
+    if hashlib.sha256(staged_archive.read_bytes()).hexdigest() != interface["archive"]["sha256"]:
+        raise SystemExit("Staged native sources did not reproduce the qualified archive")
+    (out / "native-sources.json").write_text(json.dumps({
+        "native": native_sources, "pthread": pthread_sources,
+        "staged_archive_sha256": interface["archive"]["sha256"],
+    }, indent=2) + "\n")
+    return interface
+
+
+def native_link_controls(out, sdk, toolchain, interface):
+    """Reject a missing archive and conflicting backend using the real probe."""
+    source = out / "build/knytos-ethread-link.c"
+    if not source.exists():
+        return None, None  # The genuine configure check itself did not pass.
+    elf = source.with_suffix(".elf")
+    spec = importlib.util.spec_from_file_location("knytos_libc_build", ROOT / "ports/libc/build.py")
+    checker = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(checker)
+    checker.check_elf(elf)
+    nm = (sdk / "llvm-ar").resolve().with_name("llvm-nm")
+    symbols = subprocess.check_output([nm, "--defined-only", elf], text=True)
+    references = re.findall(r"\bref_(ethr_\w+)\s*$", symbols, re.M)
+    expected = interface["functions"] + interface["native_callable_names"]
+    if len(references) != len(expected) or set(references) != set(expected):
+        raise SystemExit("Autoconf ELF did not retain the complete native interface")
+    flags = [*shlex.split(toolchain["CC"]), *shlex.split(toolchain["CFLAGS"]),
+             *shlex.split(toolchain["CPPFLAGS"]), "-I../sdk/include/internal", "-I../sdk"]
+    controls = {}
+    for name, command, expected in (
+        ("archive-omitted", [*flags, source, *shlex.split(toolchain["LDFLAGS"]),
+                             *shlex.split(toolchain["LIBS"]), "-o", out / "archive-omitted.elf"],
+         "undefined symbol: ethr_"),
+        ("backend-conflict", [*flags, "-DETHR_PTHREADS=1", "-fsyntax-only", source],
+         "Knytos ethread cannot select another thread backend"),
+    ):
+        log = out / ("reject-" + name + ".txt")
+        with log.open("w") as stream:
+            result = subprocess.run(command, cwd=out / "build", stdout=stream, stderr=subprocess.STDOUT)
+        if result.returncode == 0 or expected not in log.read_text():
+            raise SystemExit(f"Native configure rejection control failed: {name}")
+        controls[name] = {"status": result.returncode, "diagnostic": expected}
+    return controls, {"elf_layout_validated": True, "retained_reference_count": len(references)}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--otp-source", type=Path, required=True)
     parser.add_argument("--picolibc-source", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--native-ethread", action="store_true",
+                        help="select and genuinely compile/link the bounded native thread backend")
     args = parser.parse_args()
     source = args.otp_source.resolve()
     if capture("git", "-C", source, "rev-parse", "HEAD") != OTP_PIN:
@@ -75,9 +188,12 @@ def main():
     build.mkdir()
     config_sub = prepare_otp(source, tree)
     sdk, control_manifest = prepare_sdk(args.picolibc_source.resolve(), out)
+    interface = prepare_native(source, args.picolibc_source.resolve(), out, tree, sdk) if args.native_ethread else None
     build_target = capture(tree / "make/autoconf/config.guess")
     command = [tree / "erts/configure", f"--srcdir={tree / 'erts'}", f"--build={build_target}",
                f"--host={TARGET}", "--disable-jit"]
+    if args.native_ethread:
+        command.extend(("--with-knytos-ethread=../sdk", "--without-termcap"))
     # The SDK paths are relative to the configure directory so Autoconf's
     # shell-expanded argument lists never contain the host repository path.
     toolchain = {
@@ -109,7 +225,23 @@ def main():
                        for name in ("bridge.o", "link.x", "libknytos_cabi.a", "libc.a")},
         "configure_arguments": [str(arg) for arg in command],
         "configure_status": result.returncode,
+        "native_interface": interface,
+        "toolchain": toolchain,
+        "inputs_sha256": {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+                          for path in ([Path(__file__).resolve()] + ([ROOT / "ports/erts/knytos-ethread.m4",
+                              ROOT / "ports/erts/otp-29.1.2-native-configure.patch"] if args.native_ethread else []))},
     }
+    if args.native_ethread:
+        evidence["autoconf"] = capture("autoconf", "--version").splitlines()[0]
+        evidence["generated_configure_sha256"] = hashlib.sha256((tree / "erts/configure").read_bytes()).hexdigest()
+        evidence["native_sdk_sha256"] = {name: hashlib.sha256((sdk / name).read_bytes()).hexdigest()
+                                        for name in ("libknytos_ethread.a", "ethread-link-check.h")}
+        evidence["native_sources"] = json.loads((out / "native-sources.json").read_text())
+        evidence["native_link_controls"], evidence["native_link_check"] = native_link_controls(out, sdk, toolchain, interface)
+        for name in ("knytos-ethread-link.c", "knytos-ethread-link.elf"):
+            path = build / name
+            if path.exists():
+                evidence.setdefault("native_link_sha256", {})[name] = hashlib.sha256(path.read_bytes()).hexdigest()
     (out / "result.json").write_text(json.dumps(evidence, indent=2) + "\n")
     print(f"ERTS configure exited {result.returncode}. See {log}")
     return result.returncode

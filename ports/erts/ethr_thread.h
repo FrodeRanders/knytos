@@ -4,12 +4,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-
-/* Non-owning runtime identity. The adapter retains the native worker owner. */
-typedef struct {
-    uint32_t slot;
-    uint64_t generation;
-} ethr_tid;
+#include "ethr_native_types.h"
 
 typedef struct {
     int detached;
@@ -27,6 +22,8 @@ typedef struct {
 } ethr_init_data;
 
 #define ETHR_INIT_DATA_DEFAULT_INITER {NULL, NULL, NULL}
+
+int ethr_init(ethr_init_data *data);
 
 /* Standalone callback initialization, before the first admitted create
  * attempt. This does not implement the full upstream ethr_init contract. */

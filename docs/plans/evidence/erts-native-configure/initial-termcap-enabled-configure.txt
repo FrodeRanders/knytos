@@ -1,0 +1,114 @@
+checking build system type... aarch64-apple-darwin25.6.0
+checking host system type... aarch64-unknown-knytos
+checking target system type... aarch64-unknown-knytos
+checking for aarch64-unknown-knytos-gcc... clang --target=aarch64-none-elf --sysroot=../sdk
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables...
+checking whether we are cross compiling... yes
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether clang --target=aarch64-none-elf --sysroot=../sdk accepts -g... yes
+checking for clang --target=aarch64-none-elf --sysroot=../sdk option to enable C23 features... -std=gnu23
+checking whether the compiler supports GNU C++... yes
+checking whether clang++ --target=aarch64-none-elf --sysroot=../sdk accepts -g... yes
+checking for ld.sh... ../sdk/ld.lld
+checking for aarch64-unknown-knytos-ld... (cached) ../sdk/ld.lld
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking how to run the C preprocessor... clang --target=aarch64-none-elf --sysroot=../sdk -std=gnu23 -E
+checking for aarch64-unknown-knytos-ranlib... ../sdk/llvm-ranlib
+checking for bison... bison -y
+checking for perl5... /opt/local/bin/perl5
+checking whether ln -s works... yes
+checking for aarch64-unknown-knytos-ar... ../sdk/llvm-ar
+checking if we can add -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 to CFLAGS (via CFLAGS)... yes
+checking if we can add -fstack-clash-protection to CFLAGS (via CFLAGS)... no
+checking if we can add -fstack-protector-strong to CFLAGS (via CFLAGS)... yes
+checking if we can add -fstack-protector-strong to LDFLAGS (via LDFLAGS)... yes
+checking if we can add -fcf-protection=full to CFLAGS (via CFLAGS)... no
+checking if we can add -mbranch-protection=standard to CFLAGS (via CFLAGS)... yes
+checking if we can add -fexceptions to CFLAGS (via CFLAGS)... yes
+checking if we can add -fno-strict-overflow to CFLAGS (via CFLAGS)... yes
+checking if we can add -fno-delete-null-pointer-checks to CFLAGS (via CFLAGS)... yes
+checking if we can add -fno-strict-aliasing to CFLAGS (via CFLAGS)... yes
+checking if we can add -fstrict-flex-arrays=3 to CFLAGS (via CFLAGS)... yes
+checking if we can add -D_GLIBCXX_ASSERTIONS to CXXFLAGS (via CFLAGS)... yes
+checking if we can add -Wl,-z,noexecstack to LDFLAGS (via LDFLAGS)... yes
+checking if we can add -Wl,-z,relro to LDFLAGS (via LDFLAGS)... yes
+checking if we can add -Wl,-z,now to LDFLAGS (via LDFLAGS)... yes
+checking if we can add -Wl,--as-needed to LDFLAGS (via LDFLAGS)... yes
+checking if we can add -Wl,--no-copy-dt-needed-entries to LDFLAGS (via LDFLAGS)... yes
+checking for library containing strerror... none required
+checking OTP release... 29
+checking OTP version... 29.1.2
+checking for ex_doc... no
+configure: WARNING: No 'ex_doc' command found: it will (optionally) be downloaded when building the HTML documentation
+checking for elixir... no
+configure: WARNING: No 'elixir' command found: can't run link checker for the documentation
+checking for a BSD-compatible install... /opt/local/bin/ginstall -c
+checking how to create a directory including parents... /opt/local/bin/ginstall -c -d
+checking for mixed mingw-gcc and native VC++ environment... no
+checking for mixed cygwin and native MinGW environment... no
+checking if we mix cygwin with any native compiler... no
+checking if we mix msys with another native compiler... no
+checking if we mix WSL with another native compiler... no
+checking for clang --target=aarch64-none-elf --sysroot=../sdk -std=gnu23 option to support large files... none needed
+checking for clang --target=aarch64-none-elf --sysroot=../sdk -std=gnu23 option to support timestamps after 2038... none needed
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for sys/time.h... yes
+checking size of time_t... 8
+checking if we can add -Werror=return-type to WERRORFLAGS (via CFLAGS)... yes
+checking if we can add -Werror=implicit to WERRORFLAGS (via CFLAGS)... yes
+checking if we can add -Werror=undef to WERRORFLAGS (via CFLAGS)... yes
+checking if we can add -fno-common to CFLAGS (via CFLAGS)... yes
+checking if we can add -fvisibility=hidden to CFLAGS (via CFLAGS)... yes
+checking C99 support... yes
+checking whether clang --target=aarch64-none-elf --sysroot=../sdk -std=gnu23 accepts -fprofile-generate -Werror...... no
+checking whether clang --target=aarch64-none-elf --sysroot=../sdk -std=gnu23 accepts -fprofile-use -Werror...... no
+checking whether clang --target=aarch64-none-elf --sysroot=../sdk -std=gnu23 accepts -fprofile-use -fprofile-correction -Werror...... no
+checking whether clang --target=aarch64-none-elf --sysroot=../sdk -std=gnu23 accepts -fprofile-instr-generate -Werror...... yes
+configure: Disabling PGO when cross-compiling
+checking whether to do PGO of erts... no, cross compiling
+checking size of void *... 8
+checking target hardware architecture... arm64
+checking whether compilation mode forces ARCH adjustment... no: ARCH is arm64
+checking if VM has to be linked with Carbon framework... no
+checking for mkdir... /bin/mkdir
+checking for cp... /bin/cp
+checking if we are building a sharing-preserving emulator... no
+checking for extra flags needed to export symbols... none
+checking for sin in -lm... no
+checking for dlopen in -ldl... no
+checking for dlvsym in -ldl... no
+checking for main in -linet... no
+checking for openpty in -lutil... no
+checking size of void *... (cached) 8
+checking size of int... 4
+checking size of long... 8
+checking size of long long... 8
+checking size of __int64... 0
+checking size of __int128_t... 16
+checking for the qualified native Knytos ethread interface... yes
+checking for posix_fadvise... no
+checking for closefrom... no
+checking for linux/falloc.h... no
+checking whether fallocate() works... no
+checking whether posix_fallocate() works... no
+checking whether lock checking should be enabled... no
+checking whether lock counters should be enabled... no
+checking for kstat_open in -lkstat... no
+checking for tgetent in -ltinfo... no
+checking for tgetent in -lncurses... no
+checking for tgetent in -lcurses... no
+checking for tgetent in -ltermcap... no
+checking for tgetent in -ltermlib... no
+configure: error: No curses library functions found

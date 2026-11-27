@@ -1,0 +1,3 @@
+           20f28            20f28       3c     4         libknytos_ethread.a(ethr_event.o):(.text.ethr_event_init)
+           21094            21094       78     4         libknytos_ethread.a(ethr_thread.o):(.text.publish_name)
+           217e4            217e4      1b8     4         libknytos_ethread.a(ethr_ts_event.o):(.text.knytos_ethr_ts_events_init_opt)

@@ -1,0 +1,9 @@
+[+    22.304862] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-tse-config" generation=1 asid=37 principal=0x8afc58f8bf46104a
+[+    22.312724] [EL0 LOG] lp=0 asid=37 ERTS TS CONFIG captured allocator prefix failure and reentry rejection
+[+    22.313208] [EL0 LOG] lp=0 asid=37 ERTS TS CONFIG participant status normal and explicit destructor cleanup
+[+    22.313584] [EL0 LOG] lp=0 asid=37 ERTS TS CONFIG PASS
+[+    22.314264] [EL0 LOG] lp=0 asid=37 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=739 sampled_stack=512
+[+    22.907706] [EL0 LOG] lp=0 asid=38 ERTS TS CONFIG incomplete allocator tuple uses whole fallback
+[+    22.908130] [EL0 LOG] lp=0 asid=38 ERTS TS CONFIG PASS
+[+    22.908760] [EL0 LOG] lp=0 asid=38 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=595 sampled_stack=512
+[+    22.909298] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-tse-fallback" generation=1 asid=38 principal=0xd7696e0d3b140542

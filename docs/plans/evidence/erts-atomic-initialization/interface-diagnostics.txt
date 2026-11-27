@@ -1,0 +1,46 @@
+Normal, inline and debug syntax checks: exit 0.
+Static linkage, ELF validation, 321 retained references and eight archive members: passed.
+
+Rejected signature control (exit 1):
+/private<output>/erts/reject-signature.c:249:6: error: conflicting types for 'ethr_cond_wait'
+  249 | void ethr_cond_wait(ethr_cond *, ethr_mutex *);
+      |      ^
+/private<output>/erts/otp/erts/include/internal/knytos/ethr_mutex.h:43:5: note: previous declaration is here
+   43 | int ethr_cond_wait(ethr_cond *condition, ethr_mutex *mutex);
+      |     ^
+1 error generated.
+
+Rejected layout control (exit 1):
+/private<output>/erts/reject-layout.c:465:16: error: static assertion failed due to requirement 'sizeof(struct ethr_ts_event_) == sizeof(otp_ethr_ts_event)': ethr_ts_event size
+  465 | _Static_assert(sizeof(ethr_ts_event) == sizeof(otp_ethr_ts_event), "ethr_ts_event size");
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private<output>/erts/reject-layout.c:465:38: note: expression evaluates to '48 == 56'
+  465 | _Static_assert(sizeof(ethr_ts_event) == sizeof(otp_ethr_ts_event), "ethr_ts_event size");
+      |                ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private<output>/erts/reject-layout.c:483:16: error: static assertion failed due to requirement '__builtin_offsetof(struct ethr_ts_event_, mtix) == __builtin_offsetof(otp_ethr_ts_event, mtix)': ethr_ts_event.mtix offset
+  483 | _Static_assert(offsetof(ethr_ts_event, mtix) == offsetof(otp_ethr_ts_event, mtix), "ethr_ts_event.mtix offset");
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/usr/lib/clang/21/include/__stddef_offsetof.h:16:24: note: expanded from macro 'offsetof'
+   16 | #define offsetof(t, d) __builtin_offsetof(t, d)
+      |                        ^
+/private<output>/erts/reject-layout.c:483:46: note: expression evaluates to '46 == 48'
+  483 | _Static_assert(offsetof(ethr_ts_event, mtix) == offsetof(otp_ethr_ts_event, mtix), "ethr_ts_event.mtix offset");
+      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private<output>/erts/reject-layout.c:484:16: error: static assertion failed due to requirement '__builtin_types_compatible_p(short, int)': ethr_ts_event.mtix type
+  484 | _Static_assert(__builtin_types_compatible_p(__typeof__(((ethr_ts_event *)0)->mtix), __typeof__(((otp_ethr_ts_event *)0)->mtix)), "ethr_ts_event.mtix type");
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3 errors generated.
+
+Rejected backend control (exit 1):
+In file included from /private<output>/erts/contract.c:4:
+/private<output>/erts/otp/erts/include/internal/ethread.h:123:2: error: "Knytos ethread cannot select another thread backend"
+  123 | #error "Knytos ethread cannot select another thread backend"
+      |  ^
+1 error generated.
+
+Rejected profile control (exit 1):
+In file included from /private<output>/erts/contract.c:4:
+/private<output>/erts/otp/erts/include/internal/ethread.h:126:2: error: "Knytos ethread requires the worker-libc profile"
+  126 | #error "Knytos ethread requires the worker-libc profile"
+      |  ^
+1 error generated.

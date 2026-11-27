@@ -1,0 +1,11 @@
+{
+  "contract.c": "804b21fef467a8be4bad90a31aa5af8b34a412c3200c42b0cc586b7e2223b8dc",
+  "failed-fixture-build/diagnostic.txt": "080faa8fdc25162f3e310dd34e2d9358b50dd8ad35e070e8b9e30e3349861794",
+  "failed-fixture-build/summary.json": "5e3940486dc9a2cf62a518c43dc3b7f455079931d78a8adba453377dc5cd116e",
+  "header-dependencies.txt": "6139babc9c85b22bf1cbba3ba5456cab7cd2acf97845af49dd65d04d616742a7",
+  "header-profile.h": "5cc469205f0f82d8dbb284772566cfb01836b344bdb02e86e5812e4d33b2f684",
+  "interface-diagnostics.txt": "aea0f0d1bd42606e655cec2aaa3300f07cfd8f425aed60430ebd813cdf405984",
+  "link-map-excerpts.txt": "44174774d97ba68359e9ede4fdedc2bd6a07956e2f244dfd4f0b5eb723752acf",
+  "serial-excerpts.txt": "c9de4829879acccb11d5c75715070d62355c24f32069ed39a021a2c404166559",
+  "summary.json": "890491d3581dfa1c9a3be79162b789ded4413d8570d99230df444696b406cceb"
+}

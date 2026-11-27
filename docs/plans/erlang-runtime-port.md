@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 target configuration reaches the ERTS thread-library gate.\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5's explicit native configure probe passes the thread-library gate and stops at the wall-clock-source gate.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -1512,8 +1512,20 @@ The [staged configure probe](../../ports/erts/configure.py) adds
 `aarch64-unknown-knytos` canonicalization to a pinned OTP export and
 uses the worker-libc SDK for real compile and link checks. OTP accepts
 the target and links the C test executable. It stops at its mandatory
-thread-library check. The [configure results](../reports/milestones/2026-11-26-erts-target-configure.md)
-record the command, artifact identities and remaining feature checks.
+thread-library check in its default mode. The [original configure results](../reports/milestones/2026-11-26-erts-target-configure.md)
+preserve that baseline. The explicit `--native-ethread` mode adds the
+qualified archive, selected headers and native Autoconf branch. It genuinely
+compile-links all 327 retained API references, passes the thread-library
+gate and uses OTP's supported `--without-termcap` option for headless
+execution. It stops at `No wall clock source found`; no POSIX feature
+answers are fabricated. Native Make source selection is checked against the
+nine-object archive, and the staged sources reproduce that archive. Full
+Make-graph/emulator building remains unqualified because configure has not
+reached its output phase.
+The [native configure qualification](../reports/milestones/2026-11-27-erts-native-configure.md)
+preserves all three observed gates, the genuine link ELF, rejection controls
+and staged-source/archive identities. The existing signed runtime scope is
+reused by exact archive identity; no new emulator execution is claimed.
 
 A full OTP build will need to pass the target configuration through
 the top-level wrapper. An illustrative invocation is:
@@ -1566,9 +1578,13 @@ packages the current adapters as separate objects behind
 `knytos_ethread.h`. The [low-level lock fallbacks](../../ports/erts/README.md#low-level-lock-fallbacks)
 cover mutex-backed `ethr_spin*` and read/write-backed low-level locks.
 They retain the underlying objects through registered waits and require
-parking-capable callers with unlock and shutdown progress. Actual OTP
-header selection, initialization, double-word atomics and thread-specific event
-integration remain open.
+parking-capable callers with unlock and shutdown progress. The
+[staged OTP header selection](../../ports/erts/README.md#upstream-header-selection)
+adds an explicit Knytos branch while retaining OTP's common declarations
+and thread-event layout. Locks and event lifecycle calls stay external in
+inline and debug modes, preserving their ownership checks. This selection
+uses a compile-probe profile. Bounded native early/late initialization is
+implemented below; CPU/runtime configuration and build integration remain open.
 The [signed archive qualification](../reports/milestones/2026-11-26-erts-lock-archive.md)
 links all six adapter objects through public headers and covers fallback
 lock contention, payload publication, TSD isolation and exact joins.
@@ -1590,8 +1606,8 @@ copies the upstream hook layout before creation starts. The adapter retains
 prepared data and its exact worker record through a child-completion
 handshake before parent cleanup. Native start rejection still runs parent
 cleanup, and reentrant thread control is fenced during creation. This
-standalone initializer does not close upstream `ethr_init` or late-init
-work.
+standalone initializer remains an independent adapter helper. The integrated
+native early/late lifecycle below supplies the pinned public entry points.
 The [signed initialization qualification](../reports/milestones/2026-11-26-erts-thread-init.md)
 covers copied hooks, early wakes, child-before-parent ordering,
 known-unstarted rejection and fatal child-initializer exit.
@@ -1608,8 +1624,78 @@ The [atomic adapter](../../ports/erts/README.md#atomic-operations) implements
 the 32-bit and word families with all seven barrier variants and address
 accessors. The first implementation uses full fences throughout, with
 unsigned arithmetic preserving signed bit patterns across wrapping.
-Double-word atomics, actual header selection and upstream atomic
-initialization remain open. No memory-ordering contract is weakened.
+The [double-word family](../../ports/erts/README.md#double-word-atomics)
+adds all seven forms of init, set, read and boolean compare/exchange plus
+address/native queries. Its word-aligned three-word object selects a
+native-aligned 128-bit pair internally. Expected-value failure updates,
+full surrounding fences and borrowed-address lifetime remain explicit.
+The [double-word qualification](../reports/milestones/2026-11-27-erts-double-word-atomics.md)
+covers value/layout checks, native pair-loop code generation, contended
+updates and publication before join. The
+[native-only atomic initializer and introspection](../../ports/erts/README.md#atomic-initialization-and-introspection)
+add stateless, repeatable setup and immutable borrowed primitive inventories.
+All supported widths require native lock-free operations; no fallback
+locks need admission. Scalar native names are callable aliases, and public
+double-word operations use the native word-pair primitives. The optional
+single-unit scalar double-word native interface remains absent. Full ERTS
+CPU/runtime initialization remains open. The staged header selects
+all three families. The
+[standalone data barriers](../../ports/erts/README.md#standalone-data-barriers)
+provide the four ordering directions and full/read/write/dependency macros
+through the same header path. Every data variant currently issues a full
+legacy builtin fence; the compiler barrier stays distinct. No instruction
+barrier or dependency-ordering shortcut is advertised. No memory-ordering
+contract is weakened.
+The [pinned interface check](../../ports/erts/README.md#pinned-interface-check)
+compiles all 294 public `ethr_*` functions against declaration
+slices read from OTP's pinned Git objects. Six scalar typedefs, nine
+portable records, the double-word value union, two option enums and
+thirteen public constants match.
+Retained references also cover 33 native callable names and resolve through
+all nine adapter objects in a static AArch64 consumer; signature and
+field-type mismatch controls reject.
+The [mutex-library initialization entry points](../../ports/erts/README.md#library-initialization)
+provide stateless early and late setup for native parking locks. CPU and
+thread-count hints need no spin configuration or reader arrays. Repeat
+calls preserve existing owners and waiters; wider thread capacity,
+CPU discovery and build integration remain open.
+The [signed initialization repeat](evidence/erts-mutex-initialization/summary.json)
+passes the 28-case header profile and three deployment controls, including
+lock ownership and a registered condition waiter retained across setup.
+This initial check covers the standalone interface. The subsequent
+[header-selection qualification](../reports/milestones/2026-11-27-erts-header-selection.md)
+compiles through the patched complete OTP header in normal, inline and
+debug modes and executes existing signed fixtures through that selection.
+The [data-barrier qualification](../reports/milestones/2026-11-27-erts-memory-barriers.md)
+adds linked-ELF instruction checks, mask/expression cases and two-participant
+publication before acknowledgement, including a debug consumer. These
+finite exercises do not qualify JIT instruction synchronization or prove
+all allowed executions of the memory model.
+The [terminal diagnostics](../../ports/erts/README.md#terminal-diagnostics)
+provide the pinned assertion and fatal-error entry points without stdio
+or allocation. Bounded source/error formatting precedes native whole-domain
+abort; it does not release live owners or substitute for physical retirement.
+The [diagnostic qualification](evidence/erts-terminal-diagnostics/summary.json)
+passes 21 signed cases and three deployment controls, including worker
+failures with startup retaining the stderr lock, plus sanitized host
+formatter tests in release and debug modes.
+The [bounded native early/late lifecycle](../../ports/erts/README.md#native-early-and-late-initialization)
+now reserves both internal keys transactionally, prepares the startup event
+before publishing allocator configuration and enables worker creation only
+after late setup. Each worker receives its cached event before its child
+hook and parent-completion handshake. Allocation-prefix rejection preserves
+the early reservation for unstarted retry; accepted worker setup failure
+aborts with its exact record and prepared borrow retained. Normal and
+explicit exit and detached drain preserve handler-before-TSD cleanup, with
+startup's own event cleared explicitly after drain. ERTS CPU/runtime data,
+actual stack bounds, thread capacity/progress and configure integration
+remain open.
+The [native bootstrap qualification](../reports/milestones/2026-11-27-erts-native-bootstrap.md)
+passes 21 signed bootstrap cases and the separate 28-case header regression,
+with three deployment controls per guest and the same nine-member archive.
+It covers both unstarted rollback/retry paths, copied hooks/options,
+automatic events before child hooks, normal/explicit exit, detached drain
+and terminal accepted-worker setup failure.
 The [signed atomic qualification](../reports/milestones/2026-11-26-erts-atomics.md)
 covers the 184 entry points, wrapping and return-value semantics, shared
 counter updates and publication before join. Host UBSan and selected
@@ -1643,8 +1729,26 @@ destruction before join through the two adapter components.
 OTP's internal
 thread-event key also uses a thread-exit destructor. The C worker trampoline
 now invokes optional keyed destructors outside runtime guards while the
-participant remains registered. An ERTS adapter must bind its internal
-event cleanup to that lifetime. The configure thread-library gate remains open.
+participant remains registered. The [standalone thread-event owner](../../ports/erts/README.md#thread-specific-events)
+binds a reserved native key to one generation-qualified event list per
+participant. Busy duplicates own fresh native events; borrowed scalar and
+queue state is copied separately. A temporary remains retained until its
+busy and peek claims end. Worker destructors release idle contexts, and
+startup clears its context explicitly. The [event-side late configuration](../../ports/erts/README.md#event-late-configuration)
+copies allocator callbacks and logical main-thread bounds before configuration
+publication. Independent adapter setup also publishes its key then; integrated
+early initialization has already reserved that key. Contexts retain the matching allocator through cleanup, and
+nonallocating main-status access stays local to each cached event. Actual
+ERTS CPU/runtime configuration remains open; native locks do not use reader
+groups. The explicit native configure thread gate passes; clock-source
+configuration and the full build remain open.
+The [signed thread-event qualification](../reports/milestones/2026-11-26-erts-thread-events.md)
+covers independent temporary owners, busy/peek retention, partial clear,
+bounded admission, cross-CPU delivery, destructor rearming and the fatal
+live-borrow exit path.
+The [late configuration qualification](../reports/milestones/2026-11-27-erts-event-configuration.md)
+covers captured deallocation, failed preparation prefixes, allocator
+reentry, incomplete-tuple fallback and status isolation through cleanup.
 The [signed TSD qualification](../reports/milestones/2026-11-26-erts-keyed-tsd.md)
 covers cross-CPU isolation, deletion, key exhaustion and callback-slot reuse.
 The [signed destructor qualification](../reports/milestones/2026-11-26-erts-tsd-destructors.md)

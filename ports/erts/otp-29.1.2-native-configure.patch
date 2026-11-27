@@ -1,0 +1,73 @@
+--- a/erts/configure.ac
++++ b/erts/configure.ac
+@@ -28,6 +28,7 @@
+ AC_PREREQ([2.72])
+ 
+ m4_include([otp.m4])
++m4_include([knytos-ethread.m4])
+ 
+ LM_PRECIOUS_VARS
+ 
+@@ -999,7 +1000,10 @@
+ dnl
+ dnl ETHR_LIB_NAME, ETHR_LIBS, ETHR_X_LIBS, ETHR_THR_LIB_BASE and ETHR_DEFS
+ dnl are set by ERL_FIND_ETHR_LIB
+-ERL_FIND_ETHR_LIB
++AC_ARG_WITH([knytos-ethread],
++  [AS_HELP_STRING([--with-knytos-ethread=SDK], [use the explicit native Knytos ethread SDK])])
++AS_IF([test -n "$with_knytos_ethread" && test "x$with_knytos_ethread" != xno],
++      [ERL_FIND_KNYTOS_ETHR_LIB], [ERL_FIND_ETHR_LIB])
+ 
+ if test "X$ETHR_LIB_NAME" = "X"; then
+    AC_MSG_ERROR([cannot build emulator since no thread library was found])
+--- a/erts/lib_src/Makefile.in
++++ b/erts/lib_src/Makefile.in
+@@ -267,12 +267,24 @@
+ #
+ ETHR_THR_LIB_BASE_DIR=@ETHR_THR_LIB_BASE_DIR@
+ ifneq ($(strip $(ETHR_LIB_NAME)),)
++ifeq ($(ETHR_THR_LIB_BASE_DIR),knytos)
++ETHREAD_LIB_SRC=knytos/ethr_event.c \
++		knytos/ethr_tsd.c \
++		knytos/ethr_thread.c \
++		knytos/ethr_mutex.c \
++		knytos/ethr_rwmutex.c \
++		knytos/ethr_lock.c \
++		knytos/ethr_ts_event.c \
++		knytos/ethr_atomic_info.c \
++		knytos/ethr_diagnostics.c
++else
+ ETHREAD_LIB_SRC=common/ethr_aux.c \
+ 		common/ethr_atomics.c \
+ 		common/ethr_mutex.c \
+ 		common/ethr_cbf.c \
+ 		$(ETHR_THR_LIB_BASE_DIR)/ethread.c \
+ 		$(ETHR_THR_LIB_BASE_DIR)/ethr_event.c
++endif
+ ETHR_X86_SSE2_ASM=@ETHR_X86_SSE2_ASM@
+ ifeq ($(ETHR_X86_SSE2_ASM),yes)
+ ETHREAD_LIB_SRC += pthread/ethr_x86_sse2_asm.c
+--- a/erts/config.h.in
++++ b/erts/config.h.in
+@@ -408,6 +408,9 @@
+ #undef ETHR_PREFER_LIBATOMIC_OPS_NATIVE_IMPLS
+ 
++/* Select the native Knytos ethread backend */
++#undef ETHR_KNYTOS
++
+ /* Define if you have pthreads */
+ #undef ETHR_PTHREADS
+ 
+ /* Define if pthread_yield() returns an int. */
+--- a/erts/include/internal/ethread_header_config.h.in
++++ b/erts/include/internal/ethread_header_config.h.in
+@@ -48,6 +48,9 @@
+ #undef ETHR_WIN32_THREADS
+ 
++/* Select the native Knytos ethread backend */
++#undef ETHR_KNYTOS
++
+ /* Define if you have pthreads */
+ #undef ETHR_PTHREADS
+ 
+ /* Define if you need the <nptl/pthread.h> header file. */

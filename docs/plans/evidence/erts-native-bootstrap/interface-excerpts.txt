@@ -1,0 +1,16 @@
+int ethr_init(ethr_init_data *);
+int ethr_late_init(ethr_late_init_data *);
+__attribute__((used, retain)) static __typeof__(&ethr_init) const ref_ethr_init = &ethr_init;
+__attribute__((used, retain)) static __typeof__(&ethr_late_init) const ref_ethr_late_init = &ethr_late_init;
+           23ccc            23ccc      154     4         libknytos_ethread.a(ethr_thread.o):(.text.ethr_init)
+           23ccc            23ccc      154     1                 ethr_init
+           23e40            23e40       bc     4         libknytos_ethread.a(ethr_thread.o):(.text.ethr_late_init)
+           23e40            23e40       bc     1                 ethr_late_init
+           25bb8            25bb8        8     4         libknytos_ethread.a(ethr_atomic_info.o):(.text.ethr_init_atomics)
+           25bb8            25bb8        8     1                 ethr_init_atomics
+           30770            30770        8     8         /private<output>/erts/contract.build/application.o:(.rodata.ref_ethr_init)
+           30770            30770        8     1                 ref_ethr_init
+           30778            30778        8     8         /private<output>/erts/contract.build/application.o:(.rodata.ref_ethr_init_atomics)
+           30778            30778        8     1                 ref_ethr_init_atomics
+           30788            30788        8     8         /private<output>/erts/contract.build/application.o:(.rodata.ref_ethr_late_init)
+           30788            30788        8     1                 ref_ethr_late_init

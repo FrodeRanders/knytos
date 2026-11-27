@@ -1,0 +1,22 @@
+{
+  "native": [
+    "knytos/ethr_event.c",
+    "knytos/ethr_tsd.c",
+    "knytos/ethr_thread.c",
+    "knytos/ethr_mutex.c",
+    "knytos/ethr_rwmutex.c",
+    "knytos/ethr_lock.c",
+    "knytos/ethr_ts_event.c",
+    "knytos/ethr_atomic_info.c",
+    "knytos/ethr_diagnostics.c"
+  ],
+  "pthread": [
+    "common/ethr_aux.c",
+    "common/ethr_atomics.c",
+    "common/ethr_mutex.c",
+    "common/ethr_cbf.c",
+    "pthread/ethread.c",
+    "pthread/ethr_event.c"
+  ],
+  "staged_archive_sha256": "0ef39934fc1a745557a38ad46300e8b969bd9f50a01a2361b70b116d5bdc9fba"
+}

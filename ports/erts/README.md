@@ -10,7 +10,43 @@ tracks the remaining threading, allocator, I/O and bootstrap work.
 `configure.py` exports the pinned OTP source into a new directory, adapts
 target tuple recognition and runs its configure script against the
 Knytos worker-libc SDK. See the [configure results](../../docs/reports/milestones/2026-11-26-erts-target-configure.md)
-for arguments and the current thread-library rejection.
+for the original arguments and pthread-library rejection. The default probe
+retains that behavior. The explicit native probe now passes the thread gate
+and stops at OTP's wall-clock-source requirement:
+
+```sh
+python3 ports/erts/configure.py --native-ethread \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/native-configure
+```
+
+This mode builds and checks the native archive, stages the selected OTP
+headers and adds `--with-knytos-ethread=../sdk --without-termcap` to configure.
+Headless execution uses OTP's supported termcap opt-out. It regenerates
+configure from the patched pinned sources with host Autoconf and records
+that version and generated-script hash. No cached POSIX feature answers
+are supplied.
+
+`knytos-ethread.m4` uses real target size checks and compile-links all 327
+retained public/native API references. The captured ELF passes the C SDK's
+static AArch64 layout checks. Omitting the native archive must fail linkage,
+and selecting pthreads alongside Knytos must fail compilation. Configure
+reports native atomics only after the selected headers enforce lock-free
+widths and the actual link succeeds; native spinlock optimization is absent.
+
+The versioned native configure patch also routes the ethread Make source
+list to the nine native sources. GNU Make checks that branch and preserves
+the original pthread list. Compiling the staged sources with the qualified
+SDK reproduces the same native archive. These checks do not build the full
+OTP Make graph or produce a configured emulator: configure exits 1 with
+`No wall clock source found` before generating its final outputs. The C SDK
+has monotonic time but still reports realtime unavailable. An Erlang clock
+backend and the other remaining platform interfaces need implementation.
+The [native configure qualification](../../docs/reports/milestones/2026-11-27-erts-native-configure.md)
+records the retained references, two rejection controls, Make source checks
+and byte-identical staged archive. Its
+[evidence manifest](../../docs/plans/evidence/erts-native-configure/summary.json)
+preserves the default thread gate, initial curses stop and final clock gate.
 
 ## Standalone archive
 
@@ -26,9 +62,102 @@ python3 ports/erts/build.py --picolibc-source /path/to/picolibc \
 
 Consumers include `knytos_ethread.h` and link the archive through
 `ports/libc/build.py --include ports/erts --library /path/to/libknytos_ethread.a`.
-The aggregate header exposes the standalone prerequisites. OTP's actual
-`ethread.h` selection, initialization, double-word atomics and thread-specific events
-still need integration. The configure thread-library gate remains open.
+The aggregate header exposes the standalone prerequisites. An explicit
+staged OTP header selection and bounded native bootstrap are described below.
+ERTS CPU/runtime data, clock-source configuration and the full build remain open.
+
+### Pinned interface check
+
+`check-interface.py` reads declarations directly from the pinned OTP Git
+objects and checks the public `ethr_*` functions exposed by the aggregate header.
+It compiles those declarations alongside the adapters, checks six scalar
+typedefs against OTP's target-size branches, and verifies the nine portable
+records' member order, field types, offsets, size and alignment. It also
+checks the double-word value union, two option enums and thirteen public
+event, name and ordering constants. Opaque native event, mutex, thread and
+key representations remain platform-specific.
+
+```sh
+python3 ports/erts/check-interface.py --otp-source /path/to/otp29 \
+  --picolibc-source /path/to/picolibc --output target/erts/interface
+```
+
+Use a fresh output directory. The check builds the archive, generates an
+AArch64 consumer with retained address references to every covered function,
+and links it through the worker-libc SDK. It verifies all references and
+archive members in the link map. Two compile rejection controls change a
+function return type and a portable field type; each must fail with the
+corresponding diagnostic.
+
+The checker also retains references to the 33 native callable names.
+Scalar native names are source-level aliases to the existing full-barrier
+functions; word-pair names are shared native implementations. Their
+callability is checked separately from matching the public OTP prototypes.
+
+The initial [recorded check](../../docs/plans/evidence/erts-interface/summary.json)
+matched and linked 253 functions (184 inline atomic and 69 other functions),
+all nine portable records, both enums and the constants. Both mismatch
+controls rejected. The [generated consumer](../../docs/plans/evidence/erts-interface/contract.c)
+and [diagnostics](../../docs/plans/evidence/erts-interface/diagnostics.txt)
+retain the checked declarations and negative results.
+
+This checks declaration slices against the current standalone surface.
+It does not include OTP's complete `ethread.h`, execute the consumer,
+select an upstream backend or qualify unavailable functions. Full ERTS
+startup and the clock-source configure gate remain open.
+Runtime behavior is covered by the signed campaigns below.
+
+### Upstream header selection
+
+`otp-29.1.2-ethread.patch` adds explicit `ETHR_KNYTOS` branches to OTP's
+own `erts/include/internal/ethread.h`. OTP still supplies its scalar types,
+thread options, allocator/init layouts, thread/TSD declarations, and the
+public thread-event structure and flags. The selected branches use the
+adapters' non-owning native identities, C11 atomics, events and mutexes.
+`ethr_native_types.h` is shared with the standalone thread and TSD headers.
+
+The selection keeps low-level locks and thread-event operations external,
+including when `ETHR_TRY_INLINE_FUNCS` is requested. This preserves the
+adapters' ownership and callback checks and prevents OTP's pthread-backed
+inline implementations from replacing them. Conflicting pthread/Win32
+selection and a missing worker-libc profile reject at compile time.
+`knytos/ethr_extensions.h` exposes the existing bounded bootstrap and drain
+helpers after the selected header; these remain private Knytos interfaces.
+
+```sh
+python3 ports/erts/check-interface.py --upstream-header \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/header-interface
+```
+
+`stage_headers.py` exports pinned Git objects to the new output directory,
+applies the version-controlled patch without fuzz and copies adapter headers
+under `internal/knytos/`. It leaves the source checkout untouched. The
+explicit compile-probe profile takes integer sizes from Clang's target
+builtins and uses OTP's existing 64-byte cache-line assumption. It is not a
+generated Autoconf result. The interface checker verifies the selected
+include path, compiles normal, inline and debug modes, links the covered
+surface and checks four rejection controls.
+
+The signed profile compiles lock, atomic, thread-event, allocator and
+memory-barrier fixtures through that selected header, including debug
+thread-event and barrier fixtures. It changes their aggregate include in generated
+copies and retains the original test logic. Run it in a fresh guest:
+
+```sh
+python3 ports/libc/run-tests.py --erts-header --smp 2 \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/header-validation
+```
+
+The [header-selection qualification](../../docs/reports/milestones/2026-11-27-erts-header-selection.md)
+records the selected paths, artifacts, modes and signed results. This closes
+selection for the currently qualified adapter surface. Native `ethr_init`
+and `ethr_late_init` are implemented for the bounded profile below; ERTS
+CPU/runtime configuration remains open. Terminal diagnostics are also below.
+The double-word and data-barrier interfaces are described below. No emulator
+is built by this probe. Default configure retains its pthread rejection;
+the explicit native configure probe above reaches the wall-clock gate.
 
 ## Atomic operations
 
@@ -44,8 +173,8 @@ Every operation variant currently uses sequentially consistent atomic
 access and full fences before and after it. This deliberately exceeds the
 weaker variants' minimum ordering requirements. Exclusive initialization
 uses C11 `atomic_init` between those fences. Compile-time checks require
-native lock-free integer and word operations. Double-word atomics and
-upstream atomic-library initialization remain open.
+native lock-free integer and word operations. The double-word family and
+native-only atomic-library setup are described below.
 
 Unsigned backing preserves modular arithmetic without signed overflow.
 Compare/exchange returns the observed old value on either success or
@@ -65,12 +194,182 @@ The [atomic qualification](../../docs/reports/milestones/2026-11-26-erts-atomics
 records the complete API inventory, signed results and concrete AArch64
 publication fences.
 
+### Double-word atomics
+
+`ethr_dw_atomics.h`, included by the atomic header, implements init, set,
+read and compare/exchange in all seven barrier forms, plus the address and
+native-capability queries: thirty additional entry points. The selected
+upstream header exposes the same definitions. `ethr_dw_sint_t.sint[2]`
+preserves the pinned value layout and little-endian low/high word indices.
+
+Double-word compare/exchange returns a boolean. Success preserves the
+expected value; failure replaces both expected words with one coherent
+observed pair. Value and expected arguments may alias one another, but
+must be separate from the atomic backing and remain live throughout the
+call. Bit copies preserve signed patterns without signed arithmetic.
+
+The opaque object occupies three words (24 bytes) and requires only word
+alignment (8 bytes), matching OTP's minimum base-alignment assumption.
+`ethr_dw_atomic_addr` selects a 16-byte-aligned pair within those words.
+The object must stay at its original address after initialization through
+all users. Do not bitwise copy it to a new address. The returned address
+is borrowed; ordinary word accesses require exclusion of atomic users.
+Initialization also requires exclusive access.
+
+The implementation uses 128-bit `__atomic` builtins with a `may_alias`
+integer type for accesses across adjacent word objects. A compile-time
+check requires native lock-free 16-byte operations; the profile supplies
+no locked or `libatomic` fallback. Each operation has full fences on both
+sides, even for the weaker barrier forms. Exclusive init copies the pair
+between fences without reading uninitialized storage. There is no per-object
+allocation or cleanup.
+
+The qualified AArch64 compiler emits exclusive-pair loops. Read validates
+its loaded pair by writing it back exclusively, so even reads require
+writable backing. Native retry loops are lock-free, not wait-free; they do
+not park on a CQ or acquire the blocking lock adapters. The native query
+reports that qualified capability. The atomic initializer and native
+introspection use the same native-only profile described below.
+
+The [double-word qualification](../../docs/reports/milestones/2026-11-27-erts-double-word-atomics.md)
+records both alignments, all operation variants, expected-value semantics,
+contended CAS, coherent set/read and publication before join. The host
+value matrix uses undefined-behavior sanitization. The signed header
+profile runs inline and debug consumers and checks their linked native
+instruction loops with `check-dw-atomics.py`.
+
+### Atomic initialization and introspection
+
+`ethr_init_atomics` completes the native-only atomic setup. Every supported
+width has compile-time lock-free checks, and no fallback lock array or
+mutable atomic-library state exists. Initialization returns zero without
+allocating, resetting existing atomic values or requiring startup-only
+serialization. Calls may repeat concurrently. This implements the atomic
+initializer used by upstream common initialization and the bounded native
+bootstrap below. Full ERTS CPU/runtime configuration remains open.
+
+The backend advertises native scalar and word-pair types and callable
+full-barrier primitive names. Scalar names alias the existing 32-bit and
+word-sized operations, with native names such as `add_return_mb` and
+`and_retold_mb` mapped to their public equivalents. Public double-word
+variants use the native word-pair init/set/read/CAS implementations.
+The primitive implementations retain their qualified ordering and layout.
+
+The four `ethr_native_*_ops` entry points follow OTP's null-terminated string
+table ABI. The 32-bit and 64-bit inventories each contain thirteen native
+`_mb` names, and the double-word inventory contains four. The optional
+single-unit scalar double-word inventory is empty because this backend
+exposes the word-pair native interface. Implementation-name macros let
+upstream's `ethread_info` BIF describe these providers. Blocking lock
+fallbacks still do not advertise native spinlocks.
+
+Tables and strings are borrowed immutable image-lifetime storage. The
+legacy `char **` result does not transfer ownership or permit writes;
+callers must not modify or free either the table or its strings. The
+provider does not consult live participant state or allocate snapshots.
+
+`ethr_atomic_info.c` is the archive's eighth member. The
+[atomic initialization qualification](../../docs/reports/milestones/2026-11-27-erts-atomic-initialization.md)
+records native-name calls, stable tables before and after initialization,
+concurrent calls, preserved counters and the existing value/code-generation
+regressions through standalone and selected upstream headers.
+
+### Standalone data barriers
+
+`ethr_membar.h`, included by the atomic header, supplies OTP's four ordering
+direction bits, `ETHR_MEMBAR`, full, write, read and dependency-read memory
+barriers, and the compiler-only barrier. The interface checker compares
+the ordering bits with the pinned OTP GCC backend and compiles the macros
+through the standalone and selected upstream headers.
+
+Every data-barrier variant currently uses `__sync_synchronize()`, the legacy
+builtin whose full-barrier contract OTP permits for ordering at a specific
+site. Compiler clobbers surround the builtin, matching OTP's LLVM safeguard.
+This exceeds the weaker variants' minimum requirements. Every mask,
+including zero, issues a full fence; its argument is evaluated once. Macros
+remain void expressions. Existing C11 atomic operations retain their own
+previously qualified fences and memory orders.
+
+`ETHR_COMPILER_BARRIER` uses an empty volatile assembly statement with a
+memory clobber. It constrains compiler reordering without adding a CPU
+barrier. No `ETHR_ORDERED_READ_DEPEND` shortcut or instruction-cache/JIT
+barrier is advertised. These data fences do not establish device completion
+or resource retirement.
+
+The signed header profile checks all sixteen masks, expression use and
+single argument evaluation. Two participants exchange relaxed atomic
+payload/flags through four publication-barrier modes before acknowledgement
+and exact join. Using atomic payload avoids a C data race even if ordering
+fails. The observation loops have a load bound and one monotonic deadline
+per admitted publisher; no post-publication event masks the tested path.
+This is a bounded test of flags with no CQ readiness source, not a production
+wait policy.
+
+`check-barriers.py` checks the linked AArch64 fixture before signing. All
+twenty data-fence sites must emit `dmb ish` followed by return; the compiler
+barrier must preserve the fixture's store/reload/store without emitting a
+CPU barrier. The signed profile repeats these checks for its inline and
+debug consumers. The [barrier qualification](../../docs/reports/milestones/2026-11-27-erts-memory-barriers.md)
+records the artifacts, code generation and finite publication exercises.
+
+## Terminal diagnostics
+
+`ethr_diagnostics.c` implements OTP's noreturn `ethr_assert_failed` and
+`ethr_fatal_error__` entry points. A failure writes its kind, source location,
+function and assertion expression or numeric error, then calls native
+`abort`. It requests termination of the entire execution domain; it does not
+run C finalizers, turn a failing worker into an ordinary exit, release live
+objects or claim physical retirement.
+
+Formatting uses a local 240-byte buffer and one console write, without
+stdio, heap allocation or `strerror` storage. File, function and expression
+fields read at most 48, 40 and 64 bytes respectively and append `...` when
+their field limit is reached. Control bytes become `?`; signed line/error
+values include `INT_MIN` without signed overflow. A failed console write
+still aborts. The runtime console remains serialized and may share buffered
+output; this is not an IRQ/signal handler or a reentrant console path, and
+one write does not establish atomic physical-console delivery.
+
+OTP supplies `ETHR_ASSERT` and `ETHR_FATAL_ERROR__` through the selected
+header. The standalone diagnostics header provides the same macro behavior:
+release assertions do not evaluate their arguments; debug assertions
+evaluate them once. Fatal error arguments are evaluated once.
+
+Run the terminal controls in their own signed campaign:
+
+```sh
+python3 ports/libc/run-tests.py --erts-diagnostics --smp 2 \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/diagnostic-validation
+```
+
+The fixture retains startup's stderr lock while a worker owns a native
+mutex and fails. The required diagnostic and runtime/kernel abort must
+appear without a normal C exit, continuation or C finalizer. Separate
+release/debug success cases check assertion argument evaluation. The host
+formatter test replaces only the console and abort boundaries, covering
+null and bounded nonterminated fields, control bytes, signed extremes and
+console rejection; it does not qualify native abort or stdio locking.
+
+The [qualification record](../../docs/plans/evidence/erts-terminal-diagnostics/summary.json)
+passed 21 signed cases and three deployment controls on two guest CPUs.
+Both terminal controls emitted their context from the worker LP and reached
+runtime and kernel abort without a normal exit or finalizer. The later
+survivor passed. The interface check matched 292 public functions and 33
+native callable names, retained all nine archive objects, compiled normal,
+inline and debug modes, and rejected all four mismatch/profile controls.
+Host release and debug formatter matrices passed AddressSanitizer and
+UndefinedBehaviorSanitizer. The
+[serial excerpts](../../docs/plans/evidence/erts-terminal-diagnostics/serial-excerpts.txt)
+preserve the terminal observations; these do not establish physical
+retirement. Full thread startup and configure integration remain open.
+
 ## Native event adapter
 
 `ethr_event.h` and `ethr_event.c` implement the event portion of the
 pinned ERTS thread-library interface over the C native-worker event API.
-The enclosing ERTS thread backend still needs to select this definition
-and link the implementation.
+The staged Knytos header selects this definition. The full ERTS build still
+needs to select and link that backend through its build machinery.
 
 Positive nanosecond timeouts round up to milliseconds. Zero checks
 readiness immediately, and every negative timeout selects an indefinite
@@ -110,8 +409,169 @@ key and a live participant identity before native exit. The standalone
 TSD fixture combines both adapters and retains its shared argument through
 join while the destructor releases the event and its containing allocation.
 
-The full ERTS backend still needs to adopt these type definitions and
-entry points and bind its internal event object to this cleanup contract.
+The [thread-specific event owner](#thread-specific-events) binds a reserved
+native destructor key to its owned event list. The staged Knytos header
+selects these definitions; ERTS CPU/runtime configuration remains open.
+
+## Thread-specific events
+
+`ethr_ts_event.h` and `ethr_ts_event.c` provide the pinned public object
+fields, flags and nine lifecycle entry points. The integrated native
+bootstrap reserves this key during `ethr_init` and constructs the startup
+event during `ethr_late_init`. For independent adapter use, startup calls
+`knytos_ethr_ts_events_init` before workers use this interface. It reserves
+one native destructor key for the domain lifetime, returning `EAGAIN` for
+key admission rejection and `EBUSY` on repeated initialization. Workers
+cannot initialize that shared key. The option initializer described below
+supplies event allocator hooks and logical main-thread bounds. Actual
+ERTS runtime configuration remains open; native locks do not use reader groups.
+
+Each adapter participant lazily owns one context containing a cached event
+and its temporary duplicates. The bounded profile permits sixteen live
+events per participant. Capacity rejection returns `EAGAIN`, allocation
+failure returns `ENOMEM`, and construction preserves the output and
+existing context on rejection. All fallible preparation precedes object
+publication. Participants retain their own exact adapter generation.
+Foreign native threads remain outside this profile.
+
+Get and use mark an object busy. A busy duplicate receives a fresh native
+event and copies only borrowed queue metadata, atomic flags and scalar
+state. Its set/reset state is independent. Upstream peek flags are copied
+too; a temporary is released only after both busy and peek claims leave.
+The private ownership links remain separate from public queue links.
+Borrowed `udata` must clear before disposal. Cross-thread producers borrow
+the embedded event and finish their calls before the owning participant
+destroys it. Readiness alone establishes no producer quiescence.
+
+Free rejects busy, peeked or nonempty-`udata` objects with `EBUSY` and
+foreign pointers with `EINVAL`. `knytos_ethr_ts_events_clear` clears the
+calling participant. It may release an idle prefix before a busy rejection;
+the same context retains every remaining owner for a later clear. Native
+event destruction also preserves a rejected object. Usage counts change
+after actual object release and supply telemetry, not lifetime authority.
+Exclude concurrent producers and new uses during destruction.
+
+Worker TSD cleanup disposes idle contexts outside runtime guards. An exit
+with live claims aborts while retaining the owner graph. A later user
+destructor may create a fresh context, which is cleaned in the next native
+destructor pass. The native four-pass termination bound remains in force.
+Startup explicitly clears its own context after last use. Exact worker
+joins still fence argument and slot reuse.
+
+Run this ownership qualification in a fresh guest through its own profile.
+
+```sh
+python3 ports/libc/run-tests.py --picolibc-source /path/to/picolibc \
+  --erts-tse --smp 2 --output target/erts/thread-events-validation
+```
+
+The [thread-event qualification](../../docs/reports/milestones/2026-11-26-erts-thread-events.md)
+records nested lifetimes, partial cleanup, capacity and key rejection,
+cross-CPU delivery, destructor rearming and the fatal live-borrow control.
+
+### Event late configuration
+
+`knytos_ethr_ts_events_init_opt` accepts the pinned `ethr_late_init_data`
+layout. It copies and validates options before publishing the reserved
+key. Negative counts return `EINVAL`, and more than four logical main
+thread slots return `ENOTSUP` in this bounded profile. The ordinary
+initializer supplies default options. Reconfiguration returns `EBUSY`.
+Reader groups remain advisory for the current native read/write backend.
+
+Contexts and list nodes use the selected `mem.std` callbacks. An incomplete
+standard allocator tuple selects the complete malloc/realloc/free fallback,
+as upstream does; incomplete short-/long-lived groups inherit that tuple.
+The current event adapter uses only the standard group and fixed-size
+allocations. Native event storage continues through the C runtime's own
+allocator. Each context captures its allocator for matching disposal,
+including worker TSD cleanup and explicit clear.
+
+Callbacks supply aligned storage and consuming local deallocation, return
+normally and retain their code and backing for the domain lifetime. They
+run outside runtime guards. Per-participant callback guards reject
+reentrant event ownership operations and status mutation with `EBUSY`;
+pointer/void interfaces treat such failures as terminal. Read-only main
+status and usage snapshots remain available during callbacks. Allocation
+failure preserves existing owners and releases the complete unsubmitted
+prefix through its captured allocator.
+
+`ethr_get_main_thr_status` reads the cached event's flag without allocating.
+No cached event means off. `ethr_set_main_thr_status` requires a cached
+event and an enabled index within the captured bound; disabling clears
+the flag and index. Both operate on the current participant. Temporary
+duplicates copy their existing status snapshot. Clear and fresh contexts
+start off. These are ERTS metadata and do not alter native admission,
+placement or kernel platform classification.
+
+The [late event configuration qualification](../../docs/reports/milestones/2026-11-27-erts-event-configuration.md)
+records callback capture, preparation failure, reentry rejection, whole
+fallback selection and main-status lifetime.
+
+## Native early and late initialization
+
+`ethr_init` and `ethr_late_init` implement the pinned public lifecycle for
+the bounded native backend. Call both from startup before creating workers.
+Early initialization copies creation hooks and admits the identity and
+thread-event TSD registrations. One pending owner retains the unpublished
+identity key; event-key rejection cancels it before returning. No hooks or
+phase change is committed on rejection, so that unstarted initialization
+may be retried. Successful keys remain reserved for the domain lifetime.
+The atomic and mutex-library setup is stateless. Native parking ignores
+the CPU-count optimization hint; this does not discover CPUs or fabricate
+platform configuration.
+
+Late initialization validates and copies allocator/main-thread options and
+prepares the cached startup event with the selected allocator. Its complete
+pending event owner handles allocation/event rejection. Only success
+publishes immutable configuration and permits worker creation. Allocation
+failure leaves the early phase and reserved keys intact, with no cached
+event or published allocator configuration; a later call may retry that
+unstarted preparation. Main-thread status remains explicit local metadata.
+
+Startup receives `EACCES` for late initialization before early setup or
+worker creation between the two phases, `EINVAL` for repeated successful
+early/late initialization, and `ECANCELED` after the shutdown fence. Worker
+initialization calls return `EACCES`. During late allocator callbacks,
+reentrant initialization, thread control and handler registration return
+`EBUSY`; read-only event status remains available. Private independent
+bootstrap helpers cannot replace an already reserved event key or hook set.
+
+Each admitted worker establishes its exact adapter identity and constructs
+its cached event before invoking the child hook and completing the existing
+parent handshake. Exit handlers can still borrow that event before native
+TSD teardown. If event construction fails after native start was accepted,
+the domain aborts with the worker record and prepared callback borrow
+retained; it does not return a partial creation or call parent cleanup while
+child initialization is uncertain. This is a terminal policy for the
+current profile, not a recoverable per-thread admission error.
+
+Normal return, explicit worker exit and detached drain use the existing
+handler/TSD cleanup and exact joins. Startup explicitly clears its own event
+after excluding producers and draining workers. Logical event release and
+join do not establish physical root retirement. The profile still supports
+three workers with default stacks; full ERTS thread capacity, actual stack
+bounds, CPU/runtime data, thread progress and build integration remain open.
+
+```sh
+python3 ports/libc/run-tests.py --erts-bootstrap --smp 2 \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/bootstrap-validation
+```
+
+The [native bootstrap qualification](../../docs/reports/milestones/2026-11-27-erts-native-bootstrap.md)
+passed 21 signed bootstrap cases and the separate 28-case header regression,
+with three deployment controls in each guest. Both use the identical
+nine-member archive. The interface check matched 294 public functions and
+33 native callable names, retained 327 references, compiled normal, inline
+and debug modes and rejected all four mismatch/profile controls. Key
+admission rollback, both allocation prefixes, copied options/hooks, automatic
+events, normal/explicit exit and detached drain passed. The accepted worker
+allocation-failure control aborted its domain without child/parent cleanup
+or ordinary return. The existing header fixtures and four barrier/double-word
+instruction checks also passed. The
+[evidence manifest](../../docs/plans/evidence/erts-native-bootstrap/summary.json)
+and [serial excerpts](../../docs/plans/evidence/erts-native-bootstrap/serial-excerpts.txt)
+retain identities and observations, including the still-open store limitation.
 
 ## Bounded thread adapter
 
@@ -145,7 +605,8 @@ attempt that reaches native submission. It copies the upstream
 this initializer also leaves the hooks empty. Registration returns
 `EBUSY` after registration or creation has started, `EACCES` from a worker
 and `ECANCELED` after the shutdown fence. This initializer covers the
-standalone adapter; upstream `ethr_init` and `ethr_late_init` remain open.
+standalone adapter; the integrated native lifecycle above uses `ethr_init`
+and `ethr_late_init` instead.
 
 Prepare runs on startup after local validation and record reservation.
 Its returned pointer stays in that record through native submission.
@@ -267,6 +728,40 @@ registration remains fixed storage for the domain lifetime.
 
 ## Mutex adapter
 
+### Library initialization
+
+`ethr_mutex_lib_init` and `ethr_mutex_lib_late_init` supply the two
+mutex-library startup entry points used by OTP's common thread initializer.
+They return zero without allocation, shared mutable state or changes to
+existing locks. CPU counts, reader groups and main-thread counts select
+spin defaults and reader arrays in upstream implementations. Native Knytos
+locks park directly, maintain their own writer admission and use no such
+arrays. All integer hints, including negative and extreme values, are
+therefore ignored without arithmetic. These counts do not grant thread
+admission, placement or main-thread status.
+
+Calls are repeatable from registered participants before lock construction,
+while owners and waiters remain live, and after disposal. They do not
+initialize thread events, creation callbacks, CPU discovery or the complete
+`ethr_init`/`ethr_late_init` lifecycle. Per-object option validation remains
+part of each object's initializer.
+
+The [signed qualification](../../docs/plans/evidence/erts-mutex-initialization/summary.json)
+passed all 28 header-profile cases and three deployment controls on two
+guest CPUs. The interface check matched 290 public functions and 33 native
+callable names in normal, inline and debug modes; all four rejection
+controls rejected. The lock fixture repeats early and late initialization
+from startup and workers with extreme integer hints, checks unchanged
+allocation counts and errno, and retains held mutex/read/write owners and
+a registered condition waiter across those calls. Signaling, exact joins
+and final zero-block cleanup succeed. The
+[serial capture](../../docs/plans/evidence/erts-mutex-initialization/serial-excerpts.txt)
+and [linked AArch64 instructions](../../docs/plans/evidence/erts-mutex-initialization/aarch64-initializers.txt)
+retain the observations. The instruction capture shows both initializers
+returning zero directly, with no hidden allocation or mutable setup.
+
+### Mutex operations
+
 `ethr_mutex.h` and `ethr_mutex.c` implement the pinned ERTS mutex
 interface over native nonrecursive mutexes. Default and optional
 initialization return `ENOMEM` on allocation failure and reject spin
@@ -285,8 +780,9 @@ Destruction requires external lifetime synchronization. It returns
 object on rejection. Successful destruction clears the wrapper's pointer.
 Callers keep the object live throughout all waits. Native wait rejection
 removes only waiter interest before the adapter takes its fatal path.
-The enclosing ERTS backend still needs to select these types and entry
-points and qualify thread progress and shutdown.
+The staged header selects these types and entry points. The full ERTS
+backend still needs build integration and thread-progress/shutdown
+qualification.
 
 Run the mutex, condition and read/write checks in their own signed campaign.
 

@@ -1,0 +1,14 @@
+[+    20.128917] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-assert-release" generation=1 asid=34 principal=0xfe99a82fd4011507
+[+    20.127539] [EL0 LOG] lp=0 asid=34 ERTS DIAGNOSTICS assertion macro evaluation PASS
+[+    20.128399] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512
+[+    20.702813] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-assert-worker" generation=1 asid=35 principal=0x9282528a0707689e
+[+    20.702118] [EL0 LOG] lp=1 asid=35 [erts] assertion failed file=/private/tmp/knytos-erts-diagnostics-run/erts/c-... line=29 function=worker expression=0 && "native-worker-assertion"
+[+    20.703148] [EL0 LOG] lp=1 asid=35 [c-runtime] abort
+[+    20.703384] Aborting user address space 35
+[+    21.283922] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-fatal-worker" generation=1 asid=36 principal=0xf58bab2825c5ec55
+[+    21.285652] [EL0 LOG] lp=1 asid=36 [erts] fatal error file=/private/tmp/knytos-erts-diagnostics-run/erts/c-... line=31 function=worker error=134
+[+    21.286321] [EL0 LOG] lp=1 asid=36 [c-runtime] abort
+[+    21.286461] Aborting user address space 36
+[+    21.864702] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-assert-debug" generation=1 asid=37 principal=0xca9448124b5f1c9d
+[+    21.862918] [EL0 LOG] lp=0 asid=37 ERTS DIAGNOSTICS assertion macro evaluation PASS
+[+    21.863808] [EL0 LOG] lp=0 asid=37 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512

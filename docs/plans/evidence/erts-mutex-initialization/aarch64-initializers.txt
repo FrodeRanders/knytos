@@ -1,0 +1,12 @@
+
+<output>/erts/contract.elf:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000245b4 <ethr_mutex_lib_init>:
+   245b4: 2a1f03e0     	mov	w0, wzr
+   245b8: d65f03c0     	ret
+
+00000000000245bc <ethr_mutex_lib_late_init>:
+   245bc: 2a1f03e0     	mov	w0, wzr
+   245c0: d65f03c0     	ret
