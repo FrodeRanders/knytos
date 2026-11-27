@@ -1,0 +1,8 @@
+{
+  "outcome": "failed",
+  "phase": "first local AArch64 compile of the startup adapter",
+  "compiler_status": 1,
+  "correction": "Added the native adapter header directory explicitly to the platform-clock probe include path.",
+  "capture_limitation": "The diagnostic excerpt is preserved from tool output with paths normalized; full compiler stdout and the pre-fix builder were not archived.",
+  "guest_executed": false
+}

@@ -5,12 +5,18 @@ use knytos_protocol_time as time;
 
 use crate::{
     OVERFLOW,
+    RealtimeSample,
     UNAVAILABLE,
 };
 
 pub(crate) const INVALID_REPLY: i32 = 9;
 
-pub(crate) fn decode(bytes: &[u8]) -> Result<u64, i32> {
+#[cfg(test)]
+fn decode(bytes: &[u8]) -> Result<u64, i32> {
+    decode_sample(bytes).map(|sample| sample.utc_ns)
+}
+
+pub(crate) fn decode_sample(bytes: &[u8]) -> Result<RealtimeSample, i32> {
     if bytes.len() != time::SNAPSHOT_LEN
         || bytes.get(66..68) != Some(&[0, 0][..])
         || bytes.get(76..80) != Some(&[0, 0, 0, 0][..])
@@ -30,10 +36,21 @@ pub(crate) fn decode(bytes: &[u8]) -> Result<u64, i32> {
         return Err(INVALID_REPLY);
     }
     let seconds = u64::try_from(snapshot.unix_seconds).map_err(|_| OVERFLOW)?;
-    seconds
+    let utc_ns = seconds
         .checked_mul(1_000_000_000)
         .and_then(|ns| ns.checked_add(u64::from(snapshot.nanosecond)))
-        .ok_or(OVERFLOW)
+        .ok_or(OVERFLOW)?;
+    let sample = RealtimeSample {
+        utc_ns,
+        monotonic_ticks: snapshot.monotonic_ticks,
+        counter_frequency_hz: snapshot.counter_frequency_hz,
+        drift_ppb: snapshot.drift_ppb,
+        last_sync_age_ms: snapshot.last_sync_age_ms,
+        uncertainty_ms: snapshot.uncertainty_ms,
+        reserved: 0,
+    };
+    sample.validate().map_err(|_| INVALID_REPLY)?;
+    Ok(sample)
 }
 
 #[cfg(test)]
@@ -85,6 +102,29 @@ mod tests {
         value = snapshot(1_704_067_200, 0);
         value.counter_frequency_hz = 0;
         assert_eq!(decode(&value.encode()), Err(INVALID_REPLY));
+    }
+
+    #[test]
+    fn sample_preserves_the_service_anchor_rate_and_quality_metadata() {
+        let value = snapshot(1_704_067_200, 123);
+        assert_eq!(
+            decode_sample(&value.encode()),
+            Ok(RealtimeSample {
+                utc_ns: 1_704_067_200_000_000_123,
+                monotonic_ticks: 1000,
+                counter_frequency_hz: 1000,
+                drift_ppb: -100,
+                last_sync_age_ms: 42,
+                uncertainty_ms: 20,
+                reserved: 0,
+            })
+        );
+        let mut changed = value;
+        changed.drift_ppb = -1_000_000_000;
+        assert_eq!(decode_sample(&changed.encode()), Err(INVALID_REPLY));
+        changed = value;
+        changed.last_sync_age_ms = time::NEVER_SYNCED_AGE_MS;
+        assert_eq!(decode_sample(&changed.encode()), Err(INVALID_REPLY));
     }
 
     #[test]

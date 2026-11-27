@@ -1,0 +1,109 @@
+
+<signed-elf>:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000022904 <knytos_clock_sample_project_ns>:
+   22904: b40005a0     	cbz	x0, 0x229b8 <knytos_clock_sample_project_ns+0xb4>
+   22908: aa0003e9     	mov	x9, x0
+   2290c: 52800020     	mov	w0, #0x1                // =1
+   22910: b4000562     	cbz	x2, 0x229bc <knytos_clock_sample_project_ns+0xb8>
+   22914: 2a090048     	orr	w8, w2, w9
+   22918: 92400908     	and	x8, x8, #0x7
+   2291c: b5000508     	cbnz	x8, 0x229bc <knytos_clock_sample_project_ns+0xb8>
+   22920: f81d0ffe     	str	x30, [sp, #-0x30]!
+   22924: a90157f6     	stp	x22, x21, [sp, #0x10]
+   22928: a9415528     	ldp	x8, x21, [x9, #0x10]
+   2292c: a9024ff4     	stp	x20, x19, [sp, #0x20]
+   22930: aa0103f6     	mov	x22, x1
+   22934: f940112c     	ldr	x12, [x9, #0x20]
+   22938: a9402933     	ldp	x19, x10, [x9]
+   2293c: b9402d2b     	ldr	w11, [x9, #0x2c]
+   22940: d40009e1     	svc	#0x4f
+   22944: aa0003e9     	mov	x9, x0
+   22948: 52800020     	mov	w0, #0x1                // =1
+   2294c: b40002e8     	cbz	x8, 0x229a8 <knytos_clock_sample_project_ns+0xa4>
+   22950: 92993fcd     	mov	x13, #-0xc9ff           // =-51711
+   22954: f2b88cad     	movk	x13, #0xc465, lsl #16
+   22958: eb0d02bf     	cmp	x21, x13
+   2295c: 5400026b     	b.lt	0x229a8 <knytos_clock_sample_project_ns+0xa4>
+   22960: b100059f     	cmn	x12, #0x1
+   22964: 54000220     	b.eq	0x229a8 <knytos_clock_sample_project_ns+0xa4>
+   22968: 3500020b     	cbnz	w11, 0x229a8 <knytos_clock_sample_project_ns+0xa4>
+   2296c: eb08003f     	cmp	x1, x8
+   22970: 52800040     	mov	w0, #0x2                // =2
+   22974: 540001a1     	b.ne	0x229a8 <knytos_clock_sample_project_ns+0xa4>
+   22978: eb0a0129     	subs	x9, x9, x10
+   2297c: 54000163     	b.lo	0x229a8 <knytos_clock_sample_project_ns+0xa4>
+   22980: 5299400a     	mov	w10, #0xca00            // =51712
+   22984: aa0203f4     	mov	x20, x2
+   22988: aa0803e2     	mov	x2, x8
+   2298c: 72a7734a     	movk	w10, #0x3b9a, lsl #16
+   22990: aa1f03e3     	mov	x3, xzr
+   22994: 9b0a7d20     	mul	x0, x9, x10
+   22998: 9bca7d21     	umulh	x1, x9, x10
+   2299c: 9400257a     	bl	0x2bf84 <__udivti3>
+   229a0: b4000101     	cbz	x1, 0x229c0 <knytos_clock_sample_project_ns+0xbc>
+   229a4: 52800060     	mov	w0, #0x3                // =3
+   229a8: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+   229ac: a94157f6     	ldp	x22, x21, [sp, #0x10]
+   229b0: f84307fe     	ldr	x30, [sp], #0x30
+   229b4: d65f03c0     	ret
+   229b8: 52800020     	mov	w0, #0x1                // =1
+   229bc: d65f03c0     	ret
+   229c0: eb0002df     	cmp	x22, x0
+   229c4: 540000c2     	b.hs	0x229dc <knytos_clock_sample_project_ns+0xd8>
+   229c8: 52800080     	mov	w0, #0x4                // =4
+   229cc: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+   229d0: a94157f6     	ldp	x22, x21, [sp, #0x10]
+   229d4: f84307fe     	ldr	x30, [sp], #0x30
+   229d8: d65f03c0     	ret
+   229dc: 52994008     	mov	w8, #0xca00             // =51712
+   229e0: 72a77348     	movk	w8, #0x3b9a, lsl #16
+   229e4: ab0802a9     	adds	x9, x21, x8
+   229e8: 937ffea8     	asr	x8, x21, #63
+   229ec: 9bc97c0a     	umulh	x10, x0, x9
+   229f0: 9a883508     	cinc	x8, x8, hs
+   229f4: 9b082808     	madd	x8, x0, x8, x10
+   229f8: 52993fea     	mov	w10, #0xc9ff            // =51711
+   229fc: 72a7734a     	movk	w10, #0x3b9a, lsl #16
+   22a00: 9b092028     	madd	x8, x1, x9, x8
+   22a04: eb0a011f     	cmp	x8, x10
+   22a08: 540000c9     	b.ls	0x22a20 <knytos_clock_sample_project_ns+0x11c>
+   22a0c: 52800060     	mov	w0, #0x3                // =3
+   22a10: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+   22a14: a94157f6     	ldp	x22, x21, [sp, #0x10]
+   22a18: f84307fe     	ldr	x30, [sp], #0x30
+   22a1c: d65f03c0     	ret
+   22a20: 9b097c09     	mul	x9, x0, x9
+   22a24: d294b2ea     	mov	x10, #0xa597            // =42391
+   22a28: d286062d     	mov	x13, #0x3031            // =12337
+   22a2c: f2a6d68a     	movk	x10, #0x36b4, lsl #16
+   22a30: f2bf12ad     	movk	x13, #0xf895, lsl #16
+   22a34: f2cbe82a     	movk	x10, #0x5f41, lsl #32
+   22a38: f2c1510d     	movk	x13, #0xa88, lsl #32
+   22a3c: f2f12e0a     	movk	x10, #0x8970, lsl #48
+   22a40: f2e62d0d     	movk	x13, #0x3168, lsl #48
+   22a44: 9bcd7d0f     	umulh	x15, x8, x13
+   22a48: 9bca7d2b     	umulh	x11, x9, x10
+   22a4c: 9b0a7d2c     	mul	x12, x9, x10
+   22a50: 9bcd7d29     	umulh	x9, x9, x13
+   22a54: 9b0d7d0d     	mul	x13, x8, x13
+   22a58: 9bca7d0e     	umulh	x14, x8, x10
+   22a5c: ab0c0129     	adds	x9, x9, x12
+   22a60: 9b0a7d08     	mul	x8, x8, x10
+   22a64: 9a8b356a     	cinc	x10, x11, hs
+   22a68: ab0d013f     	cmn	x9, x13
+   22a6c: ba0f0149     	adcs	x9, x10, x15
+   22a70: 9a8e35ca     	cinc	x10, x14, hs
+   22a74: ab080128     	adds	x8, x9, x8
+   22a78: 9a8a3549     	cinc	x9, x10, hs
+   22a7c: 93c87528     	extr	x8, x9, x8, #0x1d
+   22a80: ab080268     	adds	x8, x19, x8
+   22a84: 54fffc42     	b.hs	0x22a0c <knytos_clock_sample_project_ns+0x108>
+   22a88: 2a1f03e0     	mov	w0, wzr
+   22a8c: f9000288     	str	x8, [x20]
+   22a90: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+   22a94: a94157f6     	ldp	x22, x21, [sp, #0x10]
+   22a98: f84307fe     	ldr	x30, [sp], #0x30
+   22a9c: d65f03c0     	ret

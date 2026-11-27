@@ -1,0 +1,19 @@
+
+erts_monotonic.o:
+                 U abort
+0000000000000000 T erts_os_monotonic_time
+0000000000000000 T erts_sys_hrtime
+                 U knytos_clock_monotonic_ns
+                 U knytos_console_write
+
+erts_system_time.o:
+                 U abort
+                 U erts_os_monotonic_time
+0000000000000000 T erts_os_system_time
+0000000000000000 T erts_os_times
+                 U knytos_clock_realtime_sample
+                 U knytos_clock_sample_project_ns
+                 U knytos_console_write
+0000000000000000 T knytos_erts_clock_publish
+0000000000000000 T knytos_erts_clock_read
+0000000000000000 T knytos_erts_clock_refresh

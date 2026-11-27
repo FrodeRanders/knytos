@@ -1,0 +1,15 @@
+[+    20.782876] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-time-init" generation=1 asid=34 principal=0xf0bf0e223b3a082e
+[+    20.792760] [EL0 LOG] lp=0 asid=34 ERTS TIME INIT pinned metadata local performance counter and worker reads PASS
+[+    20.793544] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512
+[+    21.360060] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-time-init-denied" generation=1 asid=35 principal=0x80497aa95a054d2c
+[+    21.361520] [EL0 LOG] lp=0 asid=35 ERTS TIME INIT missing grant preserves metadata and cold clock PASS
+[+    21.362738] [EL0 LOG] lp=0 asid=35 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512
+[+    21.956170] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-time-init-failed" generation=1 asid=36 principal=0xd4cbb3434fdac543
+[+    21.957248] [EL0 LOG] lp=0 asid=36 [erts] clock initialization failed
+[+    21.957510] [EL0 LOG] lp=0 asid=36 [c-runtime] abort
+[+    21.957652] Aborting user address space 36
+[+    22.535842] [EL0 LOG] lp=0 asid=16 [agent] launched "c-survivor" generation=1 asid=37 principal=0xd9b34b84697e2d4d
+[+    22.534126] [EL0 LOG] lp=0 asid=37 CABI hello: C on Knytos
+[+    22.534648] [EL0 LOG] lp=0 asid=37 CABI PASS case=0
+[+    22.534914] [EL0 LOG] lp=0 asid=37 CABI FINI
+[+    22.537048] [EL0 LOG] lp=0 asid=37 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=688

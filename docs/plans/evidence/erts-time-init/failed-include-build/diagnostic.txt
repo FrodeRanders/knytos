@@ -1,0 +1,6 @@
+In file included from ports/erts/erts_time_init.c:3:
+In file included from ports/erts/erts_time_init.h:8:
+<contract>/erts_time_contract.h:4:10: fatal error: 'erts_clock_platform.h' file not found
+    4 | #include "erts_clock_platform.h"
+      |          ^~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.

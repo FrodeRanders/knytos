@@ -115,6 +115,45 @@ and both original failed worker captures. Its
 [manifest](../../docs/plans/evidence/c-realtime/summary.json) retains source,
 artifact and descriptor identities and the observed mapping-admission limit.
 
+### Caller-owned UTC samples and local projection
+
+`knytos_clock_realtime_sample` uses the same authorized query, one-second
+budget and complete native owners as `knytos_clock_realtime_ns`. On success
+it copies a 48-byte `knytos_realtime_sample` containing UTC nanoseconds, the
+service's matching monotonic ticks/frequency, drift estimate, original NTP
+age and uncertainty. The explicit reserved field is zero. Both query APIs
+reject a nonpositive drift-adjusted rate or a synchronized snapshot with
+the never-synchronized age sentinel. Ordinary and worker-libc profiles
+return unavailable, preserving the entire output structure.
+
+`knytos_clock_sample_project_ns` takes an immutable sample, an explicit
+maximum nominal elapsed time and disjoint output storage. It makes one local
+counter query and projects elapsed time using the copied drift. It performs
+no allocation, RPC, wait, retry, refresh or shared publication. All profiles
+support this function. Exceeding the sample-age limit returns deadline;
+changed frequency or a counter before the sample returns unavailable;
+invalid metadata and checked arithmetic overflow remain distinct. Every
+failure preserves output. It never substitutes uptime for missing UTC.
+
+The limit measures time since the sample, not since upstream synchronization,
+and does not bound UTC error. Original quality fields remain metadata about
+the sample. Later service corrections or its nonregression clamp may make a
+fresh service query differ from the estimate; integer re-anchoring can also
+introduce nanosecond rounding differences. Projection does not assert ongoing
+synchronization or authenticate time. Callers choose a validity policy and
+keep each sample immutable through all concurrent reads; publishing a
+replacement needs their own synchronization. There is no global sample cache.
+
+The [sample qualification](../../docs/reports/milestones/2026-11-27-c-realtime-sample.md)
+extends `--c-clock` to 21 signed cases and three deployment controls, including
+cross-CPU local reads under a native mutex, age/frequency/overflow rejection,
+whole-output preservation and grant denial. Twelve host tests cover layout,
+metadata, arithmetic and frame validation. The standalone
+[ERTS system clock](../erts/README.md#published-system-clock-prerequisite)
+uses these primitives for bounded publication, explicit refresh and terminal
+expiry. Its ERTS startup/refresh scheduling and native configure selection
+remain open.
+
 The single-threaded reactor API borrows launch CQ zero: `knytos_event_signal`
 posts a retained work generation, and `knytos_event_wait` accepts -1 for an
 indefinite wait or nonnegative milliseconds. It returns distinct readiness,

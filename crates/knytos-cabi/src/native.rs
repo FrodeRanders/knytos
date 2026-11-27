@@ -274,9 +274,9 @@ pub unsafe extern "C" fn knytos_clock_realtime_ns(output: *mut u64) -> i32 {
     } else {
         #[cfg(feature = "service-worker")]
         {
-            match crate::service_worker::realtime_ns() {
+            match crate::service_worker::realtime_sample() {
                 Ok(value) => {
-                    unsafe { output.write(value) };
+                    unsafe { output.write(value.utc_ns) };
                     OK
                 }
                 Err(status) => status,
@@ -286,6 +286,60 @@ pub unsafe extern "C" fn knytos_clock_realtime_ns(output: *mut u64) -> i32 {
         {
             UNAVAILABLE
         }
+    }
+}
+
+/// # Safety
+/// `output` is writable aligned storage for one complete RealtimeSample.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn knytos_clock_realtime_sample(output: *mut RealtimeSample) -> i32 {
+    if output.is_null()
+        || !(output as usize).is_multiple_of(core::mem::align_of::<RealtimeSample>())
+    {
+        return INVALID;
+    }
+    #[cfg(feature = "service-worker")]
+    {
+        match crate::service_worker::realtime_sample() {
+            Ok(value) => {
+                unsafe { output.write(value) };
+                OK
+            }
+            Err(status) => status,
+        }
+    }
+    #[cfg(not(feature = "service-worker"))]
+    {
+        UNAVAILABLE
+    }
+}
+
+/// # Safety
+/// `sample` is an aligned, initialized sample kept immutable for this call.
+/// `output` is writable aligned u64 storage, disjoint from `sample`.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn knytos_clock_sample_project_ns(
+    sample: *const RealtimeSample,
+    max_elapsed_ns: u64,
+    output: *mut u64,
+) -> i32 {
+    if sample.is_null()
+        || !(sample as usize).is_multiple_of(core::mem::align_of::<RealtimeSample>())
+        || output.is_null()
+        || !(output as usize).is_multiple_of(8)
+    {
+        return INVALID;
+    }
+    // Copy before the scalar query. This borrows no capability, retains no
+    // input pointer and neither publishes nor refreshes a shared sample.
+    let sample = unsafe { sample.read() };
+    let (ticks, frequency) = knytos_rt::abi::monotonic_clock();
+    match sample.project(ticks, frequency, max_elapsed_ns) {
+        Ok(value) => {
+            unsafe { output.write(value) };
+            OK
+        }
+        Err(status) => status,
     }
 }
 

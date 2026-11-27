@@ -62,6 +62,14 @@ int main(int argc, char **argv) {
         assert(knytos_clock_monotonic_ns(&second) == 0 && second >= first);
         assert(knytos_clock_monotonic_ns(NULL) == KNYTOS_INVALID);
         assert(knytos_clock_realtime_ns(&untouched) == KNYTOS_UNAVAILABLE && untouched == 123);
+        struct knytos_realtime_sample sample, original;
+        memset(&sample, 0xa5, sizeof(sample));
+        original = sample;
+        assert(knytos_clock_realtime_sample(&sample) == KNYTOS_UNAVAILABLE);
+        assert(memcmp(&sample, &original, sizeof(sample)) == 0);
+        sample = (struct knytos_realtime_sample){0};
+        assert(knytos_clock_sample_project_ns(&sample, UINT64_MAX, &untouched) == KNYTOS_INVALID);
+        assert(untouched == 123);
         assert(knytos_console_write(NULL, 1) == KNYTOS_INVALID);
     } else if (CASE == 4) {
         assert(atexit(on_exit_test) == 0);

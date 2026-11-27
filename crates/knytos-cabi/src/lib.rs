@@ -5,9 +5,10 @@
 extern crate alloc;
 
 mod allocation;
+mod clock;
 #[cfg(target_os = "none")]
 mod native;
-#[cfg(all(feature = "service-worker", any(target_os = "none", test)))]
+#[cfg(any(all(feature = "service-worker", target_os = "none"), test))]
 mod realtime;
 #[cfg(all(target_os = "none", feature = "service-worker"))]
 mod service_worker;
@@ -21,6 +22,7 @@ mod workers;
 use core::ptr;
 
 pub use allocation::AllocationStats;
+pub use clock::RealtimeSample;
 
 pub const OK: i32 = 0;
 pub const INVALID: i32 = 1;

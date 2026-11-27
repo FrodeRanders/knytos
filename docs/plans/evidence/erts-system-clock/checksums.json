@@ -1,0 +1,15 @@
+{
+  "archive-symbols.txt": "03aa474ac976570936d680b40bb080ceb3b8a2b864a9b2fb152fc0948f2c7e43",
+  "contract.c": "4e8bcb9eefae68460d98c39eddc2058cc29558fd04930d2b1bf99c43a10cdcb0",
+  "host-validation.json": "a3e78513c314f9bebf55a0c78c6d8c371675cac553b2ad73fdc45f693a997356",
+  "interface.json": "c638953776c799d661749f83ba87fa5545dba2b5e1dbe95a061ea3ecf9dfce71",
+  "knytos_erts_clock_publish.txt": "b5da8fcd13cb7926d9b860e38c8425c9424e5a9880e6c4debd82f81c6610ccae",
+  "knytos_erts_clock_read.txt": "a48dd6d3366d0920f67a6a7d17dd0162aca7a9253552fa68b524f1b0f75cb216",
+  "knytos_erts_clock_refresh.txt": "c74ebff8b44daee09a1c3fa2b7705b17f3202f7b9e6f23e0ff87351f0954c49d",
+  "reject-paired-pointer.c": "9d8d8359181a0ce70e0b6af19f9012561b4b52e001d7ea28c346bce524264638",
+  "reject-paired-pointer.txt": "28a75286fc52c0e865053140f11597cbadb8d4bbc0b4fe4919e3d4bb728f2b91",
+  "reject-system-return.c": "a636b1197144b20c1d20c1bf3fea64e18d464343959363e3dace363fbacb290c",
+  "reject-system-return.txt": "bad9b212d0759eb3dcdac42f2fc77fba4f3a50597ff1ba08f0860f86b6d1f904",
+  "serial-excerpts.txt": "f4937f6bfafcb4bd0d0882d66bf547f19e1888d898fb34417944bc1af7928585",
+  "summary.json": "07be1324ea816d52a017276f77663b5e0f97c71eabacb4cfb4d51298e8bc6798"
+}

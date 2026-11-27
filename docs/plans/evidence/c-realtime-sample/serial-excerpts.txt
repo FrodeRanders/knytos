@@ -1,0 +1,23 @@
+[+    11.597304] [EL0 LOG] lp=0 asid=16 [agent] launched "c-clock" generation=1 asid=21 principal=0xaf4f6db8e06497de
+[+    11.595616] [EL0 LOG] lp=0 asid=21 CABI PASS case=3
+[+    11.595992] [EL0 LOG] lp=0 asid=21 CABI FINI
+[+    11.596664] [EL0 LOG] lp=0 asid=21 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=736
+[+    20.169866] [EL0 LOG] lp=0 asid=16 [agent] launched "c-realtime" generation=1 asid=34 principal=0xca50de52056323bd
+[+    20.194036] [EL0 LOG] lp=0 asid=34 C REALTIME worker status=7 value=789 first=1795809721954006452
+[+    20.197286] [EL0 LOG] lp=0 asid=34 C REALTIME unstarted profile-map admission busy=1
+[+    20.197850] [EL0 LOG] lp=0 asid=34 C REALTIME synchronized UTC startup and worker private queues PASS
+[+    20.199182] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=720
+[+    20.756414] [EL0 LOG] lp=0 asid=16 [agent] launched "c-realtime-denied" generation=1 asid=35 principal=0x94faee0a092ad6ec
+[+    20.757874] [EL0 LOG] lp=0 asid=35 C REALTIME missing signed grant rejected and output preserved PASS
+[+    20.758722] [EL0 LOG] lp=0 asid=35 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512
+[+    21.349918] [EL0 LOG] lp=0 asid=16 [agent] launched "c-realtime-sample" generation=1 asid=36 principal=0xb93844f5010201eb
+[+    21.368170] [EL0 LOG] lp=0 asid=36 C REALTIME SAMPLE bounded local projection startup and worker locked reads PASS
+[+    21.369056] [EL0 LOG] lp=0 asid=36 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=206 sampled_stack=512
+[+    21.941920] [EL0 LOG] lp=0 asid=16 [agent] launched "c-realtime-sample-denied" generation=1 asid=37 principal=0x8eb073e63282816d
+[+    21.943370] [EL0 LOG] lp=0 asid=37 C REALTIME SAMPLE missing signed grant preserves complete output PASS
+[+    21.944212] [EL0 LOG] lp=0 asid=37 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512
+[+    22.547012] [EL0 LOG] lp=0 asid=16 [agent] launched "c-survivor" generation=1 asid=38 principal=0xd9b34b84697e2d4d
+[+    22.544644] [EL0 LOG] lp=0 asid=38 CABI hello: C on Knytos
+[+    22.545186] [EL0 LOG] lp=0 asid=38 CABI PASS case=0
+[+    22.545462] [EL0 LOG] lp=0 asid=38 CABI FINI
+[+    22.546094] [EL0 LOG] lp=0 asid=38 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=688

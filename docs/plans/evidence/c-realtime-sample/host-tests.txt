@@ -1,0 +1,25 @@
+   Compiling knytos-cabi v0.1.0 (<repo>/crates/knytos-cabi)
+    Finished `test` profile [optimized + debuginfo] target(s) in 4.28s
+     Running unittests src/lib.rs (<host-target>/aarch64-apple-darwin/debug/build/knytos-cabi/06cbbaa62172757f/out/knytos_cabi-06cbbaa62172757f)
+
+running 12 tests
+test allocation::tests::aligned_blocks_realloc_failure_and_unordered_release ... ok
+test allocation::tests::rejected_layout_does_not_publish_or_allocate ... ok
+test allocation::tests::terminal_cleanup_releases_all_retained_blocks ... ok
+test clock::tests::c_layout_is_six_aligned_words_with_explicit_reserved_bytes ... ok
+test clock::tests::projection_checks_nominal_scaled_and_utc_overflow_without_saturating ... ok
+test clock::tests::projection_rejects_invalid_metadata_and_changed_or_reversed_counters ... ok
+test clock::tests::projection_uses_rate_and_accepts_the_exact_age_boundary ... ok
+test realtime::tests::converts_epoch_fraction_and_unsigned_limit_without_overflow ... ok
+test realtime::tests::rejects_incomplete_extended_retired_and_noncanonical_frames ... ok
+test realtime::tests::rejects_unavailable_states_and_inconsistent_utc ... ok
+test realtime::tests::sample_preserves_the_service_anchor_rate_and_quality_metadata ... ok
+test tests::counter_conversion_handles_fraction_zero_and_overflow ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests knytos_cabi
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

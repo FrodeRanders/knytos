@@ -1,0 +1,4 @@
+/Users/froran/Projects/private/knytos/ports/erts/erts_time_init.c:9:2: error: "The native clock sample-age policy must be nonzero"
+    9 | #error "The native clock sample-age policy must be nonzero"
+      |  ^
+1 error generated.

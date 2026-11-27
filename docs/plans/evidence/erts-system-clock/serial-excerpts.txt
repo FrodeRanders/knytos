@@ -1,0 +1,16 @@
+[+    20.056056] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-system-time" generation=1 asid=34 principal=0xe44e638dc447c316
+[+    20.096258] [EL0 LOG] lp=0 asid=34 ERTS SYSTEM TIME published=255 busy=1
+[+    20.096796] [EL0 LOG] lp=0 asid=34 ERTS SYSTEM TIME local getters concurrent publication and exact join PASS
+[+    20.097472] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=206 sampled_stack=736
+[+    20.649050] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-system-time-denied" generation=1 asid=35 principal=0xa75ef8d4b2383fdd
+[+    20.650466] [EL0 LOG] lp=0 asid=35 ERTS SYSTEM TIME missing grant preserves cold state PASS
+[+    20.651216] [EL0 LOG] lp=0 asid=35 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512
+[+    21.211940] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-system-time-cold" generation=1 asid=36 principal=0x9fe5a4d5cbf9d219
+[+    21.210418] [EL0 LOG] lp=0 asid=36 [erts] system clock unavailable stale or out of range
+[+    21.210832] [EL0 LOG] lp=0 asid=36 [c-runtime] abort
+[+    21.210996] Aborting user address space 36
+[+    21.771580] [EL0 LOG] lp=0 asid=16 [agent] launched "c-survivor" generation=1 asid=37 principal=0xd9b34b84697e2d4d
+[+    21.768984] [EL0 LOG] lp=0 asid=37 CABI hello: C on Knytos
+[+    21.769522] [EL0 LOG] lp=0 asid=37 CABI PASS case=0
+[+    21.769788] [EL0 LOG] lp=0 asid=37 CABI FINI
+[+    21.770416] [EL0 LOG] lp=0 asid=37 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=688

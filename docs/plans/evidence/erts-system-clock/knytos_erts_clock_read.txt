@@ -1,0 +1,61 @@
+
+<signed-elf>:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+000000000002055c <knytos_erts_clock_read>:
+   2055c: d10183ff     	sub	sp, sp, #0x60
+   20560: f9002bf3     	str	x19, [sp, #0x50]
+   20564: aa0003f3     	mov	x19, x0
+   20568: 52800020     	mov	w0, #0x1                // =1
+   2056c: a9047bfd     	stp	x29, x30, [sp, #0x40]
+   20570: 910103fd     	add	x29, sp, #0x40
+   20574: b4000573     	cbz	x19, 0x20620 <knytos_erts_clock_read+0xc4>
+   20578: 92400a68     	and	x8, x19, #0x7
+   2057c: b5000528     	cbnz	x8, 0x20620 <knytos_erts_clock_read+0xc4>
+   20580: d503201f     	nop
+   20584: 1007f5e8     	adr	x8, 0x30440 <readers>
+   20588: 885ffd09     	ldaxr	w9, [x8]
+   2058c: 11000529     	add	w9, w9, #0x1
+   20590: 880afd09     	stlxr	w10, w9, [x8]
+   20594: 35ffffaa     	cbnz	w10, 0x20588 <knytos_erts_clock_read+0x2c>
+   20598: d503201f     	nop
+   2059c: 1007f549     	adr	x9, 0x30444 <active>
+   205a0: 88dffd29     	ldar	w9, [x9]
+   205a4: 34000349     	cbz	w9, 0x2060c <knytos_erts_clock_read+0xb0>
+   205a8: 51000529     	sub	w9, w9, #0x1
+   205ac: 5280070a     	mov	w10, #0x38              // =56
+   205b0: d503201f     	nop
+   205b4: 1007f4ab     	adr	x11, 0x30448 <slots>
+   205b8: 9baa2d29     	umaddl	x9, w9, w10, x11
+   205bc: ad400520     	ldp	q0, q1, [x9]
+   205c0: 3dc00922     	ldr	q2, [x9, #0x20]
+   205c4: f9401929     	ldr	x9, [x9, #0x30]
+   205c8: 3d800be2     	str	q2, [sp, #0x20]
+   205cc: ad0007e0     	stp	q0, q1, [sp]
+   205d0: f9001be9     	str	x9, [sp, #0x30]
+   205d4: 885ffd09     	ldaxr	w9, [x8]
+   205d8: 51000529     	sub	w9, w9, #0x1
+   205dc: 880afd09     	stlxr	w10, w9, [x8]
+   205e0: 35ffffaa     	cbnz	w10, 0x205d4 <knytos_erts_clock_read+0x78>
+   205e4: f9401be1     	ldr	x1, [sp, #0x30]
+   205e8: 910003e0     	mov	x0, sp
+   205ec: 910063a2     	add	x2, x29, #0x18
+   205f0: 940008d1     	bl	0x22934 <knytos_clock_sample_project_ns>
+   205f4: 35000160     	cbnz	w0, 0x20620 <knytos_erts_clock_read+0xc4>
+   205f8: f9400fa8     	ldr	x8, [x29, #0x18]
+   205fc: b7f801a8     	tbnz	x8, #0x3f, 0x20630 <knytos_erts_clock_read+0xd4>
+   20600: 2a1f03e0     	mov	w0, wzr
+   20604: f9000268     	str	x8, [x19]
+   20608: 14000006     	b	0x20620 <knytos_erts_clock_read+0xc4>
+   2060c: 885ffd09     	ldaxr	w9, [x8]
+   20610: 51000529     	sub	w9, w9, #0x1
+   20614: 880afd09     	stlxr	w10, w9, [x8]
+   20618: 35ffffaa     	cbnz	w10, 0x2060c <knytos_erts_clock_read+0xb0>
+   2061c: 52800040     	mov	w0, #0x2                // =2
+   20620: a9447bfd     	ldp	x29, x30, [sp, #0x40]
+   20624: f9402bf3     	ldr	x19, [sp, #0x50]
+   20628: 910183ff     	add	sp, sp, #0x60
+   2062c: d65f03c0     	ret
+   20630: 52800060     	mov	w0, #0x3                // =3
+   20634: 17fffffb     	b	0x20620 <knytos_erts_clock_read+0xc4>

@@ -1,0 +1,4 @@
+/private/tmp/knytos-erts-time-init-qualified-interface/reject-field.c:32:16: error: static assertion failed due to requirement '__builtin_types_compatible_p(long, int)': OTP time field mismatch
+   32 | _Static_assert(__builtin_types_compatible_p(__typeof__(((ErtsSysInitTimeResult *)0)->sys_clock_resolution), __typeof__(((ExpectedTimeResult *)0)->sys_clock_resolution)), "OTP time field mismatch");
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.

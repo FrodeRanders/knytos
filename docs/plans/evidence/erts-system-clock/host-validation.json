@@ -1,0 +1,61 @@
+{
+  "undefined_behavior_sanitizer": [
+    {
+      "mode": 0,
+      "exit_status": 42,
+      "diagnostic_output": ""
+    },
+    {
+      "mode": 1,
+      "exit_status": 0,
+      "diagnostic_output": ""
+    },
+    {
+      "mode": 2,
+      "exit_status": 0,
+      "diagnostic_output": ""
+    },
+    {
+      "mode": 3,
+      "exit_status": 0,
+      "diagnostic_output": ""
+    },
+    {
+      "mode": 4,
+      "exit_status": 0,
+      "diagnostic_output": ""
+    },
+    {
+      "mode": 5,
+      "exit_status": 0,
+      "diagnostic_output": ""
+    },
+    {
+      "mode": 6,
+      "exit_status": 42,
+      "diagnostic_output": ""
+    },
+    {
+      "mode": 7,
+      "exit_status": 0,
+      "diagnostic_output": ""
+    },
+    {
+      "mode": 8,
+      "exit_status": 0,
+      "diagnostic_output": ""
+    }
+  ],
+  "thread_sanitizer": [
+    {
+      "mode": 7,
+      "exit_status": 0,
+      "diagnostic_output": ""
+    },
+    {
+      "mode": 8,
+      "exit_status": 0,
+      "diagnostic_output": ""
+    }
+  ]
+}

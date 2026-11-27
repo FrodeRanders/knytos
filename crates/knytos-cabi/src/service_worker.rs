@@ -230,7 +230,7 @@ fn invoke<C: Borrow<Connection>>(
 /// A fresh authorized query, using the caller's private CQ and one deadline
 /// across grant acquisition and observation. No connection or reply owner is
 /// stored globally, and returned capabilities are disposed on every exit.
-pub(crate) fn realtime_ns() -> Result<u64, i32> {
+pub(crate) fn realtime_sample() -> Result<crate::RealtimeSample, i32> {
     use knytos_protocol_time as time;
 
     let participant = workers::participant().ok_or(INVALID)?;
@@ -259,7 +259,7 @@ pub(crate) fn realtime_ns() -> Result<u64, i32> {
         return Err(UNEXPECTED_REPLY);
     }
     let mapping = memory.map_read_only().map_err(|(_, _)| UNAVAILABLE)?;
-    let result = crate::realtime::decode(&mapping.as_slice()[..time::SNAPSHOT_LEN]);
+    let result = crate::realtime::decode_sample(&mapping.as_slice()[..time::SNAPSHOT_LEN]);
     drop(mapping.unmap().map_err(|(_, _)| UNAVAILABLE)?);
     result
 }

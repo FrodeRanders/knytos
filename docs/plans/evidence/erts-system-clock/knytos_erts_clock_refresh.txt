@@ -1,0 +1,24 @@
+
+<signed-elf>:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000020718 <knytos_erts_clock_refresh>:
+   20718: b4000200     	cbz	x0, 0x20758 <knytos_erts_clock_refresh+0x40>
+   2071c: d10143ff     	sub	sp, sp, #0x50
+   20720: f90023f3     	str	x19, [sp, #0x40]
+   20724: aa0003f3     	mov	x19, x0
+   20728: 910003e0     	mov	x0, sp
+   2072c: a9037bfd     	stp	x29, x30, [sp, #0x30]
+   20730: 9100c3fd     	add	x29, sp, #0x30
+   20734: 94000865     	bl	0x228c8 <knytos_clock_realtime_sample>
+   20738: 35000080     	cbnz	w0, 0x20748 <knytos_erts_clock_refresh+0x30>
+   2073c: 910003e0     	mov	x0, sp
+   20740: aa1303e1     	mov	x1, x19
+   20744: 97ffffbd     	bl	0x20638 <knytos_erts_clock_publish>
+   20748: a9437bfd     	ldp	x29, x30, [sp, #0x30]
+   2074c: f94023f3     	ldr	x19, [sp, #0x40]
+   20750: 910143ff     	add	sp, sp, #0x50
+   20754: d65f03c0     	ret
+   20758: 52800020     	mov	w0, #0x1                // =1
+   2075c: d65f03c0     	ret

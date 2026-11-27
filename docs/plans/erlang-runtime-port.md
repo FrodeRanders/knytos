@@ -1858,16 +1858,44 @@ records the standalone interface, fault checks and signed campaign.
 
 UTC service queries may block and return a typed admission rejection, whereas
 OTP calls its system-time getter under `erts_get_time_mtx` and in scheduler
-BIFs. Do not wire that blocking RPC into a statusless clock read. A local UTC
-read path needs explicit synchronization, adjustment and failure policies.
-The configure wall-clock gate remains open; no cached UTC estimate or POSIX
-clock implementation is supplied by these monotonic functions.
+BIFs. Do not wire that blocking RPC into a statusless clock read. The C ABI's
+[caller-owned UTC sample and projection](../../ports/libc/README.md#caller-owned-utc-samples-and-local-projection)
+now separates the authorized blocking query from local scalar reads with
+an explicit sample-age limit. Projection carries the service's counter anchor
+and drift, preserves output on error and claims no continued synchronization
+or UTC accuracy bound. The [qualification](../reports/milestones/2026-11-27-c-realtime-sample.md)
+records layout/arithmetic tests and signed locked startup/worker reads.
+The [published system-clock prerequisite](../../ports/erts/README.md#published-system-clock-prerequisite)
+now implements `erts_os_system_time` and sequential `erts_os_times` reads.
+Two static slots hold copied non-owning samples. Readers pin/copy/release
+before projection; publication rejects busy reader/writer admission without
+blocking readers or changing the active sample. Explicit refresh performs its
+authorized query outside that publication phase. The policy steps UTC on
+replacement and aborts statusless reads on missing/expired/out-of-range time.
+The [qualification](../reports/milestones/2026-11-27-erts-system-clock.md)
+covers the four pinned interfaces, deterministic host failures, TSan stress
+and signed live replacement/denial/terminal cases.
+The [startup time adapter](../../ports/erts/README.md#startup-time-adapter)
+now supplies `sys_init_time`, its pinned result metadata and a local
+nanosecond performance counter. It prepares the authorized sample and complete
+metadata before publication/output commit, with unchanged output on failure.
+An explicit contract probe extracts the actual common `sys.h` record and
+declarations; it does not compile the full ERTS sys header. The
+[qualification](../reports/milestones/2026-11-27-erts-time-init.md)
+covers fourteen field types/offsets, nine host scenarios and signed startup,
+worker, denial and terminal cases. The late hook installs no wrap extender or
+refresh producer. Its five-second probe sample window is not a long-running
+runtime policy. Full native startup source routing and refresh scheduling
+remain integration gates.
+The configure wall-clock gate remains open: it does not select the standalone
+clock archives yet, and no POSIX clock implementation is supplied.
 
 Remaining integration:
 
-- Native platform header, configure selection and `sys_init_time` metadata.
-- System time and paired system/monotonic reads.
-- Performance-counter selection.
+- Native platform header, configure selection and startup source routing.
+- ERTS startup and refresh scheduling/notification ownership.
+- Full-platform system-time and paired-read integration.
+- Full-platform performance-counter selection and CPU-accounting support.
 - Time-offset handling.
 - Timer-wheel integration.
 - Time correction.

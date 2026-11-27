@@ -1,0 +1,4 @@
+/private/tmp/knytos-erts-system-clock-qualified-check/reject-system-return.c:13:16: error: static assertion failed due to requirement '__builtin_types_compatible_p(long (void), unsigned long (void))': OTP signature mismatch: erts_os_system_time
+   13 | _Static_assert(__builtin_types_compatible_p(__typeof__(erts_os_system_time), __typeof__(otp_erts_os_system_time)), "OTP signature mismatch: erts_os_system_time");
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.

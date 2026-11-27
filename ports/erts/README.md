@@ -42,8 +42,9 @@ OTP Make graph or produce a configured emulator: configure exits 1 with
 `No wall clock source found` before generating its final outputs. This
 configure SDK uses the worker-libc profile, which reports realtime unavailable.
 The [service-worker C profile](../libc/README.md#authorized-realtime-queries)
-can query UTC through a signed time grant. An Erlang clock backend and its
-configure selection still need implementation.
+can query UTC through a signed time grant. The standalone clock prerequisites
+below provide local getters, but native sys initialization and configure
+selection still need implementation.
 The [native configure qualification](../../docs/reports/milestones/2026-11-27-erts-native-configure.md)
 records the retained references, two rejection controls, Make source checks
 and byte-identical staged archive. Its
@@ -83,10 +84,126 @@ See the [qualification](../../docs/reports/milestones/2026-11-27-erts-monotonic-
 System time remains open. OTP reads it inside `erts_get_time_mtx` and from
 scheduler BIFs. The service-worker UTC query can block for its one-second
 budget and can reject grant preparation as busy, so it cannot simply replace
-that statusless hot-path getter. A local UTC read design needs explicit
-synchronization, adjustment and failure policies before native clock selection
-can pass the configure wall-clock gate. `sys_init_time`, paired clock reads,
+that statusless hot-path getter. The C ABI provides
+[caller-owned samples and bounded local projection](../libc/README.md#caller-owned-utc-samples-and-local-projection).
+The blocking query supplies the service's UTC/counter anchor and drift; local
+projection uses one scalar counter read with an explicit sample-age limit.
+The standalone system-clock prerequisite below supplies publication, explicit
+refresh, step adjustment and terminal expiry. Startup/refresh scheduling and
+native clock selection still need integration before the configure gate closes.
+Full-platform `sys_init_time` and paired-clock integration,
 performance-counter selection and timer-wheel integration remain unqualified.
+
+## Published system-clock prerequisite
+
+`erts_system_time.c` implements the pinned `erts_os_system_time` and
+`erts_os_times` interfaces. `knytos_erts_clock_refresh` queries a signed UTC
+sample outside clock-read locks, then attempts local publication with a
+caller-chosen nonzero nominal sample-age limit. `knytos_erts_clock_publish`
+can publish an already prepared immutable sample. It validates representation,
+age and signed range; it does not authenticate caller-provided scalars.
+
+Two static slots retain only copied non-owning data. A reader increments a
+global pin count, selects the active slot, copies its sample/limit and releases
+the pin before local projection. A publisher takes one admission flag and
+requires zero pins before reusing the inactive slot. New readers can use the
+prior active slot while preparation proceeds, then the completed replacement.
+Sequentially consistent count/index operations order retirement and publication.
+The bounded roster has startup plus at most three workers, with no reentrant
+read callbacks, so the count cannot wrap. There is no allocation, RPC, native
+mutex acquisition or explicit wait/retry on the read path. Native atomic
+operations are lock-free; this is not a wait-free latency guarantee.
+
+Busy publication returns `KNYTOS_BUSY` and preserves the active sample. Every
+fallible query/validation step precedes slot mutation. Refresh does not retry
+or extend an old anchor. The status-bearing `knytos_erts_clock_read` preserves
+output on error; the statusless ERTS getter emits a bounded diagnostic and
+aborts on missing time, expiry, counter error or signed-range exhaustion.
+Each reader validates its captured sample even if a replacement has appeared.
+Replacing the sample may step UTC in either direction; no global monotonic UTC
+clamp is invented. Original uncertainty/NTP age remain metadata, not a UTC
+accuracy or security guarantee. IRQ/signal/reentrant use remains unqualified.
+
+The paired getter follows OTP's generic fallback: sequential local monotonic
+and system reads. It is not an atomic single-counter pair. The archive remains
+a standalone prerequisite. The startup adapter below supplies time metadata;
+a full native sys header, startup source routing, refresh timer/notification
+owner and configure selection remain open. A runtime must arrange successful initialization before its first
+clock read and refresh before its chosen validity policy expires.
+
+```sh
+python3 ports/erts/check-system-clock.py --otp-source /path/to/otp29 \
+  --picolibc-source /path/to/picolibc --output target/erts/system-clock-interface
+python3 ports/libc/run-tests.py --erts-system-clock --smp 2 \
+  --picolibc-source /path/to/picolibc --output target/erts/system-clock-validation
+```
+
+Use fresh output directories. `build.py --system-clock` builds the two clock
+objects with the service-worker SDK. The checker compares four actual pinned
+clock declarations and three scalar types, rejects return/pointer mismatches,
+links the full surface and checks archive dependencies. Nine host scenarios
+include deterministic reader/publisher admission, backward steps, expiry,
+failed refresh, signed bounds and slot reuse after copying. A four-thread
+stress scenario checks 15,000
+reads against 5,000 independent publication attempts under ThreadSanitizer.
+The signed profile covers live replacement during worker reads, getters under
+a native mutex, explicit refresh, grant denial, cold getter domain abort and
+a later survivor. See the [qualification](../../docs/reports/milestones/2026-11-27-erts-system-clock.md).
+
+## Startup time adapter
+
+`erts_time_init.c` supplies the pinned `sys_init_time` and
+`erts_late_sys_init_time` entry points. Its status-bearing
+`knytos_erts_init_time` prepares one authorized UTC sample, validates its local
+projection, prepares all metadata, then publishes the sample before committing
+the caller's result. Query, validation or publication errors preserve that
+entire result. The statusless OTP initializer emits a bounded diagnostic and
+aborts on failure. A failed diagnostic still terminates.
+
+The metadata reports an available, uncorrected monotonic source, signed
+nanosecond units, unlocked/nonextended reads and actual native function names.
+Resolution fields describe initial conservative numeric granularity from the
+sampled counter frequency and drift, not UTC uncertainty or refresh rate.
+Full-platform refresh must also qualify its descriptive-metadata policy if
+granularity changes. The generic
+timer-wheel unit remains one millisecond. `erts_clock_platform.h` maps the
+performance counter to local high-resolution monotonic time with nanosecond
+units; it supplies no CPU-accounting ticks or CPU-time implementation.
+
+Source inspection finds the initializer through Unix `sys_init` calling
+`erts_init_sys_time_sup`, before `erts_init_time_sup` creates the time
+supervisor's locks. The complete native platform path is not built yet.
+`erts_late_sys_init_time` needs no counter wrap extender and performs no
+refresh. It never renews the original sample's age. Runtime refresh scheduling
+still needs its own producer/owner before a long-running emulator can use this
+backend.
+
+```sh
+python3 ports/erts/check-time-init.py --otp-source /path/to/otp29 \
+  --picolibc-source /path/to/picolibc --output target/erts/time-init-interface
+python3 ports/libc/run-tests.py --erts-time-init --smp 2 \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/time-init-validation
+```
+
+Use fresh paths. `build.py --platform-clock --otp-source ...` builds three
+clock objects with the service-worker SDK and an explicit probe profile. Its
+default `--clock-sample-age-ms=5000` is a five-second qualification window;
+the generated compiler define is mandatory and nonzero. It is not a runtime
+refresh policy. `stage_time.py` extracts the actual LP64 initialization record,
+initializer and declarations from pinned OTP `sys.h`. The explicit
+`KNYTOS_ERTS_TIME_CONTRACT_PROBE` flag selects that slice; without it the adapter
+includes the real `sys.h`. This does not qualify the complete sys header,
+select sources in OTP Make or close the configure wall-clock gate.
+
+The checker verifies all fourteen scalar field types/offsets and record
+size/alignment, rejects a wrong field type and missing/zero age policies,
+and links the native initializer. Nine host scenarios cover metadata,
+granularity arithmetic, unchanged outputs, source/publication errors and
+terminal startup failure. The signed profile exercises real initialization,
+immutable metadata and local counters on startup/worker threads, missing-grant
+denial, startup domain abort and a later survivor. See the
+[qualification](../../docs/reports/milestones/2026-11-27-erts-time-init.md).
 
 ## Standalone archive
 

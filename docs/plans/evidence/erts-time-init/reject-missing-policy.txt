@@ -1,0 +1,7 @@
+/Users/froran/Projects/private/knytos/ports/erts/erts_time_init.c:7:2: error: "An explicit native clock sample-age policy is required"
+    7 | #error "An explicit native clock sample-age policy is required"
+      |  ^
+/Users/froran/Projects/private/knytos/ports/erts/erts_time_init.c:69:39: error: use of undeclared identifier 'ERTS_KNYTOS_CLOCK_MAX_AGE_NS'
+   69 |     if (knytos_erts_init_time(output, ERTS_KNYTOS_CLOCK_MAX_AGE_NS) != KNYTOS_OK) {
+      |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 errors generated.

@@ -1,0 +1,17 @@
+{
+  "contract.c": "6413b3a284093e35f76ef5b1681624d8913a739010957c2fb5ded30bac91e6ee",
+  "erts_time_contract.h": "8abcf3e81eb3aa04ca9b6128950e5ab6984816c21ffa35a173f289ad04341c3d",
+  "failed-include-build/diagnostic.txt": "279ed3c6bf74ae580323470e7a074ef88c27d018c02a03c8b21f6f7b86aa4c41",
+  "failed-include-build/summary.json": "a85eb6a85a31ad6f1def6c07b4a57feab987b177e39f4efe7332978978b0b085",
+  "host-validation.json": "f4e0908b104942167935e671c9e8905bab48a26349c7ea487655933c3c74b614",
+  "initial-passing/erts_time_init.c": "6a85019915ee2e854d34e17b6a80865b35030517056bb3f81fa420962beb5f71",
+  "initial-passing/serial-excerpts.txt": "2796f95cfafb0a5b7962f8fc2abf20dcb35620938d8d3032629d59ee95392a75",
+  "initial-passing/summary.json": "7a568973595353ee169d52b7502fc4133bde7222cd8dcaca1cdc4a2495a1e925",
+  "interface.json": "6f56a523b1d42033f546d08d394475a5319432677a396675bf94a6cfaced2d1e",
+  "reject-field.c": "29ba8f2e8cff8bfb1e1247ee6f7d12245591a885c91ec416d87bbef8a2cfe83a",
+  "reject-field.txt": "ed27615a7098c6b0d49c39fd52fae77bf2084b5727ec6cf5985361215870a6cc",
+  "reject-missing-policy.txt": "1433fc7bf0d396f43720c1d8c4aebe157dc3ec2035bb9579eeef1e4cc3a9f997",
+  "reject-zero-policy.txt": "5916bbae2a751361431ca774e7140087bc115939cf39557dfecca5c6d5145abb",
+  "serial-excerpts.txt": "88e0bda97a248818369f198ee2e6852e31bf118dcf371573a7f116298fd8972e",
+  "summary.json": "9bc4bd0761b7ca17c45dec667201b3587abc3bd02a94cf7a8c9154263e56f240"
+}

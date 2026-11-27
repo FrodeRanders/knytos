@@ -162,6 +162,19 @@ policy before it is enabled. Do not map uptime to Unix time. Cached extrapolated
 UTC must retain its quality/age limitations and must not be used as a claim of
 authenticated security time.
 
+The [caller-owned sample API](../../ports/libc/README.md#caller-owned-utc-samples-and-local-projection)
+separates the authorized blocking query from local projection. A copied sample
+retains UTC, its counter anchor and drift, plus original quality metadata.
+Projection performs one scalar counter read with a caller-chosen maximum
+sample age, preserving output on expiry, counter mismatch or overflow. It
+claims no ongoing synchronization or accuracy bound. The caller must keep a
+sample immutable through all reads and separately qualify publication,
+refresh, adjustment and terminal expiry handling for a statusless VM hook.
+The standalone [ERTS clock prerequisite](../../ports/erts/README.md#published-system-clock-prerequisite)
+now supplies two-slot publication, explicit refresh, UTC steps and terminal
+expiry for the bounded native roster. ERTS startup and refresh scheduling
+ownership remain separate integration gates.
+
 The future VM reactor must own one CQ consumer and bind all relevant pending calls
 and endpoints to it. It drains observations, checks lifecycle, registers/rechecks
 interest and waits with the earliest remaining monotonic deadline using

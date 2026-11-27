@@ -136,6 +136,27 @@ int32_t knytos_clock_monotonic_ns(uint64_t *result);
  * Only synchronized snapshots produce UTC nanoseconds; all errors preserve
  * result. This can block and is not an async-signal or security-time API. */
 int32_t knytos_clock_realtime_ns(uint64_t *result);
+/* A copied synchronized sample. These scalars own no resource and assert no
+ * later synchronization or UTC accuracy bound. Reserved must remain zero. */
+struct knytos_realtime_sample {
+    uint64_t utc_ns, monotonic_ticks, counter_frequency_hz;
+    int64_t drift_ppb;
+    uint64_t last_sync_age_ms;
+    uint32_t uncertainty_ms, reserved;
+};
+/* Same signed-grant, blocking budget, cleanup and error-output contract as
+ * realtime_ns. Ordinary and worker-libc profiles return UNAVAILABLE. */
+int32_t knytos_clock_realtime_sample(struct knytos_realtime_sample *result);
+/* Local scalar counter read and drift-adjusted estimate from one immutable
+ * sample. No allocation, RPC, wait, refresh or retry. max_elapsed_ns bounds
+ * nominal elapsed time since the sample, not NTP age or UTC uncertainty.
+ * Exceeding it returns DEADLINE; changed frequency/reversed counter returns
+ * UNAVAILABLE; malformed sample returns INVALID; overflow returns OVERFLOW.
+ * Errors preserve result. All profiles support projection of a supplied
+ * sample. Caller keeps sample immutable for the call and result disjoint.
+ * These are ordinary userspace APIs, not IRQ/signal or security-time APIs. */
+int32_t knytos_clock_sample_project_ns(const struct knytos_realtime_sample *sample,
+                                     uint64_t max_elapsed_ns, uint64_t *result);
 int32_t knytos_console_write(const void *buffer, size_t length);
 void knytos_console_flush(void);
 /* Sole reactor of launch CQ zero. -1 waits indefinitely; >=0 is milliseconds.
