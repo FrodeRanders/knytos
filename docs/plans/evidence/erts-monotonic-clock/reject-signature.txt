@@ -1,0 +1,4 @@
+/private/tmp/knytos-erts-monotonic-final-check/reject-signature.c:7:16: error: static assertion failed due to requirement '__builtin_types_compatible_p(long (void), unsigned long (void))': OTP signature mismatch: erts_os_monotonic_time
+    7 | _Static_assert(__builtin_types_compatible_p(__typeof__(erts_os_monotonic_time), __typeof__(otp_erts_os_monotonic_time)), "OTP signature mismatch: erts_os_monotonic_time");
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.

@@ -1,0 +1,7 @@
+
+erts_monotonic.o:
+                 U abort
+0000000000000000 T erts_os_monotonic_time
+0000000000000000 T erts_sys_hrtime
+                 U knytos_clock_monotonic_ns
+                 U knytos_console_write

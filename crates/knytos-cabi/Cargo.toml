@@ -11,12 +11,13 @@ bench = false
 [features]
 native-workers = []
 worker-libc = ["native-workers"]
-service-worker = ["worker-libc", "dep:knytos-app"]
+service-worker = ["worker-libc", "dep:knytos-app", "dep:knytos-protocol-time"]
 
 [dependencies]
 knytos-rt = { path = "../knytos-rt" }
 knytos-launch = { path = "../knytos-launch" }
 lock_api = "0.4"
+knytos-protocol-time = { path = "../knytos-protocol-time", optional = true }
 
 [target.'cfg(target_os = "none")'.dependencies]
 knytos-app = { path = "../knytos-app", optional = true }

@@ -25,6 +25,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--picolibc-source", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--monotonic-clock", action="store_true",
+                        help="build the independent two-function native clock archive")
     args = parser.parse_args()
     output = args.output.resolve()
     if output.exists() or output.with_suffix(".build.json").exists():
@@ -43,8 +45,9 @@ def main():
              "-Wall", "-Wextra", "-Werror", "-DKNYTOS_NATIVE_WORKERS",
              "-D__STDIO_LOCKING", "-DKNYTOS_WORKER_LIBC",
              "-isystem", str(libc_headers), "-I", str(ROOT / "ports/libc/include")]
+    sources_selected = ("erts_monotonic.c",) if args.monotonic_clock else SOURCES
     objects = []
-    for name in SOURCES:
+    for name in sources_selected:
         obj = work / Path(name).with_suffix(".o")
         run("clang", *flags, "-c", ROOT / "ports/erts" / name, "-o", obj)
         objects.append(obj)
@@ -54,12 +57,13 @@ def main():
     archiver = sysroot / "lib/rustlib" / host / "bin/llvm-ar"
     run(archiver, "rcs", output, *objects)
     inputs = dict(sdk["inputs_sha256"])
-    sources = [ROOT / "ports/erts" / name for name in SOURCES]
+    sources = [ROOT / "ports/erts" / name for name in sources_selected]
     sources.extend(sorted((ROOT / "ports/erts").glob("*.h")))
     sources.append(Path(__file__).resolve())
     inputs.update({str(path.relative_to(ROOT)): digest(path) for path in sources})
     evidence = {key: sdk[key] for key in ("picolibc_revision", "clang", "rustc")}
-    evidence.update(schema="knytos.erts-prerequisites.v1", sha256=digest(output),
+    evidence.update(schema=("knytos.erts-monotonic.v1" if args.monotonic_clock
+                            else "knytos.erts-prerequisites.v1"), sha256=digest(output),
                     bytes=output.stat().st_size, profile="aarch64-static-c11-worker-libc-no-tls",
                     inputs_sha256=inputs, compiler_flags=flags,
                     members_sha256={obj.name: digest(obj) for obj in objects},

@@ -1,0 +1,12 @@
+[+    11.575126] [EL0 LOG] lp=0 asid=16 [agent] launched "c-clock" generation=1 asid=21 principal=0xaf4f6db8e06497de
+[+    11.574650] [EL0 LOG] lp=0 asid=21 CABI PASS case=3
+[+    11.575960] [EL0 LOG] lp=0 asid=21 CABI FINI
+[+    11.576692] [EL0 LOG] lp=0 asid=21 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=688
+[+    20.153790] [EL0 LOG] lp=0 asid=16 [agent] launched "c-realtime" generation=1 asid=34 principal=0xca50de52056323bd
+[+    20.177616] [EL0 LOG] lp=0 asid=34 C REALTIME worker status=7 value=789 first=1795808173283004530
+[+    20.180694] [EL0 LOG] lp=0 asid=34 C REALTIME unstarted profile-map admission busy=1
+[+    20.181124] [EL0 LOG] lp=0 asid=34 C REALTIME synchronized UTC startup and worker private queues PASS
+[+    20.181844] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=720
+[+    20.738158] [EL0 LOG] lp=0 asid=16 [agent] launched "c-realtime-denied" generation=1 asid=35 principal=0x94faee0a092ad6ec
+[+    20.739522] [EL0 LOG] lp=0 asid=35 C REALTIME missing signed grant rejected and output preserved PASS
+[+    20.740302] [EL0 LOG] lp=0 asid=35 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512

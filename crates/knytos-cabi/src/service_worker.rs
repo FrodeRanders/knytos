@@ -118,6 +118,9 @@ fn observation_status(error: ObservationError) -> i32 {
 
 fn grant_status(error: grant_client::Error) -> i32 {
     match error {
+        grant_client::Error::Memory(knytos_rt::owned::MemoryError::MemoryStatus(
+            knytos_rt::abi::memory_status::ALREADY_MAPPED,
+        )) => BUSY,
         grant_client::Error::Service(grant::ERR_UNAUTHORIZED) => UNAUTHORIZED,
         grant_client::Error::Admission(error) => admission_status(error),
         grant_client::Error::Observation(error) => observation_status(error),
@@ -222,6 +225,43 @@ fn invoke<C: Borrow<Connection>>(
     };
     let reply = wait.observe(operation.pending, deadline).map_err(observation_status)?;
     copy_reply(reply, bytes)
+}
+
+/// A fresh authorized query, using the caller's private CQ and one deadline
+/// across grant acquisition and observation. No connection or reply owner is
+/// stored globally, and returned capabilities are disposed on every exit.
+pub(crate) fn realtime_ns() -> Result<u64, i32> {
+    use knytos_protocol_time as time;
+
+    let participant = workers::participant().ok_or(INVALID)?;
+    let interrupted = || false;
+    let wait = InterruptibleWait::new(participant.queue(), &interrupted);
+    let deadline = Deadline::after(REQUEST_BUDGET_MS);
+    let connection = acquire(b"time", &deadline, &wait)?;
+    let admission = Admission::with_lifecycle(&deadline, Context.lifecycle()).interruptible(&wait);
+    let pending = admission.call(connection.as_ref(), time::OP_NOW, 0).map_err(admission_status)?;
+    let operation = InFlightCall {
+        pending,
+        _connection: connection,
+    };
+    let reply = wait.observe(operation.pending, &deadline).map_err(observation_status)?;
+    if reply.connection.is_some() {
+        return Err(UNEXPECTED_REPLY);
+    }
+    if reply.result < 0 && reply.memory.is_none() {
+        return Err(UNAVAILABLE);
+    }
+    if reply.result != time::SNAPSHOT_LEN as i64 {
+        return Err(UNEXPECTED_REPLY);
+    }
+    let memory = reply.memory.ok_or(UNEXPECTED_REPLY)?;
+    if !(time::SNAPSHOT_LEN..=MAX_PAYLOAD_BYTES).contains(&memory.len()) {
+        return Err(UNEXPECTED_REPLY);
+    }
+    let mapping = memory.map_read_only().map_err(|(_, _)| UNAVAILABLE)?;
+    let result = crate::realtime::decode(&mapping.as_slice()[..time::SNAPSHOT_LEN]);
+    drop(mapping.unmap().map_err(|(_, _)| UNAVAILABLE)?);
+    result
 }
 
 /// # Safety

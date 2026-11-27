@@ -217,6 +217,10 @@ def main():
                                 help="qualify ERTS terminal diagnostics in a separate signed campaign")
     worker_profile.add_argument("--erts-bootstrap", action="store_true",
                                 help="qualify bounded native ERTS early/late initialization")
+    worker_profile.add_argument("--c-clock", action="store_true",
+                                help="qualify authorized C realtime queries and missing-grant rejection")
+    worker_profile.add_argument("--erts-clock", action="store_true",
+                                help="qualify local ERTS monotonic and high-resolution clock reads")
     parser.add_argument("--otp-source", type=Path,
                         help="pinned OTP source required by the ERTS header and diagnostics profiles")
     parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
@@ -353,11 +357,20 @@ def main():
             82: ("c-erts-bootstrap-worker-fail", 2, "[erts] worker thread event initialization failed"),
             83: ("c-erts-bootstrap-debug", 4, "ERTS BOOTSTRAP PASS"),
         }
+    clock_cases = {
+        84: ("c-realtime", 3, "C REALTIME synchronized UTC startup and worker private queues PASS"),
+        85: ("c-realtime-denied", 1, "C REALTIME missing signed grant rejected and output preserved PASS"),
+    } if args.c_clock else {}
+    if args.erts_clock:
+        clock_cases = {
+            86: ("c-erts-monotonic", 2, "ERTS MONOTONIC startup and worker locked nanosecond reads PASS"),
+        }
     worker_cases.update(libc_cases)
     worker_cases.update(mutex_cases)
     worker_cases.update(tse_cases)
     worker_cases.update(header_cases)
-    if args.native_workers or args.worker_libc or args.erts_mutex or args.erts_tse or selected_headers:
+    worker_cases.update(clock_cases)
+    if args.native_workers or args.worker_libc or args.erts_mutex or args.erts_tse or selected_headers or args.c_clock or args.erts_clock:
         if args.smp < 2:
             parser.error("worker fixtures need at least two guest CPUs")
         cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
@@ -408,6 +421,11 @@ def main():
         images = output / "bundle"
         images.mkdir()
         erts_library = output / "erts" / "libknytos_ethread.a"
+        clock_library = output / "erts-clock" / "libknytos_erts_clock.a"
+        if args.erts_clock:
+            command(["python3", ROOT / "ports/erts/build.py", "--monotonic-clock",
+                     "--picolibc-source", args.picolibc_source,
+                     "--output", clock_library], "erts-clock-build")
         if args.erts_mutex or args.erts_tse:
             command(["python3", ROOT / "ports/erts/build.py",
                      "--picolibc-source", args.picolibc_source,
@@ -425,6 +443,11 @@ def main():
                 profile = "--native-workers"
                 if number in libc_cases or number in mutex_cases or number in tse_cases or number in header_cases:
                     source = "tsd-cleanup.c" if number in (38, 39) else "worker-libc.c"
+                    profile = "--worker-libc"
+                if number in clock_cases:
+                    source = "realtime.c"
+                    profile = "--service-worker"
+                if number == 86:
                     profile = "--worker-libc"
                 source = {40: ROOT / "ports/erts/tests/event.c",
                           41: ROOT / "ports/erts/tests/event.c",
@@ -469,9 +492,12 @@ def main():
                           80: ROOT / "ports/erts/tests/bootstrap.c",
                           81: ROOT / "ports/erts/tests/bootstrap.c",
                           82: ROOT / "ports/erts/tests/bootstrap.c",
-                          83: ROOT / "ports/erts/tests/bootstrap.c"}.get(number, ROOT / "ports/libc/tests" / source)
+                          83: ROOT / "ports/erts/tests/bootstrap.c",
+                          86: ROOT / "ports/erts/tests/monotonic.c"}.get(number, ROOT / "ports/libc/tests" / source)
                 libraries = (["--library", erts_library, "--include", ROOT / "ports/erts"]
                              if number in (57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83) else [])
+                if number == 86:
+                    libraries = ["--library", clock_library, "--include", ROOT / "ports/erts"]
                 if number in header_cases:
                     original = source.read_text()
                     anchor = '#include "knytos_ethread.h"'
@@ -538,6 +564,8 @@ def main():
             grants = ["m4.missing=call"] if number in service_workers and number != active_cancel_case else []
             if number == service_case:
                 grants.extend(("time=call", "observe=call"))
+            if number == 84:
+                grants.append("time=call")
             if number == active_cancel_case:
                 grants.append("m4.hold=call")
             if number in retirement_cases and number in service_workers:

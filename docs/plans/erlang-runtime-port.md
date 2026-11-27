@@ -1526,6 +1526,16 @@ The [native configure qualification](../reports/milestones/2026-11-27-erts-nativ
 preserves all three observed gates, the genuine link ELF, rejection controls
 and staged-source/archive identities. The existing signed runtime scope is
 reused by exact archive identity; no new emulator execution is claimed.
+The [C realtime bridge](../../ports/libc/README.md#authorized-realtime-queries)
+now queries the signed `time=call` service grant in the service-worker
+profile. Each registered participant uses its private CQ and one deadline;
+only validated synchronized UTC is returned. Ordinary profiles retain
+unavailable realtime. ERTS clock/backend selection remains open and the
+native configure probe still stops at its wall-clock requirement.
+The [realtime qualification](../reports/milestones/2026-11-27-c-realtime.md)
+passes the 19-case signed C clock profile and three deployment controls,
+including known unstarted profile-mapping rejection and an uncontended
+worker query. Its two earlier failed worker captures remain separate.
 
 A full OTP build will need to pass the target configuration through
 the top-level wrapper. An illustrative invocation is:
@@ -1838,12 +1848,26 @@ Measure fragmentation and peak memory consumption.
 
 ### 12.8. Timekeeping
 
-Implement ERTS timekeeping against native Knytos clocks.
+The independent [native monotonic prerequisite](../../ports/erts/README.md#native-monotonic-clock-prerequisite)
+implements `erts_os_monotonic_time` and `erts_sys_hrtime` as signed-nanosecond
+scalar reads. It checks the pinned LP64 declarations, rejects out-of-range
+values and source errors terminally, and is qualified on startup and worker
+threads under a native mutex. It is not selected by configure or a complete
+ERTS platform header. The [qualification](../reports/milestones/2026-11-27-erts-monotonic-clock.md)
+records the standalone interface, fault checks and signed campaign.
 
-Investigate:
+UTC service queries may block and return a typed admission rejection, whereas
+OTP calls its system-time getter under `erts_get_time_mtx` and in scheduler
+BIFs. Do not wire that blocking RPC into a statusless clock read. A local UTC
+read path needs explicit synchronization, adjustment and failure policies.
+The configure wall-clock gate remains open; no cached UTC estimate or POSIX
+clock implementation is supplied by these monotonic functions.
 
-- Monotonic time.
-- System time.
+Remaining integration:
+
+- Native platform header, configure selection and `sys_init_time` metadata.
+- System time and paired system/monotonic reads.
+- Performance-counter selection.
 - Time-offset handling.
 - Timer-wheel integration.
 - Time correction.

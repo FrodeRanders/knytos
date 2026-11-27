@@ -1,0 +1,13 @@
+{
+  "failed-worker-assertion/fixture-source.c": "d4bd52cecd616e4510992f5bd75d55710bbf937d0a2c57f66a5fbc3d85119a4b",
+  "failed-worker-assertion/serial-excerpts.txt": "a34293248dd3345b9e555bfdcd95db3d5d3b580181ea7d7e35ec15ad3d3b2da4",
+  "failed-worker-assertion/service-worker-before-busy.rs": "897b3a8d0499c20c3ff443a521a24bad93169597d45c2f47a622248a68dee24c",
+  "failed-worker-assertion/summary.json": "a4c88cda1df692e378877c2adae51289751a7ed6ab33ddaaa9c4876e06f5edd2",
+  "failed-worker-diagnostic/fixture-source.c": "6b2de25401ca76829242467baf6ea3fbbdb08e9ffa7a74fc818f609b2095d4f2",
+  "failed-worker-diagnostic/serial-excerpts.txt": "6397ce7116848567abdc732cd6b85af3d83848c01c392cd1416e87f328d5a099",
+  "failed-worker-diagnostic/service-worker-before-busy.rs": "897b3a8d0499c20c3ff443a521a24bad93169597d45c2f47a622248a68dee24c",
+  "failed-worker-diagnostic/summary.json": "43ae5b75a8c6ca869173c43e0f55a42a7e93b7993048e3bbb96f083fa4c26fac",
+  "host-tests.txt": "d9a2dca6360e5ddff3bdf0c4eeca64ce56f3882abdc4189955a7c90a7408dc22",
+  "serial-excerpts.txt": "2e550ee90d8601402d681783b5f17b79eaffb562079af32c12311c41f508fd52",
+  "summary.json": "0bb6e3ebc8e3d2602ffd39ca0cdc211459df7a6f7308b17de985292ea9052c3b"
+}

@@ -1,0 +1,5 @@
+[+    21.092562] [EL0 LOG] lp=0 asid=16 [agent] launched "c-realtime" generation=1 asid=34 principal=0xca50de52056323bd
+[+    21.115122] [EL0 LOG] lp=0 asid=34 C REALTIME worker status=2 value=789 first=1795807860705387657
+[+    21.115946] [EL0 LOG] lp=0 asid=34 assertion "worker.status == KNYTOS_OK && worker.value >= first" failed: file "/Users/froran/Projects/private/knytos/ports/libc/tests/realtime.c", line 44, function: knytos_c_main
+[+    21.116430] [EL0 LOG] lp=0 asid=34 [c-runtime] abort
+[+    21.116632] Aborting user address space 34

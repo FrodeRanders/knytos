@@ -7,6 +7,8 @@ extern crate alloc;
 mod allocation;
 #[cfg(target_os = "none")]
 mod native;
+#[cfg(all(feature = "service-worker", any(target_os = "none", test)))]
+mod realtime;
 #[cfg(all(target_os = "none", feature = "service-worker"))]
 mod service_worker;
 #[cfg(all(target_os = "none", feature = "native-workers"))]

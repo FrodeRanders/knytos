@@ -163,7 +163,7 @@ def main():
               ROOT / "crates/knytos-services/aarch64-unknown-none.json", ROOT / "crates/knytos-cabi/Cargo.toml"]
     crates = ["knytos-cabi", "knytos-rt", "knytos-launch", "knytos-lifecycle", "knytos-syscall"]
     if args.service_worker:
-        for crate in ("knytos-app", "knytos-protocol-grant"):
+        for crate in ("knytos-app", "knytos-protocol-grant", "knytos-protocol-time"):
             crates.append(crate)
             inputs.append(ROOT / "crates" / crate / "Cargo.toml")
     for crate in crates:

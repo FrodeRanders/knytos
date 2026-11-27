@@ -272,7 +272,20 @@ pub unsafe extern "C" fn knytos_clock_realtime_ns(output: *mut u64) -> i32 {
     if output.is_null() || !(output as usize).is_multiple_of(8) {
         INVALID
     } else {
-        UNAVAILABLE
+        #[cfg(feature = "service-worker")]
+        {
+            match crate::service_worker::realtime_ns() {
+                Ok(value) => {
+                    unsafe { output.write(value) };
+                    OK
+                }
+                Err(status) => status,
+            }
+        }
+        #[cfg(not(feature = "service-worker"))]
+        {
+            UNAVAILABLE
+        }
     }
 }
 

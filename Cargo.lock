@@ -903,6 +903,7 @@ version = "0.1.0"
 dependencies = [
  "knytos-app",
  "knytos-launch",
+ "knytos-protocol-time",
  "knytos-rt",
  "lock_api",
 ]

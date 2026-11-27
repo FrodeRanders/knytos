@@ -1,0 +1,10 @@
+/private/tmp/knytos-erts-monotonic-final-check/reject-unit.c:11:16: error: static assertion failed due to requirement '(1000 * 1000 * 1000) == 1000000': OTP unit mismatch: ERTS_HRTIME_UNIT
+   11 | _Static_assert(ERTS_HRTIME_UNIT == 1000000, "OTP unit mismatch: ERTS_HRTIME_UNIT");
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/froran/Projects/private/knytos/ports/erts/erts_monotonic.h:14:26: note: expanded from macro 'ERTS_HRTIME_UNIT'
+   14 | #define ERTS_HRTIME_UNIT (1000*1000*1000)
+      |                          ^
+/private/tmp/knytos-erts-monotonic-final-check/reject-unit.c:11:33: note: expression evaluates to '1000000000 == 1000000'
+   11 | _Static_assert(ERTS_HRTIME_UNIT == 1000000, "OTP unit mismatch: ERTS_HRTIME_UNIT");
+      |                ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+1 error generated.

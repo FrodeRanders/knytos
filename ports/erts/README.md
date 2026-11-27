@@ -39,14 +39,54 @@ list to the nine native sources. GNU Make checks that branch and preserves
 the original pthread list. Compiling the staged sources with the qualified
 SDK reproduces the same native archive. These checks do not build the full
 OTP Make graph or produce a configured emulator: configure exits 1 with
-`No wall clock source found` before generating its final outputs. The C SDK
-has monotonic time but still reports realtime unavailable. An Erlang clock
-backend and the other remaining platform interfaces need implementation.
+`No wall clock source found` before generating its final outputs. This
+configure SDK uses the worker-libc profile, which reports realtime unavailable.
+The [service-worker C profile](../libc/README.md#authorized-realtime-queries)
+can query UTC through a signed time grant. An Erlang clock backend and its
+configure selection still need implementation.
 The [native configure qualification](../../docs/reports/milestones/2026-11-27-erts-native-configure.md)
 records the retained references, two rejection controls, Make source checks
 and byte-identical staged archive. Its
 [evidence manifest](../../docs/plans/evidence/erts-native-configure/summary.json)
 preserves the default thread gate, initial curses stop and final clock gate.
+
+## Native monotonic clock prerequisite
+
+`erts_monotonic.c` implements OTP's `erts_os_monotonic_time` and
+`erts_sys_hrtime` as local scalar reads through `knytos_clock_monotonic_ns`.
+Both return signed nanoseconds. A source error or a value beyond the signed
+64-bit range terminates the domain; these OTP interfaces have no error result.
+Successful reads allocate no memory, issue no RPC and perform no wait. They
+rely on the kernel's counter contract without claiming frequency correction.
+The diagnostic path uses a bounded literal and domain abort, and is not
+qualified for IRQ, signal or reentrant console contexts.
+
+This independent archive uses the worker-libc profile and requires no time
+grant. It is not selected by configure or a native ERTS sys header yet:
+
+```sh
+python3 ports/erts/check-clock.py --otp-source /path/to/otp29 \
+  --picolibc-source /path/to/picolibc --output target/erts/clock-interface
+python3 ports/libc/run-tests.py --erts-clock --smp 2 \
+  --picolibc-source /path/to/picolibc --output target/erts/clock-validation
+```
+
+Use fresh output paths. `build.py --monotonic-clock` builds only
+`erts_monotonic.o`; the default nine-member ethread archive remains separate.
+The checker extracts the pinned LP64 types and function declarations,
+compile-links both retained references, rejects signature and unit mismatches,
+checks archive dependencies and exercises both functions at their numeric and
+error boundaries under host undefined-behavior sanitization. The signed fixture
+reads both clocks under a native mutex on the startup thread and one worker.
+See the [qualification](../../docs/reports/milestones/2026-11-27-erts-monotonic-clock.md).
+
+System time remains open. OTP reads it inside `erts_get_time_mtx` and from
+scheduler BIFs. The service-worker UTC query can block for its one-second
+budget and can reject grant preparation as busy, so it cannot simply replace
+that statusless hot-path getter. A local UTC read design needs explicit
+synchronization, adjustment and failure policies before native clock selection
+can pass the configure wall-clock gate. `sys_init_time`, paired clock reads,
+performance-counter selection and timer-wheel integration remain unqualified.
 
 ## Standalone archive
 

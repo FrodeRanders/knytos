@@ -1,0 +1,12 @@
+{
+  "archive-symbols.txt": "f11895d23e38e3b1d189b87115e0d93df637dd81b7ff68a1b7a23b8eafcbc064",
+  "contract.c": "3bfa975556bdd5773a5b94d5370519f3cd003358296e7c617ac2276eba3a9225",
+  "host-build.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "interface.json": "feac67e5bda76e814e224d6e36504542a9e3c738b15f6d982ea1eb8285ad83d8",
+  "reject-signature.c": "22a9f53a9c2f3fe47cf5e684155ec0dac8b491a904fb7100fe56151807589ffd",
+  "reject-signature.txt": "703e1a6aa2bd4ea5cee879713bb6adc4c11ac7bae1efab59c1a00bbf52e55b57",
+  "reject-unit.c": "61312338c13dc385df4981c216965b01ce061117bb58f5527eec960dad954f34",
+  "reject-unit.txt": "f0e21b54302d3faa9c4aa18f0dcb8ff64973808debfb45f3997240d4b2c3f7a4",
+  "serial-excerpts.txt": "cb5e2990e5c90839a5d45465597d03c2dd37565435f715207c76a862dc037fa0",
+  "summary.json": "f8b5359f6db636f956b5f7cf26bc99aa0d32e1f9c54ce56c3f691b7436f57685"
+}

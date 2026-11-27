@@ -1,0 +1,74 @@
+   Compiling typenum v1.20.1
+   Compiling proc-macro2 v1.0.106
+   Compiling cmov v0.5.4
+   Compiling quote v1.0.46
+   Compiling unicode-ident v1.0.24
+   Compiling semver v1.0.28
+   Compiling cfg-if v1.0.4
+   Compiling libc v0.2.186
+   Compiling subtle v2.6.1
+   Compiling rand_core v0.10.1
+   Compiling scopeguard v1.2.0
+   Compiling rustc_version v0.4.1
+   Compiling lock_api v0.4.14
+   Compiling ctutils v0.4.6
+   Compiling ed25519-compact v2.3.1
+   Compiling allocator-api2 v0.4.0
+   Compiling knytos-syscall v0.1.0 (<repo>/crates/knytos-syscall)
+   Compiling curve25519-dalek v5.0.0
+   Compiling talc v5.0.4
+   Compiling knytos-lifecycle v0.1.0 (<repo>/crates/knytos-lifecycle)
+   Compiling knytos-protocol-time v0.1.0 (<repo>/crates/knytos-protocol-time)
+   Compiling hybrid-array v0.4.14
+   Compiling crypto-common v0.2.2
+   Compiling block-buffer v0.12.1
+   Compiling inout v0.2.2
+   Compiling syn v2.0.118
+   Compiling cpufeatures v0.3.1
+   Compiling digest v0.11.3
+   Compiling universal-hash v0.6.1
+   Compiling cipher v0.5.2
+   Compiling aead v0.6.1
+   Compiling poly1305 v0.9.1
+   Compiling hmac v0.13.0
+   Compiling sha2 v0.11.0
+   Compiling chacha20 v0.10.2
+   Compiling hkdf v0.13.0
+   Compiling chacha20poly1305 v0.11.0
+   Compiling zeroize_derive v1.5.0
+   Compiling zeroize v1.9.0
+   Compiling x25519-dalek v3.0.0
+   Compiling hpke v0.14.0
+   Compiling knytos-launch v0.1.0 (<repo>/crates/knytos-launch)
+   Compiling knytos-rt v0.1.0 (<repo>/crates/knytos-rt)
+   Compiling knytos-cabi v0.1.0 (<repo>/crates/knytos-cabi)
+warning: unused dependency `knytos-protocol-time`
+  --> crates/knytos-cabi/Cargo.toml:20:1
+   |
+20 | knytos-protocol-time = { path = "../knytos-protocol-time", optional = true }
+   | ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `cargo::unused_dependencies` is set to `warn` by default
+help: consider removing the dependency on `knytos-protocol-time`
+help: to still use for development builds, move to `dev-dependencies`
+warning: `knytos-cabi` (manifest) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 12.06s
+     Running unittests src/lib.rs (<host-target>/aarch64-apple-darwin/debug/build/knytos-cabi/d034c84d2ccb356a/out/knytos_cabi-d034c84d2ccb356a)
+
+running 7 tests
+test allocation::tests::rejected_layout_does_not_publish_or_allocate ... ok
+test allocation::tests::terminal_cleanup_releases_all_retained_blocks ... ok
+test allocation::tests::aligned_blocks_realloc_failure_and_unordered_release ... ok
+test realtime::tests::converts_epoch_fraction_and_unsigned_limit_without_overflow ... ok
+test realtime::tests::rejects_incomplete_extended_retired_and_noncanonical_frames ... ok
+test realtime::tests::rejects_unavailable_states_and_inconsistent_utc ... ok
+test tests::counter_conversion_handles_fraction_zero_and_overflow ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests knytos_cabi
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

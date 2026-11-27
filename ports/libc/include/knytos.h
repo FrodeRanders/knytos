@@ -131,6 +131,10 @@ struct knytos_allocation_stats { uint64_t blocks, requested_bytes, peak_requeste
 struct knytos_abi_pair { uint64_t unsigned_value; int64_t signed_value; double floating_value; };
 uint32_t knytos_abi_version(void);
 int32_t knytos_clock_monotonic_ns(uint64_t *result);
+/* Ordinary profiles return UNAVAILABLE. The service-worker profile queries
+ * the signed time=call grant on the caller's private CQ with one 1 s budget.
+ * Only synchronized snapshots produce UTC nanoseconds; all errors preserve
+ * result. This can block and is not an async-signal or security-time API. */
 int32_t knytos_clock_realtime_ns(uint64_t *result);
 int32_t knytos_console_write(const void *buffer, size_t length);
 void knytos_console_flush(void);

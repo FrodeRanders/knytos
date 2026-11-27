@@ -62,8 +62,58 @@ unsupported OS imports fail to link rather than return fabricated success.
 Output pointers must have their C type's alignment. Null pointers, oversized
 console writes (over 65,536 bytes), and clock conversion errors return explicit
 status. Monotonic time uses checked counter/frequency conversion. Realtime
-always returns `KNYTOS_UNAVAILABLE` without changing the output: this profile
-does not connect to the authorized time service. Uptime is never Unix time.
+returns `KNYTOS_UNAVAILABLE` without changing the output in the ordinary and
+worker-libc profiles. The service-worker profile supports the explicit
+signed-service query described below. Uptime is never Unix time.
+
+### Authorized realtime queries
+
+In the `--service-worker` profile, `knytos_clock_realtime_ns` acquires the
+launch descriptor's `time=call` grant and queries `OP_NOW` for a fresh copied
+UTC snapshot. Startup and registered workers each use their own private CQ;
+the function does not consume the launch reactor's CQ-zero cursor. One
+monotonic one-second budget spans grant acquisition and query observation.
+This can block and is not an async-signal clock path. Accepted work settles
+or follows the SDK's checked cancellation/fail-closed policy before its
+connection is released; there is no automatic replay of an accepted query.
+Grant preparation temporarily maps the launch-owned profile. The kernel
+permits one mapping of that object per address space, so overlapping
+preparation can return `KNYTOS_BUSY` before controller submission. This is
+an unstarted admission rejection with unchanged output, distinct from an
+unavailable or unsynchronized time source. The bridge does not spin or
+silently retry that rejection.
+
+The Rust query scope owns its connection and pending call. Returned memory
+stays owned through bounded read-only mapping, validation and unmapping.
+Unexpected returned connections/memory are also released through their
+owners. No owning capability or pending operation crosses the C boundary,
+and no connection or time sample is cached globally.
+
+Only a synchronized, canonical 80-byte snapshot produces unsigned Unix
+nanoseconds. Unsynchronized/holdover states report unavailable; malformed
+frames, incoherent UTC/calendar data and unrepresentable timestamps reject.
+The output is written only after successful cleanup and validation. Missing
+grants, deadlines, rejected waits and shutdown retain distinct statuses.
+The API supplies calendar time, not authenticated security time; the time
+service's synchronized state does not authenticate its upstream NTP source.
+
+```sh
+python3 ports/libc/run-tests.py --c-clock --smp 2 \
+  --picolibc-source /path/to/picolibc --output target/c-runtime/realtime-validation
+```
+
+The signed profile checks overlapping startup/worker attempts with explicit
+busy rejection, an uncontended worker query, repeated reply cleanup, pointer
+rejection and denial without `time=call`. Its baseline
+clock case still requires ordinary-profile realtime to remain unavailable.
+Host tests cover exact frame bounds, reserved bytes, schema/state rejection,
+UTC consistency and nanosecond overflow. The ERTS clock backend and its
+configure selection still need to be connected to this facility.
+The [realtime qualification](../../docs/reports/milestones/2026-11-27-c-realtime.md)
+records 19 passing signed cases, three deployment controls, seven host tests
+and both original failed worker captures. Its
+[manifest](../../docs/plans/evidence/c-realtime/summary.json) retains source,
+artifact and descriptor identities and the observed mapping-admission limit.
 
 The single-threaded reactor API borrows launch CQ zero: `knytos_event_signal`
 posts a retained work generation, and `knytos_event_wait` accepts -1 for an
