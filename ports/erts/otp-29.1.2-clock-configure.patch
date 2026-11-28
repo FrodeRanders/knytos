@@ -1,0 +1,43 @@
+--- a/erts/configure.ac
++++ b/erts/configure.ac
+@@ -28,6 +28,7 @@
+ AC_PREREQ([2.72])
+ 
+ m4_include([otp.m4])
++m4_include([knytos-clock.m4])
+ m4_include([knytos-ethread.m4])
+ 
+ LM_PRECIOUS_VARS
+@@ -3046,7 +3047,16 @@
+ 
+ LM_SYS_IPV6
+ LM_SYS_MULTICAST
+-ERL_TIME_CORRECTION
++AC_ARG_WITH([knytos-clock],
++  [AS_HELP_STRING([--with-knytos-clock=SDK], [use the bounded native Knytos clock SDK probe])])
++AC_ARG_WITH([knytos-clock-max-age-ms],
++  [AS_HELP_STRING([--with-knytos-clock-max-age-ms=MS], [require an explicit native clock sample-age limit])])
++AS_IF([test -n "$with_knytos_clock" && test "x$with_knytos_clock" != xno],
++      [ERL_KNYTOS_CLOCK], [
++        AS_IF([test -n "$with_knytos_clock_max_age_ms"],
++              [AC_MSG_ERROR([Knytos clock sample age requires the native clock SDK])])
++        ERL_TIME_CORRECTION
++      ])
+ AC_CHECK_PROG(M4, m4, m4)
+ 
+ 
+--- a/erts/config.h.in
++++ b/erts/config.h.in
+@@ -410,6 +410,12 @@
+ /* Select the native Knytos ethread backend */
+ #undef ETHR_KNYTOS
+ 
++/* Select the native Knytos clock interface */
++#undef ERTS_KNYTOS_CLOCK
++
++/* Explicit bounded native clock sample-age policy */
++#undef ERTS_KNYTOS_CLOCK_MAX_AGE_NS
++
+ /* Define if you have pthreads */
+ #undef ETHR_PTHREADS
+ 

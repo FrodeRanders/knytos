@@ -1,0 +1,8 @@
+In file included from /private/tmp/knytos-erts-clock-selection-final/build/knytos-clock-link.c:109:
+../sdk/clock/clock-link-check.h:7:16: error: static assertion failed due to requirement '5001 == 5000': Native clock SDK sample-age policy mismatch
+    7 | _Static_assert(ERTS_KNYTOS_CLOCK_MAX_AGE_MS == KNYTOS_ERTS_SDK_CLOCK_MAX_AGE_MS,
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<command line>:7:38: note: expanded from macro 'ERTS_KNYTOS_CLOCK_MAX_AGE_MS'
+    7 | #define ERTS_KNYTOS_CLOCK_MAX_AGE_MS 5001
+      |                                      ^
+1 error generated.

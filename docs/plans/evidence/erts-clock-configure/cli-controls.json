@@ -1,0 +1,45 @@
+[
+  {
+    "arguments": [
+      "--native-clock"
+    ],
+    "status": 2,
+    "diagnostic": "--native-clock requires --native-ethread"
+  },
+  {
+    "arguments": [
+      "--native-clock",
+      "--native-ethread"
+    ],
+    "status": 2,
+    "diagnostic": "--native-clock requires --clock-sample-age-ms"
+  },
+  {
+    "arguments": [
+      "--native-clock",
+      "--native-ethread",
+      "--clock-sample-age-ms",
+      "0"
+    ],
+    "status": 2,
+    "diagnostic": "--native-clock requires --clock-sample-age-ms"
+  },
+  {
+    "arguments": [
+      "--native-clock",
+      "--native-ethread",
+      "--clock-sample-age-ms",
+      "2147483648"
+    ],
+    "status": 2,
+    "diagnostic": "--native-clock requires --clock-sample-age-ms"
+  },
+  {
+    "arguments": [
+      "--clock-sample-age-ms",
+      "5000"
+    ],
+    "status": 2,
+    "diagnostic": "--clock-sample-age-ms requires --native-clock"
+  }
+]

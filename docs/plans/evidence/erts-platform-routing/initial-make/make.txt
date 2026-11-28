@@ -1,0 +1,45 @@
+LANG=C /opt/local/bin/perl5 utils/make_preload -old /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/erts_code_purger.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/erl_init.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/init.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/prim_buffer.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/prim_eval.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/prim_inet.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/prim_file.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/zlib.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/socket_registry.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/prim_socket.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/prim_net.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/prim_zip.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/erl_prim_loader.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/erlang.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/erts_internal.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/erl_tracer.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/erts_literal_area_collector.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/erts_trace_cleaner.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/erts_dirty_process_signal_handler.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/atomics.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/counters.beam /private/tmp/knytos-erts-platform-routing-first/otp/erts/preloaded/ebin/persistent_term.beam > aarch64-unknown-knytos/opt/emu/preload.c
+clang --target=aarch64-none-elf --sysroot=/private/tmp/knytos-erts-platform-routing-first/sdk -std=gnu23 -MM -MG -Werror=undef -Werror=implicit -Werror=return-type  -fvisibility=hidden -fno-common -fstrict-flex-arrays=3 -fno-strict-aliasing -fno-delete-null-pointer-checks -fno-strict-overflow -fexceptions -mbranch-protection=standard -fstack-protector-strong -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -Os -ffreestanding -fno-builtin -fno-pic -fno-pie -mno-outline-atomics -I/private/tmp/knytos-erts-platform-routing-first/otp/erts/aarch64-unknown-knytos  -Dmain=knytos_c_main -DKNYTOS_NATIVE_WORKERS -D__STDIO_LOCKING -DKNYTOS_WORKER_LIBC -isystem /private/tmp/knytos-erts-platform-routing-first/sdk/include -DKNYTOS_SERVICE_WORKER -D_GNU_SOURCE  -DHAVE_CONFIG_H -Wall -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Wdeclaration-after-statement -DUSE_THREADS -DETHR_KNYTOS -DKNYTOS_NATIVE_WORKERS -DKNYTOS_WORKER_LIBC -D__STDIO_LOCKING   -Iaarch64-unknown-knytos/opt/emu -Ibeam -Isys/knytos -Isys/common -Iaarch64-unknown-knytos -Izlib  -Izstd -Iryu -Ipcre -I../include -I../include/aarch64-unknown-knytos -I../include/internal -I../include/internal/aarch64-unknown-knytos -Idrivers/common -Idrivers/knytos -Inifs/common -Inifs/knytos beam/atom.c beam/beam_bif_load.c beam/beam_bp.c beam/beam_catches.c beam/beam_common.c beam/beam_debug.c beam/beam_file.c beam/beam_load.c beam/beam_ranges.c beam/beam_transform_helpers.c beam/beam_types.c beam/bif.c beam/big.c beam/binary.c beam/break.c beam/code_ix.c beam/copy.c beam/dist.c beam/erl_afit_alloc.c beam/erl_alloc.c beam/erl_alloc_util.c beam/erl_ao_firstfit_alloc.c beam/erl_arith.c beam/erl_async.c beam/erl_bestfit_alloc.c beam/erl_bif_atomics.c beam/erl_bif_binary.c beam/erl_bif_chksum.c beam/erl_bif_counters.c beam/erl_bif_coverage.c beam/erl_bif_ddll.c beam/erl_bif_guard.c beam/erl_bif_info.c beam/erl_bif_lists.c beam/erl_bif_op.c beam/erl_bif_os.c beam/erl_bif_persistent.c beam/erl_bif_port.c beam/erl_bif_re.c beam/erl_bif_trace.c beam/erl_bif_unique.c beam/erl_bits.c beam/erl_cpu_topology.c beam/erl_crash_dump.c beam/erl_db.c beam/erl_db_catree.c beam/erl_db_hash.c beam/erl_db_tree.c beam/erl_db_util.c beam/erl_debug.c beam/erl_debugger.c beam/erl_drv_thread.c beam/erl_dyn_lock_check.c beam/erl_errno_str.c beam/erl_etp.c beam/erl_flxctr.c beam/erl_fun.c beam/erl_gc.c beam/erl_global_literals.c beam/erl_goodfit_alloc.c beam/erl_hl_timer.c beam/erl_init.c beam/erl_internal_test.c beam/erl_io_queue.c beam/erl_iolist.c beam/erl_lock_check.c beam/erl_lock_count.c beam/erl_lock_flags.c beam/erl_map.c beam/erl_math.c beam/erl_md5.c beam/erl_message.c beam/erl_monitor_link.c beam/erl_msacc.c beam/erl_nfunc_sched.c beam/erl_nif.c beam/erl_node_tables.c beam/erl_port_task.c beam/erl_printf_term.c beam/erl_proc_sig_queue.c beam/erl_process.c beam/erl_process_dict.c beam/erl_process_dump.c beam/erl_process_lock.c beam/erl_ptab.c beam/erl_record.c beam/erl_sched_spec_pre_alloc.c beam/erl_term.c beam/erl_term_hashing.c beam/erl_thr_progress.c beam/erl_thr_queue.c beam/erl_time_sup.c beam/erl_trace.c beam/erl_unicode.c beam/erl_zlib.c beam/erlang_lttng.c beam/export.c beam/external.c beam/hash.c beam/index.c beam/io.c beam/module.c beam/packet_parser.c beam/register.c beam/safe_hash.c beam/time.c beam/utils.c beam/emu/beam_emu.c beam/emu/emu_load.c > aarch64-unknown-knytos/opt/emu/src.depend.mk.tmp
+In file included from beam/bif.c:32:
+In file included from beam/sys.h:121:
+sys/knytos/erl_knytos_sys.h:21:2: error: "Native Knytos descriptor readiness is not implemented"
+   21 | #error "Native Knytos descriptor readiness is not implemented"
+      |  ^
+1 error generated.
+In file included from beam/erl_afit_alloc.c:41:
+In file included from beam/erl_afit_alloc.h:52:
+beam/erl_alloc_util.h:466:4: error: "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+  466 | #  error "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+      |    ^
+1 error generated.
+In file included from beam/erl_alloc.c:55:
+In file included from beam/erl_goodfit_alloc.h:52:
+beam/erl_alloc_util.h:466:4: error: "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+  466 | #  error "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+      |    ^
+1 error generated.
+In file included from beam/erl_alloc_util.c:50:
+beam/erl_alloc_util.h:466:4: error: "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+  466 | #  error "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+      |    ^
+1 error generated.
+In file included from beam/erl_ao_firstfit_alloc.c:59:
+In file included from beam/erl_ao_firstfit_alloc.h:63:
+beam/erl_alloc_util.h:466:4: error: "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+  466 | #  error "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+      |    ^
+1 error generated.
+In file included from beam/erl_bestfit_alloc.c:46:
+In file included from beam/erl_bestfit_alloc.h:53:
+beam/erl_alloc_util.h:466:4: error: "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+  466 | #  error "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+      |    ^
+1 error generated.
+In file included from beam/erl_goodfit_alloc.c:49:
+In file included from beam/erl_goodfit_alloc.h:52:
+beam/erl_alloc_util.h:466:4: error: "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+  466 | #  error "Carrier pool implementation assumes ERTS_ALC_A_MIN > ERTS_ALC_A_INVALID"
+      |    ^
+1 error generated.
+if utils/gen_git_version aarch64-unknown-knytos/gen_git_version.mk; then touch beam/erl_bif_info.c; fi
+make: *** No rule to make target `aarch64-unknown-knytos/config.h', needed by `obj/aarch64-unknown-knytos/opt/emu/erts_monotonic.o'.  Stop.

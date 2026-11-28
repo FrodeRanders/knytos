@@ -1,0 +1,12 @@
+checking build system type... aarch64-apple-darwin25.6.0
+checking host system type... x86_64-unknown-knytos
+checking for x86_64-unknown-knytos-gcc... clang --target=aarch64-none-elf --sysroot=../sdk
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... yes
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether clang --target=aarch64-none-elf --sysroot=../sdk accepts -g... yes
+checking for clang --target=aarch64-none-elf --sysroot=../sdk option to enable C23 features... -std=gnu23
+configure: error: the Knytos clock SDK requires aarch64-unknown-knytos

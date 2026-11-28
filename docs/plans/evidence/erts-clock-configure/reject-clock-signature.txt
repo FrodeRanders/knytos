@@ -1,0 +1,7 @@
+/private/tmp/knytos-erts-clock-selection-final/reject-clock-signature.c:21:33: error: incompatible function pointer types initializing 'unsigned long (*volatile)(void)' with an expression of type 'ErtsSystemTime (void)' (aka 'long (void)') [-Wincompatible-function-pointer-types]
+   21 | static unsigned long (*volatile ref_erts_os_system_time)(void) = erts_os_system_time;
+      |                                 ^                                ~~~~~~~~~~~~~~~~~~~
+/private/tmp/knytos-erts-clock-selection-final/reject-clock-signature.c:22:16: error: static assertion failed due to requirement '__builtin_types_compatible_p(long (void), unsigned long (void))': Native clock signature mismatch: erts_os_system_time
+   22 | _Static_assert(__builtin_types_compatible_p(__typeof__(erts_os_system_time), __typeof__(*ref_erts_os_system_time)), "Native clock signature mismatch: erts_os_system_time");
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 errors generated.

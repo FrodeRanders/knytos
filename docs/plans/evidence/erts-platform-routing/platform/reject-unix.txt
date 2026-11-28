@@ -1,0 +1,9 @@
+In file included from /private/tmp/knytos-erts-platform-routing-final/platform/consumer.c:2:
+In file included from /private/tmp/knytos-erts-platform-routing-final/otp/erts/emulator/beam/sys.h:121:
+/private/tmp/knytos-erts-platform-routing-final/otp/erts/emulator/sys/knytos/erl_knytos_sys.h:12:2: error: "The native Knytos sys header cannot select another platform"
+   12 | #error "The native Knytos sys header cannot select another platform"
+      |  ^
+/private/tmp/knytos-erts-platform-routing-final/platform/consumer.c:6:2: error: "Native consumer selected a substitute sys or time record"
+    6 | #error "Native consumer selected a substitute sys or time record"
+      |  ^
+2 errors generated.

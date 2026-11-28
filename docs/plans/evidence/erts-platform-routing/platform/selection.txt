@@ -1,0 +1,4 @@
+knytos
+knytos
+obj/aarch64-unknown-knytos/opt/emu/erts_monotonic.o obj/aarch64-unknown-knytos/opt/emu/erts_system_time.o obj/aarch64-unknown-knytos/opt/emu/erts_time_init.o
+drivers=

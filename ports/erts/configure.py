@@ -38,10 +38,11 @@ def prepare_otp(source, tree):
     return config_sub
 
 
-def prepare_sdk(picolibc, out):
+def prepare_sdk(picolibc, out, native_clock=False):
     control = out / "sdk-control.elf"
     subprocess.run(["python3", ROOT / "ports/libc/build.py", ROOT / "ports/libc/tests/empty.c",
-                    "--worker-libc", "--picolibc-source", picolibc, "--output", control],
+                    "--service-worker" if native_clock else "--worker-libc",
+                    "--picolibc-source", picolibc, "--output", control],
                    cwd=ROOT, check=True)
     sdk = out / "sdk"
     picolibc_build = ROOT / "target/c-runtime/picolibc-aarch64-workers-v1"
@@ -87,9 +88,6 @@ def prepare_native(source, picolibc, out, tree, sdk):
     shutil.copy2(ROOT / "ports/erts/knytos-ethread.m4", tree / "make/autoconf/knytos-ethread.m4")
     patch = ROOT / "ports/erts/otp-29.1.2-native-configure.patch"
     subprocess.run(["patch", "-p1", "--batch", "--fuzz=0", "--input", patch], cwd=tree, check=True)
-    with (out / "autoconf.txt").open("w") as log:
-        subprocess.run(["autoconf", "-I", "../make/autoconf", "-o", "configure", "configure.ac"],
-                       cwd=tree / "erts", stdout=log, stderr=subprocess.STDOUT, check=True)
     # Check the actual Make conditional without pretending a complete OTP
     # Makefile was generated before configure reaches AC_OUTPUT.
     def selected_sources(text, mode, label):
@@ -175,7 +173,22 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--native-ethread", action="store_true",
                         help="select and genuinely compile/link the bounded native thread backend")
+    parser.add_argument("--native-clock", action="store_true",
+                        help="also compile/link the bounded native clock SDK (not a complete sys layer)")
+    parser.add_argument("--native-platform", action="store_true",
+                        help="select the complete common sys.h and native clock Make routing")
+    parser.add_argument("--clock-sample-age-ms", type=int,
+                        help="explicit finite clock sample-age policy for --native-clock")
     args = parser.parse_args()
+    if args.native_platform and not args.native_clock:
+        parser.error("--native-platform requires --native-clock and --native-ethread")
+    if args.native_clock and not args.native_ethread:
+        parser.error("--native-clock requires --native-ethread")
+    if args.native_clock:
+        if args.clock_sample_age_ms is None or not 1 <= args.clock_sample_age_ms <= 2147483647:
+            parser.error("--native-clock requires --clock-sample-age-ms=1..2147483647")
+    elif args.clock_sample_age_ms is not None:
+        parser.error("--clock-sample-age-ms requires --native-clock")
     source = args.otp_source.resolve()
     if capture("git", "-C", source, "rev-parse", "HEAD") != OTP_PIN:
         parser.error("OTP source must be at the pinned 29.1.2 revision")
@@ -187,13 +200,29 @@ def main():
     tree.mkdir()
     build.mkdir()
     config_sub = prepare_otp(source, tree)
-    sdk, control_manifest = prepare_sdk(args.picolibc_source.resolve(), out)
+    sdk, control_manifest = prepare_sdk(args.picolibc_source.resolve(), out, args.native_clock)
     interface = prepare_native(source, args.picolibc_source.resolve(), out, tree, sdk) if args.native_ethread else None
+    clock = None
+    if args.native_clock:
+        from configure_clock import prepare
+        clock = prepare(source, args.picolibc_source.resolve(), out, tree, sdk, args.clock_sample_age_ms)
+    if args.native_platform:
+        from platform_build import prepare
+        prepare(tree)
+    if args.native_ethread:
+        with (out / "autoconf.txt").open("w") as log:
+            subprocess.run(["autoconf", "-I", "../make/autoconf", "-o", "configure", "configure.ac"],
+                           cwd=tree / "erts", stdout=log, stderr=subprocess.STDOUT, check=True)
     build_target = capture(tree / "make/autoconf/config.guess")
     command = [tree / "erts/configure", f"--srcdir={tree / 'erts'}", f"--build={build_target}",
                f"--host={TARGET}", "--disable-jit"]
     if args.native_ethread:
         command.extend(("--with-knytos-ethread=../sdk", "--without-termcap"))
+    if args.native_clock:
+        command.extend(("--with-knytos-clock=../sdk",
+                        f"--with-knytos-clock-max-age-ms={args.clock_sample_age_ms}"))
+    if args.native_platform:
+        command.append("--enable-knytos-platform")
     # The SDK paths are relative to the configure directory so Autoconf's
     # shell-expanded argument lists never contain the host repository path.
     toolchain = {
@@ -204,13 +233,21 @@ def main():
         "AR": "../sdk/llvm-ar",
         "RANLIB": "../sdk/llvm-ranlib",
         "LD": "../sdk/ld.lld",
-        "CFLAGS": "-ffreestanding -fno-builtin -fno-pic -fno-pie -mno-outline-atomics",
+        "CFLAGS": "-Os -ffreestanding -fno-builtin -fno-pic -fno-pie -mno-outline-atomics",
         "CPPFLAGS": "-Dmain=knytos_c_main -DKNYTOS_NATIVE_WORKERS -D__STDIO_LOCKING "
                     "-DKNYTOS_WORKER_LIBC -isystem ../sdk/include",
-        "CXXFLAGS": "-ffreestanding -fno-pic -fno-pie -mno-outline-atomics",
+        "CXXFLAGS": "-Os -ffreestanding -fno-pic -fno-pie -mno-outline-atomics",
         "LDFLAGS": "--ld-path=../sdk/ld.lld -nostdlib -Wl,-T,../sdk/link.x,--entry=_start,--gc-sections",
         "LIBS": "-Wl,--start-group ../sdk/bridge.o ../sdk/libknytos_cabi.a ../sdk/libc.a -Wl,--end-group",
     }
+    if args.native_clock:
+        toolchain["CPPFLAGS"] += " -DKNYTOS_SERVICE_WORKER"
+    if args.native_platform:
+        # Generated Make rules run below the configure directory. The SDK must
+        # retain its location there too. GNU visibility exposes implemented
+        # libc functions such as memrchr, which configure genuinely links.
+        toolchain = {name: value.replace("../sdk", str(sdk)) for name, value in toolchain.items()}
+        toolchain["CPPFLAGS"] += " -D_GNU_SOURCE"
     env = {name: value for name, value in os.environ.items()
            if not name.startswith(("ac_cv_", "erl_cv_", "erl_xcomp_"))}
     log = out / "configure.txt"
@@ -231,6 +268,9 @@ def main():
                           for path in ([Path(__file__).resolve()] + ([ROOT / "ports/erts/knytos-ethread.m4",
                               ROOT / "ports/erts/otp-29.1.2-native-configure.patch"] if args.native_ethread else []))},
     }
+    # Preserve configure's own outcome even if a later qualification control
+    # fails. The final write below adds the successful control results.
+    (out / "result.json").write_text(json.dumps(evidence, indent=2) + "\n")
     if args.native_ethread:
         evidence["autoconf"] = capture("autoconf", "--version").splitlines()[0]
         evidence["generated_configure_sha256"] = hashlib.sha256((tree / "erts/configure").read_bytes()).hexdigest()
@@ -242,6 +282,28 @@ def main():
             path = build / name
             if path.exists():
                 evidence.setdefault("native_link_sha256", {})[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    if args.native_clock:
+        from configure_clock import controls, macro_controls, configured_outputs
+        evidence["native_clock"] = clock
+        if (build / "knytos-clock-link.c").exists():
+            evidence["native_clock_link"] = controls(out, sdk, toolchain, args.clock_sample_age_ms)
+            evidence["native_clock_macro_controls"] = macro_controls(out, toolchain, args.clock_sample_age_ms)
+        elif result.returncode == 0:
+            raise SystemExit("Configure succeeded without passing its native clock link check")
+        if result.returncode == 0:
+            evidence["configured_outputs"] = configured_outputs(out, args.clock_sample_age_ms)
+        evidence["inputs_sha256"].update({str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+                                         for path in (ROOT / "ports/erts/configure_clock.py",
+                                                      ROOT / "ports/erts/knytos-clock.m4",
+                                                      ROOT / "ports/erts/otp-29.1.2-clock-configure.patch")})
+    if args.native_platform and result.returncode == 0:
+        from platform_build import qualify
+        evidence["native_platform"] = qualify(out, tree, sdk, toolchain, args.clock_sample_age_ms)
+        evidence["inputs_sha256"].update({str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+                                         for path in (ROOT / "ports/erts/platform_build.py",
+                                                      ROOT / "ports/erts/otp-29.1.2-platform.patch",
+                                                      ROOT / "ports/erts/erl_knytos_sys.h",
+                                                      ROOT / "ports/erts/erts_time_init.h")})
     (out / "result.json").write_text(json.dumps(evidence, indent=2) + "\n")
     print(f"ERTS configure exited {result.returncode}. See {log}")
     return result.returncode

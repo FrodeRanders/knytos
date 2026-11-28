@@ -1,0 +1,7 @@
+In file included from ports/erts/erts_time_init.c:4:
+In file included from ports/erts/erts_time_init.h:10:
+In file included from /private/tmp/knytos-erts-clock-selection-final/otp/erts/emulator/beam/sys.h:123:
+/private/tmp/knytos-erts-clock-selection-final/otp/erts/emulator/sys/unix/erl_unix_sys.h:102:10: fatal error: 'netdb.h' file not found
+  102 | #include <netdb.h>
+      |          ^~~~~~~~~
+1 error generated.

@@ -225,6 +225,8 @@ def main():
                                 help="qualify published ERTS UTC samples and terminal missing-time policy")
     worker_profile.add_argument("--erts-time-init", action="store_true",
                                 help="qualify the pinned ERTS startup time record and performance counter")
+    parser.add_argument("--erts-platform-build", type=Path,
+                        help="with --erts-time-init, use clocks built through native platform Make rules")
     parser.add_argument("--otp-source", type=Path,
                         help="pinned OTP source required by the ERTS header and diagnostics profiles")
     parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
@@ -232,6 +234,17 @@ def main():
     selected_headers = args.erts_header or args.erts_diagnostics or args.erts_bootstrap
     if (selected_headers or args.erts_time_init) and args.otp_source is None:
         parser.error("ERTS selected-header and time-initialization profiles require --otp-source")
+    platform_build = None
+    if args.erts_platform_build is not None:
+        if not args.erts_time_init:
+            parser.error("--erts-platform-build requires --erts-time-init")
+        platform_root = args.erts_platform_build.resolve()
+        manifest = json.loads((platform_root / "result.json").read_text())
+        platform_build = manifest.get("native_platform")
+        if manifest["configure_status"] != 0 or not platform_build:
+            parser.error("--erts-platform-build requires a qualified native platform configure result")
+        if digest(platform_root / "platform/libknytos_erts_clock.a") != platform_build["archive_sha256"]:
+            parser.error("native platform clock archive does not match its manifest")
     cases = CASES[:-1].copy()
     vm_cases = {
         10: ("avm-hello", args.atomvm_elf, "[atomvm] completed status=0"),
@@ -441,9 +454,13 @@ def main():
         erts_library = output / "erts" / "libknytos_ethread.a"
         clock_library = output / "erts-clock" / "libknytos_erts_clock.a"
         if args.erts_time_init:
-            command(["python3", ROOT / "ports/erts/build.py", "--platform-clock",
-                     "--otp-source", args.otp_source, "--picolibc-source", args.picolibc_source,
-                     "--output", clock_library], "erts-time-init-build")
+            if platform_build:
+                clock_library = platform_root / "platform/libknytos_erts_clock.a"
+                record["native_platform"] = platform_build
+            else:
+                command(["python3", ROOT / "ports/erts/build.py", "--platform-clock",
+                         "--otp-source", args.otp_source, "--picolibc-source", args.picolibc_source,
+                         "--output", clock_library], "erts-time-init-build")
         if args.erts_clock or args.erts_system_clock:
             command(["python3", ROOT / "ports/erts/build.py",
                      "--system-clock" if args.erts_system_clock else "--monotonic-clock",
@@ -528,8 +545,26 @@ def main():
                 if number in (86, 89, 90, 91, 92, 93, 94):
                     libraries = ["--library", clock_library, "--include", ROOT / "ports/erts"]
                 if number in (92, 93, 94):
-                    libraries.extend(("--include", clock_library.with_suffix(".build") / "time-contract",
-                                      "--define", "KNYTOS_ERTS_TIME_CONTRACT_PROBE"))
+                    if platform_build:
+                        for include in platform_build["include_directories"]:
+                            libraries.extend(("--include", include))
+                        libraries.extend(("--define", "HAVE_CONFIG_H", "--define", "USE_THREADS",
+                                          "--define", "_GNU_SOURCE", "--define", "KNYTOS_ERTS_PLATFORM_CHECK"))
+                        # OTP's headers intentionally leave unused wrapper
+                        # parameters. Scope these two -Wextra diagnostics to
+                        # those upstream headers; keep fixture errors fatal.
+                        original = source.read_text()
+                        anchor = '#include "erts_time_init.h"'
+                        assert original.count(anchor) == 1
+                        source = output / (name + "-native.c")
+                        source.write_text(original.replace(anchor,
+                            '#include "config.h"\n#pragma GCC diagnostic push\n'
+                            '#pragma GCC diagnostic ignored "-Wunused-parameter"\n'
+                            '#pragma GCC diagnostic ignored "-Wunused-but-set-parameter"\n'
+                            '#include "sys.h"\n#pragma GCC diagnostic pop\n' + anchor))
+                    else:
+                        libraries.extend(("--include", clock_library.with_suffix(".build") / "time-contract",
+                                          "--define", "KNYTOS_ERTS_TIME_CONTRACT_PROBE"))
                 if number in header_cases:
                     original = source.read_text()
                     anchor = '#include "knytos_ethread.h"'

@@ -1,0 +1,42 @@
+{
+  "unix-no": {
+    "unchanged": true,
+    "selection": [
+      "obj/test/sys.o obj/test/sys_drivers.o obj/test/sys_env.o obj/test/sys_uds.o obj/test/driver_tab.o obj/test/unix_prim_file.o obj/test/sys_float.o obj/test/sys_time.o obj/test/sys_signal_stack.o obj/test/unix_socket_syncio.o obj/test/erl_poll.o obj/test/erl_check_io.o obj/test/erl_mseg.o obj/test/erl_mmap.o obj/test/erl_osenv.o obj/test/erl_unix_sys_ddll.o obj/test/erl_sys_common_misc.o obj/test/erl_os_monotonic_time_extender.o",
+      "drivers=obj/test/inet_drv.o obj/test/ram_file_drv.o"
+    ]
+  },
+  "unix-yes": {
+    "unchanged": true,
+    "selection": [
+      "obj/test/sys.o obj/test/sys_drivers.o obj/test/sys_env.o obj/test/sys_uds.o obj/test/driver_tab.o obj/test/unix_prim_file.o obj/test/sys_float.o obj/test/sys_time.o obj/test/sys_signal_stack.o obj/test/unix_socket_syncio.o obj/test/erl_poll.o obj/test/erl_check_io.o obj/test/erl_mseg.o obj/test/erl_mmap.o obj/test/erl_osenv.o obj/test/erl_unix_sys_ddll.o obj/test/erl_sys_common_misc.o obj/test/erl_os_monotonic_time_extender.o obj/test/erl_poll.flbk.o",
+      "drivers=obj/test/inet_drv.o obj/test/ram_file_drv.o"
+    ]
+  },
+  "win32-no": {
+    "unchanged": true,
+    "selection": [
+      "obj/test/dll_sys.o obj/test/driver_tab.o obj/test/sys_float.o obj/test/sys_time.o obj/test/sys_interrupt.o obj/test/sys_env.o obj/test/dosmap.o obj/test/win_prim_file.o obj/test/win_socket_asyncio.o obj/test/erl_poll.o obj/test/erl_check_io.o obj/test/erl_mseg.o obj/test/erl_mmap.o obj/test/erl_osenv.o obj/test/erl_win32_sys_ddll.o obj/test/erl_sys_common_misc.o obj/test/erl_os_monotonic_time_extender.o",
+      "drivers=obj/test/registry_drv.o obj/test/inet_drv.o obj/test/ram_file_drv.o"
+    ]
+  },
+  "win32-yes": {
+    "unchanged": true,
+    "selection": [
+      "obj/test/dll_sys.o obj/test/driver_tab.o obj/test/sys_float.o obj/test/sys_time.o obj/test/sys_interrupt.o obj/test/sys_env.o obj/test/dosmap.o obj/test/win_prim_file.o obj/test/win_socket_asyncio.o obj/test/erl_poll.o obj/test/erl_check_io.o obj/test/erl_mseg.o obj/test/erl_mmap.o obj/test/erl_osenv.o obj/test/erl_win32_sys_ddll.o obj/test/erl_sys_common_misc.o obj/test/erl_os_monotonic_time_extender.o obj/test/erl_poll.flbk.o",
+      "drivers=obj/test/registry_drv.o obj/test/inet_drv.o obj/test/ram_file_drv.o"
+    ]
+  },
+  "native-no": {
+    "selection": [
+      "obj/test/erts_monotonic.o obj/test/erts_system_time.o obj/test/erts_time_init.o",
+      "drivers="
+    ]
+  },
+  "native-yes": {
+    "selection": [
+      "obj/test/erts_monotonic.o obj/test/erts_system_time.o obj/test/erts_time_init.o",
+      "drivers="
+    ]
+  }
+}

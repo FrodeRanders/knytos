@@ -1,0 +1,23 @@
+{
+  "status": 2,
+  "command": [
+    "make",
+    "--no-print-directory",
+    "-f",
+    "aarch64-unknown-knytos/Makefile",
+    "ERL_TOP=/private/tmp/knytos-erts-platform-routing-second/otp",
+    "TARGET=aarch64-unknown-knytos",
+    "TYPE=opt",
+    "FLAVOR=emu",
+    "V=1",
+    "ERTS_SKIP_DEPEND=true",
+    "-o",
+    "aarch64-unknown-knytos/opt/emu/GENERATED",
+    "-o",
+    "aarch64-unknown-knytos/gen_git_version.mk",
+    "--eval=.PHONY: knytos-inspect\nknytos-inspect:\n\t@echo $(ERLANG_OSTYPE)\n\t@echo $(OPSYS)\n\t@echo $(OS_OBJS)\n\t@echo drivers=$(DRV_OBJS)\n",
+    "knytos-inspect"
+  ],
+  "diagnostic": "make: unrecognized option --eval (host GNU Make 3.81)",
+  "capture_limit": "The complete original orchestration stdout was not archived. The relevant diagnostic and attempted command are retained."
+}

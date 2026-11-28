@@ -1,0 +1,5 @@
+In file included from /private/tmp/knytos-erts-clock-selection-final/build/knytos-clock-link.c:109:
+../sdk/clock/clock-link-check.h:5:2: error: "Native clock SDK requires the service-worker profile"
+    5 | #error "Native clock SDK requires the service-worker profile"
+      |  ^
+1 error generated.

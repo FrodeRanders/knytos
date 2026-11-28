@@ -1,0 +1,6 @@
+In file included from /private/tmp/knytos-erts-platform-routing-final/platform/consumer.c:2:
+In file included from /private/tmp/knytos-erts-platform-routing-final/otp/erts/emulator/beam/sys.h:121:
+/private/tmp/knytos-erts-platform-routing-final/otp/erts/emulator/sys/knytos/erl_knytos_sys.h:21:2: error: "Native Knytos descriptor readiness is not implemented"
+   21 | #error "Native Knytos descriptor readiness is not implemented"
+      |  ^
+1 error generated.

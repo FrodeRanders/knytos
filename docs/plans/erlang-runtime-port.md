@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5's explicit native configure probe passes the thread-library gate and stops at the wall-clock-source gate.\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 configures native threads/clocks and builds its clock objects through complete common headers and native Make routing; native ERTS startup and refresh ownership remain open.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -1519,9 +1519,8 @@ compile-links all 327 retained API references, passes the thread-library
 gate and uses OTP's supported `--without-termcap` option for headless
 execution. It stops at `No wall clock source found`; no POSIX feature
 answers are fabricated. Native Make source selection is checked against the
-nine-object archive, and the staged sources reproduce that archive. Full
-Make-graph/emulator building remains unqualified because configure has not
-reached its output phase.
+nine-object archive, and the staged sources reproduce that archive. The
+thread-only mode retains this clock rejection.
 The [native configure qualification](../reports/milestones/2026-11-27-erts-native-configure.md)
 preserves all three observed gates, the genuine link ELF, rejection controls
 and staged-source/archive identities. The existing signed runtime scope is
@@ -1530,12 +1529,30 @@ The [C realtime bridge](../../ports/libc/README.md#authorized-realtime-queries)
 now queries the signed `time=call` service grant in the service-worker
 profile. Each registered participant uses its private CQ and one deadline;
 only validated synchronized UTC is returned. Ordinary profiles retain
-unavailable realtime. ERTS clock/backend selection remains open and the
-native configure probe still stops at its wall-clock requirement.
+unavailable realtime. The explicit native-clock configure mode uses the
+service-worker SDK and the standalone clock interface below.
 The [realtime qualification](../reports/milestones/2026-11-27-c-realtime.md)
 passes the 19-case signed C clock profile and three deployment controls,
 including known unstarted profile-mapping rejection and an uncontended
 worker query. Its two earlier failed worker captures remain separate.
+
+The [native clock configure step](erlang-m5-clock-configure.md) adds
+`--native-clock --clock-sample-age-ms 5000` alongside native ethread. A real
+target link retains twelve clock/startup interfaces and requires the SDK's
+matching explicit sample-age policy. The native Autoconf branch selects no
+POSIX clock or CPU-accounting implementation. With explicit `-Os`, configure
+exits zero and emits its headers and Makefiles; the earlier missing-optimization
+stop remains separate. The [qualification](../reports/milestones/2026-11-28-erts-clock-configure.md)
+records generated definitions, rejection controls and the unchanged qualified
+archives. In this mode common `sys.h` and emulator Make retain Unix platform
+selection. The additional [native platform routing step](erlang-m5-platform-routing.md)
+selects a minimal `erl_knytos_sys.h` through complete common `sys.h` and routes
+the three clock objects through actual generated emulator Make rules, using
+absolute SDK paths and generated native configuration. It checks fourteen
+record fields, twelve interfaces and actual include dependencies without the
+extracted-record probe. Native startup, I/O, whole-emulator generation/build
+and top-level wrapper propagation remain open. See the
+[qualification](../reports/milestones/2026-11-28-erts-platform-routing.md).
 
 A full OTP build will need to pass the target configuration through
 the top-level wrapper. An illustrative invocation is:
@@ -1750,8 +1767,9 @@ publication. Independent adapter setup also publishes its key then; integrated
 early initialization has already reserved that key. Contexts retain the matching allocator through cleanup, and
 nonallocating main-status access stays local to each cached event. Actual
 ERTS CPU/runtime configuration remains open; native locks do not use reader
-groups. The explicit native configure thread gate passes; clock-source
-configuration and the full build remain open.
+groups. The explicit native thread/clock configure probe completes; native
+platform routing covers the clock objects. Full startup and the emulator build
+remain open.
 The [signed thread-event qualification](../reports/milestones/2026-11-26-erts-thread-events.md)
 covers independent temporary owners, busy/peek retention, partial clear,
 bounded admission, cross-CPU delivery, destructor rearming and the fatal
@@ -1852,8 +1870,9 @@ The independent [native monotonic prerequisite](../../ports/erts/README.md#nativ
 implements `erts_os_monotonic_time` and `erts_sys_hrtime` as signed-nanosecond
 scalar reads. It checks the pinned LP64 declarations, rejects out-of-range
 values and source errors terminally, and is qualified on startup and worker
-threads under a native mutex. It is not selected by configure or a complete
-ERTS platform header. The [qualification](../reports/milestones/2026-11-27-erts-monotonic-clock.md)
+threads under a native mutex. Native-clock configure selects its link interface;
+the native-platform mode compiles complete common `sys.h` for the clock scope.
+The [qualification](../reports/milestones/2026-11-27-erts-monotonic-clock.md)
 records the standalone interface, fault checks and signed campaign.
 
 UTC service queries may block and return a typed admission rejection, whereas
@@ -1885,14 +1904,19 @@ declarations; it does not compile the full ERTS sys header. The
 covers fourteen field types/offsets, nine host scenarios and signed startup,
 worker, denial and terminal cases. The late hook installs no wrap extender or
 refresh producer. Its five-second probe sample window is not a long-running
-runtime policy. Full native startup source routing and refresh scheduling
-remain integration gates.
-The configure wall-clock gate remains open: it does not select the standalone
-clock archives yet, and no POSIX clock implementation is supplied.
+runtime policy. Native-platform mode now routes the clock objects through
+generated Make rules and complete common headers. The full native startup
+call path and refresh scheduling remain integration gates.
+The explicit native-clock configure mode now passes its clock gate using the
+standalone archives and pinned time-record probe. No POSIX clock implementation
+is supplied. Native-platform mode additionally selects the minimal native sys
+header for the complete common header and clock-source build; it does not
+provide full startup or continuous refresh.
 
 Remaining integration:
 
-- Native platform header, configure selection and startup source routing.
+- Full native ERTS startup and the remaining platform source implementations.
+- Whole-emulator generated metadata, build dependencies and host bootstrap.
 - ERTS startup and refresh scheduling/notification ownership.
 - Full-platform system-time and paired-read integration.
 - Full-platform performance-counter selection and CPU-accounting support.

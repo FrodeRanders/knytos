@@ -38,18 +38,100 @@ The versioned native configure patch also routes the ethread Make source
 list to the nine native sources. GNU Make checks that branch and preserves
 the original pthread list. Compiling the staged sources with the qualified
 SDK reproduces the same native archive. These checks do not build the full
-OTP Make graph or produce a configured emulator: configure exits 1 with
+OTP Make graph or produce an emulator: thread-only configure exits 1 with
 `No wall clock source found` before generating its final outputs. This
 configure SDK uses the worker-libc profile, which reports realtime unavailable.
 The [service-worker C profile](../libc/README.md#authorized-realtime-queries)
 can query UTC through a signed time grant. The standalone clock prerequisites
-below provide local getters, but native sys initialization and configure
-selection still need implementation.
+below provide local getters. The explicit clock mode described next selects
+their configure interface. Native-platform mode below additionally selects the
+common-header path and clock sources; full ERTS startup remains open.
 The [native configure qualification](../../docs/reports/milestones/2026-11-27-erts-native-configure.md)
 records the retained references, two rejection controls, Make source checks
 and byte-identical staged archive. Its
 [evidence manifest](../../docs/plans/evidence/erts-native-configure/summary.json)
 preserves the default thread gate, initial curses stop and final clock gate.
+
+### Native clock configure selection
+
+```sh
+python3 ports/erts/configure.py --native-ethread --native-clock \
+  --clock-sample-age-ms 5000 \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/clock-configure
+```
+
+Use a fresh output directory. This opt-in mode requires native ethread and an
+explicit sample age of 1..2147483647 milliseconds. It builds the service-worker
+C SDK and the three-member clock archive, then adds
+`--with-knytos-clock=../sdk --with-knytos-clock-max-age-ms=5000` to configure.
+The chosen age is a finite qualification window; no refresh producer is
+installed. Startup still requires a signed `time=call` grant.
+
+`knytos-clock.m4` compile-links twelve retained clock/startup/performance-counter
+interfaces against the actual pinned time-record contract and checks the
+SDK's policy and service-worker profile. This selects native clock definitions
+without successful POSIX clock, corrected-time or CPU-accounting answers.
+Archive omission, signature/policy/profile mismatches and invalid native
+target/backend/age/POSIX choices reject. The probe supplies `-Os` to satisfy
+OTP's explicit optimization requirement, consistent with adapter builds.
+
+Configure exits zero and emits its headers and Makefiles. Generated definitions
+and native ethread source selection are checked. This does not qualify the
+full Make graph: common `sys.h` still selects `erl_unix_sys.h`, the emulator
+Makefile still selects Unix sources including `sys_time.o`, and the probe's
+relative SDK paths still need propagation through the actual build layout.
+Native platform source/header routing, startup/refresh ownership and a matching
+host bootstrap remain integration work. See the
+[qualification](../../docs/reports/milestones/2026-11-28-erts-clock-configure.md).
+
+### Native platform header and clock Make routing
+
+```sh
+python3 ports/erts/configure.py --native-ethread --native-clock --native-platform \
+  --clock-sample-age-ms 5000 \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/native-platform
+python3 ports/libc/run-tests.py --erts-time-init \
+  --erts-platform-build target/erts/native-platform --smp 2 \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/native-platform-validation
+```
+
+This additional opt-in selects `ERTS_KNYTOS`, `ERLANG_OSTYPE=knytos` and
+`OPSYS=knytos`. Common upstream `sys.h` includes `erl_knytos_sys.h`, which
+provides standard C prerequisites, the existing native clocks and a scalar
+remaining-duration record. It imports no Unix sys header or descriptor/signal
+backend. Unsupported native operations retain upstream declarations without
+success stubs. Conflicting platforms, a missing service-worker profile,
+the extracted-record probe and descriptor-readiness requests reject.
+
+The generated emulator Makefile selects the three clock objects instead of
+Unix platform objects. The qualifier stages generated configuration into OTP's
+in-tree layout and builds those objects with the actual Make rules. SDK paths
+are absolute in this mode so the compiler works from the emulator directory.
+GNU libc declaration visibility exposes implemented routines such as `memrchr`;
+it does not supply feature-test answers or implement POSIX services.
+
+Clock-only qualification uses OTP's `ERTS_SKIP_DEPEND=true` and marks the
+unneeded BEAM generator and Git-version include as old through Make's `-o`.
+It creates no substitute generated headers. The full dependency/generation
+graph remains unqualified. Only the logging template's default verbosity is
+rendered outside ERTS configure. Unix and Win32 source lists are preserved.
+
+The linked consumer includes complete pinned `sys.h`, `erl_threads.h`, native
+`ethread.h` and generated configuration, with dependency checks excluding the
+Unix and extracted time-record paths. It checks all fourteen time-record
+fields and twelve clock interfaces. The guest campaign uses this Make-built
+archive and complete headers for startup/worker reads and terminal controls.
+OTP's configured stack-protector flags are retained; the campaign checks the
+Picolibc constructor initialized its guard, without claiming secret entropy.
+See the [qualification](../../docs/reports/milestones/2026-11-28-erts-platform-routing.md).
+
+Native ERTS startup, refresh ownership, I/O, CPU accounting, full generated
+metadata/Make dependencies and matching host bootstrap remain open. The sample
+window is still finite and installs no refresh producer. This is not an
+emulator boot or a complete platform implementation.
 
 ## Native monotonic clock prerequisite
 
@@ -63,7 +145,8 @@ The diagnostic path uses a bounded literal and domain abort, and is not
 qualified for IRQ, signal or reentrant console contexts.
 
 This independent archive uses the worker-libc profile and requires no time
-grant. It is not selected by configure or a native ERTS sys header yet:
+grant. The native-clock configure probe selects its link interface; native
+platform mode also selects it through complete common `sys.h` for clock builds:
 
 ```sh
 python3 ports/erts/check-clock.py --otp-source /path/to/otp29 \
@@ -81,7 +164,7 @@ error boundaries under host undefined-behavior sanitization. The signed fixture
 reads both clocks under a native mutex on the startup thread and one worker.
 See the [qualification](../../docs/reports/milestones/2026-11-27-erts-monotonic-clock.md).
 
-System time remains open. OTP reads it inside `erts_get_time_mtx` and from
+Full-platform system-time integration remains open. OTP reads it inside `erts_get_time_mtx` and from
 scheduler BIFs. The service-worker UTC query can block for its one-second
 budget and can reject grant preparation as busy, so it cannot simply replace
 that statusless hot-path getter. The C ABI provides
@@ -89,8 +172,8 @@ that statusless hot-path getter. The C ABI provides
 The blocking query supplies the service's UTC/counter anchor and drift; local
 projection uses one scalar counter read with an explicit sample-age limit.
 The standalone system-clock prerequisite below supplies publication, explicit
-refresh, step adjustment and terminal expiry. Startup/refresh scheduling and
-native clock selection still need integration before the configure gate closes.
+refresh, step adjustment and terminal expiry. Native-clock configure selection
+is available above; startup/refresh scheduling still needs integration.
 Full-platform `sys_init_time` and paired-clock integration,
 performance-counter selection and timer-wheel integration remain unqualified.
 
@@ -127,8 +210,8 @@ accuracy or security guarantee. IRQ/signal/reentrant use remains unqualified.
 The paired getter follows OTP's generic fallback: sequential local monotonic
 and system reads. It is not an atomic single-counter pair. The archive remains
 a standalone prerequisite. The startup adapter below supplies time metadata;
-a full native sys header, startup source routing, refresh timer/notification
-owner and configure selection remain open. A runtime must arrange successful initialization before its first
+native ERTS startup and a refresh timer/notification owner remain open.
+A runtime must arrange successful initialization before its first
 clock read and refresh before its chosen validity policy expires.
 
 ```sh
@@ -193,8 +276,10 @@ the generated compiler define is mandatory and nonzero. It is not a runtime
 refresh policy. `stage_time.py` extracts the actual LP64 initialization record,
 initializer and declarations from pinned OTP `sys.h`. The explicit
 `KNYTOS_ERTS_TIME_CONTRACT_PROBE` flag selects that slice; without it the adapter
-includes the real `sys.h`. This does not qualify the complete sys header,
-select sources in OTP Make or close the configure wall-clock gate.
+includes the real `sys.h`. This standalone profile does not qualify the complete
+sys header or select sources in OTP Make. Native-clock configure uses the same
+explicit record boundary; the additional native-platform mode above compiles
+complete common `sys.h` and the generated clock Make rules.
 
 The checker verifies all fourteen scalar field types/offsets and record
 size/alignment, rejects a wrong field type and missing/zero age policies,
@@ -261,7 +346,7 @@ retain the checked declarations and negative results.
 This checks declaration slices against the current standalone surface.
 It does not include OTP's complete `ethread.h`, execute the consumer,
 select an upstream backend or qualify unavailable functions. Full ERTS
-startup and the clock-source configure gate remain open.
+startup remains open; the native-clock configure mode above passes the clock gate.
 Runtime behavior is covered by the signed campaigns below.
 
 ### Upstream header selection
@@ -314,7 +399,8 @@ and `ethr_late_init` are implemented for the bounded profile below; ERTS
 CPU/runtime configuration remains open. Terminal diagnostics are also below.
 The double-word and data-barrier interfaces are described below. No emulator
 is built by this probe. Default configure retains its pthread rejection;
-the explicit native configure probe above reaches the wall-clock gate.
+thread-only configure reaches the wall-clock gate, while the explicit
+native-clock probe completes configure.
 
 ## Atomic operations
 

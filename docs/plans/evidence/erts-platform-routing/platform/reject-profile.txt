@@ -1,0 +1,10 @@
+In file included from /private/tmp/knytos-erts-platform-routing-final/platform/consumer.c:2:
+In file included from /private/tmp/knytos-erts-platform-routing-final/otp/erts/emulator/beam/sys.h:121:
+/private/tmp/knytos-erts-platform-routing-final/otp/erts/emulator/sys/knytos/erl_knytos_sys.h:18:2: error: "The native Knytos sys header requires the service-worker C profile"
+   18 | #error "The native Knytos sys header requires the service-worker C profile"
+      |  ^
+In file included from /private/tmp/knytos-erts-platform-routing-final/platform/consumer.c:4:
+/private/tmp/knytos-erts-platform-routing-final/sdk/clock/clock-link-check.h:5:2: error: "Native clock SDK requires the service-worker profile"
+    5 | #error "Native clock SDK requires the service-worker profile"
+      |  ^
+2 errors generated.

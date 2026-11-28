@@ -1,0 +1,42 @@
+ld.lld: error: undefined symbol: erts_sys_hrtime
+>>> referenced by knytos-clock-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-clock-link-e88729.o:(erts_sys_perf_counter)
+>>> referenced by knytos-clock-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-clock-link-e88729.o:(ref_erts_sys_hrtime)
+
+ld.lld: error: undefined symbol: sys_init_time
+>>> referenced by knytos-clock-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-clock-link-e88729.o:(ref_sys_init_time)
+
+ld.lld: error: undefined symbol: erts_late_sys_init_time
+>>> referenced by knytos-clock-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-clock-link-e88729.o:(ref_erts_late_sys_init_time)
+
+ld.lld: error: undefined symbol: knytos_erts_init_time
+>>> referenced by knytos-clock-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-clock-link-e88729.o:(ref_knytos_erts_init_time)
+
+ld.lld: error: undefined symbol: erts_os_monotonic_time
+>>> referenced by knytos-clock-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-clock-link-e88729.o:(ref_erts_os_monotonic_time)
+
+ld.lld: error: undefined symbol: erts_os_system_time
+>>> referenced by knytos-clock-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-clock-link-e88729.o:(ref_erts_os_system_time)
+
+ld.lld: error: undefined symbol: erts_os_times
+>>> referenced by knytos-clock-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-clock-link-e88729.o:(ref_erts_os_times)
+
+ld.lld: error: undefined symbol: knytos_erts_clock_publish
+>>> referenced by knytos-clock-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-clock-link-e88729.o:(ref_knytos_erts_clock_publish)
+
+ld.lld: error: undefined symbol: knytos_erts_clock_refresh
+>>> referenced by knytos-clock-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-clock-link-e88729.o:(ref_knytos_erts_clock_refresh)
+
+ld.lld: error: undefined symbol: knytos_erts_clock_read
+>>> referenced by knytos-clock-link.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/knytos-clock-link-e88729.o:(ref_knytos_erts_clock_read)
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

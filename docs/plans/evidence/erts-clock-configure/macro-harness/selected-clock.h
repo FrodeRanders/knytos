@@ -1,0 +1,9 @@
+/* selected-clock.h.  Generated from selected-clock.h.in by configure.  */
+#define ERTS_KNYTOS_CLOCK 1
+#define ERTS_KNYTOS_CLOCK_MAX_AGE_NS (5000*1000000ULL)
+#define HAVE_MONOTONIC_ERTS_SYS_HRTIME 1
+/* #undef ERTS_HAVE_CORRECTED_OS_MONOTONIC_TIME */
+/* #undef OS_SYSTEM_TIME_GETTIMEOFDAY */
+/* #undef OS_SYSTEM_TIME_USING_CLOCK_GETTIME */
+/* #undef OS_MONOTONIC_TIME_USING_CLOCK_GETTIME */
+/* #undef HAVE_CLOCK_GETTIME_CPU_TIME */

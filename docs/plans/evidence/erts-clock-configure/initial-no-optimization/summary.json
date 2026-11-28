@@ -1,0 +1,58 @@
+{
+  "otp_revision": "d199a49a01a2079afb6f2c5c9ae047cd4555e68d",
+  "configure_arguments": [
+    "/private/tmp/knytos-erts-clock-selection-first/otp/erts/configure",
+    "--srcdir=/private/tmp/knytos-erts-clock-selection-first/otp/erts",
+    "--build=aarch64-apple-darwin25.6.0",
+    "--host=aarch64-unknown-knytos",
+    "--disable-jit",
+    "--with-knytos-ethread=../sdk",
+    "--without-termcap",
+    "--with-knytos-clock=../sdk",
+    "--with-knytos-clock-max-age-ms=5000"
+  ],
+  "configure_status": 1,
+  "toolchain": {
+    "ERL_TOP": "/private/tmp/knytos-erts-clock-selection-first/otp",
+    "CONFIG_SITE": "/dev/null",
+    "CC": "clang --target=aarch64-none-elf --sysroot=../sdk",
+    "CXX": "clang++ --target=aarch64-none-elf --sysroot=../sdk",
+    "AR": "../sdk/llvm-ar",
+    "RANLIB": "../sdk/llvm-ranlib",
+    "LD": "../sdk/ld.lld",
+    "CFLAGS": "-ffreestanding -fno-builtin -fno-pic -fno-pie -mno-outline-atomics",
+    "CPPFLAGS": "-Dmain=knytos_c_main -DKNYTOS_NATIVE_WORKERS -D__STDIO_LOCKING -DKNYTOS_WORKER_LIBC -isystem ../sdk/include -DKNYTOS_SERVICE_WORKER",
+    "CXXFLAGS": "-ffreestanding -fno-pic -fno-pie -mno-outline-atomics",
+    "LDFLAGS": "--ld-path=../sdk/ld.lld -nostdlib -Wl,-T,../sdk/link.x,--entry=_start,--gc-sections",
+    "LIBS": "-Wl,--start-group ../sdk/bridge.o ../sdk/libknytos_cabi.a ../sdk/libc.a -Wl,--end-group"
+  },
+  "sdk_sha256": {
+    "bridge.o": "0d4e14432302d5ce934ad8759a09342dddc4dc8c90d1eebe461e6b80057ea832",
+    "link.x": "c7f46cb5473f2d5ce659642316cd76fe15a50045f0118478a5ba60042eb7c2a6",
+    "libknytos_cabi.a": "fcd6da614e5f2e191b7402c27de923566c4a3078982cca8a0c4649f9ae9d9cad",
+    "libc.a": "fc18df78f5ffd4eabe1af7ff6df291d90dd4e8abd31feaeac926b51e1e319d17"
+  },
+  "native_clock_link": {
+    "elf_layout_validated": true,
+    "retained_reference_count": 12,
+    "source_sha256": "27fde6ac557cd50cc1632be65f67b46a16cabb93e7745b037b6290e9b4d25e41",
+    "elf_sha256": "34b2e1a9394e95da14e29262c00de506ca293eb5bb2b33de762c7e7f36a485a9",
+    "controls": {
+      "archive-omitted": {
+        "status": 1,
+        "diagnostic": "undefined symbol: sys_init_time"
+      },
+      "policy-mismatch": {
+        "status": 1,
+        "diagnostic": "Native clock SDK sample-age policy mismatch"
+      },
+      "profile-omitted": {
+        "status": 1,
+        "diagnostic": "Native clock SDK requires the service-worker profile"
+      }
+    }
+  },
+  "generated_configure_sha256": "13d6acabfdbda12008e9ffc4bf64343db56c8a1f3033176a9e097401a79fa416",
+  "source_snapshot_limitation": "The original Python orchestration/helper versions were not snapshotted. Recorded source hashes from that in-development run are not presented as a complete input snapshot.",
+  "staged_macro_sha256": "b77e11da170ca1a52a608a094123bd5d7ce749c2a9f123854083cea60da269d1"
+}

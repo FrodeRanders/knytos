@@ -1,0 +1,18 @@
+{
+  "disabled": {
+    "status": 0,
+    "diagnostic": null
+  },
+  "missing-clock": {
+    "status": 1,
+    "diagnostic": "requires native ethread and clock SDKs"
+  },
+  "target": {
+    "status": 1,
+    "diagnostic": "requires aarch64-unknown-knytos"
+  },
+  "invalid-mode": {
+    "status": 1,
+    "diagnostic": "invalid native Knytos platform selection"
+  }
+}

@@ -1,0 +1,34 @@
+[+    19.932217] [EL0 LOG] lp=0 asid=17 [management] connection=17 certificate=e132e3e7a7c6ffb5496f2890255b923e3897da9317d13ccb48f707c866ba4e6c role=Administrator permission=Mutate allowed=true credential_utc=1795884660
+[+    19.932929] [EL0 LOG] lp=0 asid=17 [management] connection=17 certificate=e132e3e7a7c6ffb5496f2890255b923e3897da9317d13ccb48f707c866ba4e6c role=Administrator permission=Mutate allowed=true credential_utc=1795884660
+[+    20.624251] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    20.642039] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    20.661011] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-time-init" generation=1 asid=34 principal=0xf0bf0e223b3a082e
+[+    20.670915] [EL0 LOG] lp=0 asid=34 ERTS TIME INIT pinned metadata local performance counter and worker reads PASS
+[+    20.671918] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512
+
+[+    20.792684] [EL0 LOG] lp=0 asid=17 [management] connection=18 certificate=e132e3e7a7c6ffb5496f2890255b923e3897da9317d13ccb48f707c866ba4e6c role=Administrator permission=Mutate allowed=true credential_utc=1795884660
+[+    20.793365] [EL0 LOG] lp=0 asid=17 [management] connection=18 certificate=e132e3e7a7c6ffb5496f2890255b923e3897da9317d13ccb48f707c866ba4e6c role=Administrator permission=Mutate allowed=true credential_utc=1795884660
+[+    21.216801] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    21.227247] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    21.243886] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-time-init-denied" generation=1 asid=35 principal=0x80497aa95a054d2c
+[+    21.245306] [EL0 LOG] lp=0 asid=35 ERTS TIME INIT missing grant preserves metadata and cold clock PASS
+[+    21.246061] [EL0 LOG] lp=0 asid=35 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512
+
+[+    21.396329] [EL0 LOG] lp=0 asid=17 [management] connection=19 certificate=e132e3e7a7c6ffb5496f2890255b923e3897da9317d13ccb48f707c866ba4e6c role=Administrator permission=Mutate allowed=true credential_utc=1795884661
+[+    21.397002] [EL0 LOG] lp=0 asid=17 [management] connection=19 certificate=e132e3e7a7c6ffb5496f2890255b923e3897da9317d13ccb48f707c866ba4e6c role=Administrator permission=Mutate allowed=true credential_utc=1795884661
+[+    21.804353] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    21.815724] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    21.833774] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-time-init-failed" generation=1 asid=36 principal=0xd4cbb3434fdac543
+[+    21.834820] [EL0 LOG] lp=0 asid=36 [erts] clock initialization failed
+[+    21.835074] [EL0 LOG] lp=0 asid=36 [c-runtime] abort
+[+    21.835211] Aborting user address space 36
+
+[+    21.972722] [EL0 LOG] lp=0 asid=17 [management] connection=20 certificate=e132e3e7a7c6ffb5496f2890255b923e3897da9317d13ccb48f707c866ba4e6c role=Administrator permission=Mutate allowed=true credential_utc=1795884662
+[+    21.973370] [EL0 LOG] lp=0 asid=17 [management] connection=20 certificate=e132e3e7a7c6ffb5496f2890255b923e3897da9317d13ccb48f707c866ba4e6c role=Administrator permission=Mutate allowed=true credential_utc=1795884662
+[+    22.396276] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    22.405089] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    22.416750] [EL0 LOG] lp=0 asid=37 CABI hello: C on Knytos
+[+    22.417320] [EL0 LOG] lp=0 asid=37 CABI PASS case=0
+[+    22.417632] [EL0 LOG] lp=0 asid=37 CABI FINI
+[+    22.418281] [EL0 LOG] lp=0 asid=37 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=688
+[+    22.418898] [EL0 LOG] lp=0 asid=16 [agent] launched "c-survivor" generation=1 asid=37 principal=0xd9b34b84697e2d4d

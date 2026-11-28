@@ -1,0 +1,124 @@
+--- a/erts/emulator/beam/sys.h
++++ b/erts/emulator/beam/sys.h
+@@ -117,7 +117,9 @@
+ 
+ #define ErtsSizeofMember(type, member) sizeof(((type *)0)->member)
+ 
+-#if defined (__WIN32__)
++#if defined(ERTS_KNYTOS)
++#  include "erl_knytos_sys.h"
++#elif defined (__WIN32__)
+ #  include "erl_win_sys.h"
+ #else
+ #  include "erl_unix_sys.h"
+--- a/erts/configure.ac
++++ b/erts/configure.ac
+@@ -779,7 +779,21 @@
+ 	chk_opsys_=$chk_opsys_`uname -r`
+     fi
+ fi
++AC_ARG_ENABLE([knytos-platform],
++  [AS_HELP_STRING([--enable-knytos-platform], [select the incomplete native Knytos platform and clock source routing])],
++  [], [enable_knytos_platform=no])
++AS_CASE([$enable_knytos_platform], [yes|no], [],
++        [AC_MSG_ERROR([invalid native Knytos platform selection])])
++AS_IF([test "x$enable_knytos_platform" = xyes], [
++  AS_CASE([$host], [aarch64-unknown-knytos], [],
++          [AC_MSG_ERROR([the native Knytos platform requires aarch64-unknown-knytos])])
++  AS_IF([test -z "$with_knytos_ethread" || test "x$with_knytos_ethread" = xno ||
++         test -z "$with_knytos_clock" || test "x$with_knytos_clock" = xno],
++        [AC_MSG_ERROR([the native Knytos platform requires native ethread and clock SDKs])])
++])
+ case $chk_opsys_ in
++    knytos*) AS_IF([test "x$enable_knytos_platform" = xyes],
++                   [OPSYS=knytos], [OPSYS=noopsys]);;
+     win32)			OPSYS=win32;;
+     solaris2.*|SunOS5.*)	OPSYS=sol2;;
+     linux*|Linux)		OPSYS=linux;;
+@@ -915,6 +929,10 @@
+       ERLANG_OSTYPE=unix ;;
+ esac
+ 
++AS_IF([test "x$enable_knytos_platform" = xyes], [
++  ERLANG_OSTYPE=knytos
++  AC_DEFINE([ERTS_KNYTOS], [1], [Select the native Knytos platform header])
++])
+ AC_SUBST(ERLANG_OSTYPE)
+ 
+ # Check how to export functions from the emulator executable, needed
+--- a/erts/config.h.in
++++ b/erts/config.h.in
+@@ -409,6 +409,9 @@
+ 
+ /* Select the native Knytos ethread backend */
+ #undef ETHR_KNYTOS
++
++/* Select the native Knytos platform header */
++#undef ERTS_KNYTOS
+ 
+ /* Select the native Knytos clock interface */
+ #undef ERTS_KNYTOS_CLOCK
+--- a/erts/emulator/Makefile.in
++++ b/erts/emulator/Makefile.in
+@@ -492,6 +492,9 @@
+ CREATE_DIRS += $(BINDIR)
+ 
+ ERLANG_OSTYPE = @ERLANG_OSTYPE@
++
++KNYTOS_CLOCK_SRC = erts_monotonic.c erts_system_time.c erts_time_init.c
++KNYTOS_CLOCK_OBJS = $(addprefix $(OBJDIR)/,$(KNYTOS_CLOCK_SRC:.c=.o))
+ 
+ ENABLE_ALLOC_TYPE_VARS += @ERLANG_OSTYPE@
+ 
+@@ -980,6 +983,14 @@
+ 
+ $(OBJDIR)/%.o: $(TTF_DIR)/%.c
+ 	$(V_CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
++
++ifeq ($(ERLANG_OSTYPE),knytos)
++$(KNYTOS_CLOCK_OBJS): sys/knytos/erl_knytos_sys.h sys/knytos/erts_clock_platform.h \
++                     sys/knytos/erts_monotonic.h sys/knytos/erts_system_time.h \
++                     sys/knytos/erts_time_init.h beam/sys.h ../$(TARGET)/config.h
++.PHONY: knytos-clock-objects
++knytos-clock-objects: $(KNYTOS_CLOCK_OBJS)
++endif
+ 
+ $(OBJDIR)/%.o: sys/$(ERLANG_OSTYPE)/%.c
+ 	$(V_CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+@@ -1242,6 +1253,12 @@
+ 	$(OBJDIR)/zstd_nif.o \
+ 	$(ESOCK_NIF_OBJS)
+ 
++ifeq ($(ERLANG_OSTYPE),knytos)
++# Only the implemented native platform sources. Missing startup, I/O and CPU
++# accounting remain integration gates; do not import Unix implementations.
++OS_OBJS = $(KNYTOS_CLOCK_OBJS)
++DRV_OBJS =
++else
+ ifeq ($(TARGET),win32)
+ DRV_OBJS = \
+ 	$(OBJDIR)/registry_drv.o \
+@@ -1275,6 +1292,7 @@
+ 	$(OBJDIR)/inet_drv.o \
+ 	$(OBJDIR)/ram_file_drv.o
+ endif
++endif # native Knytos / existing platform object selection
+ 
+ ifneq ($(STATIC_NIFS),no)
+ STATIC_NIF_LIBS = $(foreach n,$(STATIC_NIFS),$(word 1, $(subst $(colon),$(space),$(n))))
+@@ -1301,6 +1319,7 @@
+ 	echo "=== Leaving lib after making static libs"
+ endif
+ 
++ifneq ($(ERLANG_OSTYPE),knytos)
+ OS_OBJS +=	$(OBJDIR)/erl_poll.o \
+ 		$(OBJDIR)/erl_check_io.o \
+ 		$(OBJDIR)/erl_mseg.o \
+@@ -1313,6 +1332,7 @@
+ ifeq ($(ERTS_BUILD_FALLBACK_POLL),yes)
+ OS_OBJS += 	$(OBJDIR)/erl_poll.flbk.o
+ endif
++endif # nonnative polling and system adapters
+ ifneq ($(ERTS_USE_BUILTIN_RYU),yes)
+ OS_OBJS += 	$(OBJDIR)/erl_float_short.o
+ endif

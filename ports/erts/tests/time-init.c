@@ -34,6 +34,13 @@ static void worker(void *argument)
 
 int main(void)
 {
+#ifdef KNYTOS_ERTS_PLATFORM_CHECK
+    /* The generated Make profile retains OTP's stack-protector flags. Its
+     * linked Picolibc constructor must run before protected clock functions.
+     * Nonzero initialization does not claim a random or secret canary. */
+    extern uintptr_t __stack_chk_guard;
+    assert(__stack_chk_guard != 0);
+#endif
     ErtsSysInitTimeResult result, original;
     memset(&result, 0xa5, sizeof(result));
     original = result;

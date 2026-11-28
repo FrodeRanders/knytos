@@ -1,0 +1,31 @@
+264: OPSYS=noopsys
+
+494: ERLANG_OSTYPE = unix
+
+1250: OS_OBJS = \
+1251: 	$(OBJDIR)/dll_sys.o \
+1252: 	$(OBJDIR)/driver_tab.o \
+1253: 	$(OBJDIR)/sys_float.o \
+1254: 	$(OBJDIR)/sys_time.o \
+1255: 	$(OBJDIR)/sys_interrupt.o \
+1256: 	$(OBJDIR)/sys_env.o \
+1257: 	$(OBJDIR)/dosmap.o \
+1258: 	$(OBJDIR)/win_prim_file.o \
+1259: 	$(OBJDIR)/win_socket_asyncio.o
+1260: 
+1261: else
+1262: OS_OBJS = \
+
+1262: OS_OBJS = \
+1263: 	$(OBJDIR)/sys.o \
+1264: 	$(OBJDIR)/sys_drivers.o \
+1265: 	$(OBJDIR)/sys_env.o \
+1266: 	$(OBJDIR)/sys_uds.o \
+1267: 	$(OBJDIR)/driver_tab.o \
+1268: 	$(OBJDIR)/unix_prim_file.o \
+1269: 	$(OBJDIR)/sys_float.o \
+1270: 	$(OBJDIR)/sys_time.o \
+1271: 	$(OBJDIR)/sys_signal_stack.o \
+1272: 	$(OBJDIR)/unix_socket_syncio.o
+1273: 
+1274: DRV_OBJS = \

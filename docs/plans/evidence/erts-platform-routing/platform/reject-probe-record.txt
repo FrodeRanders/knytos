@@ -1,0 +1,17 @@
+In file included from /private/tmp/knytos-erts-platform-routing-final/platform/consumer.c:2:
+In file included from /private/tmp/knytos-erts-platform-routing-final/otp/erts/emulator/beam/sys.h:121:
+/private/tmp/knytos-erts-platform-routing-final/otp/erts/emulator/sys/knytos/erl_knytos_sys.h:15:2: error: "The native Knytos sys header requires the complete common time record"
+   15 | #error "The native Knytos sys header requires the complete common time record"
+      |  ^
+In file included from /private/tmp/knytos-erts-platform-routing-final/platform/consumer.c:3:
+In file included from /private/tmp/knytos-erts-platform-routing-final/otp/erts/emulator/sys/knytos/erts_time_init.h:8:
+/private/tmp/knytos-erts-platform-routing-final/sdk/clock/erts_time_contract.h:25:3: error: typedef redefinition with different types ('struct ErtsSysInitTimeResult' vs 'struct ErtsSysInitTimeResult')
+   25 | } ErtsSysInitTimeResult;
+      |   ^
+/private/tmp/knytos-erts-platform-routing-final/otp/erts/emulator/beam/sys.h:793:3: note: previous definition is here
+  793 | } ErtsSysInitTimeResult;
+      |   ^
+/private/tmp/knytos-erts-platform-routing-final/platform/consumer.c:6:2: error: "Native consumer selected a substitute sys or time record"
+    6 | #error "Native consumer selected a substitute sys or time record"
+      |  ^
+3 errors generated.

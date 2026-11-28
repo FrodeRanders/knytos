@@ -1,0 +1,1093 @@
+#!/usr/bin/env python3
+"""Execute C fixtures through ordinary signed, TLS-authorized deployments."""
+import argparse
+import hashlib
+import importlib.util
+import json
+import os
+import re
+from pathlib import Path
+import shutil
+import signal
+import subprocess
+import tempfile
+import time
+
+ROOT = Path(__file__).resolve().parents[2]
+GUEST_MAC = "52:54:00:12:34:56"
+CASES = [("c-hello", 0), ("c-memory", 1), ("c-format", 2), ("c-clock", 3),
+         ("c-startup", 4), ("c-exit", 5), ("c-error", 6), ("c-abort", 7), ("c-empty", 8),
+         ("c-shutdown-without-request", 9), ("c-survivor", 0)]
+HOLD_SERVICE = "m4-hold-service"
+
+
+def digest(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def domain_logs(text, asid):
+    prefix = re.compile(rf"\[EL0 LOG\] lp=\d+ asid={asid} ")
+    return "\n".join(line for line in text.splitlines() if prefix.search(line))
+
+
+def published_hold_service(text, sequence):
+    launch = re.search(rf'\[agent\] launched "{HOLD_SERVICE}" generation={sequence} asid=(\d+)', text)
+    if launch and f"[m4 hold] published sequence={sequence}" in domain_logs(text, launch[1]):
+        return int(launch[1])
+
+
+def verify_active_cancel(text, server_asid, client_asid, successor_asid):
+    stages = [
+        (server_asid, "[m4 hold] accepted case=1 payload=true"),
+        (client_asid, "{m4,cancelling_accepted_call}"),
+        (server_asid, "[m4 hold] late reply rejected case=1"),
+        (client_asid, "{m4,accepted_cancel_reused_ms,"),
+        (server_asid, "[m4 hold] accepted case=2 payload=true"),
+        (server_asid, "[m4 hold] late reply rejected case=2"),
+        (client_asid, "{m4,accepted_call_timed_out}"),
+    ]
+    for case in (3, 4):
+        stages.extend((
+            (server_asid, f"[m4 hold] accepted case={case}"),
+            (client_asid, f"{{m4,releasing_request_owner,{case}}}"),
+            (server_asid, f"[m4 hold] late reply rejected case={case}"),
+            (client_asid, f"{{m4,owner_exit_reused_ms,{case},"),
+        ))
+    stages.extend((
+        (client_asid, "{m4,sync_call_results}"),
+        (server_asid, "[m4 hold] accepted case=5 payload=true"),
+        (client_asid, "{m4,sync_call_timeout}"),
+        (server_asid, "[m4 hold] late reply rejected case=5"),
+        (client_asid, "{m4,sync_call_mailbox_clean}"),
+        (client_asid, "{m4,byte_payload_roundtrip}"),
+        (client_asid, "{m4,byte_payload_bounds}"),
+        (client_asid, "{m4,mailbox_backpressure}"),
+        (client_asid, "{m4,close_watch_scope}"),
+        (server_asid, "[m4 hold] reported sequence=1"),
+        (client_asid, "{m4,awaiting_replacement}"),
+        (server_asid, "[m4 hold] retiring sequence=1"),
+        (client_asid, "{m4,watch_delivery_reserved}"),
+        (client_asid, "{m4,replaced_handle_stale}"),
+        (successor_asid, "[m4 hold] reported sequence=2"),
+        (client_asid, "{m4,replacement_reacquired}"),
+        (client_asid, "{m4,awaiting_close_watch}"),
+        (successor_asid, "[m4 hold] closing endpoint"),
+        (client_asid, "{m4,close_watch_event}"),
+    ))
+    offset = 0
+    for asid, marker in stages:
+        match = re.search(rf"\[EL0 LOG\] lp=\d+ asid={asid} {re.escape(marker)}", text[offset:])
+        assert match is not None, marker
+        offset += match.end()
+    acknowledgement, = re.finditer(
+        rf"\[supervisor\] deployment shutdown acknowledged asid={server_asid} generation=(\d+)\b", text)
+    replacement = re.search(rf'\[agent\] launched "{HOLD_SERVICE}" generation=2 asid={successor_asid}\b', text)
+    assert replacement is not None and acknowledgement.end() < replacement.start()
+    return int(acknowledgement[1])
+
+
+def retirement_instance(text, name, generation, mode, schedulers):
+    launch = re.search(
+        rf'\[agent\] launched "{re.escape(name)}" generation={generation} asid=(\d+)', text)
+    if launch is None:
+        return None
+    lines = domain_logs(text, launch[1])
+    if f"{{m3_shutdown,{mode}}}" not in lines:
+        return None
+    if mode == "busy" and any(
+        not re.search(rf"\[EL0 LOG\] lp={slot} asid={launch[1]} \[atomvm\] scheduler entered slot={slot}$",
+                      lines, re.MULTILINE) for slot in range(1, schedulers)
+    ):
+        return None
+    return launch[1]
+
+
+def verify_vm_shutdown(text, name, asid, mode, count, reason, service_worker=False):
+    acknowledgements = list(re.finditer(
+        rf"\[supervisor\] {reason} shutdown acknowledged asid={asid} generation=(\d+)\b", text))
+    assert len(acknowledgements) == 1, (name, domain_logs(text, asid))
+    acknowledgement = acknowledgements[0]
+    old_lines = domain_logs(text[:acknowledgement.start()], asid)
+    assert "[atomvm] runtime=" not in old_lines, name
+    source = "cq-wait" if mode == "parked" else "nonblocking"
+    if mode == "busy" and (count > 1 or service_worker) and "shutdown source=cq-wait" in old_lines:
+        source = "cq-wait"
+    stages = [f"[atomvm] reactor shutdown source={source}",
+              "[atomvm] schedulers stopped for shutdown", "[c-runtime] exit=0 "]
+    if count > 1:
+        activated = count - 1 if mode == "busy" else 0
+        stages.insert(1, f"[atomvm] schedulers joined={count - 1} activated={activated}")
+    if service_worker:
+        stages.insert(1, "[atomvm] service worker joined")
+    assert all(stage in old_lines for stage in stages), (name, old_lines)
+    assert [old_lines.index(stage) for stage in stages] == sorted(
+        old_lines.index(stage) for stage in stages), (name, old_lines)
+    assert "remaining_blocks=0" in old_lines and "[c-runtime] abort" not in old_lines, old_lines
+    assert not re.search(rf"Aborting user address space {asid}\b", text), name
+    return {"shutdown_source": source, "acknowledged_root_generation": int(acknowledgement[1]),
+            "retired_asid": int(asid)}
+
+
+def vm_metrics(tls, reader, asid, count):
+    response, _ = tls.exchange(
+        reader, 28080, b"GET /metrics HTTP/1.1\r\nHost: localhost\r\n\r\n",
+        200, 3, include_body=True)
+    report = json.loads(response["body"])["threads"]
+    rows = sorted((row for row in report["sample"] if row["asid"] == asid),
+                  key=lambda row: (row["tid"], row["generation"]))
+    domain, = [entry for entry in report["domains"] if entry["asid"] == asid]
+    assert len(rows) == count == domain["threads"] and all(not row["saturated"] for row in rows), rows
+    assert report["freq_hz"] > 0 and domain["heap_valid"] == 1, (report["freq_hz"], domain)
+    return {"ticks": report["mono_ticks"], "frequency_hz": report["freq_hz"],
+            "threads": rows, "domain": domain}
+
+
+def performance_result(lines, count, windows):
+    assert f"{{perf,schedulers,{count}}}" in lines and "{perf,pass}" in lines, lines
+    assert re.search(r"\[c-runtime\] exit=0 .*remaining_blocks=0", lines), lines
+    for slot in range(1, count):
+        assert re.search(rf"\[EL0 LOG\] lp={slot} asid=\d+ \[atomvm\] scheduler entered slot={slot}$",
+                         lines, re.MULTILINE), lines
+    if count > 1:
+        assert f"[atomvm] schedulers joined={count - 1} activated={count - 1}" in lines, lines
+    throughput = [tuple(map(int, match)) for match in
+                  re.findall(r"\{perf,throughput,(\d+),(\d+),(\d+)\}", lines)]
+    latency = [tuple(map(int, match)) for match in
+               re.findall(r"\{perf,latency,(\d+),(\d+),(\d+)\}", lines)]
+    assert [trial for trial, _, _ in throughput] == [1, 2, 3], throughput
+    assert all(messages == 96000 and elapsed > 0 for _, messages, elapsed in throughput), throughput
+    assert [sample for sample, _, _ in latency] == list(range(1, 33)), latency
+    for name, (first, last) in windows.items():
+        start, = map(int, re.findall(rf"\{{perf,{name}_start,(\d+)\}}", lines))
+        end, = map(int, re.findall(rf"\{{perf,{name}_end,(\d+)(?:,\d+)?\}}", lines))
+        frequency = first["frequency_hz"]
+        elapsed = last["ticks"] - first["ticks"]
+        assert frequency == last["frequency_hz"] and elapsed >= frequency, (name, windows[name])
+        assert end - start >= 8000000, (name, start, end)
+        assert start <= first["ticks"] * 1000000 // frequency < last["ticks"] * 1000000 // frequency <= end
+        slices = []
+        for old, new in zip(first["threads"], last["threads"], strict=True):
+            assert (old["tid"], old["generation"]) == (new["tid"], new["generation"]), (old, new)
+            if name == "idle":
+                assert old["state"] == new["state"] == "blocked", (old, new)
+            delta = new["runtime_ticks"] - old["runtime_ticks"]
+            assert delta >= 0, (old, new)
+            slices.append(delta)
+        last["elapsed_ticks"] = elapsed
+        last["runtime_delta_ticks"] = slices
+    return {"throughput_trials": throughput, "timer_and_wake_samples": latency,
+            "cpu_windows": windows}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--picolibc-source", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--firmware", type=Path)
+    parser.add_argument("--atomvm-elf", type=Path)
+    parser.add_argument("--atomvm-utc-elf", type=Path)
+    parser.add_argument("--atomvm-semantics-elf", type=Path)
+    parser.add_argument("--atomvm-overflow-elf", type=Path)
+    parser.add_argument("--atomvm-service-elf", type=Path,
+                        help="run the scoped native-service fixture with signed test grants")
+    parser.add_argument("--atomvm-active-cancel-elf", type=Path,
+                        help="qualify cancellation against a signed service that holds replies")
+    parser.add_argument("--atomvm-scheduler-elf", action="append", type=Path, default=[],
+                        help="add an AtomVM scheduler workload using its adjacent build manifest")
+    parser.add_argument("--atomvm-idle-scheduler-elf", type=Path,
+                        help="add the AtomVM hello fixture with prepared but unused workers")
+    parser.add_argument("--atomvm-performance-elf", action="append", type=Path, default=[],
+                        help="measure signed AtomVM message, timer and CPU performance")
+    parser.add_argument("--atomvm-shutdown-busy-elf", action="append", type=Path, default=[],
+                        help="retire an AtomVM VM running continuous Erlang work (one or four schedulers)")
+    parser.add_argument("--atomvm-shutdown-parked-elf", type=Path,
+                        help="retire an AtomVM VM with unused native workers and no timers")
+    parser.add_argument("--atomvm-node-shutdown", action="store_true",
+                        help="drain all supplied AtomVM shutdown fixtures using one signed node shutdown")
+    parser.add_argument("--native-workers", action="store_true")
+    worker_profile = parser.add_mutually_exclusive_group()
+    worker_profile.add_argument("--worker-libc", action="store_true")
+    worker_profile.add_argument("--erts-mutex", action="store_true",
+                                help="qualify ERTS synchronization adapters in a separate signed campaign")
+    worker_profile.add_argument("--erts-tse", action="store_true",
+                                help="qualify ERTS thread-specific event ownership in a separate signed campaign")
+    worker_profile.add_argument("--erts-header", action="store_true",
+                                help="qualify adapters through the staged upstream ethread.h selection")
+    worker_profile.add_argument("--erts-diagnostics", action="store_true",
+                                help="qualify ERTS terminal diagnostics in a separate signed campaign")
+    worker_profile.add_argument("--erts-bootstrap", action="store_true",
+                                help="qualify bounded native ERTS early/late initialization")
+    worker_profile.add_argument("--c-clock", action="store_true",
+                                help="qualify authorized C realtime queries and missing-grant rejection")
+    worker_profile.add_argument("--erts-clock", action="store_true",
+                                help="qualify local ERTS monotonic and high-resolution clock reads")
+    worker_profile.add_argument("--erts-system-clock", action="store_true",
+                                help="qualify published ERTS UTC samples and terminal missing-time policy")
+    worker_profile.add_argument("--erts-time-init", action="store_true",
+                                help="qualify the pinned ERTS startup time record and performance counter")
+    parser.add_argument("--erts-platform-build", type=Path,
+                        help="with --erts-time-init, use clocks built through native platform Make rules")
+    parser.add_argument("--otp-source", type=Path,
+                        help="pinned OTP source required by the ERTS header and diagnostics profiles")
+    parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
+    args = parser.parse_args()
+    selected_headers = args.erts_header or args.erts_diagnostics or args.erts_bootstrap
+    if (selected_headers or args.erts_time_init) and args.otp_source is None:
+        parser.error("ERTS selected-header and time-initialization profiles require --otp-source")
+    platform_build = None
+    if args.erts_platform_build is not None:
+        if not args.erts_time_init:
+            parser.error("--erts-platform-build requires --erts-time-init")
+        platform_root = args.erts_platform_build.resolve()
+        manifest = json.loads((platform_root / "result.json").read_text())
+        platform_build = manifest.get("native_platform")
+        if manifest["configure_status"] != 0 or not platform_build:
+            parser.error("--erts-platform-build requires a qualified native platform configure result")
+        if digest(platform_root / "platform/libknytos_erts_clock.a") != platform_build["archive_sha256"]:
+            parser.error("native platform clock archive does not match its manifest")
+    cases = CASES[:-1].copy()
+    vm_cases = {
+        10: ("avm-hello", args.atomvm_elf, "[atomvm] completed status=0"),
+        11: ("avm-utc", args.atomvm_utc_elf, "[atomvm] unsupported: wall clock unavailable"),
+        12: ("avm-semantics", args.atomvm_semantics_elf, "[atomvm] completed status=0"),
+        13: ("avm-overflow", args.atomvm_overflow_elf, "[atomvm] unsupported: timer deadline overflow"),
+    }
+    def scheduler_manifest(image):
+        manifest = json.loads(image.with_suffix(".atomvm.json").read_text())
+        count = manifest["schedulers"]
+        if count not in (1, 2, 4) or count > args.smp or digest(image) != manifest["unsigned_elf_sha256"]:
+            parser.error(f"Scheduler image does not match its manifest or guest CPU count: {image}")
+        if manifest.get("service_worker") and (count != 1 or args.smp < 2):
+            parser.error("The service worker requires one Erlang scheduler and two guest CPUs")
+        return manifest
+    service_case = 35
+    active_cancel_case = 36
+    service_workers = set()
+    if args.atomvm_service_elf:
+        if not scheduler_manifest(args.atomvm_service_elf).get("service_worker"):
+            parser.error("--atomvm-service-elf requires a service worker image")
+        service_workers.add(service_case)
+        vm_cases[service_case] = ("avm-native-service", args.atomvm_service_elf, "{m4,native_service,pass}")
+    if args.atomvm_active_cancel_elf:
+        if not scheduler_manifest(args.atomvm_active_cancel_elf).get("service_worker"):
+            parser.error("--atomvm-active-cancel-elf requires a service worker image")
+        service_workers.add(active_cancel_case)
+        vm_cases[active_cancel_case] = ("avm-active-cancel", args.atomvm_active_cancel_elf,
+                                       "{m4,active_cancel,pass}")
+    scheduler_cases = {}
+    for image in args.atomvm_scheduler_elf:
+        count = scheduler_manifest(image)["schedulers"]
+        number = 20 + count
+        if number in scheduler_cases:
+            parser.error(f"Duplicate scheduler count: {count}")
+        scheduler_cases[number] = count
+        vm_cases[number] = (f"avm-schedulers-{count}", image, "[atomvm] completed status=0")
+    idle_case = 25
+    if args.atomvm_idle_scheduler_elf:
+        count = scheduler_manifest(args.atomvm_idle_scheduler_elf)["schedulers"]
+        if count == 1:
+            parser.error("The idle scheduler fixture requires worker threads")
+        scheduler_cases[idle_case] = count
+        vm_cases[idle_case] = ("avm-idle-schedulers", args.atomvm_idle_scheduler_elf, "[atomvm] completed status=0")
+    performance_cases = {}
+    for image in args.atomvm_performance_elf:
+        count = scheduler_manifest(image)["schedulers"]
+        number = 30 + count
+        if number in performance_cases:
+            parser.error(f"Duplicate performance fixture for {count} schedulers")
+        scheduler_cases[number] = performance_cases[number] = count
+        vm_cases[number] = (f"avm-performance-{count}", image, "[atomvm] completed status=0")
+    cases.extend((name, number) for number, (name, path, _) in vm_cases.items() if path)
+    worker_cases = {
+        14: ("c-workers", 2, "WORKER PASS"),
+        # Startup/worker console writes may interleave. This control requires
+        # the runtime ownership diagnostic and the same domain's kernel abort.
+        15: ("c-unjoined", 2, "[c-runtime] exit with an unjoined worker"),
+        16: ("c-worker-reuse", 9, "WORKER exact join and slot reuse"),
+        17: ("c-sync", 9, "SYNC PASS"),
+        18: ("c-rwlock", 5, "RWLOCK PASS"),
+        37: ("c-events", 3, "EVENT PASS"),
+    }
+    libc_cases = {
+        19: ("c-worker-libc", 3, "WORKER LIBC PASS"),
+        20: ("c-worker-libc-close", 1, "WORKER LIBC expected fixed-stream close rejection"),
+        38: ("c-tsd-cleanup", 3, "TSD CLEANUP PASS"),
+        39: ("c-tsd-cleanup-bound", 2, "[c-runtime] TSD destructor iteration limit"),
+        40: ("c-erts-event", 2, "ERTS EVENT PASS"),
+        41: ("c-erts-event-invalid", 1, "[erts] event operation failed"),
+        42: ("c-erts-tsd", 3, "ERTS TSD PASS"),
+        43: ("c-erts-thread", 5, "ERTS THREAD PASS"),
+        44: ("c-erts-detached", 4, "ERTS DETACHED PASS"),
+        45: ("c-erts-names", 3, "ERTS NAMES PASS"),
+        46: ("c-erts-exit", 4, "ERTS EXIT PASS"),
+        47: ("c-erts-exit-recursive", 2, "[c-runtime] recursive worker exit"),
+        48: ("c-erts-exit-handlers", 4, "ERTS HANDLERS PASS"),
+        49: ("c-erts-handler-recursive", 2, "[erts] recursive exit handler"),
+        50: ("c-erts-handler-limit", 1, "ERTS HANDLERS bounded registration PASS"),
+    } if args.worker_libc else {}
+    mutex_cases = {
+        51: ("c-erts-mutex", 2, "ERTS MUTEX PASS"),
+        52: ("c-erts-mutex-foreign", 2, "[erts] mutex operation failed"),
+        53: ("c-erts-condition", 4, "ERTS CONDITION PASS"),
+        54: ("c-erts-condition-unlocked", 1, "[erts] condition operation failed"),
+        55: ("c-erts-rwmutex", 4, "ERTS RWMUTEX PASS"),
+        56: ("c-erts-rwmutex-foreign", 2, "[erts] rwmutex operation failed"),
+        57: ("c-erts-locks", 5, "ERTS LOCKS PASS"),
+        58: ("c-erts-locks-foreign", 2, "[erts] mutex operation failed"),
+        59: ("c-erts-init", 4, "ERTS INIT PASS"),
+        60: ("c-erts-init-rejected", 1, "ERTS INIT PASS"),
+        61: ("c-erts-init-exit", 2, "[erts] thread exit during child initialization"),
+        62: ("c-erts-stacklimit", 5, "ERTS STACKLIMIT PASS"),
+        63: ("c-erts-atomics", 5, "ERTS ATOMICS PASS"),
+    } if args.erts_mutex else {}
+    tse_cases = {
+        64: ("c-erts-tse", 5, "ERTS TSE PASS"),
+        65: ("c-erts-tse-key-limit", 1, "ERTS TSE PASS"),
+        66: ("c-erts-tse-busy-exit", 2, "[erts] thread event exit with live borrow"),
+        67: ("c-erts-tse-config", 3, "ERTS TS CONFIG PASS"),
+        68: ("c-erts-tse-fallback", 1, "ERTS TS CONFIG PASS"),
+    } if args.erts_tse else {}
+    header_cases = {
+        57: ("c-erts-header-locks", 5, "ERTS LOCKS PASS"),
+        63: ("c-erts-header-atomics", 5, "ERTS ATOMICS PASS"),
+        64: ("c-erts-header-tse", 5, "ERTS TSE PASS"),
+        67: ("c-erts-header-config", 3, "ERTS TS CONFIG PASS"),
+        69: ("c-erts-header-debug", 5, "ERTS TSE PASS"),
+        70: ("c-erts-header-barriers", 2, "ERTS BARRIERS PASS"),
+        71: ("c-erts-header-barriers-debug", 2, "ERTS BARRIERS PASS"),
+        72: ("c-erts-header-dw", 5, "ERTS DW PASS"),
+        73: ("c-erts-header-dw-debug", 5, "ERTS DW PASS"),
+        74: ("c-erts-header-atomic-info", 4, "ERTS ATOMIC INFO PASS"),
+        75: ("c-erts-header-atomic-info-debug", 4, "ERTS ATOMIC INFO PASS"),
+    } if args.erts_header else {}
+    if args.erts_diagnostics:
+        header_cases = {
+            76: ("c-erts-assert-release", 1, "ERTS DIAGNOSTICS assertion macro evaluation PASS"),
+            77: ("c-erts-assert-worker", 2, "[erts] assertion failed"),
+            78: ("c-erts-fatal-worker", 2, "[erts] fatal error"),
+            79: ("c-erts-assert-debug", 1, "ERTS DIAGNOSTICS assertion macro evaluation PASS"),
+        }
+    if args.erts_bootstrap:
+        header_cases = {
+            80: ("c-erts-bootstrap", 4, "ERTS BOOTSTRAP PASS"),
+            81: ("c-erts-bootstrap-keys", 2, "ERTS BOOTSTRAP PASS"),
+            82: ("c-erts-bootstrap-worker-fail", 2, "[erts] worker thread event initialization failed"),
+            83: ("c-erts-bootstrap-debug", 4, "ERTS BOOTSTRAP PASS"),
+        }
+    clock_cases = {
+        84: ("c-realtime", 3, "C REALTIME synchronized UTC startup and worker private queues PASS"),
+        85: ("c-realtime-denied", 1, "C REALTIME missing signed grant rejected and output preserved PASS"),
+        87: ("c-realtime-sample", 2, "C REALTIME SAMPLE bounded local projection startup and worker locked reads PASS"),
+        88: ("c-realtime-sample-denied", 1, "C REALTIME SAMPLE missing signed grant preserves complete output PASS"),
+    } if args.c_clock else {}
+    if args.erts_clock:
+        clock_cases = {
+            86: ("c-erts-monotonic", 2, "ERTS MONOTONIC startup and worker locked nanosecond reads PASS"),
+        }
+    if args.erts_system_clock:
+        clock_cases = {
+            89: ("c-erts-system-time", 2, "ERTS SYSTEM TIME local getters concurrent publication and exact join PASS"),
+            90: ("c-erts-system-time-denied", 1, "ERTS SYSTEM TIME missing grant preserves cold state PASS"),
+            91: ("c-erts-system-time-cold", 1, "[erts] system clock unavailable stale or out of range"),
+        }
+    if args.erts_time_init:
+        clock_cases = {
+            92: ("c-erts-time-init", 2, "ERTS TIME INIT pinned metadata local performance counter and worker reads PASS"),
+            93: ("c-erts-time-init-denied", 1, "ERTS TIME INIT missing grant preserves metadata and cold clock PASS"),
+            94: ("c-erts-time-init-failed", 1, "[erts] clock initialization failed"),
+        }
+    worker_cases.update(libc_cases)
+    worker_cases.update(mutex_cases)
+    worker_cases.update(tse_cases)
+    worker_cases.update(header_cases)
+    worker_cases.update(clock_cases)
+    if args.native_workers or args.worker_libc or args.erts_mutex or args.erts_tse or selected_headers or args.c_clock or args.erts_clock or args.erts_system_clock or args.erts_time_init:
+        if args.smp < 2:
+            parser.error("worker fixtures need at least two guest CPUs")
+        cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
+    abort_cases = (7, 9, 11, 13, 15, 20, 39, 41, 47, 49, 52, 54, 56, 58, 61, 66, 77, 78, 82, 91, 94)
+    cases += CASES[-1:]
+    retirement_cases = {}
+    retirement_images = [("parked", args.atomvm_shutdown_parked_elf)]
+    retirement_images.extend(("busy", path) for path in args.atomvm_shutdown_busy_elf)
+    for mode, image in retirement_images:
+        if image is None:
+            continue
+        manifest = scheduler_manifest(image)
+        count = manifest["schedulers"]
+        if count not in ((1, 4) if mode == "busy" else (4,)):
+            parser.error(f"Unsupported scheduler count for the {mode} retirement fixture: {count}")
+        name, number = {
+            ("busy", 4): ("avm-shutdown-busy", 26),
+            ("parked", 4): ("avm-shutdown-parked", 27),
+            ("busy", 1): ("avm-shutdown-busy-1", 28),
+        }[mode, count]
+        if number in retirement_cases:
+            parser.error(f"Duplicate retirement fixture: {name}")
+        if manifest.get("service_worker"):
+            service_workers.add(number)
+        scheduler_cases[number] = count
+        retirement_cases[number] = mode
+        vm_cases[number] = (name, image, f"{{m3_shutdown,{mode}}}")
+        cases.append((name, number))
+    if args.atomvm_node_shutdown and not retirement_cases:
+        parser.error("--atomvm-node-shutdown requires at least one AtomVM shutdown fixture")
+    def interrupted(_signal, _frame):
+        raise SystemExit("C runtime campaign interrupted")
+    signal.signal(signal.SIGTERM, interrupted)
+    output = args.output.resolve()
+    output.mkdir(parents=True, exist_ok=False)
+    record = {"schema": "knytos.c-runtime-m1.v1", "cases": [], "negative_controls": [], "outcome": "running"}
+    def save():
+        (output / "result.json").write_text(json.dumps(record, indent=2) + "\n")
+    def command(arguments, name, env=None, timeout=900, expected_failure=False):
+        with (output / (name + ".txt")).open("w") as log:
+            completed = subprocess.run([str(a) for a in arguments], cwd=ROOT, env=env,
+                                       stdout=log, stderr=subprocess.STDOUT, timeout=timeout)
+        if bool(completed.returncode) != expected_failure:
+            raise RuntimeError(f"{name}: unexpected exit {completed.returncode}")
+        return completed.returncode
+    save()
+    try:
+        images = output / "bundle"
+        images.mkdir()
+        erts_library = output / "erts" / "libknytos_ethread.a"
+        clock_library = output / "erts-clock" / "libknytos_erts_clock.a"
+        if args.erts_time_init:
+            if platform_build:
+                clock_library = platform_root / "platform/libknytos_erts_clock.a"
+                record["native_platform"] = platform_build
+            else:
+                command(["python3", ROOT / "ports/erts/build.py", "--platform-clock",
+                         "--otp-source", args.otp_source, "--picolibc-source", args.picolibc_source,
+                         "--output", clock_library], "erts-time-init-build")
+        if args.erts_clock or args.erts_system_clock:
+            command(["python3", ROOT / "ports/erts/build.py",
+                     "--system-clock" if args.erts_system_clock else "--monotonic-clock",
+                     "--picolibc-source", args.picolibc_source,
+                     "--output", clock_library], "erts-clock-build")
+        if args.erts_mutex or args.erts_tse:
+            command(["python3", ROOT / "ports/erts/build.py",
+                     "--picolibc-source", args.picolibc_source,
+                     "--output", erts_library], "erts-library-build")
+        if selected_headers:
+            command(["python3", ROOT / "ports/erts/check-interface.py", "--upstream-header",
+                     "--otp-source", args.otp_source, "--picolibc-source", args.picolibc_source,
+                     "--output", erts_library.parent], "erts-header-build")
+        for name, number in cases:
+            if number in vm_cases:
+                shutil.copyfile(vm_cases[number][1], images / (name + ".elf"))
+                continue
+            if number in worker_cases:
+                source = {17: "sync.c", 18: "rwlock.c", 37: "events.c"}.get(number, "workers.c")
+                profile = "--native-workers"
+                if number in libc_cases or number in mutex_cases or number in tse_cases or number in header_cases:
+                    source = "tsd-cleanup.c" if number in (38, 39) else "worker-libc.c"
+                    profile = "--worker-libc"
+                if number in clock_cases:
+                    source = "realtime-sample.c" if number in (87, 88) else "realtime.c"
+                    profile = "--service-worker"
+                if number == 86:
+                    profile = "--worker-libc"
+                source = {40: ROOT / "ports/erts/tests/event.c",
+                          41: ROOT / "ports/erts/tests/event.c",
+                          42: ROOT / "ports/erts/tests/tsd.c",
+                          43: ROOT / "ports/erts/tests/thread.c",
+                          44: ROOT / "ports/erts/tests/detached.c",
+                          45: ROOT / "ports/erts/tests/names.c",
+                          46: ROOT / "ports/erts/tests/exit.c",
+                          47: ROOT / "ports/erts/tests/exit.c",
+                          48: ROOT / "ports/erts/tests/exit-handlers.c",
+                          49: ROOT / "ports/erts/tests/exit-handlers.c",
+                          50: ROOT / "ports/erts/tests/exit-handlers.c",
+                          51: ROOT / "ports/erts/tests/mutex.c",
+                          52: ROOT / "ports/erts/tests/mutex.c",
+                          53: ROOT / "ports/erts/tests/condition.c",
+                          54: ROOT / "ports/erts/tests/condition.c",
+                          55: ROOT / "ports/erts/tests/rwmutex.c",
+                          56: ROOT / "ports/erts/tests/rwmutex.c",
+                          57: ROOT / "ports/erts/tests/locks.c",
+                          58: ROOT / "ports/erts/tests/locks.c",
+                          59: ROOT / "ports/erts/tests/init.c",
+                          60: ROOT / "ports/erts/tests/init.c",
+                          61: ROOT / "ports/erts/tests/init.c",
+                          62: ROOT / "ports/erts/tests/stacklimit.c",
+                          63: ROOT / "ports/erts/tests/atomics.c",
+                          64: ROOT / "ports/erts/tests/ts-event.c",
+                          65: ROOT / "ports/erts/tests/ts-event.c",
+                          66: ROOT / "ports/erts/tests/ts-event.c",
+                          67: ROOT / "ports/erts/tests/ts-config.c",
+                          68: ROOT / "ports/erts/tests/ts-config.c",
+                          69: ROOT / "ports/erts/tests/ts-event.c",
+                          70: ROOT / "ports/erts/tests/barriers.c",
+                          71: ROOT / "ports/erts/tests/barriers.c",
+                          72: ROOT / "ports/erts/tests/dw-atomics.c",
+                          73: ROOT / "ports/erts/tests/dw-atomics.c",
+                          74: ROOT / "ports/erts/tests/atomic-info.c",
+                          75: ROOT / "ports/erts/tests/atomic-info.c",
+                          76: ROOT / "ports/erts/tests/diagnostics.c",
+                          77: ROOT / "ports/erts/tests/diagnostics.c",
+                          78: ROOT / "ports/erts/tests/diagnostics.c",
+                          79: ROOT / "ports/erts/tests/diagnostics.c",
+                          80: ROOT / "ports/erts/tests/bootstrap.c",
+                          81: ROOT / "ports/erts/tests/bootstrap.c",
+                          82: ROOT / "ports/erts/tests/bootstrap.c",
+                          83: ROOT / "ports/erts/tests/bootstrap.c",
+                          86: ROOT / "ports/erts/tests/monotonic.c",
+                          89: ROOT / "ports/erts/tests/system-time.c",
+                          90: ROOT / "ports/erts/tests/system-time.c",
+                          91: ROOT / "ports/erts/tests/system-time.c",
+                          92: ROOT / "ports/erts/tests/time-init.c",
+                          93: ROOT / "ports/erts/tests/time-init.c",
+                          94: ROOT / "ports/erts/tests/time-init.c"}.get(number, ROOT / "ports/libc/tests" / source)
+                libraries = (["--library", erts_library, "--include", ROOT / "ports/erts"]
+                             if number in (57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83) else [])
+                if number in (86, 89, 90, 91, 92, 93, 94):
+                    libraries = ["--library", clock_library, "--include", ROOT / "ports/erts"]
+                if number in (92, 93, 94):
+                    if platform_build:
+                        for include in platform_build["include_directories"]:
+                            libraries.extend(("--include", include))
+                        libraries.extend(("--define", "HAVE_CONFIG_H", "--define", "USE_THREADS",
+                                          "--define", "_GNU_SOURCE", "--define", "KNYTOS_ERTS_PLATFORM_CHECK"))
+                        # OTP's headers intentionally leave unused wrapper
+                        # parameters. Scope these two -Wextra diagnostics to
+                        # those upstream headers; keep fixture errors fatal.
+                        original = source.read_text()
+                        anchor = '#include "erts_time_init.h"'
+                        assert original.count(anchor) == 1
+                        source = output / (name + "-native.c")
+                        source.write_text(original.replace(anchor,
+                            '#include "config.h"\n#pragma GCC diagnostic push\n'
+                            '#pragma GCC diagnostic ignored "-Wunused-parameter"\n'
+                            '#pragma GCC diagnostic ignored "-Wunused-but-set-parameter"\n'
+                            '#include "sys.h"\n#pragma GCC diagnostic pop\n' + anchor))
+                    else:
+                        libraries.extend(("--include", clock_library.with_suffix(".build") / "time-contract",
+                                          "--define", "KNYTOS_ERTS_TIME_CONTRACT_PROBE"))
+                if number in header_cases:
+                    original = source.read_text()
+                    anchor = '#include "knytos_ethread.h"'
+                    assert original.count(anchor) == 1, source
+                    selected = output / "erts" / (name + ".c")
+                    selected.write_text(original.replace(anchor, '#include "header-profile.h"\n'
+                        '#include "ethread.h"\n#include "knytos/ethr_extensions.h"'))
+                    source = selected
+                    libraries.extend(("--include", erts_library.parent,
+                                      "--include", erts_library.parent / "otp/erts/include/internal",
+                                      "--include", ROOT / "ports/erts/tests",
+                                      "--define", "ETHR_TRY_INLINE_FUNCS=1"))
+                    if number in (69, 71, 73, 75, 77, 79, 83):
+                        libraries.extend(("--define", "DEBUG"))
+                command(["python3", ROOT / "ports/libc/build.py", source,
+                         profile, "--define", f"CASE={64 if number == 69 else 76 if number == 79 else 80 if number == 83 else number}",
+                         "--picolibc-source", args.picolibc_source,
+                         "--output", images / (name + ".elf"), *libraries], name + "-build")
+                if number in (70, 71):
+                    command(["python3", ROOT / "ports/erts/check-barriers.py",
+                             "--elf", images / (name + ".elf"),
+                             "--output", output / (name + "-codegen.json")], name + "-codegen-check")
+                if number in (72, 73):
+                    command(["python3", ROOT / "ports/erts/check-dw-atomics.py",
+                             "--elf", images / (name + ".elf"),
+                             "--output", output / (name + "-codegen.json")], name + "-codegen-check")
+                continue
+            command(["python3", ROOT / "ports/libc/build.py", ROOT / ("ports/libc/tests/empty.c" if number == 8 else "ports/libc/tests/suite.c"),
+                     "--define", f"CASE={number}", "--picolibc-source", args.picolibc_source,
+                     "--output", images / (name + ".elf")], name + "-build")
+        for source, diagnostic in (("tls-rejected.c", "TLS is unsupported"),
+                                   ("unsupported-rejected.c", "undefined symbol: open")):
+            name = source.removesuffix(".c")
+            command(["python3", ROOT / "ports/libc/build.py", ROOT / "ports/libc/tests" / source,
+                     "--picolibc-source", args.picolibc_source, "--output", output / (name + ".elf")],
+                    name, expected_failure=True)
+            assert diagnostic in (output / (name + ".txt")).read_text(), name
+            record["negative_controls"].append({"name": name, "expected_diagnostic": diagnostic, "passed": True})
+        command([ROOT / "scripts/run-aarch64.sh", "release", "--minimal", "--build-only", "--instance", "cabi-m1"], "baseline-build")
+        signer = ROOT / "target/debug/cluster-sign"
+        key = ROOT / "tools/cluster-sign/dev-key.hex"
+        if args.atomvm_active_cancel_elf:
+            service_target = ROOT / "crates/knytos-services/target"
+            command(["cargo", "build", "--locked", "-p", "knytos-app", "--features", "test-support",
+                     "--example", "atomvm_cancel_fixture", "--target", "crates/knytos-services/aarch64-unknown-none.json",
+                     "--target-dir", service_target, "--release", "-Z", "build-std=core,alloc"],
+                    HOLD_SERVICE + "-build")
+            hold_image = images / (HOLD_SERVICE + ".elf")
+            shutil.copyfile(service_target / "aarch64-unknown-none/release/examples/atomvm_cancel_fixture", hold_image)
+            command([signer, "elf-sign", hold_image, HOLD_SERVICE, key, "service", "1", "1", "0x7", "-"],
+                    HOLD_SERVICE + "-sign")
+            command([signer, "deployment-sign", output / (HOLD_SERVICE + ".cdep"), HOLD_SERVICE,
+                     "fixture/" + HOLD_SERVICE, hold_image, "0", "1", "16", "1", "5000", key,
+                     "m4.hold=publish"], HOLD_SERVICE + "-descriptor")
+            hold_replacement = output / (HOLD_SERVICE + "-replacement.cdep")
+            command([signer, "deployment-sign", hold_replacement, HOLD_SERVICE,
+                     "fixture/" + HOLD_SERVICE, hold_image, "0", "2", "16", "1", "5000", key,
+                     "m4.hold=publish"], HOLD_SERVICE + "-replacement-descriptor")
+        for name, number in cases:
+            image = images / (name + ".elf")
+            command([signer, "elf-sign", image, name, key, "service", "1", "1", "0x7", "-"], name + "-sign")
+            thread_limit = (2 if number in service_workers else
+                            worker_cases[number][1] if number in worker_cases else scheduler_cases.get(number, 1))
+            grants = ["m4.missing=call"] if number in service_workers and number != active_cancel_case else []
+            if number == service_case:
+                grants.extend(("time=call", "observe=call"))
+            if number in (84, 87, 89, 92):
+                grants.append("time=call")
+            if number == active_cancel_case:
+                grants.append("m4.hold=call")
+            if number in retirement_cases and number in service_workers:
+                grants.append("time=call")
+            command([signer, "deployment-sign", output / (name + ".cdep"), name, "fixture/" + name,
+                     image, "0", "1", "64" if number in vm_cases else "16",
+                     thread_limit, "5000", key, *grants], name + "-descriptor")
+            if number in retirement_cases and not args.atomvm_node_shutdown:
+                command([signer, "deployment-sign", output / (name + "-replacement.cdep"),
+                         name, "fixture/" + name, image, "0", "2", "64", thread_limit, "5000", key, *grants],
+                        name + "-replacement-descriptor")
+        tampered = bytearray((images / "c-hello.elf").read_bytes())
+        command([signer, "elf-verify", images / "c-hello.elf", "c-hello",
+                 "3ddc95c26bd5f4022d95a4c6c8d074f577f11af7873e527b018b21be2c035463"], "signature-accepted")
+        # Change a covered executable byte while keeping a well-formed ELF.
+        import struct
+        phoff = struct.unpack_from("<Q", tampered, 32)[0]
+        text_offset = struct.unpack_from("<Q", tampered, phoff + 8)[0]
+        tampered[text_offset] ^= 1
+        (output / "tampered.elf").write_bytes(tampered)
+        command([signer, "elf-verify", output / "tampered.elf", "c-hello",
+                 "3ddc95c26bd5f4022d95a4c6c8d074f577f11af7873e527b018b21be2c035463"],
+                "signature-rejected", expected_failure=True)
+        record["negative_controls"].append({"name": "signature-rejected", "passed": True})
+        for image in (ROOT / "target/embedded-services/aarch64-unknown-none-minimal").glob("*.elf"):
+            shutil.copyfile(image, images / image.name)
+        command(["python3", ROOT / "scripts/make-nvme-image.py", output / "disk.img", images], "disk")
+        boot = ROOT / "os-images/knytos-aarch64-release-cabi-m1-minimal.img"
+        shutil.copyfile(boot, output / "boot.img")
+        command(["mcopy", "-i", output / "boot.img", "::/knytos", output / "kernel.elf"], "extract-kernel")
+        # Immutable debugger symbols describe the selected payload, not a later build.
+        llvm = Path(subprocess.check_output(["rustc", "--print", "sysroot"], cwd=ROOT, text=True).strip())
+        host = subprocess.check_output(["rustc", "-vV"], cwd=ROOT, text=True).split("host: ")[1].splitlines()[0]
+        symbols = subprocess.check_output([llvm / "lib/rustlib" / host / "bin/llvm-nm", "--print-size", "--demangle", output / "kernel.elf"], text=True)
+        (output / "kernel.symbols").write_text(symbols)
+        qemu = shutil.which("qemu-system-aarch64")
+        firmware = args.firmware or Path(qemu).resolve().parents[1] / "share/qemu/edk2-aarch64-code.fd"
+        if not firmware.is_file():
+            firmware = Path("/opt/homebrew/share/qemu/edk2-aarch64-code.fd")
+        if not firmware.is_file():
+            raise RuntimeError("pass --firmware with edk2-aarch64-code.fd")
+        credentials = Path(str(boot) + ".management")
+        environment = dict(os.environ, KNYTOS_MANAGEMENT_CA_FILE=str(credentials / "ca.pem"),
+                           KNYTOS_MANAGEMENT_CERT_FILE=str(credentials / "administrator.pem"),
+                           KNYTOS_MANAGEMENT_KEY_FILE=str(credentials / "administrator.key"),
+                           KNYTOS_MANAGEMENT_READER_CERT_FILE=str(credentials / "reader.pem"),
+                           KNYTOS_MANAGEMENT_READER_KEY_FILE=str(credentials / "reader.key"),
+                           KNYTOS_MANAGEMENT_SERVER_NAME="127.0.0.1")
+        if performance_cases:
+            tls_spec = importlib.util.spec_from_file_location(
+                "management_tls", ROOT / "scripts/tests/management_tls.py")
+            tls = importlib.util.module_from_spec(tls_spec)
+            tls_spec.loader.exec_module(tls)
+            reader = tls.context("reader", environment)
+        record.update(kernel_sha256=digest(output / "kernel.elf"), firmware_sha256=digest(firmware),
+                      qemu_version=subprocess.check_output([qemu, "--version"], text=True).strip(),
+                      initial_disk_sha256=digest(output / "disk.img"), boot_image_sha256=digest(output / "boot.img"),
+                      images_sha256={p.name: digest(p) for p in sorted(images.glob("*.elf"))})
+        spec = importlib.util.spec_from_file_location("boot_diagnostics", ROOT / "scripts/boot-diagnostics.py")
+        diagnostic = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(diagnostic)
+        with tempfile.TemporaryDirectory(prefix="cabi-qmp-", dir="/tmp") as transport:
+            serial = output / "serial.txt"
+            options = ["-M", "virt,gic-version=3,msi=gicv2m,iommu=smmuv3,default-bus-bypass-iommu=off",
+                       "-m", "512M", "-bios", str(firmware), "-cpu", "cortex-a710", "-smp", str(args.smp),
+                       "-drive", f"file={output / 'boot.img'},format=raw,if=none,id=boot0",
+                       "-device", "virtio-blk-pci,drive=boot0,addr=3,bootindex=1",
+                       "-object", "rng-random,filename=/dev/urandom,id=knytos-rng",
+                       "-device", "virtio-rng-pci,rng=knytos-rng,disable-legacy=on,iommu_platform=on,addr=4",
+                       "-drive", f"if=none,file={output / 'disk.img'},format=raw,id=nvme0",
+                       "-device", "nvme,drive=nvme0,serial=cat0,max_ioqpairs=4,addr=2", "-nic", "none",
+                       "-netdev", "user,id=knytos-net,hostfwd=tcp::28080-:443,hostfwd=tcp::28081-:7444",
+                       "-device", f"virtio-net-pci,netdev=knytos-net,disable-legacy=on,iommu_platform=on,mac={GUEST_MAC},addr=1,romfile=",
+                       "-display", "none", "-serial", f"file:{serial}",
+                       "-qmp", f"unix:{transport}/qmp.sock,server=on,wait=off",
+                       "-gdb", f"unix:{transport}/gdb.sock,server=on,wait=off"]
+            record["qemu_arguments"] = options
+            save()
+            with (output / "qemu.txt").open("w") as log:
+                process = subprocess.Popen([qemu, *options], stdout=log, stderr=subprocess.STDOUT)
+                def wait_for(predicate, seconds):
+                    deadline = time.monotonic() + seconds
+                    while time.monotonic() < deadline:
+                        if process.poll() is not None:
+                            raise RuntimeError("guest exited early")
+                        text = serial.read_text(errors="replace") if serial.exists() else ""
+                        if "Kernel panic:" in text:
+                            raise RuntimeError("kernel panic")
+                        if predicate(text):
+                            return text
+                        time.sleep(0.1)
+                    raise TimeoutError("native C observation deadline")
+                try:
+                    wait_for(lambda s: "BOOT COMPLETE:" in s and "[deployd] listening" in s
+                             and "[time] synchronized" in s and "[dns] proposed filtered capacity" in s, 180)
+                    live = []
+                    for name, number in cases:
+                        if number == active_cancel_case:
+                            command([signer, "deployment-notify", output / (HOLD_SERVICE + ".cdep"),
+                                     "127.0.0.1:28081"], HOLD_SERVICE + "-admission", env=environment, timeout=40)
+                            started = wait_for(lambda s: published_hold_service(s, 1), 60)
+                            hold_asid = published_hold_service(started, 1)
+                        before = len(serial.read_text(errors="replace"))
+                        command([signer, "deployment-notify", output / (name + ".cdep"), "127.0.0.1:28081"], name + "-admission", env=environment, timeout=40)
+                        if number in performance_cases:
+                            count = performance_cases[number]
+                            launch = re.compile(rf'\[agent\] launched "{re.escape(name)}" generation=1 asid=(\d+)')
+                            started = wait_for(lambda s: launch.search(s[before:]), 60)
+                            asid = int(launch.search(started[before:])[1])
+                            windows = {}
+                            for phase in ("idle", "load"):
+                                wait_for(lambda s: f"{{perf,{phase}_start," in domain_logs(s[before:], asid), 60)
+                                first = vm_metrics(tls, reader, asid, count)
+                                time.sleep(1.25)  # Space the two observations within the guest phase.
+                                last = vm_metrics(tls, reader, asid, count)
+                                windows[phase] = (first, last)
+                                (output / (name + "-metrics.json")).write_text(json.dumps(windows, indent=2) + "\n")
+                            finished = wait_for(lambda s: "[c-runtime] exit=" in domain_logs(s[before:], asid), 60)
+                            result = performance_result(domain_logs(finished[before:], asid), count, windows)
+                            record["cases"].append({"name": name, "case": number, "passed": True,
+                                                    "asid": asid, "performance": result,
+                                                    "observation": finished[before:]})
+                            save()
+                            continue
+                        if number in retirement_cases:
+                            mode = retirement_cases[number]
+                            count = scheduler_cases[number]
+                            assert json.loads((output / (name + "-admission.txt")).read_text())["generation"] == 1
+                            initial = wait_for(lambda s: retirement_instance(s[before:], name, 1, mode, count), 60)
+                            asid = retirement_instance(initial[before:], name, 1, mode, count)
+                            if mode == "parked":
+                                assert "scheduler entered slot=" not in domain_logs(initial[before:], asid), name
+                            if args.atomvm_node_shutdown:
+                                live.append((name, number, asid, before))
+                                continue
+                            replacement_start = len(initial)
+                            command([signer, "deployment-notify", output / (name + "-replacement.cdep"),
+                                     "127.0.0.1:28081"], name + "-replacement-admission",
+                                    env=environment, timeout=40)
+                            assert json.loads((output / (name + "-replacement-admission.txt")).read_text())["generation"] == 2
+                            serial_text = wait_for(
+                                lambda s: retirement_instance(s[replacement_start:], name, 2, mode, count), 60)
+                            successor = retirement_instance(serial_text[replacement_start:], name, 2, mode, count)
+                            retiring = serial_text[replacement_start:].split(
+                                f'[agent] launched "{name}" generation=2 asid=', 1)[0]
+                            checked = verify_vm_shutdown(retiring, name, asid, mode, count, "deployment",
+                                                         number in service_workers)
+                            record["cases"].append({
+                                "name": name, "case": number, "passed": True, **checked,
+                                "successor_asid": int(successor),
+                                "observation": serial_text[before:],
+                            })
+                            save()
+                            continue
+                        expected = "CABI expected abort" if number == 7 else "CABI expected nonzero" if number == 6 else "CABI explicit exit" if number == 5 else f"CABI PASS case={number}"
+                        if number == 9:
+                            expected = "CABI shutdown without request"
+                        if number in vm_cases:
+                            expected = vm_cases[number][2]
+                        if number in worker_cases:
+                            expected = worker_cases[number][2]
+                        def observation(text):
+                            tail = text[before:]
+                            launch = re.search(r'\[agent\] launched "' + re.escape(name) + r'" generation=\d+ asid=(\d+)', tail)
+                            if not launch:
+                                return ""
+                            return "\n".join(line for line in tail.splitlines()
+                                             if re.search(r'\[EL0 LOG\] lp=\d+ asid=' + launch[1] + r' ', line))
+                        if number == active_cancel_case:
+                            waiting = wait_for(lambda s: "{m4,awaiting_replacement}" in observation(s), 60)
+                            command([signer, "deployment-notify", hold_replacement, "127.0.0.1:28081"],
+                                    HOLD_SERVICE + "-replacement-admission", env=environment, timeout=40)
+                            receipt = json.loads((output / (HOLD_SERVICE + "-replacement-admission.txt")).read_text())
+                            assert receipt["generation"] == 2, receipt
+                            replaced = wait_for(lambda s: published_hold_service(s[len(waiting):], 2), 60)
+                            successor_asid = published_hold_service(replaced[len(waiting):], 2)
+                        def complete(text):
+                            domain_lines = observation(text)
+                            terminal = "[c-runtime] abort" if number in abort_cases else f"[c-runtime] exit={17 if number == 6 else 0} "
+                            if number == 15:
+                                terminal = "[c-runtime] exit with an unjoined worker"
+                            if number == 20:
+                                terminal = "[worker-libc] libc lock close is unsupported"
+                            if number == 39:
+                                terminal = "[c-runtime] TSD destructor iteration limit"
+                            if number == 47:
+                                terminal = "[c-runtime] recursive worker exit"
+                            if expected not in domain_lines or terminal not in domain_lines:
+                                return False
+                            if number in (15, 20, 77, 78, 82):
+                                asid = re.search(r'\[EL0 LOG\] lp=\d+ asid=(\d+) ', domain_lines)[1]
+                                return re.search(r'Aborting user address space ' + asid + r'\b', text[before:]) is not None
+                            return True
+                        serial_text = wait_for(complete, 60)
+                        text = observation(serial_text)
+                        if number not in (7, 8, 9) and number not in vm_cases and number not in worker_cases:
+                            assert "CABI FINI" in text, name
+                        if number == 9:
+                            assert "[c-runtime] shutdown completion without a request" in text, name
+                            assert "CABI FINI" not in text, name
+                        if number not in abort_cases:
+                            assert "remaining_blocks=0" in text, name
+                        if number in (4, 5, 6):
+                            assert "released_blocks=1" in text, name
+                        if number in (4, 5):
+                            assert text.index("CABI ATEXIT") < text.index("CABI FINI"), name
+                        if number in (10, idle_case):
+                            assert "[atomvm] wake-before-wait passed" in text, name
+                            assert "ATOMVM platform=knytos" in text, name
+                            assert "ATOMVM PASS elapsed_ms=" in text, name
+                            assert "[atomvm] return=ok" in text, name
+                            assert re.search(r'\[atomvm\] reactor waits=[1-9]\d* deadlines=[1-9]\d*', text), name
+                        if number == 12:
+                            for stage in ("values", "processes", "timers", "supervision"):
+                                assert f"{{m3,{stage},ok}}" in text, stage
+                            assert "{m3,pass}" in text and "[atomvm] return=ok" in text, name
+                            reactor = re.search(r'\[atomvm\] reactor waits=(\d+) deadlines=(\d+)', text)
+                            assert reactor and int(reactor[2]) >= 6, name
+                        if number == service_case:
+                            for stage in ("scalar_reply", "unauthorized", "attachment_rejected",
+                                          "timer_with_pending_call", "diagnostics_validated",
+                                          "abandoned_slot_reused",
+                                          "foreign_cancel_rejected", "cancelled_reply_suppressed",
+                                          "cancelled_slot_reused", "reusable_resource_is_scoped",
+                                          "closed_resource_is_stale", "resource_gc_reclaimed_slot",
+                                          "resource_owner_exit_reclaimed_slot"):
+                                assert f"{{m4,{stage}}}" in text, stage
+                            records = re.findall(r"\[EL0 LOG\] lp=\d+ asid=\d+ (.*)", text)
+                            for line in ("[atomvm debug] m4 diagnostic debug",
+                                         "[atomvm info] m4 diagnostic \u03bb",
+                                         "[atomvm warning] " + "x" * 239,
+                                         "[atomvm error] m4 diagnostic error"):
+                                assert records.count(line) == 1, line
+                            assert "m4 rejected" not in text, name
+                            for stage in ("lookup_cancel_reused_ms", "lookup_exit_reused_ms"):
+                                reuse = re.search(rf"\{{m4,{stage},(\d+)\}}", text)
+                                assert reuse and int(reuse[1]) < 750, stage
+                            assert "[atomvm] service worker joined" in text and "[atomvm] return=ok" in text, name
+                        if number == active_cancel_case:
+                            client_asid = int(re.search(r"\[EL0 LOG\] lp=\d+ asid=(\d+)", text)[1])
+                            retired_generation = verify_active_cancel(serial_text[before:], hold_asid,
+                                                                      client_asid, successor_asid)
+                            record["service_replacement"] = {
+                                "retired_asid": hold_asid,
+                                "retired_root_generation": retired_generation,
+                                "successor_asid": successor_asid,
+                                "successor_sequence": receipt["generation"],
+                                "successor_descriptor_sha256": digest(hold_replacement),
+                            }
+                            assert "[atomvm] service worker joined" in text and "[atomvm] return=ok" in text, name
+                        if number in scheduler_cases:
+                            count = scheduler_cases[number]
+                            assert f" schedulers={count} interpreter=yes" in text, name
+                            activated = 0 if number == idle_case else count - 1
+                            if number != idle_case:
+                                assert f"{{schedulers,{count}}}" in text and "{smp,pass}" in text, name
+                            assert "[atomvm] return=ok" in text, name
+                            assert re.search(r"\[atomvm\] reactor waits=[1-9]\d* deadlines=[1-9]\d*", text), name
+                            if count > 1:
+                                assert f"[atomvm] schedulers joined={count - 1} activated={activated}" in text, name
+                                for slot in range(1, activated + 1):
+                                    assert re.search(rf"\[EL0 LOG\] lp={slot} asid=\d+ \[atomvm\] scheduler entered slot={slot}$",
+                                                     text, re.MULTILINE), name
+                        if number == 14:
+                            assert re.search(r'\[EL0 LOG\] lp=1 asid=\d+ WORKER private queue entry', text), name
+                            assert "WORKER cross-CPU handshake and admission" in text, name
+                        if number == 15:
+                            assert "[c-runtime] exit=" not in text, name
+                        if number in (77, 78):
+                            assert "[c-runtime] exit=" not in text, name
+                            assert "ERTS DIAGNOSTICS unexpected" not in text, name
+                            assert " function=worker" in text, name
+                            if number == 77:
+                                assert ' expression=0 && "native-worker-assertion"' in text, name
+                            else:
+                                assert re.search(r' error=\d+\b', text), name
+                        if number == 82:
+                            assert "[c-runtime] exit=" not in text, name
+                            assert "ERTS BOOTSTRAP unexpected" not in text, name
+                        if number in (80, 81, 83):
+                            for marker in ("late prefix rollback configuration and reentry fences",
+                                           "automatic events before child hooks and exit handlers",
+                                           "copied callbacks exact joins detached drain and zero owners"):
+                                assert "ERTS BOOTSTRAP " + marker in text, name
+                            if number == 81:
+                                assert "ERTS BOOTSTRAP key rejection rolls back before retry" in text, name
+                        if number == 16:
+                            assert "WORKER finalizer admission fenced" in text, name
+                        if number == 17:
+                            assert "SYNC one deadline through reacquisition" in text, name
+                            assert "SYNC previous slot owner fenced" in text and "released_blocks=1" in text, name
+                        if number == 18:
+                            for marker in ("shared and nested readers", "writer timeout wakes readers",
+                                           "last reader releases writer"):
+                                assert "RWLOCK " + marker in text, name
+                        if number == 19:
+                            assert "WORKER LIBC TSD isolation deletion reuse and admission" in text, name
+                            assert text.index("WORKER LIBC held record") < text.index("WORKER LIBC worker acquired stream")
+                            for role in ("worker", "startup"):
+                                for row in range(8):
+                                    line = f"WORKER LIBC {role} row={row} text=clear"
+                                    assert sum(entry.endswith(line) for entry in text.splitlines()) == 1, line
+                        if number == 37:
+                            for marker in ("retained set reset and wake-before-wait",
+                                           "unrelated wakes preserve deadline",
+                                           "cross-CPU publication and event-only wait"):
+                                assert "EVENT " + marker in text, name
+                        if number == 38:
+                            for marker in ("cleared values rearmed callbacks and event disposal",
+                                           "exact join and fresh generation"):
+                                assert "TSD CLEANUP " + marker in text, name
+                        if number == 40:
+                            for marker in ("nanosecond timeout rounds up",
+                                           "retained state and signed timeout bounds",
+                                           "cross-CPU wait and destruction"):
+                                assert "ERTS EVENT " + marker in text, name
+                        if number == 42:
+                            for marker in ("key exhaustion and stale errno results",
+                                           "isolated values and event destruction before join"):
+                                assert "ERTS TSD " + marker in text, name
+                        if number == 43:
+                            for marker in ("bounded roster results and destructor identity",
+                                           "stale identity and slot reuse"):
+                                assert "ERTS THREAD " + marker in text, name
+                        if number == 44:
+                            for marker in ("retained admission and join rejection",
+                                           "shutdown joined destructors and fenced creation"):
+                                assert "ERTS DETACHED " + marker in text, name
+                        if number == 45:
+                            for marker in ("copied names coherent snapshots and buffer bounds",
+                                           "destructor lookup and stale generations"):
+                                assert "ERTS NAMES " + marker in text, name
+                        if number == 46:
+                            for marker in ("nested exit results cleanup and slot reuse",
+                                           "detached exit settled by shutdown drain"):
+                                assert "ERTS EXIT " + marker in text, name
+                        if number == 48:
+                            for marker in ("reverse order before TSD and exact joins",
+                                           "normal explicit and detached exits"):
+                                assert "ERTS HANDLERS " + marker in text, name
+                        if number == 51:
+                            for marker in ("contended event-only wait and publication",
+                                           "trylock busy and destruction"):
+                                assert "ERTS MUTEX " + marker in text, name
+                        if number == 53:
+                            for marker in ("signal selects one and broadcast releases peers",
+                                           "event-only reacquisition and busy destruction"):
+                                assert "ERTS CONDITION " + marker in text, name
+                        if number == 55:
+                            for marker in ("shared readers and last-reader writer release",
+                                           "event-only reader wake and publication",
+                                           "busy destruction and heap size"):
+                                assert "ERTS RWMUTEX " + marker in text, name
+                        if number == 57:
+                            for marker in ("archive-linked blocking spin fallback",
+                                           "shared readers writer wake and reader publication",
+                                           "public headers TSD and exact joins"):
+                                assert "ERTS LOCKS " + marker in text, name
+                        if number == 59:
+                            for marker in ("copied hooks and child-before-parent handshake",
+                                           "normal explicit detached exits and TSD cleanup"):
+                                assert "ERTS INIT " + marker in text, name
+                        if number == 60:
+                            assert "ERTS INIT rejected start parent cleanup and fenced reuse" in text, name
+                        if number == 62:
+                            for marker in ("unset null rejection and one-time installation",
+                                           "isolated participants and fresh slot generation",
+                                           "handlers destructors explicit exit and detached drain"):
+                                assert "ERTS STACKLIMIT " + marker in text, name
+                        if number == 63:
+                            for marker in ("all word and 32-bit variants old/new values and wrapping",
+                                           "four participants contended arithmetic",
+                                           "cross-CPU publication before join"):
+                                assert "ERTS ATOMICS " + marker in text, name
+                        if number == 64:
+                            for marker in ("independent temporary owners busy peek and capacity",
+                                           "cross-CPU delivery destructor rearming and exact joins"):
+                                assert "ERTS TSE " + marker in text, name
+                        if number == 65:
+                            assert "ERTS TSE rejected key admission and fresh initialization" in text, name
+                        if number == 67:
+                            for marker in ("captured allocator prefix failure and reentry rejection",
+                                           "participant status normal and explicit destructor cleanup"):
+                                assert "ERTS TS CONFIG " + marker in text, name
+                        if number == 68:
+                            assert "ERTS TS CONFIG incomplete allocator tuple uses whole fallback" in text, name
+                        record["cases"].append({"name": name, "case": number, "passed": True,
+                                                "observation": serial_text[before:]})
+                        save()
+                    if args.atomvm_node_shutdown:
+                        drain = ROOT / "scripts/tests/test-management-drain.py"
+                        command([signer, "node-key", GUEST_MAC], "shutdown-node-key")
+                        node = (output / "shutdown-node-key.txt").read_text().strip()
+                        now = int(time.time())
+                        intent = output / "node.cshutdown"
+                        command([signer, "shutdown-sign", intent, now, node, now, now + 300,
+                                 60000, 5000, key], "shutdown-sign")
+                        initial = serial.read_text(errors="replace")
+                        for name, _, asid, before in live:
+                            assert "[c-runtime] exit=" not in domain_logs(initial[before:], asid), name
+                        qmp = diagnostic.Qmp(transport + "/qmp.sock")
+                        try:
+                            deadline = time.monotonic() + 90
+                            command(["python3", drain, "submit", "--intent", intent,
+                                     "--client-tool", signer, "--status-port", 28080,
+                                     "--deployment-port", 28081, "--serial-log", serial],
+                                    "shutdown-admission", env=environment, timeout=50)
+                            event = qmp.receive(deadline)
+                            while event.get("event") != "SHUTDOWN":
+                                event = qmp.receive(deadline)
+                            assert event["data"]["guest"] is True and event["data"]["reason"] == "guest-shutdown", event
+                            assert process.wait(timeout=max(0, deadline - time.monotonic())) == 0
+                        finally:
+                            qmp.close()
+                        command(["python3", drain, "verify", serial], "shutdown-ingress-verify")
+                        final = serial.read_text(errors="replace")
+                        stopping = final[len(initial):]
+                        ordered = ["[agent] node shutdown requested deadline_ms=",
+                                   "[agent] application domains drained; draining connectors",
+                                   "[agent] child domains drained for node shutdown",
+                                   "[shutdown] DeploymentAgent: acknowledged=1 unacknowledged=0 forced=0 lifecycle_status=2",
+                                   "[shutdown] POWER-OFF REQUESTED via PSCI"]
+                        positions = [stopping.index(stage) for stage in ordered]
+                        assert positions == sorted(positions), positions
+                        vm_drain = stopping[positions[0]:positions[1]]
+                        for name, number, asid, before in live:
+                            checked = verify_vm_shutdown(vm_drain, name, asid, retirement_cases[number],
+                                                         scheduler_cases[number], "node", number in service_workers)
+                            record["cases"].append({"name": name, "case": number, "passed": True,
+                                                    **checked, "observation": final[before:]})
+                        admitted = [json.loads(line)["generation"]
+                                    for line in (output / "shutdown-admission.txt").read_text().splitlines()
+                                    if line.startswith("{")]
+                        assert admitted == [1], admitted
+                        record["node_shutdown"] = {"admitted_generation": admitted[0], "target_node": node,
+                                                   "intent_sha256": digest(intent), "qmp_event": event,
+                                                   "qemu_exit_status": process.returncode}
+                    record["outcome"] = "passed"
+                except BaseException:
+                    record["snapshot"] = diagnostic.capture(output, {"serial_log": str(serial), "transport": transport, "cpus": args.smp}, "C-runtime-fixture-failure")
+                    raise
+                finally:
+                    if process.poll() is None:
+                        process.terminate()
+                        try:
+                            process.wait(timeout=10)
+                        except subprocess.TimeoutExpired:
+                            process.kill()
+                            process.wait()
+    except BaseException as error:
+        record.update(outcome="failed", error=repr(error))
+        raise
+    finally:
+        save()
+
+
+if __name__ == "__main__":
+    main()

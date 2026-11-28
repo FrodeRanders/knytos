@@ -7,6 +7,9 @@
  * time record/prototypes, not the complete ERTS platform header. */
 #include "erts_time_contract.h"
 #else
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include "sys.h"
 #endif
 #include "erts_clock_platform.h"

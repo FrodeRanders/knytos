@@ -1,0 +1,14 @@
+In file included from <built-in>:1:
+/private/tmp/knytos-erts-clock-selection-final/build/aarch64-unknown-knytos/config.h:418:9: error: 'ERTS_KNYTOS_CLOCK_MAX_AGE_NS' macro redefined [-Werror,-Wmacro-redefined]
+  418 | #define ERTS_KNYTOS_CLOCK_MAX_AGE_NS (5000*1000000ULL)
+      |         ^
+<command line>:5:9: note: previous definition is here
+    5 | #define ERTS_KNYTOS_CLOCK_MAX_AGE_NS 5000000000ULL
+      |         ^
+In file included from ports/erts/erts_time_init.c:4:
+In file included from ports/erts/erts_time_init.h:10:
+In file included from /private/tmp/knytos-erts-clock-selection-final/otp/erts/emulator/beam/sys.h:123:
+/private/tmp/knytos-erts-clock-selection-final/otp/erts/emulator/sys/unix/erl_unix_sys.h:102:10: fatal error: 'netdb.h' file not found
+  102 | #include <netdb.h>
+      |          ^~~~~~~~~
+2 errors generated.

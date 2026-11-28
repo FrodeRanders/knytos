@@ -1,0 +1,14 @@
+[
+  "make",
+  "--no-print-directory",
+  "-f",
+  "aarch64-unknown-knytos/Makefile",
+  "ERL_TOP=/private/tmp/knytos-erts-platform-routing-first/otp",
+  "TARGET=aarch64-unknown-knytos",
+  "TYPE=opt",
+  "FLAVOR=emu",
+  "V=1",
+  "-o",
+  "aarch64-unknown-knytos/opt/emu/GENERATED",
+  "knytos-clock-objects"
+]

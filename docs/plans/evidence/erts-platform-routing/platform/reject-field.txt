@@ -1,0 +1,4 @@
+/private/tmp/knytos-erts-platform-routing-final/platform/reject-field.c:37:16: error: static assertion failed due to requirement '__builtin_types_compatible_p(long, int)': Native time record field mismatch
+   37 | _Static_assert(__builtin_types_compatible_p(__typeof__(((ErtsSysInitTimeResult *)0)->sys_clock_resolution), __typeof__(((ExpectedTimeResult *)0)->sys_clock_resolution)), "Native time record field mismatch");
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
