@@ -1,0 +1,4 @@
+/private/tmp/knytos-erts-console-startup-final/otp/erts/lib_src/common/erl_printf.c:44:2: error: "Native ERTS streams require the locked worker-libc profile"
+   44 | #error "Native ERTS streams require the locked worker-libc profile"
+      |  ^
+1 error generated.

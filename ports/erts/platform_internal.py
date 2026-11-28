@@ -16,19 +16,33 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def qualify_internal(out, tree, sdk, flags, toolchain, platform, otp_source, pin):
+def qualify_internal(out, tree, sdk, flags, toolchain, platform, otp_source, pin, native_console=False):
     work = out / "internal"
     work.mkdir()
     sources = [tree / "erts/lib_src/common" / name for name in SOURCES]
     sources.append(tree / "erts/emulator/beam/erl_cpu_topology.c")
     provenance = {}
+    nonnative_controls = {}
     for path in sources:
         relative = str(path.relative_to(tree))
         expected = subprocess.check_output(["git", "-C", otp_source, "rev-parse", pin + ":" + relative], text=True).strip()
         actual = subprocess.check_output(["git", "hash-object", path], text=True).strip()
-        if actual != expected:
+        patched = native_console and path.name in ("erl_printf.c", "erl_cpu_topology.c")
+        if not patched and actual != expected:
             raise SystemExit("Internal/common CPU source differs from the pin: " + relative)
-        provenance[relative] = {"git_blob": actual, "sha256": digest(path)}
+        if patched:
+            original = subprocess.check_output(["git", "-C", otp_source, "show", pin + ":" + relative])
+            outputs = []
+            for source in (original, path.read_bytes()):
+                control = subprocess.run(["unifdef", "-UERTS_KNYTOS"], input=source, stdout=subprocess.PIPE, check=False)
+                if control.returncode not in (0, 1):
+                    raise SystemExit("Cannot check nonnative source preservation")
+                outputs.append(b"\n".join(line.strip() for line in control.stdout.splitlines() if line.strip()))
+            if outputs[0] != outputs[1]:
+                raise SystemExit("Native console patch changed nonnative source tokens: " + relative)
+            nonnative_controls[relative] = {"unchanged_without_native_macro": True}
+        provenance[relative] = {"base_git_blob": expected, "git_blob": actual,
+                                "native_patch": patched, "sha256": digest(path)}
     archives = {name: tree / f"erts/lib/internal/{TARGET}/liberts_internal{suffix}.a"
                 for name, suffix in (("regular", ""), ("reentrant", "_r"))}
     command = ["make", "--no-print-directory", "-f", f"{TARGET}/Makefile",
@@ -54,6 +68,10 @@ def qualify_internal(out, tree, sdk, flags, toolchain, platform, otp_source, pin
                         'static void (*volatile entry)(int*,int*,int*,int*,int*,int*) = erts_pre_early_init_cpu_topology;\n'
                         'static int (*volatile format)(char*,size_t,const char*,...) = erts_snprintf;\n'
                         'int main(void) { return entry == 0 || format == 0; }\n')
+    if native_console:
+        text = consumer.read_text().replace('int main(void)',
+            'static int (*volatile stream)(const char*,...) = erts_printf;\nint main(void)')
+        consumer.write_text(text.replace('entry == 0 || format == 0;', 'entry == 0 || format == 0 || stream == 0;'))
 
     def link(name, source, libraries):
         cmd = [*common_flags, source, "-Wl,--start-group", *libraries, "-Wl,--end-group",
@@ -84,8 +102,10 @@ def qualify_internal(out, tree, sdk, flags, toolchain, platform, otp_source, pin
     if not controls["sleep"]["status"] or "undefined symbol: select" not in (work / "reject-sleep.txt").read_text():
         raise SystemExit("Unported POSIX sleep helper unexpectedly linked")
     stream = work / "reject-stream.c"
-    stream.write_text('#include "config.h"\n#include <stdio.h>\n#include "erl_printf.h"\n'
-                      'static int (*volatile entry)(const char*,...) = erts_printf;\nint main(void) { return entry == 0; }\n')
+    stream_entry = ('static int (*volatile entry)(int,const char*,...) = erts_fdprintf;' if native_console else
+                    'static int (*volatile entry)(const char*,...) = erts_printf;')
+    stream.write_text('#include "config.h"\n#include <stdio.h>\n#include "erl_printf.h"\n' + stream_entry +
+                      '\nint main(void) { return entry == 0; }\n')
     controls["stream"] = link("reject-stream", stream, [archives["reentrant"]])
     if not controls["stream"]["status"] or "undefined symbol: write" not in (work / "reject-stream.txt").read_text():
         raise SystemExit("Unported descriptor stream formatter unexpectedly linked")
@@ -106,9 +126,11 @@ def qualify_internal(out, tree, sdk, flags, toolchain, platform, otp_source, pin
               "cpu_archive": str(cpu_archive), "cpu_archive_sha256": digest(cpu_archive),
               "source_provenance": provenance, "make_command": command, "links": links,
               "negative_controls": controls, "cpu_discovery": "unsupported",
+              "native_console": native_console, "nonnative_controls": nonnative_controls,
               "sdk_weak_imports": weak_imports,
               "inputs_sha256": {str(path.relative_to(ROOT)): digest(path) for path in (
-                  ROOT / "ports/erts/tests/internal-cpu.c", ROOT / "ports/libc/build.py")},
+                  ROOT / "ports/erts/tests/internal-cpu.c", ROOT / "ports/libc/build.py",
+                  *([ROOT / "ports/erts/tests/console.c"] if native_console else []))},
               "full_emulator_executed": False}
     (work / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     return result

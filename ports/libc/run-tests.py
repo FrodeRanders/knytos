@@ -230,6 +230,8 @@ def main():
     parser.add_argument("--otp-source", type=Path,
                         help="pinned OTP source required by the ERTS header and diagnostics profiles")
     parser.add_argument("--smp", type=int, choices=(1, 2, 4), default=4)
+    parser.add_argument("--case", action="append", type=int, dest="selected_cases",
+                        help="restrict worker-profile case IDs; base C controls and survivor always run")
     args = parser.parse_args()
     selected_headers = args.erts_header or args.erts_diagnostics or args.erts_bootstrap
     if (selected_headers or args.erts_time_init) and args.otp_source is None:
@@ -412,16 +414,37 @@ def main():
                 "ERTS INTERNAL CPU unknown counts allocation rejection common prefix formatter and exact join PASS")
         clock_cases[102] = ("c-erts-internal-allocation-failed", 1,
             "ERTS INTERNAL CPU common allocation rejection zero owners before native pre-init PASS")
+    native_console = bool(platform_build and platform_build.get("native_internal", {}).get("native_console"))
+    if args.erts_time_init and native_console:
+        clock_cases[102] = ("c-erts-internal-allocation-failed", 1, "[erts] CPU-info allocation failed")
+        clock_cases.update({
+            104: ("c-erts-console-reentrant", 2, "ERTS CONSOLE fixed streams errors CRLF recursive locks and exact join PASS"),
+            105: ("c-erts-console-regular", 2, "ERTS CONSOLE fixed streams errors CRLF recursive locks and exact join PASS"),
+            106: ("c-erts-cpu-repeat", 1, "[erts] CPU pre-init requires fresh startup state"),
+            107: ("c-erts-cpu-worker", 2, "[erts] CPU pre-init requires fresh startup state"),
+            108: ("c-erts-cpu-log-failed", 1, "ERTS CPU rejected preparation preserves outputs and owns zero blocks PASS"),
+        })
     worker_cases.update(libc_cases)
     worker_cases.update(mutex_cases)
     worker_cases.update(tse_cases)
     worker_cases.update(header_cases)
     worker_cases.update(clock_cases)
-    if args.native_workers or args.worker_libc or args.erts_mutex or args.erts_tse or selected_headers or args.c_clock or args.erts_clock or args.erts_system_clock or args.erts_time_init:
+    worker_profile_enabled = (args.native_workers or args.worker_libc or args.erts_mutex or args.erts_tse or
+                              selected_headers or args.c_clock or args.erts_clock or args.erts_system_clock or args.erts_time_init)
+    if args.selected_cases:
+        if not worker_profile_enabled:
+            parser.error("--case requires a worker-profile selection")
+        unexpected = set(args.selected_cases) - worker_cases.keys()
+        if unexpected:
+            parser.error("case IDs are not in the selected worker profile: " + str(sorted(unexpected)))
+        worker_cases = {number: spec for number, spec in worker_cases.items() if number in args.selected_cases}
+    if worker_profile_enabled:
         if args.smp < 2:
             parser.error("worker fixtures need at least two guest CPUs")
         cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
     abort_cases = (7, 9, 11, 13, 15, 20, 39, 41, 47, 49, 52, 54, 56, 58, 61, 66, 77, 78, 82, 91, 94, 95, 97, 98, 99, 100)
+    if native_console:
+        abort_cases += (102, 106, 107, 108)
     cases += CASES[-1:]
     retirement_cases = {}
     retirement_images = [("parked", args.atomvm_shutdown_parked_elf)]
@@ -453,7 +476,8 @@ def main():
     signal.signal(signal.SIGTERM, interrupted)
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
-    record = {"schema": "knytos.c-runtime-m1.v1", "cases": [], "negative_controls": [], "outcome": "running"}
+    record = {"schema": "knytos.c-runtime-m1.v1", "cases": [], "negative_controls": [], "outcome": "running",
+              "selected_profile_cases": args.selected_cases}
     def save():
         (output / "result.json").write_text(json.dumps(record, indent=2) + "\n")
     def command(arguments, name, env=None, timeout=900, expected_failure=False):
@@ -564,12 +588,17 @@ def main():
                           100: ROOT / "ports/erts/tests/pre-init.c",
                           101: ROOT / "ports/erts/tests/internal-cpu.c",
                           102: ROOT / "ports/erts/tests/internal-cpu.c",
-                          103: ROOT / "ports/erts/tests/internal-cpu.c"}.get(number, ROOT / "ports/libc/tests" / source)
+                          103: ROOT / "ports/erts/tests/internal-cpu.c",
+                          104: ROOT / "ports/erts/tests/console.c",
+                          105: ROOT / "ports/erts/tests/console.c",
+                          106: ROOT / "ports/erts/tests/console.c",
+                          107: ROOT / "ports/erts/tests/console.c",
+                          108: ROOT / "ports/erts/tests/internal-cpu.c"}.get(number, ROOT / "ports/libc/tests" / source)
                 libraries = (["--library", erts_library, "--include", ROOT / "ports/erts"]
                              if number in (57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83) else [])
-                if number in (86, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103):
+                if number in (86, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108):
                     libraries = ["--library", clock_library, "--include", ROOT / "ports/erts"]
-                if number in (92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103):
+                if number in (92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108):
                     if platform_build:
                         if platform_build.get("native_time"):
                             calendar_library = platform_root / "time-supervisor/libknytos_erts_calendar.a"
@@ -578,7 +607,7 @@ def main():
                             libraries.extend(("--library", calendar_library,
                                               "--include", ROOT / "ports/erts/tests",
                                               "--define", "KNYTOS_ERTS_CALENDAR_CHECK"))
-                        if number in (96, 97, 98, 99, 100, 101, 102, 103):
+                        if number in (96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108):
                             pre_init = platform_build["native_pre_init"]
                             for path, expected_hash in pre_init["libraries_sha256"].items():
                                 if digest(Path(path)) != expected_hash:
@@ -587,15 +616,22 @@ def main():
                                     libraries.extend(("--library", Path(path)))
                             for include in pre_init["include_directories"]:
                                 libraries.extend(("--include", include))
-                        if number in (101, 102, 103):
+                        if number in (101, 102, 103, 104, 105, 106, 107, 108):
                             internal = platform_build["native_internal"]
-                            variant = internal["archives"]["regular" if number == 103 else "reentrant"]
+                            variant = internal["archives"]["regular" if number in (103, 105) else "reentrant"]
                             for path, expected_hash in ((variant["path"], variant["sha256"]),
                                                         (internal["cpu_archive"], internal["cpu_archive_sha256"])):
                                 if digest(Path(path)) != expected_hash:
                                     raise RuntimeError("Native internal dependency identity mismatch: " + path)
                                 libraries.extend(("--library", Path(path)))
                             libraries.append("--linker-argument=--wrap=malloc")
+                            if native_console:
+                                libraries.extend(("--define", "KNYTOS_ERTS_CONSOLE_CHECK"))
+                                if number in (101, 102, 103, 108):
+                                    libraries.extend(("--linker-argument=--wrap=abort",
+                                                      "--linker-argument=--wrap=knytos_console_write"))
+                                else:
+                                    libraries.extend(("--linker-argument=--wrap=fputc", "--linker-argument=--wrap=fwrite"))
                         for include in platform_build["include_directories"]:
                             libraries.extend(("--include", include))
                         libraries.extend(("--define", "HAVE_CONFIG_H", "--define", "USE_THREADS",
@@ -681,7 +717,7 @@ def main():
             grants = ["m4.missing=call"] if number in service_workers and number != active_cancel_case else []
             if number == service_case:
                 grants.extend(("time=call", "observe=call"))
-            if number in (84, 87, 89, 92, 96, 97, 98, 100, 101, 103):
+            if number in (84, 87, 89, 92, 96, 97, 98, 100, 101, 103, 104, 105, 107):
                 grants.append("time=call")
             if number == active_cancel_case:
                 grants.append("m4.hold=call")
@@ -872,6 +908,9 @@ def main():
                                 terminal = "[c-runtime] recursive worker exit"
                             if expected not in domain_lines or terminal not in domain_lines:
                                 return False
+                            if number == 102 and native_console:
+                                if "ERTS CPU rejected preparation preserves outputs and owns zero blocks PASS" not in domain_lines:
+                                    return False
                             if number in (92, 96) and platform_build and platform_build.get("native_time"):
                                 if "ERTS CALENDAR vectors full Gregorian cycle boundaries and UTC policy PASS" not in domain_lines:
                                     return False
@@ -890,8 +929,14 @@ def main():
                             assert "remaining_blocks=0" in text, name
                         if number in (4, 5, 6):
                             assert "released_blocks=1" in text, name
-                        if number in (101, 102, 103):
+                        if number in (101, 102, 103) and number not in abort_cases:
                             assert f"released_blocks={0 if number == 102 else 1} " in text, name
+                        if number in (104, 105):
+                            assert "released_blocks=1 " in text, name
+                            for label in ("MAIN", "WORKER"):
+                                records = re.findall(r"\[EL0 LOG\] lp=\d+ asid=\d+ ERTS CONSOLE " +
+                                                     label + r" n=([0-9]+)$", text, re.MULTILINE)
+                                assert sorted(map(int, records)) == list(range(8)), (name, label, records)
                         if number in (4, 5):
                             assert text.index("CABI ATEXIT") < text.index("CABI FINI"), name
                         if number in (10, idle_case):

@@ -1,0 +1,17 @@
+[
+  "make",
+  "--no-print-directory",
+  "-f",
+  "aarch64-unknown-knytos/Makefile",
+  "ERL_TOP=/private/tmp/knytos-erts-console-startup-final/otp",
+  "TARGET=aarch64-unknown-knytos",
+  "TYPE=opt",
+  "FLAVOR=emu",
+  "V=1",
+  "ERTS_SKIP_DEPEND=true",
+  "-o",
+  "aarch64-unknown-knytos/gen_git_version.mk",
+  "knytos-clock-objects",
+  "knytos-pre-init-object",
+  "knytos-cpu-topology-object"
+]

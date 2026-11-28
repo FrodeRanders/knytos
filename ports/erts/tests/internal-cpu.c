@@ -39,6 +39,35 @@ static size_t blocks(void)
     return stats.blocks;
 }
 
+#ifdef KNYTOS_ERTS_CONSOLE_CHECK
+static int outputs[6], checking_cpu_failure, diagnostic_rejected;
+int32_t __real_knytos_console_write(const void *, size_t);
+int32_t __wrap_knytos_console_write(const void *, size_t);
+int32_t __wrap_knytos_console_write(const void *buffer, size_t size)
+{
+    static const char diagnostic[] = "[erts] CPU-info allocation failed\n";
+    if (CASE == 108 && checking_cpu_failure && size == sizeof(diagnostic)-1 &&
+        !memcmp(buffer, diagnostic, size)) {
+        diagnostic_rejected = 1;
+        return KNYTOS_UNAVAILABLE;
+    }
+    return __real_knytos_console_write(buffer, size);
+}
+_Noreturn void __real_abort(void);
+_Noreturn void __wrap_abort(void);
+_Noreturn void __wrap_abort(void)
+{
+    if (checking_cpu_failure) {
+        checking_cpu_failure = 0;
+        for (unsigned i = 0; i < 6; ++i) assert(outputs[i] == 0x5a5a);
+        assert(blocks() == 0);
+        assert(CASE != 108 || diagnostic_rejected);
+        puts("ERTS CPU rejected preparation preserves outputs and owns zero blocks PASS");
+    }
+    __real_abort();
+}
+#endif
+
 static void unknown_cpu(void)
 {
     erts_cpu_info_t *info = erts_cpu_info_create();
@@ -97,7 +126,15 @@ int main(void)
     assert(erts_get_cpu_available(NULL) == -EINVAL && erts_get_cpu_quota(NULL) == -EINVAL);
     assert(erts_bind_to_cpu(NULL, 0) == -EINVAL && erts_unbind_from_cpu(NULL) == -EINVAL);
     erts_cpu_info_destroy(NULL);
-    if (CASE == 102) reject_allocation = 1;
+    if (CASE == 102 || CASE == 108) {
+        reject_allocation = 1;
+#ifdef KNYTOS_ERTS_CONSOLE_CHECK
+        for (unsigned i = 0; i < 6; ++i) outputs[i] = 0x5a5a;
+        checking_cpu_failure = 1;
+        erts_pre_early_init_cpu_topology(&outputs[0], &outputs[1], &outputs[2], &outputs[3], &outputs[4], &outputs[5]);
+        assert(0 && "native CPU allocation failure must terminate");
+#endif
+    }
     int dcg, readers, configured, online, available, quota;
     erts_pre_early_init_cpu_topology(&dcg, &readers, &configured, &online, &available, &quota);
     assert(dcg > 0 && readers > 0 && !reject_allocation);

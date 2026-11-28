@@ -1,0 +1,28 @@
+ld.lld: error: undefined symbol: erts_get_cpu_configured
+>>> referenced by erl_cpu_topology.c
+>>>               erl_cpu_topology.o:(get_logical_processors) in archive /private/tmp/knytos-erts-console-startup-final/internal/libknytos_erts_cpu_prefix.a
+
+ld.lld: error: undefined symbol: erts_get_cpu_online
+>>> referenced by erl_cpu_topology.c
+>>>               erl_cpu_topology.o:(get_logical_processors) in archive /private/tmp/knytos-erts-console-startup-final/internal/libknytos_erts_cpu_prefix.a
+
+ld.lld: error: undefined symbol: erts_get_cpu_available
+>>> referenced by erl_cpu_topology.c
+>>>               erl_cpu_topology.o:(get_logical_processors) in archive /private/tmp/knytos-erts-console-startup-final/internal/libknytos_erts_cpu_prefix.a
+
+ld.lld: error: undefined symbol: erts_get_cpu_quota
+>>> referenced by erl_cpu_topology.c
+>>>               erl_cpu_topology.o:(get_logical_processors) in archive /private/tmp/knytos-erts-console-startup-final/internal/libknytos_erts_cpu_prefix.a
+
+ld.lld: error: undefined symbol: erts_cpu_info_create
+>>> referenced by erl_cpu_topology.c
+>>>               erl_cpu_topology.o:(erts_pre_early_init_cpu_topology) in archive /private/tmp/knytos-erts-console-startup-final/internal/libknytos_erts_cpu_prefix.a
+
+ld.lld: error: undefined symbol: erts_snprintf
+>>> referenced by consumer.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/consumer-908edc.o:(format)
+
+ld.lld: error: undefined symbol: erts_printf
+>>> referenced by consumer.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/consumer-908edc.o:(stream)
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

@@ -32,6 +32,12 @@ options and are recorded in the build manifest. ERTS allocation-failure
 fixtures use `--linker-argument=--wrap=malloc` for test-only fault injection;
 successful calls still delegate to the real allocator.
 
+`run-tests.py --case N` may be repeated to select worker-profile fixtures.
+Base C controls and the final survivor always run. The result records the
+selected IDs; invalid IDs reject before building. Use fresh output directories
+for independent campaigns. A smaller campaign does not resolve a failed larger
+campaign or an underlying persistence incident.
+
 Use the normal artifact signing and authenticated deployment process. The
 test harness demonstrates `cluster-sign elf-sign`, `deployment-sign` and
 `deployment-notify`; its development fixture key is not a production key.

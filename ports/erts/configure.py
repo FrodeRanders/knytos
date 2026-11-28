@@ -185,9 +185,13 @@ def main():
                         help="also build and link native platform early thread/clock initialization")
     parser.add_argument("--native-internal", action="store_true",
                         help="also build internal libraries and qualify common CPU pre-initialization")
+    parser.add_argument("--native-console", action="store_true",
+                        help="also route fixed streams and enforce terminal native CPU preparation")
     parser.add_argument("--clock-sample-age-ms", type=int,
                         help="explicit finite clock sample-age policy for --native-clock")
     args = parser.parse_args()
+    if args.native_console and not args.native_internal:
+        parser.error("--native-console requires --native-internal")
     if args.native_internal and not args.native_pre_init:
         parser.error("--native-internal requires --native-pre-init")
     if args.native_pre_init and not args.native_time:
@@ -225,7 +229,8 @@ def main():
     if args.native_platform:
         from platform_build import prepare
         prepare(tree, metadata=args.native_metadata, native_time=args.native_time,
-                native_pre_init=args.native_pre_init, native_internal=args.native_internal)
+                native_pre_init=args.native_pre_init, native_internal=args.native_internal,
+                native_console=args.native_console)
     if args.native_ethread:
         with (out / "autoconf.txt").open("w") as log:
             subprocess.run(["autoconf", "-I", "../make/autoconf", "-o", "configure", "configure.ac"],
@@ -318,7 +323,8 @@ def main():
         evidence["native_platform"] = qualify(out, tree, sdk, toolchain, args.clock_sample_age_ms,
                                               generate_metadata=args.native_metadata, otp_source=source,
                                               native_time=args.native_time, native_pre_init=args.native_pre_init,
-                                              native_internal=args.native_internal, otp_pin=OTP_PIN)
+                                              native_internal=args.native_internal, otp_pin=OTP_PIN,
+                                              native_console=args.native_console)
         evidence["inputs_sha256"].update({str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
                                          for path in (ROOT / "ports/erts/platform_build.py",
                                                       ROOT / "ports/erts/otp-29.1.2-platform.patch",
@@ -343,6 +349,9 @@ def main():
             evidence["inputs_sha256"].update({str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
                                              for path in (ROOT / "ports/erts/platform_internal.py",
                                                           ROOT / "ports/erts/otp-29.1.2-internal-cpu.patch")})
+        if args.native_console:
+            evidence["inputs_sha256"]["ports/erts/otp-29.1.2-console-startup.patch"] = hashlib.sha256(
+                (ROOT / "ports/erts/otp-29.1.2-console-startup.patch").read_bytes()).hexdigest()
     (out / "result.json").write_text(json.dumps(evidence, indent=2) + "\n")
     print(f"ERTS configure exited {result.returncode}. See {log}")
     return result.returncode

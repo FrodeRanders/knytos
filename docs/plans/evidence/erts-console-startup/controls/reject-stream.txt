@@ -1,0 +1,4 @@
+ld.lld: error: undefined symbol: write
+>>> referenced by erl_printf.c
+>>>               erl_printf.o:(erts_write_fd) in archive /private/tmp/knytos-erts-console-startup-final/otp/erts/lib/internal/aarch64-unknown-knytos/liberts_internal_r.a
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

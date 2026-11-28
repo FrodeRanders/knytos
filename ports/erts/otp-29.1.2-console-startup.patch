@@ -1,0 +1,161 @@
+--- a/erts/lib_src/common/erl_printf.c
++++ b/erts/lib_src/common/erl_printf.c
+@@ -38,6 +38,12 @@
+ #endif
+ #include "erl_printf.h"
+ #include "erl_printf_format.h"
++#ifdef ERTS_KNYTOS
++#include <limits.h>
++#if !defined(KNYTOS_WORKER_LIBC) || !defined(HAVE_FLOCKFILE)
++#error "Native ERTS streams require the locked worker-libc profile"
++#endif
++#endif
+ 
+ #ifdef DEBUG
+ #include <assert.h>
+@@ -86,11 +92,25 @@
+ #	define FWRITE fwrite
+ #endif
+ 
++#ifdef ERTS_KNYTOS
++/* Borrow only the fixed runtime streams. No descriptor namespace is implied. */
++static int native_stream(FILE *stream)
++{
++    if (stream == stdout || stream == stderr) return 1;
++    errno = EBADF;
++    return 0;
++}
++#endif
++
+ /* We use write for stdout and stderr as they could be
+    set to non-blocking by shell drivers, and non-blocking
+    FILE * functions work unpredictably as best */
+ static int
+ printf_putc(int c, FILE *stream) {
++#ifdef ERTS_KNYTOS
++    if (!native_stream(stream)) return EOF;
++    return fputc(c, stream);
++#else
+     if ((FILE*)stream == stdout || (FILE*)stream == stderr) {
+         int fd = stream == stdout ? fileno(stdout) : fileno(stderr);
+         /* cast to a char here, because write expects bytes. */
+@@ -104,11 +124,16 @@
+     }
+ 
+     return PUTC(c, stream);
++#endif
+ }
+ 
+ static size_t
+ printf_fwrite(const void *ptr, size_t size, size_t nitems,
+           FILE *stream) {
++#ifdef ERTS_KNYTOS
++    if (!native_stream(stream)) return 0;
++    return fwrite(ptr, size, nitems, stream);
++#else
+     if ((FILE*)stream == stdout || (FILE*)stream == stderr) {
+         int fd = stream == stdout ? fileno(stdout) : fileno(stderr);
+         int res;
+@@ -119,6 +144,7 @@
+         return res;
+     }
+     return FWRITE(ptr, size, nitems, stream);
++#endif
+ }
+ 
+ static int
+@@ -149,6 +175,11 @@
+ erts_write_fp(void *vfp, char* buf, size_t len)
+ {
+     ASSERT(vfp);
++#ifdef ERTS_KNYTOS
++    if (!native_stream((FILE *)vfp)) return -EBADF;
++    if (len > INT_MAX) { errno = EOVERFLOW; return -EOVERFLOW; }
++    errno = 0;
++#endif
+ #ifdef PUTC_ON_SMALL_WRITES
+     if (len <= 64) { /* Try to optimize writes of small bufs. */
+ 	int i;
+@@ -270,6 +301,9 @@
+ {
+     int res;
+     va_list arglist;
++#ifdef ERTS_KNYTOS
++    if (!native_stream(filep)) return -EBADF;
++#endif
+     va_start(arglist, format);
+     errno = 0;
+     if (erts_printf_stdout_func && filep == stdout)
+@@ -386,12 +420,18 @@
+ 	res = (*erts_printf_stdout_func)((char *) format, arglist);
+     else {
+ 	errno = 0;
++#ifdef ERTS_KNYTOS
++        FLOCKFILE(stdout);
++#endif
+ 	res = erts_printf_format(erts_printf_add_cr_to_stdout
+ 				 ? write_f_add_cr
+ 				 : erts_write_fp,
+ 				 (void *) stdout,
+ 				 (char *) format,
+ 				 arglist);
++#ifdef ERTS_KNYTOS
++        FUNLOCKFILE(stdout);
++#endif
+     }
+     return res;
+ }
+@@ -400,6 +440,9 @@
+ erts_vfprintf(FILE *filep, const char *format, va_list arglist)
+ {
+     int res;
++#ifdef ERTS_KNYTOS
++    if (!native_stream(filep)) return -EBADF;
++#endif
+     if (erts_printf_stdout_func && filep == stdout)
+ 	res = (*erts_printf_stdout_func)((char *) format, arglist);
+     else if (erts_printf_stderr_func && filep == stderr)
+--- a/erts/emulator/beam/erl_cpu_topology.c
++++ b/erts/emulator/beam/erl_cpu_topology.c
+@@ -38,6 +38,9 @@
+ #include "erl_cpu_topology.h"
+ #include "erl_flxctr.h"
+ #include "erl_global_literals.h"
++#ifdef ERTS_KNYTOS
++#include "knytos.h"
++#endif
+ 
+ #define ERTS_MAX_READER_GROUPS 64
+ 
+@@ -1666,11 +1669,31 @@
+ 				 int *avail_p,
+ 				 int *quota_p)
+ {
++#ifdef ERTS_KNYTOS
++    erts_cpu_info_t *prepared;
++    /* Prepare before publication, on startup only. A worker must not read
++     * startup's mutable owner, even when its own call will be rejected. */
++    if (!knytos_thread_is_startup() || cpuinfo) {
++        static const char message[] = "[erts] CPU pre-init requires fresh startup state\n";
++        (void)knytos_console_write(message, sizeof(message) - 1);
++        abort();
++    }
++    prepared = erts_cpu_info_create();
++    if (!prepared) {
++        static const char message[] = "[erts] CPU-info allocation failed\n";
++        (void)knytos_console_write(message, sizeof(message) - 1);
++        abort();
++    }
++#endif
+     cpu_groups_maps = NULL;
+     no_cpu_groups_callbacks = 0;
+     *max_rg_p = ERTS_MAX_READER_GROUPS;
+     *max_dcg_p = ERTS_MAX_FLXCTR_GROUPS;
++#ifdef ERTS_KNYTOS
++    cpuinfo = prepared;
++#else
+     cpuinfo = erts_cpu_info_create();
++#endif
+     get_logical_processors(conf_p, onln_p, avail_p, quota_p);
+ }
+ 

@@ -277,6 +277,37 @@ requires a nonnull object. Sleep, descriptor stream formatting, remaining
 platform hooks, capacity, continuous refresh and matching host bootstrap remain
 open.
 
+### Fixed console streams and terminal CPU preparation
+
+Add `--native-console` to native-internal mode. Its source-preservation controls
+also require `unifdef` on the build host. Run the same signed guest command
+with the resulting platform-build directory.
+
+Native common stream helpers use the existing C runtime's fixed stdout/stderr
+and recursive locks. Default printf/fprintf and va_list forms retain the lock
+through a whole formatted call, including native `erts_vprintf`. Character
+and bulk output use actual `fputc`/`fwrite`; there is no descriptor backend or
+retry of a short output prefix. Unsupported FILE objects reject before locking,
+and oversized callback spans reject before I/O. CRLF conversion still reports
+the logical input length. Descriptor-formatting and sleep helpers remain
+unported and fail linkage.
+
+Native CPU pre-early initialization now requires fresh startup state. It
+prepares the CPU-info object before publishing outputs or its runtime owner.
+Allocation failure, reentry and worker invocation emit a bounded diagnostic
+and abort, including when diagnostic output fails. A worker rejects before
+reading startup's mutable CPU-info pointer. Successful CPU ownership remains
+unchanged: the runtime keeps it through worker drain and normal C exit.
+
+The [qualification](../../docs/reports/milestones/2026-11-28-erts-console-startup.md)
+records both archive variants, recursive/cross-thread stream locking, exact
+records and CRLF bytes, output faults, untouched preparation outputs and
+terminal controls. Nonnative source is preserved by native-macro removal and
+comparison against the pinned source, retaining string-literal whitespace.
+The formatter and CPU source identities are now patched native identities;
+the other two internal C sources still match the pin. Full emulator startup,
+CPU discovery, descriptor I/O, stack/capacity and continuous refresh remain open.
+
 ## Native monotonic clock prerequisite
 
 `erts_monotonic.c` implements OTP's `erts_os_monotonic_time` and

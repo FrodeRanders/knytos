@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 builds real internal libraries and emulator metadata, and executes common CPU pre-early initialization plus native thread/clock pre-init. Complete ERTS startup and refresh ownership remain open.\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 builds internal libraries/metadata, routes fixed console streams and executes CPU/thread/clock startup prefixes with terminal preparation guards. Complete ERTS startup and refresh ownership remain open.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -1606,6 +1606,17 @@ runtime-lifetime CPU-info owner until C runtime exit. Full startup needs a
 terminal policy on rejected CPU-info allocation before the later topology
 initializer, which requires a nonnull object. Later topology/allocator/lock
 initialization, native discovery/binding and emulator boot remain open.
+
+The [fixed-console/startup step](erlang-m5-console-startup.md) adds
+`--native-console`. Default stream formatters use locked native stdout/stderr
+instead of descriptor writes. Native CPU pre-early preparation now allocates
+before publication and aborts on allocation failure, reentry or worker calls,
+even when the diagnostic fails. The
+[qualification](../reports/milestones/2026-11-28-erts-console-startup.md) covers
+whole formatted records, short-write errors, recursive locks, exact CRLF bytes,
+unchanged preparation outputs and terminal controls. Nonnative code remains
+unchanged under native-macro selection. Descriptor output/sleep and complete
+emulator startup remain open.
 
 A full OTP build will need to pass the target configuration through
 the top-level wrapper. An illustrative invocation is:
