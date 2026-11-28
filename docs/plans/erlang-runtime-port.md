@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 configures native threads/clocks, builds its clock objects through complete common headers and generates upstream emulator metadata with a pinned-source host YCF tool. Native ERTS startup and refresh ownership remain open.\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 configures native threads/clocks, generates upstream emulator metadata and compiles the common time supervisor with native UTC calendars and explicit unsupported CPU statistics. Native ERTS startup and refresh ownership remain open.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -1561,11 +1561,24 @@ upstream Make rules. Native YCF transforms depend on that executable rather
 than the unbuilt target internal library. Clock builds no longer exclude BEAM
 generation in this mode. Common `erl_term.c` and `erl_init.c` compile unchanged
 with the native profile permitting upstream's `+A0` lower bound; positive
-async-pool sizes remain unqualified. The common time-supervisor preflight
-records missing native CPU-accounting/calendar interfaces.
+async-pool sizes remain unqualified. This mode retains the original
+time-supervisor CPU-accounting/calendar diagnostics; the additional native-time
+mode below resolves that compilation boundary.
 The [qualification](../reports/milestones/2026-11-28-erts-generated-metadata.md)
 distinguishes this generated metadata from preloaded BEAM modules, matching
 host Erlang bootstrap and a complete emulator build.
+
+The [native time-supervisor step](erlang-m5-time-supervisor.md) adds
+`--native-time`. Generated Make rules build its UTC calendar adapter, and the
+whole common time-supervisor and BIF sources compile. Local time is explicitly
+UTC without DST or ambient `TZ`. Current calendar reads use the authorized
+published snapshot; the common Gregorian conversions execute in signed native
+C fixtures. `statistics(runtime)` and the test-only `proc_sig_block` hook raise
+`notsup` until native accounting/blocking contracts exist. No CPU time is
+fabricated from wall or monotonic time. The
+[qualification](../reports/milestones/2026-11-28-erts-time-supervisor.md)
+distinguishes selected calendar execution from full time-supervisor startup,
+Erlang BIF execution and emulator boot.
 
 A full OTP build will need to pass the target configuration through
 the top-level wrapper. An illustrative invocation is:
@@ -1938,6 +1951,11 @@ Remaining integration:
 - Time correction.
 - Timestamp conversion.
 - Runtime scheduling accounting.
+
+Native UTC calendar getters and common Gregorian conversions are qualified
+separately above. Local timezone/DST support remains outside the initial UTC
+profile, and CPU-runtime statistics explicitly reject until real accounting
+is available.
 
 Ensure cluster-wide wall-clock synchronization is not incorrectly assumed to provide a global monotonic clock.
 

@@ -396,6 +396,8 @@ def main():
             93: ("c-erts-time-init-denied", 1, "ERTS TIME INIT missing grant preserves metadata and cold clock PASS"),
             94: ("c-erts-time-init-failed", 1, "[erts] clock initialization failed"),
         }
+        if platform_build and platform_build.get("native_time"):
+            clock_cases[95] = ("c-erts-calendar-failed", 1, "[erts] UTC calendar unavailable stale or out of range")
     worker_cases.update(libc_cases)
     worker_cases.update(mutex_cases)
     worker_cases.update(tse_cases)
@@ -405,7 +407,7 @@ def main():
         if args.smp < 2:
             parser.error("worker fixtures need at least two guest CPUs")
         cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
-    abort_cases = (7, 9, 11, 13, 15, 20, 39, 41, 47, 49, 52, 54, 56, 58, 61, 66, 77, 78, 82, 91, 94)
+    abort_cases = (7, 9, 11, 13, 15, 20, 39, 41, 47, 49, 52, 54, 56, 58, 61, 66, 77, 78, 82, 91, 94, 95)
     cases += CASES[-1:]
     retirement_cases = {}
     retirement_images = [("parked", args.atomvm_shutdown_parked_elf)]
@@ -539,13 +541,21 @@ def main():
                           91: ROOT / "ports/erts/tests/system-time.c",
                           92: ROOT / "ports/erts/tests/time-init.c",
                           93: ROOT / "ports/erts/tests/time-init.c",
-                          94: ROOT / "ports/erts/tests/time-init.c"}.get(number, ROOT / "ports/libc/tests" / source)
+                          94: ROOT / "ports/erts/tests/time-init.c",
+                          95: ROOT / "ports/erts/tests/time-init.c"}.get(number, ROOT / "ports/libc/tests" / source)
                 libraries = (["--library", erts_library, "--include", ROOT / "ports/erts"]
                              if number in (57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83) else [])
-                if number in (86, 89, 90, 91, 92, 93, 94):
+                if number in (86, 89, 90, 91, 92, 93, 94, 95):
                     libraries = ["--library", clock_library, "--include", ROOT / "ports/erts"]
-                if number in (92, 93, 94):
+                if number in (92, 93, 94, 95):
                     if platform_build:
+                        if platform_build.get("native_time"):
+                            calendar_library = platform_root / "time-supervisor/libknytos_erts_calendar.a"
+                            if digest(calendar_library) != platform_build["native_time"]["archive_sha256"]:
+                                raise RuntimeError("Native common calendar archive identity mismatch")
+                            libraries.extend(("--library", calendar_library,
+                                              "--include", ROOT / "ports/erts/tests",
+                                              "--define", "KNYTOS_ERTS_CALENDAR_CHECK"))
                         for include in platform_build["include_directories"]:
                             libraries.extend(("--include", include))
                         libraries.extend(("--define", "HAVE_CONFIG_H", "--define", "USE_THREADS",
@@ -822,6 +832,9 @@ def main():
                                 terminal = "[c-runtime] recursive worker exit"
                             if expected not in domain_lines or terminal not in domain_lines:
                                 return False
+                            if number == 92 and platform_build and platform_build.get("native_time"):
+                                if "ERTS CALENDAR vectors full Gregorian cycle boundaries and UTC policy PASS" not in domain_lines:
+                                    return False
                             if number in (15, 20, 77, 78, 82):
                                 asid = re.search(r'\[EL0 LOG\] lp=\d+ asid=(\d+) ', domain_lines)[1]
                                 return re.search(r'Aborting user address space ' + asid + r'\b', text[before:]) is not None

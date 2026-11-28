@@ -2,3 +2,4 @@
 ports/erts/*.patch -whitespace
 docs/plans/evidence/erts-native-configure/native-link.c -whitespace
 docs/plans/evidence/c-realtime/host-tests.txt -whitespace
+docs/plans/evidence/erts-time-supervisor/** -text -whitespace

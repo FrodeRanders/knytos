@@ -1,0 +1,254 @@
+--- a/erts/emulator/beam/erl_time_sup.c
++++ b/erts/emulator/beam/erl_time_sup.c
+@@ -31,6 +31,9 @@
+ #endif
+ 
+ #include "sys.h"
++#ifdef ERTS_KNYTOS
++#include "erts_calendar.h"
++#endif
+ #include "erl_vm.h"
+ #include "global.h"
+ #define ERTS_WANT_TIMER_WHEEL_API
+@@ -41,6 +44,7 @@
+ 
+ static erts_mtx_t erts_get_time_mtx;
+ 
++#ifndef ERTS_KNYTOS
+  /* used by erts_runtime_elapsed_both */
+ typedef struct {
+     erts_mtx_t mtx;
+@@ -52,6 +56,7 @@
+     ErtsRunTimePrevData data;
+     char align__[ERTS_ALC_CACHE_LINE_ALIGN_SIZE(sizeof(ErtsRunTimePrevData))];
+ } runtime_prev erts_align_attribute(ERTS_CACHE_LINE_SIZE);
++#endif
+ 
+ static union {
+     erts_atomic64_t time;
+@@ -1066,10 +1071,12 @@
+ 
+     erts_mtx_init(&erts_get_time_mtx, "get_time", NIL,
+         ERTS_LOCK_FLAGS_PROPERTY_STATIC | ERTS_LOCK_FLAGS_CATEGORY_GENERIC);
++#ifndef ERTS_KNYTOS
+     erts_mtx_init(&runtime_prev.data.mtx, "runtime", NIL,
+         ERTS_LOCK_FLAGS_PROPERTY_STATIC | ERTS_LOCK_FLAGS_CATEGORY_GENERIC);
+     runtime_prev.data.user = 0;
+     runtime_prev.data.sys = 0;
++#endif
+ 
+ #ifdef ERTS_ENSURE_OS_MONOTONIC_TIME
+     if (!time_sup.r.o.os_monotonic_time_disable) {
+@@ -1421,6 +1428,7 @@
+ 
+ /* info functions */
+ 
++#ifndef ERTS_KNYTOS
+ void 
+ erts_runtime_elapsed_both(ErtsMonotonicTime *ms_user, ErtsMonotonicTime *ms_sys, 
+                           ErtsMonotonicTime *ms_user_diff, ErtsMonotonicTime *ms_sys_diff)
+@@ -1485,6 +1493,8 @@
+ }
+ 
+ 
++#endif /* native CPU-runtime statistics remain unsupported */
++
+ /* wall clock routines */
+ 
+ void 
+@@ -1516,6 +1526,13 @@
+ void 
+ get_time(int *hour, int *minute, int *second)
+ {
++#ifdef ERTS_KNYTOS
++    struct tm tmbuf;
++    knytos_erts_calendar_now_or_abort(&tmbuf);
++    *hour = tmbuf.tm_hour;
++    *minute = tmbuf.tm_min;
++    *second = tmbuf.tm_sec;
++#else
+     time_t the_clock;
+     struct tm *tm, tmbuf;
+ 
+@@ -1524,12 +1541,20 @@
+     *hour = tm->tm_hour;
+     *minute = tm->tm_min;
+     *second = tm->tm_sec;
++#endif
+ }
+ 
+ /* get current date */
+ void 
+ get_date(int *year, int *month, int *day)
+ {
++#ifdef ERTS_KNYTOS
++    struct tm tmbuf;
++    knytos_erts_calendar_now_or_abort(&tmbuf);
++    *year = tmbuf.tm_year + 1900;
++    *month = tmbuf.tm_mon + 1;
++    *day = tmbuf.tm_mday;
++#else
+     time_t the_clock;
+     struct tm *tm, tmbuf;
+ 
+@@ -1539,6 +1564,7 @@
+     *year = tm->tm_year + 1900;
+     *month = tm->tm_mon +1;
+     *day = tm->tm_mday;
++#endif
+ }
+ 
+ /* get localtime */
+@@ -1546,6 +1572,16 @@
+ get_localtime(int *year, int *month, int *day, 
+ 	      int *hour, int *minute, int *second)
+ {
++#ifdef ERTS_KNYTOS
++    struct tm tmbuf;
++    knytos_erts_calendar_now_or_abort(&tmbuf);
++    *year = tmbuf.tm_year + 1900;
++    *month = tmbuf.tm_mon + 1;
++    *day = tmbuf.tm_mday;
++    *hour = tmbuf.tm_hour;
++    *minute = tmbuf.tm_min;
++    *second = tmbuf.tm_sec;
++#else
+     time_t the_clock;
+     struct tm *tm, tmbuf;
+ 
+@@ -1557,6 +1593,7 @@
+     *hour = tm->tm_hour;
+     *minute = tm->tm_min;
+     *second = tm->tm_sec;
++#endif
+ }
+ 
+ 
+@@ -1565,6 +1602,16 @@
+ get_universaltime(int *year, int *month, int *day, 
+ 		  int *hour, int *minute, int *second)
+ {
++#ifdef ERTS_KNYTOS
++    struct tm tmbuf;
++    knytos_erts_calendar_now_or_abort(&tmbuf);
++    *year = tmbuf.tm_year + 1900;
++    *month = tmbuf.tm_mon + 1;
++    *day = tmbuf.tm_mday;
++    *hour = tmbuf.tm_hour;
++    *minute = tmbuf.tm_min;
++    *second = tmbuf.tm_sec;
++#else
+     time_t the_clock;
+     struct tm *tm;
+ #ifdef HAVE_GMTIME_R
+@@ -1583,6 +1630,7 @@
+     *hour = tm->tm_hour;
+     *minute = tm->tm_min;
+     *second = tm->tm_sec;
++#endif
+ }
+ 
+ 
+@@ -1604,6 +1652,7 @@
+  * return -1, if not successful
+  */
+ 
++#ifndef ERTS_KNYTOS
+ static int erl_mktime(time_t *c, struct tm *tm) {
+     time_t clock;
+ 
+@@ -1633,6 +1682,8 @@
+ 
+     return -1;
+ }
++
++#endif
+ 
+ /*
+  * gregday
+@@ -1735,6 +1786,11 @@
+ local_to_univ(Sint *year, Sint *month, Sint *day, 
+ 	      Sint *hour, Sint *minute, Sint *second, int isdst)
+ {
++#ifdef ERTS_KNYTOS
++    Sint64 seconds;
++    (void)isdst; /* UTC has no DST, matching the common no-DST policy. */
++    return univ_to_seconds(*year, *month, *day, *hour, *minute, *second, &seconds);
++#else
+     time_t the_clock;
+     struct tm *tm, t;
+ #ifdef HAVE_GMTIME_R
+@@ -1792,6 +1848,7 @@
+     *minute = tm->tm_min;
+     *second = tm->tm_sec;
+     return 1;
++#endif
+ }
+ #if defined(HAVE_POSIX2TIME) && defined(HAVE_DECL_POSIX2TIME) && \
+     !HAVE_DECL_POSIX2TIME
+@@ -1802,6 +1859,10 @@
+ univ_to_local(Sint *year, Sint *month, Sint *day, 
+ 	      Sint *hour, Sint *minute, Sint *second)
+ {
++#ifdef ERTS_KNYTOS
++    Sint64 seconds;
++    return univ_to_seconds(*year, *month, *day, *hour, *minute, *second, &seconds);
++#else
+     time_t the_clock;
+     struct tm *tm, tmbuf;
+ 
+@@ -1846,6 +1907,7 @@
+ 	return 1;
+     }
+     return 0;
++#endif
+ }
+ 
+ /* get a timestamp */
+--- a/erts/emulator/beam/erl_time.h
++++ b/erts/emulator/beam/erl_time.h
+@@ -137,10 +137,12 @@
+ Eterm erts_monotonic_time_source(struct process*c_p);
+ Eterm erts_system_time_source(struct process*c_p);
+ 
++#ifndef ERTS_KNYTOS
+ void erts_runtime_elapsed_both(ErtsMonotonicTime *ms_user,
+                                ErtsMonotonicTime *ms_sys, 
+                                ErtsMonotonicTime *ms_user_diff,
+                                ErtsMonotonicTime *ms_sys_diff);
++#endif
+ void erts_wall_clock_elapsed_both(ErtsMonotonicTime *total,
+                                   ErtsMonotonicTime *diff);
+ 
+--- a/erts/emulator/beam/erl_bif_info.c
++++ b/erts/emulator/beam/erl_bif_info.c
+@@ -4266,6 +4266,10 @@
+ 	res = TUPLE2(hp, b1, b2); 
+ 	BIF_RET(res);
+     } else if (BIF_ARG_1 == am_runtime) {
++#ifdef ERTS_KNYTOS
++        /* No generation-preserving user/kernel CPU-time contract yet. */
++        BIF_ERROR(BIF_P, EXC_NOTSUP);
++#else
+ 	ErtsMonotonicTime u1, u2;
+ 	Eterm b1, b2;
+         Uint hsz;
+@@ -4278,6 +4282,7 @@
+         b2 = erts_bld_monotonic_time(&hp, NULL, u2);
+ 	res = TUPLE2(hp, b1, b2);
+ 	BIF_RET(res);
++#endif
+     } else if (BIF_ARG_1 ==  am_run_queue) {
+ 	res = erts_run_queues_len(NULL, 1, 0, 0);
+ 	BIF_RET(make_small(res));
+--- a/erts/emulator/Makefile.in
++++ b/erts/emulator/Makefile.in
+@@ -493,7 +493,7 @@
+ 
+ ERLANG_OSTYPE = @ERLANG_OSTYPE@
+ 
+-KNYTOS_CLOCK_SRC = erts_monotonic.c erts_system_time.c erts_time_init.c
++KNYTOS_CLOCK_SRC = erts_monotonic.c erts_system_time.c erts_time_init.c erts_calendar.c
+ KNYTOS_CLOCK_OBJS = $(addprefix $(OBJDIR)/,$(KNYTOS_CLOCK_SRC:.c=.o))
+ 
+ ENABLE_ALLOC_TYPE_VARS += @ERLANG_OSTYPE@

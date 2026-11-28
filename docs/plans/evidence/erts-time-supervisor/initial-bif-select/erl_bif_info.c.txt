@@ -1,0 +1,10 @@
+/private/tmp/knytos-erts-time-supervisor-first/otp/erts/emulator/beam/erl_bif_info.c:5026:28: error: variable has incomplete type 'struct timeval'
+ 5026 |             struct timeval tv;
+      |                            ^
+/private/tmp/knytos-erts-time-supervisor-first/otp/erts/emulator/beam/erl_bif_info.c:5026:20: note: forward declaration of 'struct timeval'
+ 5026 |             struct timeval tv;
+      |                    ^
+/private/tmp/knytos-erts-time-supervisor-first/otp/erts/emulator/beam/erl_bif_info.c:5031:13: error: use of undeclared identifier 'select'
+ 5031 |             select(0, NULL, NULL, NULL, &tv);
+      |             ^~~~~~
+2 errors generated.

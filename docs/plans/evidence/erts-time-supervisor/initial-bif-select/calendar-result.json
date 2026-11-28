@@ -1,0 +1,8 @@
+{
+  "archive_sha256": "a9335e020382e97ec428703e53317e0db8e988b5c0f23e9804b6f3c560e073d2",
+  "source_object_sha256": "41cb6d9a724b06cce1bb2a54dee87c4e95c6e6f5e5ff1ce658aca6d4fe564d4b",
+  "whole_bif_compile_status": 1,
+  "bif_preprocessed_sha256": "9d57872bb63ddf85de557c3bee5f3eaa04ded969f2de5a2a5709c0d101b10610",
+  "cpu_statistics_unsupported": true,
+  "whole_time_supervisor_executed": false
+}

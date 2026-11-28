@@ -133,15 +133,20 @@ def generate(out, tree, otp_source):
     return result
 
 
-def common_preflight(out, tree, flags):
+def common_preflight(out, tree, flags, native_time=False):
     """Compile unchanged common sources and retain actual native platform gates."""
     work = out / "metadata"
     directory = tree / "erts/emulator" / TARGET / "opt/emu"
     common_flags = [*flags, "-I", str(directory), "-I", str(tree / "erts/emulator" / TARGET)]
     for name in ("zlib", "zstd", "ryu", "pcre", "drivers/common", "nifs/common"):
         common_flags.extend(("-I", str(tree / "erts/emulator" / name)))
+    if native_time:
+        common_flags.extend(("-ffunction-sections", "-fdata-sections"))
     results = {}
-    for name in ("erl_term.c", "erl_time_sup.c", "erl_init.c"):
+    sources = ["erl_term.c", "erl_time_sup.c", "erl_init.c"]
+    if native_time:
+        sources.append("erl_bif_info.c")
+    for name in sources:
         source = tree / "erts/emulator/beam" / name
         command = [*common_flags, "-ferror-limit=12", "-c", source,
                    "-o", work / Path(name).with_suffix(".o")]
@@ -156,6 +161,8 @@ def common_preflight(out, tree, flags):
         raise SystemExit("Unchanged common erl_term.c did not compile with genuine metadata")
     if results["erl_init.c"]["status"] != 0:
         raise SystemExit("Unchanged common erl_init.c did not compile for the native +A0 profile")
+    if native_time and results["erl_time_sup.c"]["status"] != 0:
+        raise SystemExit("Native common time-supervisor compilation failed")
     log = work / "reject-metadata-omitted.txt"
     with log.open("w") as stream:
         completed = subprocess.run([*flags, "-I", str(tree / "erts/emulator" / TARGET),

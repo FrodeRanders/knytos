@@ -1,0 +1,17 @@
+No generation-preserving user/kernel CPU-time contract yet. */
+        do { (A__p)->freason = ((17 << (2 +8)) | ((0 | (1<<(4+2)) /* save stack trace in internal form */) | 0 | (1<<(2+2)) /* write to logger on termination */)); return (0x0); } while(0);
+    } else if ((BIF__ARGS[0]) == ((Eterm)(((604) << 6) + ((0x0 << 4) | ((0x2 << 2) | 0x3))))) {
+ res = erts_run_queues_len(((void*)0), 1, 0, 0);
+ return ((((Uint)(res) << 4) + ((0x3 << 2) | 0x3)));
+    } else if ((BIF__ARGS[0]) == ((Eterm)(((751) << 6) + ((0x0 << 4) | ((0x2 << 2) | 0x3))))) {
+ ErtsMonotonicTime w1, w2;
+ Eterm b1, b2;
+        Uint hsz;
+ erts_wall_clock_elapsed_both(&w1, &w2);
+        hsz = 3; /* 2-tuple */
+        (void) erts_bld_sint64(((void*)0), &hsz, w1);
+        (void) erts_bld_sint64(((void*)0), &hsz, w2);
+ hp = (((void) 1), ((void) 1), ((0 || (!(A__p)->heap || ((((void) 1), (((A__p)->htop) > ((A__p)->stop - 0) ? ((A__p)->htop) : ((A__p)->stop - 0))) - (A__p)->htop) < (hsz))) ? erts_heap_alloc((A__p),(hsz),(0)) : (((void)0), (A__p)->htop = (A__p)->htop + (hsz), (A__p)->htop - (hsz))));
+        b1 = erts_bld_sint64(&hp, ((void*)0), w1);
+        b2 = erts_bld_sint64(&hp, ((void*)0), w2);
+ res = ((hp)[0] = (((void)

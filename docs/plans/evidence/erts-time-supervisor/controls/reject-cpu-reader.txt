@@ -1,0 +1,4 @@
+/private/tmp/knytos-erts-time-supervisor-final/time-controls/reject-cpu-reader.c:2674:61: error: use of undeclared identifier 'erts_runtime_elapsed_both'
+ 2674 | void *knytos_unsupported_cpu_reader(void) { return (void *)&erts_runtime_elapsed_both; }
+      |                                                             ^~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.

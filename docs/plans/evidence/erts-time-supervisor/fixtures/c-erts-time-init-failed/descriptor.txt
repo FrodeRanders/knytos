@@ -1,0 +1,1 @@
+signed deployment /private/tmp/knytos-erts-time-supervisor-run/c-erts-time-init-failed.cdep: artifact="c-erts-time-init-failed" object="fixture/c-erts-time-init-failed" node=0x0 sequence=1 stack_pages_per_thread=16 max_threads=1 shutdown_grace_ms=5000 replicas=1 placement_flags=0x0 grants=0

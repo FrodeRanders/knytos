@@ -1,0 +1,261 @@
+{
+  "observed_date": "2026-11-28",
+  "base_commit": "0bd66b0eadeb0a6a8abb0a89b9c5565730fde48d",
+  "outcome": "native-common-calendar-qualified-no-emulator-boot",
+  "guest_cpus": 2,
+  "configure_status": 0,
+  "common_compile_status": {
+    "erl_term.c": 0,
+    "erl_time_sup.c": 0,
+    "erl_init.c": 0,
+    "erl_bif_info.c": 0,
+    "generation_omitted_control": 1
+  },
+  "host_cases": 8,
+  "passed_cases": [
+    "c-hello",
+    "c-memory",
+    "c-format",
+    "c-clock",
+    "c-startup",
+    "c-exit",
+    "c-error",
+    "c-abort",
+    "c-empty",
+    "c-shutdown-without-request",
+    "c-workers",
+    "c-unjoined",
+    "c-worker-reuse",
+    "c-sync",
+    "c-rwlock",
+    "c-events",
+    "c-erts-time-init",
+    "c-erts-time-init-denied",
+    "c-erts-time-init-failed",
+    "c-erts-calendar-failed",
+    "c-survivor"
+  ],
+  "negative_controls": [
+    {
+      "name": "tls-rejected",
+      "expected_diagnostic": "TLS is unsupported",
+      "passed": true
+    },
+    {
+      "name": "unsupported-rejected",
+      "expected_diagnostic": "undefined symbol: open",
+      "passed": true
+    },
+    {
+      "name": "signature-rejected",
+      "passed": true
+    }
+  ],
+  "clock_archive_sha256": "83edbd7b538840c40eeb7c6c41ca5b30d75bf3d5e89766631611ed9618bf6232",
+  "clock_members_sha256": {
+    "erts_monotonic.o": "94f90c723faa1b0548cbb54e96b0232de3b28f6877cf6a0c5ee817abf31d6419",
+    "erts_system_time.o": "a4f71ee3b52453d109fbfe6a1503701b980ca05019919a310e69c2918270074e",
+    "erts_time_init.o": "6ab38232ebc4ac6af444e7dbf2fd02778b901ddf2c3886bdde820ba44ee64cb7",
+    "erts_calendar.o": "011c8e6d36d1ae71bf1920cb087d60388e85150f1f2248f16f9b789f5372dc66"
+  },
+  "common_calendar": {
+    "archive_sha256": "7bb87e09f7cd8a1701601c7f2abfc4e45085c6c9a506473197e07682f72c9cea",
+    "source_object_sha256": "3396a263bf8dd862c2e4d028a687df727cdab28adaccf2d1dea761cc17689e44",
+    "whole_bif_compile_status": 0,
+    "bif_preprocessed_sha256": "edf8410231a08ce459f3dd1323b7c78191f23d783308600c4b340df1418d523e",
+    "cpu_statistics_unsupported": true,
+    "host_cases": 8,
+    "host_command": [
+      "clang",
+      "-std=c11",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fsanitize=undefined",
+      "-fno-sanitize-recover=all",
+      "-fno-builtin",
+      "-DKNYTOS_NATIVE_WORKERS",
+      "-Dgmtime_r=knytos_test_gmtime_r",
+      "-I",
+      "/Users/froran/Projects/private/knytos/ports/erts",
+      "-I",
+      "/Users/froran/Projects/private/knytos/ports/libc/include",
+      "/Users/froran/Projects/private/knytos/ports/erts/erts_calendar.c",
+      "/Users/froran/Projects/private/knytos/ports/erts/tests/calendar-host.c",
+      "-o",
+      "/private/tmp/knytos-erts-time-supervisor-final/time-supervisor/calendar-host"
+    ],
+    "inputs_sha256": {
+      "ports/erts/tests/calendar-host.c": "1babbc4d6ad2d20c931cfe1a328b9fa8895e043170f833fe6d63170f8be66a5c",
+      "ports/erts/tests/calendar-values.h": "5c49ca13d12b44eb44bb42a7dfbb32e260b3fc808ba8bab61bb672f70b23b82f"
+    },
+    "whole_time_supervisor_executed": false
+  },
+  "fixtures": [
+    {
+      "name": "c-erts-time-init",
+      "unsigned_sha256": "8a53929e64b28167df02bea2990e842d75c34afee4c6081cefc762d0462f0468",
+      "signed_sha256": "e450fd4ccfb0009863d56c3dae173aa0a3661de77fc859f4c8779b7ba36df460",
+      "descriptor_sha256": "61e741dca234027975c8f16127719e6d65d872922f34e6eb73fd3c7ba9617c62",
+      "link_map_sha256": "ce0953453d79a7d9bc498c37ea85e1e07a304621243f8ab73cba1fe9efb6b881",
+      "libraries_sha256": {
+        "/private/tmp/knytos-erts-time-supervisor-final/platform/libknytos_erts_clock.a": "83edbd7b538840c40eeb7c6c41ca5b30d75bf3d5e89766631611ed9618bf6232",
+        "/private/tmp/knytos-erts-time-supervisor-final/time-supervisor/libknytos_erts_calendar.a": "7bb87e09f7cd8a1701601c7f2abfc4e45085c6c9a506473197e07682f72c9cea"
+      }
+    },
+    {
+      "name": "c-erts-time-init-denied",
+      "unsigned_sha256": "f612db26ebce398b6c100958d9e0b458318e21f054aafa3df15521c9f1702584",
+      "signed_sha256": "0d0169d2a46f64f5159f2927fb7747905f0cb4f8e50bd6dc998814313d71449f",
+      "descriptor_sha256": "8c57fef5228cd1eb677eaeb21f242a579b3e5607ae6d2c9a6efaa2b5526fd1f8",
+      "link_map_sha256": "4b8b689decbc2a851bc1862cec281c0f7a7240b625737eaafbdfb61e4f6d4330",
+      "libraries_sha256": {
+        "/private/tmp/knytos-erts-time-supervisor-final/platform/libknytos_erts_clock.a": "83edbd7b538840c40eeb7c6c41ca5b30d75bf3d5e89766631611ed9618bf6232",
+        "/private/tmp/knytos-erts-time-supervisor-final/time-supervisor/libknytos_erts_calendar.a": "7bb87e09f7cd8a1701601c7f2abfc4e45085c6c9a506473197e07682f72c9cea"
+      }
+    },
+    {
+      "name": "c-erts-time-init-failed",
+      "unsigned_sha256": "a81456b28872254b73fc64e629fbbcde731eb371e5b6f6109f38237c070946ff",
+      "signed_sha256": "b3c23dc4dac50458fbc2b4524df559072759cf8294c2f5ae0bcf1c10bbcf01c0",
+      "descriptor_sha256": "32803a5f566c80cb18d03188d751be00bd96dd48310ba1e18b29e507cfe53e3b",
+      "link_map_sha256": "01a6f13f7adcf7f737f5049cadb754fed7c55af8d7cf141eaa02a738b5f18cd6",
+      "libraries_sha256": {
+        "/private/tmp/knytos-erts-time-supervisor-final/platform/libknytos_erts_clock.a": "83edbd7b538840c40eeb7c6c41ca5b30d75bf3d5e89766631611ed9618bf6232",
+        "/private/tmp/knytos-erts-time-supervisor-final/time-supervisor/libknytos_erts_calendar.a": "7bb87e09f7cd8a1701601c7f2abfc4e45085c6c9a506473197e07682f72c9cea"
+      }
+    },
+    {
+      "name": "c-erts-calendar-failed",
+      "unsigned_sha256": "63533a470ea4f7205c1ffcbb7d314490e0792b2031710df24d0f733622c72bbf",
+      "signed_sha256": "670d68a7cab1ba0237720c71d12d7a46605edb333f033954440288052ddc36ba",
+      "descriptor_sha256": "43e112fb9834441ebd98605330639fd7111d2c6d1b0b4bd304552bbbb819ace9",
+      "link_map_sha256": "d896736187fa98a6ee02270d5692d74079aecf96b8e16e141dffbf6bc9f4d0b8",
+      "libraries_sha256": {
+        "/private/tmp/knytos-erts-time-supervisor-final/platform/libknytos_erts_clock.a": "83edbd7b538840c40eeb7c6c41ca5b30d75bf3d5e89766631611ed9618bf6232",
+        "/private/tmp/knytos-erts-time-supervisor-final/time-supervisor/libknytos_erts_calendar.a": "7bb87e09f7cd8a1701601c7f2abfc4e45085c6c9a506473197e07682f72c9cea"
+      }
+    }
+  ],
+  "source_inputs_sha256": {
+    "ports/erts/configure.py": "38477a9a5a72fdbfea7308ba596449de16721a0130a1a13ab9c349ba6482da6a",
+    "ports/erts/knytos-ethread.m4": "d92888080486b35113df48f5e7c09619dc2003bef98a7e9b93d1055e40cadfc5",
+    "ports/erts/otp-29.1.2-native-configure.patch": "5c7d305a9dcb2228a082564162ec564a6c4355e8652f08fd52e7bdc8c531860e",
+    "ports/erts/configure_clock.py": "a8cebdd4b50ce9fe3d6f784c9c9313c09fcc5ae29923a95ab89a357848d73509",
+    "ports/erts/knytos-clock.m4": "8fed5762bb4b56276d715fb60920038b5ee92990503d817b25a78fc36e7c4b8f",
+    "ports/erts/otp-29.1.2-clock-configure.patch": "e5c49db0e689afdbfe663e7f920fcaf85e04c2f89cd164d82defa88dbd0cb743",
+    "ports/erts/platform_build.py": "a60e150158a8b730e80eae516ad56ea703b66fd22cd711e2fb455955a43af32d",
+    "ports/erts/otp-29.1.2-platform.patch": "4862745ace7aa0659a360a33e24cc9824a01aaa5e0b57138ac294b5bd368e24e",
+    "ports/erts/erl_knytos_sys.h": "25c03bc5237acf0620bf455bdda1316d47499ddc66e6de4e1effad9133ded969",
+    "ports/erts/erts_time_init.h": "fa7c26996abc01cc223ffd77129620f235e627ef5bd161a2139fddf7fd82e332",
+    "ports/erts/platform_metadata.py": "5ceaae722d21a14c310c2f527ee4a973f9829fd735c94d9500019483a057d535",
+    "ports/erts/otp-29.1.2-metadata.patch": "3d56c4fbc226f2326eaa7afe3b9137c424dfa8ffde64409f2e084eda04f4b79e",
+    "ports/erts/erts_calendar.c": "8019bd04d5a7072822d5bf5134e0694098b81c56d7492b2bc56ec1fac640be90",
+    "ports/erts/erts_calendar.h": "11d920f53f17bdbe65a113fe85ed10289dfbe707e5868332a33f685332af37ec",
+    "ports/erts/platform_time.py": "8adb53fa92ae9fc031ff6a7c92625979ae2c14357ad635e482e35f151482abaf",
+    "ports/erts/otp-29.1.2-time-supervisor.patch": "6f9b6f089256b6200f2afd3e8c9e3db1cac304726ed70b8f748168cf5022a0e8",
+    "ports/erts/tests/calendar-host.c": "1babbc4d6ad2d20c931cfe1a328b9fa8895e043170f833fe6d63170f8be66a5c",
+    "ports/erts/tests/calendar-values.h": "5c49ca13d12b44eb44bb42a7dfbb32e260b3fc808ba8bab61bb672f70b23b82f",
+    "ports/erts/tests/time-init.c": "3159e28ac01d4ec1072022ce46278c861d4a00a7cf110f3176c987094854c529",
+    "ports/libc/run-tests.py": "87b2141d6544974f65640d76823ec027e1a6ee987a12385492b7919cc7badcd4"
+  },
+  "kernel_sha256": "c04fa40a819cca4342076780d604aa080d1af39b5ee27741a2991455071d4802",
+  "firmware_sha256": "47765fe344818cbc464b1c14ae658fb4b854f5c2ceffa982411731eb4865594d",
+  "boot_image_sha256": "2a46b66e0823e6964bc9f440e41463d6c212c4b24214a65a6ae2cc438c8ecd8c",
+  "initial_disk_sha256": "23fc194b4ffefa504a1e611a79d8ce62af753d6bac3f50b5d816c563b4508e3a",
+  "qemu_version": "QEMU emulator version 11.1.3\nCopyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers",
+  "additional_controls": {
+    "cpu_reader": {
+      "status": 1,
+      "command": [
+        "clang",
+        "--target=aarch64-none-elf",
+        "--sysroot=/private/tmp/knytos-erts-time-supervisor-final/sdk",
+        "-std=gnu23",
+        "-Os",
+        "-ffreestanding",
+        "-fno-builtin",
+        "-fno-pic",
+        "-fno-pie",
+        "-mno-outline-atomics",
+        "-Dmain=knytos_c_main",
+        "-DKNYTOS_NATIVE_WORKERS",
+        "-D__STDIO_LOCKING",
+        "-DKNYTOS_WORKER_LIBC",
+        "-isystem",
+        "/private/tmp/knytos-erts-time-supervisor-final/sdk/include",
+        "-DKNYTOS_SERVICE_WORKER",
+        "-D_GNU_SOURCE",
+        "-Wall",
+        "-Werror",
+        "-DHAVE_CONFIG_H",
+        "-DUSE_THREADS",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/aarch64-unknown-knytos",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/emulator/beam",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/emulator/sys/knytos",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/emulator/sys/common",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/include",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/include/aarch64-unknown-knytos",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/include/internal",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/include/internal/aarch64-unknown-knytos",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/sdk/clock",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/emulator/aarch64-unknown-knytos/opt/emu",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/emulator/aarch64-unknown-knytos",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/emulator/zlib",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/emulator/zstd",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/emulator/ryu",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/emulator/pcre",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/emulator/drivers/common",
+        "-I",
+        "/private/tmp/knytos-erts-time-supervisor-final/otp/erts/emulator/nifs/common",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-ferror-limit=12",
+        "-c",
+        "/private/tmp/knytos-erts-time-supervisor-final/time-controls/reject-cpu-reader.c",
+        "-o",
+        "/private/tmp/knytos-erts-time-supervisor-final/time-controls/rejected.o"
+      ],
+      "expected": "undeclared identifier"
+    },
+    "metadata_mode": {
+      "status": 2,
+      "command": [
+        "python3",
+        "ports/erts/configure.py",
+        "--native-time",
+        "--otp-source",
+        "/private/tmp/knytos-erlang-m0-otp",
+        "--picolibc-source",
+        "/private/tmp/knytos-erlang-m0-picolibc",
+        "--output",
+        "/private/tmp/knytos-erts-time-supervisor-final/time-controls/unused"
+      ],
+      "expected": "--native-time requires --native-metadata"
+    }
+  },
+  "full_time_supervisor_executed": false,
+  "erlang_bif_executed": false,
+  "emulator_boot": false,
+  "failed_attempts": [
+    "initial-bif-select"
+  ]
+}

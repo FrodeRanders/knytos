@@ -1,0 +1,35 @@
+{
+  "archive_sha256": "7bb87e09f7cd8a1701601c7f2abfc4e45085c6c9a506473197e07682f72c9cea",
+  "source_object_sha256": "3396a263bf8dd862c2e4d028a687df727cdab28adaccf2d1dea761cc17689e44",
+  "whole_bif_compile_status": 0,
+  "bif_preprocessed_sha256": "edf8410231a08ce459f3dd1323b7c78191f23d783308600c4b340df1418d523e",
+  "cpu_statistics_unsupported": true,
+  "host_cases": 8,
+  "host_command": [
+    "clang",
+    "-std=c11",
+    "-O1",
+    "-g",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fsanitize=undefined",
+    "-fno-sanitize-recover=all",
+    "-fno-builtin",
+    "-DKNYTOS_NATIVE_WORKERS",
+    "-Dgmtime_r=knytos_test_gmtime_r",
+    "-I",
+    "/Users/froran/Projects/private/knytos/ports/erts",
+    "-I",
+    "/Users/froran/Projects/private/knytos/ports/libc/include",
+    "/Users/froran/Projects/private/knytos/ports/erts/erts_calendar.c",
+    "/Users/froran/Projects/private/knytos/ports/erts/tests/calendar-host.c",
+    "-o",
+    "/private/tmp/knytos-erts-time-supervisor-final/time-supervisor/calendar-host"
+  ],
+  "inputs_sha256": {
+    "ports/erts/tests/calendar-host.c": "1babbc4d6ad2d20c931cfe1a328b9fa8895e043170f833fe6d63170f8be66a5c",
+    "ports/erts/tests/calendar-values.h": "5c49ca13d12b44eb44bb42a7dfbb32e260b3fc808ba8bab61bb672f70b23b82f"
+  },
+  "whole_time_supervisor_executed": false
+}

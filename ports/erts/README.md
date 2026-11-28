@@ -171,6 +171,46 @@ the common time-supervisor's remaining CPU-accounting/calendar diagnostics
 rather than inventing those implementations. Missing metadata, changed host source and missing generator
 controls reject. See the [qualification](../../docs/reports/milestones/2026-11-28-erts-generated-metadata.md).
 
+### Native UTC calendar and common time supervisor
+
+Add `--native-time` after `--native-metadata` to compile the common time
+supervisor and BIF source with native calendar routing:
+
+```sh
+python3 ports/erts/configure.py --native-ethread --native-clock --native-platform \
+  --native-metadata --native-time --clock-sample-age-ms 5000 \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/native-time
+python3 ports/libc/run-tests.py --erts-time-init \
+  --erts-platform-build target/erts/native-time --smp 2 \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/native-time-validation
+```
+
+This headless profile defines local calendar time as UTC, with no DST or
+ambient `TZ` policy. The four current-date/time getters read the published
+authorized clock and use reentrant `gmtime_r`; no RPC occurs in a getter.
+Preparation failure leaves the output unchanged. Statusless upstream getters
+diagnose and abort when the clock is unavailable, stale or out of range.
+Validated local/universal conversions preserve their fields under UTC;
+the pure upstream Gregorian conversions remain common code.
+
+`statistics(runtime)` raises `notsup`: existing scheduler counters do not
+provide a generation-preserving domain total with the required user/kernel
+accounting. The unused CPU reader, declaration and mutex are excluded.
+The test-only `proc_sig_block` hook also raises `notsup` until a native blocking
+contract exists. Other platforms retain their original branches.
+
+The generated Make rules build a fourth clock object for the calendar adapter.
+Whole common time-supervisor and BIF compilation must pass. A separate archive
+of the actual common time-supervisor object lets signed C fixtures execute its
+calendar functions using section GC. This qualifies the selected calendar
+surface; it does not execute the entire time supervisor or an Erlang BIF.
+The [qualification](../../docs/reports/milestones/2026-11-28-erts-time-supervisor.md)
+records host error tests, native Gregorian/current-clock tests and signed
+denial/terminal controls. Full ERTS startup, continuous refresh, CPU accounting,
+timer integration and emulator boot remain open.
+
 ## Native monotonic clock prerequisite
 
 `erts_monotonic.c` implements OTP's `erts_os_monotonic_time` and

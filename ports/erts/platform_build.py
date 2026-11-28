@@ -17,7 +17,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def prepare(tree, metadata=False):
+def prepare(tree, metadata=False, native_time=False):
     platform = tree / "erts/emulator/sys/knytos"
     platform.mkdir()
     for name in (*CLOCK_SOURCES, "erl_knytos_sys.h", "erts_monotonic.h", "erts_system_time.h",
@@ -28,9 +28,14 @@ def prepare(tree, metadata=False):
     if metadata:
         subprocess.run(["patch", "-p1", "--batch", "--fuzz=0", "--input",
                         ROOT / "ports/erts/otp-29.1.2-metadata.patch"], cwd=tree, check=True)
+    if native_time:
+        for name in ("erts_calendar.c", "erts_calendar.h"):
+            shutil.copy2(ROOT / "ports/erts" / name, platform)
+        subprocess.run(["patch", "-p1", "--batch", "--fuzz=0", "--input",
+                        ROOT / "ports/erts/otp-29.1.2-time-supervisor.patch"], cwd=tree, check=True)
 
 
-def qualify(out, tree, sdk, toolchain, age_ms, generate_metadata=False, otp_source=None):
+def qualify(out, tree, sdk, toolchain, age_ms, generate_metadata=False, otp_source=None, native_time=False):
     work = out / "platform"
     work.mkdir()
     build = out / "build"
@@ -72,8 +77,9 @@ def qualify(out, tree, sdk, toolchain, age_ms, generate_metadata=False, otp_sour
     (work / "make-command.json").write_text(json.dumps(command, indent=2) + "\n")
     if result.returncode:
         raise SystemExit(f"Native clock Make build failed; see {work / 'make.txt'}")
+    sources = (*CLOCK_SOURCES, "erts_calendar.c") if native_time else CLOCK_SOURCES
     objects = [tree / "erts/emulator/obj" / TARGET / "opt/emu" / Path(name).with_suffix(".o")
-               for name in CLOCK_SOURCES]
+               for name in sources]
     archive = work / "libknytos_erts_clock.a"
     subprocess.run([sdk / "llvm-ar", "rcs", archive, *objects], check=True)
     # Use the actual generated Makefile for selection inspection too. The
@@ -172,6 +178,9 @@ def qualify(out, tree, sdk, toolchain, age_ms, generate_metadata=False, otp_sour
     if metadata:
         from platform_metadata import common_preflight
         result["generated_metadata"] = metadata
-        result["common_preflight"] = common_preflight(out, tree, flags)
+        result["common_preflight"] = common_preflight(out, tree, flags, native_time=native_time)
+    if native_time:
+        from platform_time import qualify_time
+        result["native_time"] = qualify_time(out, tree, sdk, flags, toolchain, result)
     (work / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     return result

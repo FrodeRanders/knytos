@@ -1,0 +1,23 @@
+LANG=C /opt/local/bin/perl5 utils/beam_makeops \
+		-wordsize 64 \
+		-code-model large \
+		-outdir aarch64-unknown-knytos/opt/emu \
+		-jit no \
+		-DUSE_VM_PROBES=0 \
+		-emulator /private/tmp/knytos-erts-time-supervisor-final/otp/lib/compiler/src/genop.tab beam/predicates.tab beam/generators.tab beam/emu/ops.tab beam/emu/predicates.tab beam/emu/generators.tab beam/emu/macros.tab beam/emu/instrs.tab beam/emu/arith_instrs.tab beam/emu/bif_instrs.tab beam/emu/bs_instrs.tab beam/emu/float_instrs.tab beam/emu/map_instrs.tab beam/emu/msg_instrs.tab beam/emu/select_instrs.tab beam/emu/trace_instrs.tab && echo /private/tmp/knytos-erts-time-supervisor-final/otp/lib/compiler/src/genop.tab beam/predicates.tab beam/generators.tab beam/emu/ops.tab beam/emu/predicates.tab beam/emu/generators.tab beam/emu/macros.tab beam/emu/instrs.tab beam/emu/arith_instrs.tab beam/emu/bif_instrs.tab beam/emu/bs_instrs.tab beam/emu/float_instrs.tab beam/emu/map_instrs.tab beam/emu/msg_instrs.tab beam/emu/select_instrs.tab beam/emu/trace_instrs.tab utils/beam_makeops aarch64-unknown-knytos/Makefile >aarch64-unknown-knytos/opt/emu/OPCODES-GENERATED
+LANG=C /opt/local/bin/perl5 utils/make_tables -src aarch64-unknown-knytos/opt/emu -include aarch64-unknown-knytos/opt/emu\
+		-dst no -jit no\
+		beam/atom.names beam/erl_dirty_bif.tab beam/bif.tab && echo beam/atom.names beam/erl_dirty_bif.tab beam/bif.tab utils/make_tables aarch64-unknown-knytos/Makefile >aarch64-unknown-knytos/opt/emu/TABLES-GENERATED
+LANG=C /opt/local/bin/perl5 utils/make_alloc_types -src beam/erl_alloc.types -dst aarch64-unknown-knytos/opt/emu/erl_alloc_types.h threads nofrag knytos
+LANG=C /opt/local/bin/perl5 utils/make_version -o aarch64-unknown-knytos/erl_version.h 29 29.1.2 17.1.1 aarch64-unknown-knytos
+LANG=C /opt/local/bin/perl5 utils/make_driver_tab -o aarch64-unknown-knytos/opt/emu/driver_tab.c -nifs obj/aarch64-unknown-knytos/opt/emu/prim_tty_nif.o obj/aarch64-unknown-knytos/opt/emu/erl_tracer_nif.o obj/aarch64-unknown-knytos/opt/emu/prim_buffer_nif.o obj/aarch64-unknown-knytos/opt/emu/prim_file_nif.o obj/aarch64-unknown-knytos/opt/emu/zlib_nif.o obj/aarch64-unknown-knytos/opt/emu/zstd_nif.o obj/aarch64-unknown-knytos/opt/emu/prim_socket_nif.o obj/aarch64-unknown-knytos/opt/emu/prim_net_nif.o  -drivers  
+/private/tmp/knytos-erts-time-supervisor-final/otp/erts/lib_src/yielding_c_fun/bin/yielding_c_fun.bin \
+		-yield  -static_aux_funs -only_yielding_funs -f ets_insert_2_list_check -f ets_insert_new_2_list_has_member -f ets_insert_2_list_from_p_heap -f ets_insert_2_list_destroy_copied_dbterms -f ets_insert_2_list_copy_term_list -f ets_insert_new_2_dbterm_list_has_member -f ets_insert_2_list_insert_db_term_list -f ets_insert_2_list -fnoauto ets_insert_2_list_lock_tbl \
+		-output_file_name aarch64-unknown-knytos/opt/emu/erl_db_insert_list.ycf.h beam/erl_db.c
+/private/tmp/knytos-erts-time-supervisor-final/otp/erts/lib_src/yielding_c_fun/bin/yielding_c_fun.bin \
+		-yield  -static_aux_funs -only_yielding_funs -fnoauto maps_keys_1_helper -fnoauto maps_values_1_helper -fnoauto maps_from_keys_2_helper -fnoauto maps_from_list_1_helper -fnoauto hashmap_from_validated_list -f hashmap_keys -f hashmap_values -f hashmap_from_unsorted_array -f hashmap_from_sorted_unique_array -f hashmap_from_chunked_array -fexternal erts_qsort \
+		-output_file_name aarch64-unknown-knytos/opt/emu/erl_map.ycf.h beam/erl_map.c
+/private/tmp/knytos-erts-time-supervisor-final/otp/erts/lib_src/yielding_c_fun/bin/yielding_c_fun.bin \
+		-yield  -only_yielding_funs -f erts_qsort -f erts_qsort_helper -f erts_qsort_partion_array \
+		-output_file_name aarch64-unknown-knytos/opt/emu/utils.ycf.h beam/utils.c
+echo aarch64-unknown-knytos/opt/emu/OPCODES-GENERATED aarch64-unknown-knytos/opt/emu/TABLES-GENERATED aarch64-unknown-knytos/opt/emu/erl_alloc_types.h aarch64-unknown-knytos/erl_version.h aarch64-unknown-knytos/opt/emu/driver_tab.c aarch64-unknown-knytos/opt/emu/erl_db_insert_list.ycf.h aarch64-unknown-knytos/opt/emu/erl_map.ycf.h aarch64-unknown-knytos/opt/emu/utils.ycf.h >aarch64-unknown-knytos/opt/emu/GENERATED
