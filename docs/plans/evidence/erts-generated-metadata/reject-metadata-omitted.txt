@@ -1,0 +1,6 @@
+In file included from /private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_term.c:28:
+In file included from /private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/global.h:28:
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_alloc.h:26:10: fatal error: 'erl_alloc_types.h' file not found
+   26 | #include "erl_alloc_types.h"
+      |          ^~~~~~~~~~~~~~~~~~~
+1 error generated.

@@ -1,0 +1,6 @@
+{
+  "error": "FileNotFoundError",
+  "missing_export": "erts/lib_src/yielding_c_fun/.gitignore",
+  "observation": "The provenance manifest incorrectly included a repository metadata file omitted by git archive.",
+  "capture_limit": "Relevant original terminal diagnostic retained as structured data; complete original orchestration stdout was not archived."
+}

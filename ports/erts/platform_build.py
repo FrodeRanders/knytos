@@ -17,7 +17,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def prepare(tree):
+def prepare(tree, metadata=False):
     platform = tree / "erts/emulator/sys/knytos"
     platform.mkdir()
     for name in (*CLOCK_SOURCES, "erl_knytos_sys.h", "erts_monotonic.h", "erts_system_time.h",
@@ -25,9 +25,12 @@ def prepare(tree):
         shutil.copy2(ROOT / "ports/erts" / name, platform)
     subprocess.run(["patch", "-p1", "--batch", "--fuzz=0", "--input",
                     ROOT / "ports/erts/otp-29.1.2-platform.patch"], cwd=tree, check=True)
+    if metadata:
+        subprocess.run(["patch", "-p1", "--batch", "--fuzz=0", "--input",
+                        ROOT / "ports/erts/otp-29.1.2-metadata.patch"], cwd=tree, check=True)
 
 
-def qualify(out, tree, sdk, toolchain, age_ms):
+def qualify(out, tree, sdk, toolchain, age_ms, generate_metadata=False, otp_source=None):
     work = out / "platform"
     work.mkdir()
     build = out / "build"
@@ -57,6 +60,12 @@ def qualify(out, tree, sdk, toolchain, age_ms):
                f"ERL_TOP={tree}", f"TARGET={TARGET}", "TYPE=opt", "FLAVOR=emu", "V=1",
                "ERTS_SKIP_DEPEND=true", "-o", generated,
                "-o", f"{TARGET}/gen_git_version.mk", "knytos-clock-objects"]
+    metadata = None
+    if generate_metadata:
+        from platform_metadata import generate
+        metadata = generate(out, tree, otp_source)
+        index = command.index(generated)
+        del command[index - 1:index + 1]
     with (work / "make.txt").open("w") as log:
         result = subprocess.run(command, cwd=tree / "erts/emulator",
                                 stdout=log, stderr=subprocess.STDOUT)
@@ -160,5 +169,9 @@ def qualify(out, tree, sdk, toolchain, age_ms):
               "dependencies": dependencies, "negative_controls": controls,
               "make_version": subprocess.check_output(["make", "--version"], text=True).splitlines()[0],
               "full_emulator_qualified": False}
+    if metadata:
+        from platform_metadata import common_preflight
+        result["generated_metadata"] = metadata
+        result["common_preflight"] = common_preflight(out, tree, flags)
     (work / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     return result

@@ -128,10 +128,48 @@ OTP's configured stack-protector flags are retained; the campaign checks the
 Picolibc constructor initialized its guard, without claiming secret entropy.
 See the [qualification](../../docs/reports/milestones/2026-11-28-erts-platform-routing.md).
 
-Native ERTS startup, refresh ownership, I/O, CPU accounting, full generated
-metadata/Make dependencies and matching host bootstrap remain open. The sample
+Native ERTS startup, refresh ownership, I/O, CPU accounting, whole-emulator
+dependencies and matching host bootstrap remain open. The optional mode below
+covers generated emulator metadata. The sample
 window is still finite and installs no refresh producer. This is not an
 emulator boot or a complete platform implementation.
+
+### Generated emulator metadata
+
+Add `--native-metadata` to the native-platform configure command to build the
+pinned host YCF source generator and run the actual complete `GENERATED`
+target before compiling clocks:
+
+```sh
+python3 ports/erts/configure.py --native-ethread --native-clock --native-platform \
+  --native-metadata --clock-sample-age-ms 5000 \
+  --otp-source /path/to/otp29 --picolibc-source /path/to/picolibc \
+  --output target/erts/native-metadata
+```
+
+The host tool uses the exported pinned OTP sources and their upstream
+standalone Makefile. Build/test inputs are checked against pinned Git blob
+identities before compilation. The host test environment selects this export's
+wrapper and executable ahead of installed tools. The upstream YCF test suite
+must pass. This is a pinned source generator, not a complete host Erlang
+bootstrap or a compiler for preloaded BEAM modules.
+
+The native Make dependency for each YCF transform is that actual host
+executable. Other platforms retain the target-library dependency. Interpreter
+opcode generation explicitly uses full-width code pointers (`large`) instead
+of an unexpanded code-model placeholder; this does not enable JIT or change
+the native compiler's code model. Upstream Perl/YCF rules generate opcode,
+atom, BIF, allocator, version, driver and yielding-C metadata, including the
+real `GENERATED` marker. This mode builds clocks without marking that target
+old. Whole-emulator dependency scanning and the optional Git-version include
+remain outside this bounded qualification.
+
+Unchanged upstream `erl_term.c` and `erl_init.c` compile using these generated
+headers. The native profile permits upstream's `+A0` lower bound; this creates
+no async pool and does not qualify positive pool sizes. The preflight retains
+the common time-supervisor's remaining CPU-accounting/calendar diagnostics
+rather than inventing those implementations. Missing metadata, changed host source and missing generator
+controls reject. See the [qualification](../../docs/reports/milestones/2026-11-28-erts-generated-metadata.md).
 
 ## Native monotonic clock prerequisite
 

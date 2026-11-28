@@ -177,9 +177,13 @@ def main():
                         help="also compile/link the bounded native clock SDK (not a complete sys layer)")
     parser.add_argument("--native-platform", action="store_true",
                         help="select the complete common sys.h and native clock Make routing")
+    parser.add_argument("--native-metadata", action="store_true",
+                        help="also build pinned host YCF and generate real upstream emulator metadata")
     parser.add_argument("--clock-sample-age-ms", type=int,
                         help="explicit finite clock sample-age policy for --native-clock")
     args = parser.parse_args()
+    if args.native_metadata and not args.native_platform:
+        parser.error("--native-metadata requires --native-platform")
     if args.native_platform and not args.native_clock:
         parser.error("--native-platform requires --native-clock and --native-ethread")
     if args.native_clock and not args.native_ethread:
@@ -208,7 +212,7 @@ def main():
         clock = prepare(source, args.picolibc_source.resolve(), out, tree, sdk, args.clock_sample_age_ms)
     if args.native_platform:
         from platform_build import prepare
-        prepare(tree)
+        prepare(tree, metadata=args.native_metadata)
     if args.native_ethread:
         with (out / "autoconf.txt").open("w") as log:
             subprocess.run(["autoconf", "-I", "../make/autoconf", "-o", "configure", "configure.ac"],
@@ -298,12 +302,17 @@ def main():
                                                       ROOT / "ports/erts/otp-29.1.2-clock-configure.patch")})
     if args.native_platform and result.returncode == 0:
         from platform_build import qualify
-        evidence["native_platform"] = qualify(out, tree, sdk, toolchain, args.clock_sample_age_ms)
+        evidence["native_platform"] = qualify(out, tree, sdk, toolchain, args.clock_sample_age_ms,
+                                              generate_metadata=args.native_metadata, otp_source=source)
         evidence["inputs_sha256"].update({str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
                                          for path in (ROOT / "ports/erts/platform_build.py",
                                                       ROOT / "ports/erts/otp-29.1.2-platform.patch",
                                                       ROOT / "ports/erts/erl_knytos_sys.h",
                                                       ROOT / "ports/erts/erts_time_init.h")})
+        if args.native_metadata:
+            evidence["inputs_sha256"].update({str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+                                             for path in (ROOT / "ports/erts/platform_metadata.py",
+                                                          ROOT / "ports/erts/otp-29.1.2-metadata.patch")})
     (out / "result.json").write_text(json.dumps(evidence, indent=2) + "\n")
     print(f"ERTS configure exited {result.returncode}. See {log}")
     return result.returncode

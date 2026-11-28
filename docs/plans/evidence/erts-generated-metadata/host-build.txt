@@ -1,0 +1,10 @@
+clang -I. -O2  -c -o ycf_lexer.o ./ycf_lexer.c
+clang -I. -O2  -c -o ycf_main.o ./ycf_main.c
+clang -I. -O2  -c -o ycf_node.o ./ycf_node.c
+clang -I. -O2  -c -o ycf_parser.o ./ycf_parser.c
+clang -I. -O2  -c -o ycf_printers.o ./ycf_printers.c
+clang -I. -O2  -c -o ycf_string.o ./ycf_string.c
+clang -I. -O2  -c -o ycf_symbol.o ./ycf_symbol.c
+clang -I. -O2  -c -o ycf_utils.o ./ycf_utils.c
+clang -I. -O2  -c -o ycf_yield_fun.o ./ycf_yield_fun.c
+clang -I. -O2 -o ./bin/yielding_c_fun.bin  ycf_lexer.o ycf_main.o ycf_node.o ycf_parser.o ycf_printers.o ycf_string.o ycf_symbol.o ycf_utils.o ycf_yield_fun.o

@@ -1,0 +1,37 @@
+--- a/erts/emulator/Makefile.in
++++ b/erts/emulator/Makefile.in
+@@ -659,7 +659,7 @@
+ $(TTF_DIR)/OPCODES-GENERATED: $(OPCODE_TABLES) utils/beam_makeops
+ 	$(gen_verbose)LANG=C $(PERL) utils/beam_makeops \
+ 		-wordsize @EXTERNAL_WORD_SIZE@ \
+-		-code-model @CODE_MODEL@ \
++		-code-model $(if $(filter knytos,$(ERLANG_OSTYPE)),large,@CODE_MODEL@) \
+ 		-outdir $(TTF_DIR) \
+ 		-jit $(if $(filter jit,$(FLAVOR)),yes,no) \
+ 		-DUSE_VM_PROBES=$(if $(USE_VM_PROBES),1,0) \
+@@ -768,15 +768,22 @@
+ YCF_EXECUTABLE_PATH=`utils/find_cross_ycf`
+ endif
+ 
+-$(DB_INSERT_LIST_OUTPUT): beam/erl_db.c $(ERTS_LIB)
++# Source transformation needs the pinned host YCF executable, not a target
++# internal library. Other platforms retain their original prerequisite.
++YCF_GENERATOR_DEP = $(ERTS_LIB)
++ifeq ($(ERLANG_OSTYPE),knytos)
++YCF_GENERATOR_DEP = $(YCF_EXECUTABLE_PATH)
++endif
++
++$(DB_INSERT_LIST_OUTPUT): beam/erl_db.c $(YCF_GENERATOR_DEP)
+ 	$(gen_verbose)$(YCF_EXECUTABLE_PATH) \
+ 		$(DB_INSERT_LIST_YCF_FLAGS) \
+ 		-output_file_name $@ $<
+-$(MAPS_YCF_OUTPUT): beam/erl_map.c $(ERTS_LIB)
++$(MAPS_YCF_OUTPUT): beam/erl_map.c $(YCF_GENERATOR_DEP)
+ 	$(gen_verbose)$(YCF_EXECUTABLE_PATH) \
+ 		$(MAPS_YCF_FLAGS) \
+ 		-output_file_name $@ $<
+-$(UTILS_YCF_OUTPUT): beam/utils.c $(ERTS_LIB)
++$(UTILS_YCF_OUTPUT): beam/utils.c $(YCF_GENERATOR_DEP)
+ 	$(gen_verbose)$(YCF_EXECUTABLE_PATH) \
+ 		$(UTILS_YCF_FLAGS) \
+ 		-output_file_name $@ $<

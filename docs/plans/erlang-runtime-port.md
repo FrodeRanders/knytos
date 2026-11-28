@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 configures native threads/clocks and builds its clock objects through complete common headers and native Make routing; native ERTS startup and refresh ownership remain open.\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 configures native threads/clocks, builds its clock objects through complete common headers and generates upstream emulator metadata with a pinned-source host YCF tool. Native ERTS startup and refresh ownership remain open.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -1554,6 +1554,19 @@ extracted-record probe. Native startup, I/O, whole-emulator generation/build
 and top-level wrapper propagation remain open. See the
 [qualification](../reports/milestones/2026-11-28-erts-platform-routing.md).
 
+The [generated-metadata prerequisite](erlang-m5-generated-metadata.md) adds
+`--native-metadata`. It verifies and builds the pinned host YCF sources, runs
+their upstream tests and generates the real complete `GENERATED` target through
+upstream Make rules. Native YCF transforms depend on that executable rather
+than the unbuilt target internal library. Clock builds no longer exclude BEAM
+generation in this mode. Common `erl_term.c` and `erl_init.c` compile unchanged
+with the native profile permitting upstream's `+A0` lower bound; positive
+async-pool sizes remain unqualified. The common time-supervisor preflight
+records missing native CPU-accounting/calendar interfaces.
+The [qualification](../reports/milestones/2026-11-28-erts-generated-metadata.md)
+distinguishes this generated metadata from preloaded BEAM modules, matching
+host Erlang bootstrap and a complete emulator build.
+
 A full OTP build will need to pass the target configuration through
 the top-level wrapper. An illustrative invocation is:
 
@@ -1916,7 +1929,7 @@ provide full startup or continuous refresh.
 Remaining integration:
 
 - Full native ERTS startup and the remaining platform source implementations.
-- Whole-emulator generated metadata, build dependencies and host bootstrap.
+- Whole-emulator build dependencies, preloaded BEAM modules and host bootstrap.
 - ERTS startup and refresh scheduling/notification ownership.
 - Full-platform system-time and paired-read integration.
 - Full-platform performance-counter selection and CPU-accounting support.

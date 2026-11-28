@@ -1,0 +1,4 @@
+/private/tmp/knytos-erts-generated-metadata-repro/otp/erts/emulator/beam/erl_init.c:928:51: error: use of undeclared identifier 'ERTS_MIN_NO_OF_ASYNC_THREADS'
+  928 |                     if (((erts_async_max_threads = atoi(arg)) < ERTS_MIN_NO_OF_ASYNC_THREADS) ||
+      |                                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.

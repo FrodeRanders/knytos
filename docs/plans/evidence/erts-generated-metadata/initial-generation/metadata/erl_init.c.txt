@@ -1,0 +1,4 @@
+/private/tmp/knytos-erts-generated-metadata-first/otp/erts/emulator/beam/erl_init.c:33:10: fatal error: 'erl_version.h' file not found
+   33 | #include "erl_version.h"
+      |          ^~~~~~~~~~~~~~~
+1 error generated.

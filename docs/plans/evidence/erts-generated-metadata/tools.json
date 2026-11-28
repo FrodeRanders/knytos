@@ -1,0 +1,5 @@
+{
+  "perl": "This is perl 5, version 34, subversion 3 (v5.34.3) built for darwin-thread-multi-2level\n\nCopyright 1987-2023, Larry Wall\n\nPerl may be copied only under the terms of either the Artistic License or the\nGNU General Public License, which may be found in the Perl 5 source kit.\n\nComplete documentation for Perl, including FAQ lists, should be found on\nthis system using \"man perl\" or \"perldoc perl\".  If you have access to the\nInternet, point your browser at http://www.perl.org/, the Perl Home Page.",
+  "make": "GNU Make 3.81\nCopyright (C) 2006  Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n\nThis program built for i386-apple-darwin11.3.0",
+  "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+}

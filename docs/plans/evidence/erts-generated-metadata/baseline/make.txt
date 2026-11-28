@@ -1,0 +1,19 @@
+LANG=C /opt/local/bin/perl5 utils/beam_makeops \
+		-wordsize 64 \
+		-code-model @CODE_MODEL@ \
+		-outdir aarch64-unknown-knytos/opt/emu \
+		-jit no \
+		-DUSE_VM_PROBES=0 \
+		-emulator /private/tmp/knytos-erts-platform-routing-final/otp/lib/compiler/src/genop.tab beam/predicates.tab beam/generators.tab beam/emu/ops.tab beam/emu/predicates.tab beam/emu/generators.tab beam/emu/macros.tab beam/emu/instrs.tab beam/emu/arith_instrs.tab beam/emu/bif_instrs.tab beam/emu/bs_instrs.tab beam/emu/float_instrs.tab beam/emu/map_instrs.tab beam/emu/msg_instrs.tab beam/emu/select_instrs.tab beam/emu/trace_instrs.tab && echo /private/tmp/knytos-erts-platform-routing-final/otp/lib/compiler/src/genop.tab beam/predicates.tab beam/generators.tab beam/emu/ops.tab beam/emu/predicates.tab beam/emu/generators.tab beam/emu/macros.tab beam/emu/instrs.tab beam/emu/arith_instrs.tab beam/emu/bif_instrs.tab beam/emu/bs_instrs.tab beam/emu/float_instrs.tab beam/emu/map_instrs.tab beam/emu/msg_instrs.tab beam/emu/select_instrs.tab beam/emu/trace_instrs.tab utils/beam_makeops aarch64-unknown-knytos/Makefile >aarch64-unknown-knytos/opt/emu/OPCODES-GENERATED
+LANG=C /opt/local/bin/perl5 utils/make_tables -src aarch64-unknown-knytos/opt/emu -include aarch64-unknown-knytos/opt/emu\
+		-dst no -jit no\
+		beam/atom.names beam/erl_dirty_bif.tab beam/bif.tab && echo beam/atom.names beam/erl_dirty_bif.tab beam/bif.tab utils/make_tables aarch64-unknown-knytos/Makefile >aarch64-unknown-knytos/opt/emu/TABLES-GENERATED
+LANG=C /opt/local/bin/perl5 utils/make_alloc_types -src beam/erl_alloc.types -dst aarch64-unknown-knytos/opt/emu/erl_alloc_types.h threads nofrag knytos
+LANG=C /opt/local/bin/perl5 utils/make_version -o aarch64-unknown-knytos/erl_version.h 29 29.1.2 17.1.1 aarch64-unknown-knytos
+LANG=C /opt/local/bin/perl5 utils/make_driver_tab -o aarch64-unknown-knytos/opt/emu/driver_tab.c -nifs obj/aarch64-unknown-knytos/opt/emu/prim_tty_nif.o obj/aarch64-unknown-knytos/opt/emu/erl_tracer_nif.o obj/aarch64-unknown-knytos/opt/emu/prim_buffer_nif.o obj/aarch64-unknown-knytos/opt/emu/prim_file_nif.o obj/aarch64-unknown-knytos/opt/emu/zlib_nif.o obj/aarch64-unknown-knytos/opt/emu/zstd_nif.o obj/aarch64-unknown-knytos/opt/emu/prim_socket_nif.o obj/aarch64-unknown-knytos/opt/emu/prim_net_nif.o  -drivers  
+cd /private/tmp/knytos-erts-platform-routing-final/otp/erts/lib_src && /Library/Developer/CommandLineTools/usr/bin/make opt
+/Library/Developer/CommandLineTools/usr/bin/make -f aarch64-unknown-knytos/Makefile TYPE=opt
+make[2]: aarch64-unknown-knytos/Makefile: No such file or directory
+make[2]: *** No rule to make target `aarch64-unknown-knytos/Makefile'.  Stop.
+make[1]: *** [opt] Error 2
+make: *** [/private/tmp/knytos-erts-platform-routing-final/otp/erts/lib_src/obj/aarch64-unknown-knytos/opt/MADE] Error 2

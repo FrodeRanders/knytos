@@ -1,0 +1,59 @@
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1451:5: error: use of undeclared identifier 'SysTimes'
+ 1451 |     SysTimes now;
+      |     ^~~~~~~~
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1453:5: error: use of undeclared identifier 'sys_times'; did you mean 'os_times'?
+ 1453 |     sys_times(&now);
+      |     ^~~~~~~~~
+      |     os_times
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:229:1: note: 'os_times' declared here
+  229 | os_times(ErtsMonotonicTime *mtimep, ErtsSystemTime *stimep)
+      | ^
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1453:16: error: use of undeclared identifier 'now'; did you mean 'pow'?
+ 1453 |     sys_times(&now);
+      |                ^~~
+      |                pow
+/private/tmp/knytos-erts-generated-metadata-complete/sdk/include/math.h:136:15: note: 'pow' declared here
+  136 | extern double pow(double, double) __picolibc_export;
+      |               ^
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1453:19: error: too few arguments to function call, expected 2, have 1
+ 1453 |     sys_times(&now);
+      |     ~~~~~~~~~     ^
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:229:1: note: 'os_times' declared here
+  229 | os_times(ErtsMonotonicTime *mtimep, ErtsSystemTime *stimep)
+      | ^        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1454:32: error: use of undeclared identifier 'now'
+ 1454 |     user = (ErtsMonotonicTime) now.tms_utime;
+      |                                ^~~
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1456:33: error: use of undeclared identifier 'SYS_CLK_TCK'
+ 1456 |     user /= (ErtsMonotonicTime) SYS_CLK_TCK;
+      |                                 ^~~~~~~~~~~
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1458:31: error: use of undeclared identifier 'now'
+ 1458 |     sys = (ErtsMonotonicTime) now.tms_stime;
+      |                               ^~~
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1460:32: error: use of undeclared identifier 'SYS_CLK_TCK'
+ 1460 |     sys /= (ErtsMonotonicTime) SYS_CLK_TCK;
+      |                                ^~~~~~~~~~~
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1520:20: error: variable has incomplete type 'struct tm'
+ 1520 |     struct tm *tm, tmbuf;
+      |                    ^
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1520:12: note: forward declaration of 'struct tm'
+ 1520 |     struct tm *tm, tmbuf;
+      |            ^
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1522:17: error: use of undeclared identifier 'time'
+ 1522 |     the_clock = time((time_t *)0);
+      |                 ^~~~
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1523:10: error: use of undeclared identifier 'sys_localtime_r'; did you mean 'get_localtime'?
+ 1523 |     tm = sys_localtime_r(&the_clock, &tmbuf);
+      |          ^~~~~~~~~~~~~~~
+      |          get_localtime
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/sys.h:853:6: note: 'get_localtime' declared here
+  853 | void get_localtime(int *year, int *month, int *day, 
+      |      ^
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1524:15: error: incomplete definition of type 'struct tm'
+ 1524 |     *hour = tm->tm_hour;
+      |             ~~^
+/private/tmp/knytos-erts-generated-metadata-complete/otp/erts/emulator/beam/erl_time_sup.c:1520:12: note: forward declaration of 'struct tm'
+ 1520 |     struct tm *tm, tmbuf;
+      |            ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+13 errors generated.
