@@ -1,5 +1,14 @@
 # The Knytos Operating System
 
+## Rationale or USP
+
+Creating yet another display OS makes no sense. That area is thoroughly covered,
+tending to individual needs. We focus on the problem of running server loads,
+safely. We challenge some deeply held opinions, such as POSIX conformance, and
+explore mechanisms that alter the prerequisites for building safe systems.
+
+## Origins
+
 This repository was initially forked from the
 [CharlotteOS project](https://github.com/charlotte-os/charlotte-os).
 CharlotteOS, its original architecture, and the substantial foundation
@@ -13,7 +22,6 @@ in changes from CharlotteOS without great care and lots of work.
 
 See [Why Knytos?](docs/research/why-knytos.md) for an explanation of why renaming
 this fork was reasonable.
-
 
 ## Research direction: the cluster as a capability machine
 
@@ -456,88 +464,6 @@ HTTP, and time services are part of an ordinary boot.
 > default TCG path for protected
 > NVMe DMA, the object store, and persistent Raft tests.
 
-#### *Other architectures may be supported in the future depending on contributor support and demand for their development.*
-
----
-
-## Firmware Model
-
-System firmware is required to implement the UEFI specification and version 2.0 or later of the ACPI specification.
-
-The latest versions of both specifications can be found at <https://uefi.org/specifications>.
-
----
-
-## Supported Hardware
-
-### Memory[^1]
-
-Embedded:
-
-- Recommended: ≥ 128 MiB
-- Minimum: 24 MiB
-
-PC and Server:
-
-- Recommended: ≥ 2 GiB
-- Minimum: 256 MiB
-
-### Storage[^1]
-
-- Recommended: ≥ 64 GiB
-- Minimum: 4 GiB
-- Supported device classes:
-  - [Prototype in this fork] NVMe (PCIe, QEMU-tested)
-  - [Prototype in this fork] AHCI (SATA, x86-64 QEMU-tested)
-  - [Prototype in this fork] virtio-blk (PCI, x86-64 QEMU-tested)
-  - [Planned] USB Mass Storage Device Class (MSC)
-  - [Planned] SDHCI (PCIe SD card reader)
-
-### Display
-
-- Linear framebuffer exposed via UEFI GOP
-
-### Input Devices
-
-- Keyboards:
-  - [Planned] i8042 PS/2
-  - [Planned] USB HID
-  - [Planned] I²C HID
-
-- Pointing Devices:
-  - [Planned] i8042 PS/2
-  - [Planned] USB HID
-  - [Planned] I²C HID
-
-### Serial Console
-
-- [Planned] NS16550 compatible UART over PCIe
-- [Planned] USB CDC-ACM (virtual serial)
-
-### Networking
-
-- [Planned] USB CDC-NCM (Ethernet over USB)
-
----
-
-## Contributing
-
-For local and CI source setup, see
-[repository dependencies and SDK selection](docs/guides/repository-dependencies.md).
-Knytos resolves its pinned Sitas sources inside the checkout; no sibling
-repository layout is required.
-
-The Knytos upstream project welcomes contributions of all forms—code,
-design proposals, documentation, and testing. Please use the upstream
-repository and the community links below when contributing to Knytos
-itself. Issues or changes specifically concerning the experimental additions
-listed above may instead be discussed in this fork.
-
-Upstream's contribution guidance requires new hardware support to include
-inline documentation comments with references to publicly available hardware
-documentation. This may include community reverse-engineered documentation,
-along with clean, maintainable code.
-
 ---
 
 ## Licensing
@@ -545,5 +471,3 @@ along with clean, maintainable code.
 The Knytos Operating System is licensed under the GNU Affero General Public License version 3.0 (or any later version). By contributing, you agree that your work may be distributed under the AGPL version 3.0 or later.
 
 ---
-
-[^1]: These requirements are estimates that may change in the course of development.
