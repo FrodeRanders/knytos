@@ -406,6 +406,12 @@ def main():
             99: ("c-erts-pre-init-denied", 1, "[erts] clock initialization failed"),
             100: ("c-erts-pre-init-worker", 2, "function=erts_sys_pre_init error=13"),
         })
+    if args.erts_time_init and platform_build and platform_build.get("native_internal"):
+        for number, suffix in ((101, "reentrant"), (102, "allocation-failed"), (103, "regular")):
+            clock_cases[number] = ("c-erts-internal-" + suffix, 2,
+                "ERTS INTERNAL CPU unknown counts allocation rejection common prefix formatter and exact join PASS")
+        clock_cases[102] = ("c-erts-internal-allocation-failed", 1,
+            "ERTS INTERNAL CPU common allocation rejection zero owners before native pre-init PASS")
     worker_cases.update(libc_cases)
     worker_cases.update(mutex_cases)
     worker_cases.update(tse_cases)
@@ -555,12 +561,15 @@ def main():
                           97: ROOT / "ports/erts/tests/pre-init.c",
                           98: ROOT / "ports/erts/tests/pre-init.c",
                           99: ROOT / "ports/erts/tests/pre-init.c",
-                          100: ROOT / "ports/erts/tests/pre-init.c"}.get(number, ROOT / "ports/libc/tests" / source)
+                          100: ROOT / "ports/erts/tests/pre-init.c",
+                          101: ROOT / "ports/erts/tests/internal-cpu.c",
+                          102: ROOT / "ports/erts/tests/internal-cpu.c",
+                          103: ROOT / "ports/erts/tests/internal-cpu.c"}.get(number, ROOT / "ports/libc/tests" / source)
                 libraries = (["--library", erts_library, "--include", ROOT / "ports/erts"]
                              if number in (57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83) else [])
-                if number in (86, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100):
+                if number in (86, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103):
                     libraries = ["--library", clock_library, "--include", ROOT / "ports/erts"]
-                if number in (92, 93, 94, 95, 96, 97, 98, 99, 100):
+                if number in (92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103):
                     if platform_build:
                         if platform_build.get("native_time"):
                             calendar_library = platform_root / "time-supervisor/libknytos_erts_calendar.a"
@@ -569,7 +578,7 @@ def main():
                             libraries.extend(("--library", calendar_library,
                                               "--include", ROOT / "ports/erts/tests",
                                               "--define", "KNYTOS_ERTS_CALENDAR_CHECK"))
-                        if number in (96, 97, 98, 99, 100):
+                        if number in (96, 97, 98, 99, 100, 101, 102, 103):
                             pre_init = platform_build["native_pre_init"]
                             for path, expected_hash in pre_init["libraries_sha256"].items():
                                 if digest(Path(path)) != expected_hash:
@@ -578,6 +587,15 @@ def main():
                                     libraries.extend(("--library", Path(path)))
                             for include in pre_init["include_directories"]:
                                 libraries.extend(("--include", include))
+                        if number in (101, 102, 103):
+                            internal = platform_build["native_internal"]
+                            variant = internal["archives"]["regular" if number == 103 else "reentrant"]
+                            for path, expected_hash in ((variant["path"], variant["sha256"]),
+                                                        (internal["cpu_archive"], internal["cpu_archive_sha256"])):
+                                if digest(Path(path)) != expected_hash:
+                                    raise RuntimeError("Native internal dependency identity mismatch: " + path)
+                                libraries.extend(("--library", Path(path)))
+                            libraries.append("--linker-argument=--wrap=malloc")
                         for include in platform_build["include_directories"]:
                             libraries.extend(("--include", include))
                         libraries.extend(("--define", "HAVE_CONFIG_H", "--define", "USE_THREADS",
@@ -663,7 +681,7 @@ def main():
             grants = ["m4.missing=call"] if number in service_workers and number != active_cancel_case else []
             if number == service_case:
                 grants.extend(("time=call", "observe=call"))
-            if number in (84, 87, 89, 92, 96, 97, 98, 100):
+            if number in (84, 87, 89, 92, 96, 97, 98, 100, 101, 103):
                 grants.append("time=call")
             if number == active_cancel_case:
                 grants.append("m4.hold=call")
@@ -872,6 +890,8 @@ def main():
                             assert "remaining_blocks=0" in text, name
                         if number in (4, 5, 6):
                             assert "released_blocks=1" in text, name
+                        if number in (101, 102, 103):
+                            assert f"released_blocks={0 if number == 102 else 1} " in text, name
                         if number in (4, 5):
                             assert text.index("CABI ATEXIT") < text.index("CABI FINI"), name
                         if number in (10, idle_case):

@@ -27,6 +27,11 @@ the upstream license inventory; retain it with distributed artifacts and
 consult the pinned source for individual file notices. No upstream source
 patches are required. Signing changes the ELF hash.
 
+Additional native linker arguments use repeated `--linker-argument=VALUE`
+options and are recorded in the build manifest. ERTS allocation-failure
+fixtures use `--linker-argument=--wrap=malloc` for test-only fault injection;
+successful calls still delegate to the real allocator.
+
 Use the normal artifact signing and authenticated deployment process. The
 test harness demonstrates `cluster-sign elf-sign`, `deployment-sign` and
 `deployment-notify`; its development fixture key is not a production key.

@@ -1,0 +1,14 @@
+ld.lld: error: undefined symbol: select
+>>> referenced by erl_misc_utils.c
+>>>               erl_misc_utils.o:(erts_milli_sleep) in archive /private/tmp/knytos-erts-pre-init-final/otp/erts/lib/internal/aarch64-unknown-knytos/liberts_internal_r.a
+
+ld.lld: error: undefined symbol: write
+>>> referenced by erl_printf.c
+>>>               erl_printf.o:(erts_write_fp) in archive /private/tmp/knytos-erts-pre-init-final/otp/erts/lib/internal/aarch64-unknown-knytos/liberts_internal_r.a
+>>> referenced by erl_printf.c
+>>>               erl_printf.o:(printf_putc) in archive /private/tmp/knytos-erts-pre-init-final/otp/erts/lib/internal/aarch64-unknown-knytos/liberts_internal_r.a
+>>> referenced by erl_printf.c
+>>>               erl_printf.o:(erts_write_fd) in archive /private/tmp/knytos-erts-pre-init-final/otp/erts/lib/internal/aarch64-unknown-knytos/liberts_internal_r.a
+>>> did you mean: fwrite
+>>> defined in: /private/tmp/knytos-erts-pre-init-final/sdk/libc.a(fwrite.c.obj)
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

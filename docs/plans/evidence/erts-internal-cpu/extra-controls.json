@@ -1,0 +1,21 @@
+{
+  "mode": {
+    "command": [
+      "python3",
+      "ports/erts/configure.py",
+      "--native-internal",
+      "--otp-source",
+      "/private/tmp/knytos-erlang-m0-otp",
+      "--picolibc-source",
+      "/private/tmp/knytos-erlang-m0-picolibc",
+      "--output",
+      "/private/tmp/knytos-erts-internal-cpu-complete/unused"
+    ],
+    "status": 2,
+    "diagnostic": "--native-internal requires --native-pre-init"
+  },
+  "consumer_sha256": {
+    "regular": "822f04aec4a547d09de14391e84ae16ee1922046a9308c0f6a5c08d70e7f15a3",
+    "reentrant": "822f04aec4a547d09de14391e84ae16ee1922046a9308c0f6a5c08d70e7f15a3"
+  }
+}

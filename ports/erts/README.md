@@ -241,6 +241,42 @@ owner release and terminal controls. This does not execute common emulator
 CPU topology, stack/capacity qualification, remaining platform hooks, continuous
 refresh, I/O and the host bootstrap remain open.
 
+### Internal libraries and common CPU pre-initialization
+
+Add `--native-internal` to the native-pre-init configure command, then run the
+same signed guest command with the resulting platform-build directory. This
+mode stages the generated internal-library Makefile and builds the actual
+regular and reentrant three-member archives: `erl_printf_format.o`,
+`erl_printf.o` and `erl_misc_utils.o`. Their C sources and the common
+`erl_cpu_topology.c` source must match the pinned Git blobs exactly.
+
+Native target-specific function/data sections let section GC discard unused
+utilities from those objects. The common CPU pre-early object also builds
+through emulator Make rules. The selected prefix must link without replacement
+ERTS symbols; explicitly selecting the unported `select`-based sleep helper or
+descriptor stream formatter still rejects. The existing optional weak Picolibc
+`getentropy` hook remains;
+its absence uses the already-qualified non-secret stack-guard fallback.
+
+CPU counts, quota, topology and affinity have no native discovery provider yet.
+The upstream getters report unsupported information; this is distinct from
+the initial one-scheduler policy. Signed fixtures exercise real CPU-info
+allocation/update/destruction, common CPU pre-early initialization followed by
+native thread/clock pre-init, buffer formatting through both archive variants
+and exact worker joins. Test-only linker wrapping injects malloc rejection while
+successful allocations use the real C allocator. Failed common preparation
+stops before native pre-init. A successful common CPU-info object remains for
+the domain lifetime and is released by C runtime exit after worker drain.
+
+The [qualification](../../docs/reports/milestones/2026-11-28-erts-internal-cpu.md)
+records actual execution and artifact identities. Later CPU topology/allocator
+initialization and its lock, discovery/binding, common emulator `early_init`
+and full boot remain unqualified. Full startup also needs a terminal policy
+for rejected CPU-info allocation before invoking the later initializer, which
+requires a nonnull object. Sleep, descriptor stream formatting, remaining
+platform hooks, capacity, continuous refresh and matching host bootstrap remain
+open.
+
 ## Native monotonic clock prerequisite
 
 `erts_monotonic.c` implements OTP's `erts_os_monotonic_time` and

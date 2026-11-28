@@ -1,0 +1,26 @@
+--- a/erts/lib_src/Makefile.in
++++ b/erts/lib_src/Makefile.in
+@@ -260,6 +260,11 @@
+ 
+ ERTS_INTERNAL_LIBS += $(ERTS_INTERNAL_r_LIB)
+ 
++endif
++
++ifeq ($(ERLANG_OSTYPE),knytos)
++# Discard unused internal utilities without importing their unported backends.
++$(ERTS_INTERNAL_LIB_OBJS) $(ERTS_INTERNAL_r_LIB_OBJS): CFLAGS += -ffunction-sections -fdata-sections
+ endif
+ 
+ #
+--- a/erts/emulator/Makefile.in
++++ b/erts/emulator/Makefile.in
+@@ -1000,6 +1000,9 @@
+ knytos-clock-objects: $(KNYTOS_CLOCK_OBJS)
+ .PHONY: knytos-pre-init-object
+ knytos-pre-init-object: $(KNYTOS_PRE_INIT_OBJ)
++.PHONY: knytos-cpu-topology-object
++knytos-cpu-topology-object: $(OBJDIR)/erl_cpu_topology.o
++$(OBJDIR)/erl_cpu_topology.o: CFLAGS += -ffunction-sections -fdata-sections
+ $(KNYTOS_PRE_INIT_OBJ): beam/sys.h beam/erl_threads.h beam/erl_time.h ../$(TARGET)/config.h
+ endif
+ 

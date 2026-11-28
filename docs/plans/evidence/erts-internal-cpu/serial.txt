@@ -1,0 +1,324 @@
+UEFI firmware (version edk2-stable202408-prebuilt.qemu.org built at 16:28:50 on Sep 12 2024)
+ArmTrngLib could not be correctly initialized.
+Error: Image at 0005FDB6000 start failed: 00000001
+Error: Image at 0005FD6D000 start failed: Not Found
+Error: Image at 0005FCBA000 start failed: Unsupported
+Error: Image at 0005FC3F000 start failed: Not Found
+Error: Image at 0005FB65000 start failed: Aborted
+Tpm2SubmitCommand - Tcg2 - Not Found
+Tpm2GetCapabilityPcrs fail!
+Tpm2SubmitCommand - Tcg2 - Not Found
+[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01HBdsDxe: loading Boot0001 "UEFI Non-Block Boot Device" from PciRoot(0x0)/Pci(0x3,0x0)
+BdsDxe: starting Boot0001 "UEFI Non-Block Boot Device" from PciRoot(0x0)/Pci(0x3,0x0)
+ConvertPages: Incompatible memory types, the pages to allocate have been allocated
+ConvertPages: Incompatible memory types, the pages to allocate have been allocated
+[01;01H[01;01H[01;01Hl[01;02Hi[01;03Hm[01;04Hi[01;05Hn[01;06He[01;07H:[01;08H [01;09HL[01;10Ho[01;11Ha[01;12Hd[01;13Hi[01;14Hn[01;15Hg[01;16H [01;17He[01;18Hx[01;19He[01;20Hc[01;21Hu[01;22Ht[01;23Ha[01;24Hb[01;25Hl[01;26He[01;27H [01;28H`[01;29Hb[01;30Ho[01;31Ho[01;32Ht[01;33H([01;34H)[01;35H:[01;36H/[01;37Hk[01;38Hn[01;39Hy[01;40Ht[01;41Ho[01;42Hs[01;43H`[01;44H.[01;45H.[01;46H.[01;47H[01;01H[02;01H[2J[H[+     0.004794] Knytos Kernel Version 0.8.1
+[+     0.005058] Logical Processor with local interrupt controller ID = 0 has been designated LP 0.
+[+     0.005446] [MPIDR] LP0 mpidr=2147483648 aff=0.0.0.0
+[+     0.005864] Resource policy: development-default (compile-time)
+[+     0.006168] Kernel heap: usable=471 MiB initial=8 MiB reserve=64 MiB total=72 MiB
+[+     0.015078] [hardware ASID] boot return storage prepared: 256 tags, 512 requested bytes; retirement cannot grow
+[+     0.015480] KNYTOS_BOOT_MODE=minimal
+[+     0.016044] [boot validation] memory passed: usable=471 MiB, free=102342 frames, heap reserve=64 MiB
+[+     0.017474] [boot trust] artifact authority selected before platform services
+[+     0.019600] [ACPI] registered 6 tables; ignored 2 unsupported entries
+[+     0.020572] Logical Processor with local interrupt controller ID = 1 has been designated LP 1.
+[+     0.020864] [MPIDR] LP1 mpidr=2147483649 aff=0.0.0.1
+[+     0.026090] [bootstrap storage] all 2 LP timers ready; shared timer queues and IRQ storage prepared
+[+     0.078852] [node] name service started (asid=1, tid=2)
+[+     0.085588] [node] capability grant controller started (asid=2, tid=3)
+[+     0.090770] KNYTOS_TELEMETRY_ARCHIVE_INTERVAL_MS=0;
+[+     0.091614] [node] observability service started (asid=3, tid=4)
+[+     0.095108] [smmu] enabled SMMUv3 at 0x9050000: 16 StreamID bits, 4 KiB stage-1 translation
+[+     0.104210] [EL0 LOG] lp=0 asid=3 [observe] history=memory archive=disabled
+[+     0.114264] CPU Vendor: ARM
+[+     0.114416] CPU Model: Part Number: 0x0471
+Revision: 15
+Variant: 2
+Architecture: 0x7
+
+[+     0.114770] Physical Address bits implemented: 40
+[+     0.114938] Virtual Address bits implemented: 48
+[+     0.115102] The ARM Generic Timer frequency is 62500000 Hz.
+[+     0.115318] The ARM Generic Timer period is 16000 picoseconds.
+[+     0.116528] [PCI] ECAM PAddr { raw: 275146342400 } -> VAddr(0xffff820000000000) (256 MiB)
+[+     0.117960] [security] DEVELOPMENT image: public fixture trust; not suitable for production.
+[+     0.143308] [boot trust] admission policy published: revision=1
+[+     0.144402] [nvme] MSI-X vector 0: address=0x8020040 data=80 intid=80
+[+     0.144654] [launch] NVMe controller at BAR0=0x800000c000 intid=80
+[+     0.154652] [launch] virtio-rng at BAR4=0x8000008000 requester=0x20
+[+     0.159434] [net] virtio cap type=5 bar=0 offset=0x0 length=0x0
+[+     0.159690] [net] virtio cap type=2 bar=4 offset=0x3000 length=0x1000
+[+     0.159894] [net] virtio cap type=4 bar=4 offset=0x2000 length=0x1000
+[+     0.160092] [net] virtio cap type=3 bar=4 offset=0x1000 length=0x1000
+[+     0.160298] [net] virtio cap type=1 bar=4 offset=0x0 length=0x1000
+[+     0.160954] [net] MSI-X vector 0: address=0x8020040 data=81 intid=81
+[+     0.161178] [launch] net controller at BAR0=0x8000000000 (interrupt 81, requester 0x8)
+[+     0.165550] [launch] driver grant batch prepared before threads: storage=true entropy=true network=true
+[+     0.187276] [EL0 LOG] lp=0 asid=5 [rng] serving host-backed VirtIO entropy
+[+     0.668350] [store] bootstrap seed complete: retained=8 written=0
+[+     0.798738] [launch] cluster services spawned: disco=9 relmsg=10 dns=11 (single Raft owner)
+[+     0.896680] [EL0 LOG] lp=0 asid=12 [tcpip] NIC MAC 52:54:00:12:34:56
+[+     1.007740] [EL0 LOG] lp=0 asid=14 [time] serving; NTP 162.159.200.1:123 persistence=true
+[+     1.092352] [launch] deployment plane spawned: clusterctl=15 agent=16 ingress=17 port=7444
+[+     1.092652] KNYTOS_OTLP_PROFILE_SHA256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855;
+[+     1.093006] [launch] steady-state service set published.
+[+     1.093416] [scheduler rebalance] moved 0 certified Ready thread(s) at boot quiescence.
+[+     4.103634] [node] boot-done marker registered (generation 1).
+[+     4.103866] BOOT COMPLETE: validation passed; local storage ready; services submitted
+[+     4.107706] [EL0 LOG] lp=0 asid=12 [tcpip] socket policy requested_slots=64 effective_slots=64 per_owner=16 buffer_quota=2048 KiB heap=4096 KiB
+[+     4.121596] [EL0 LOG] lp=0 asid=13 [http] listening port=443; bounded client reactor
+[+     4.137318] [EL0 LOG] lp=0 asid=12 [tcpip] DHCP assigned 10.0.2.15/24
+[+     4.142078] [EL0 LOG] lp=0 asid=17 [deployd] listening port=7444
+[+     4.741006] [EL0 LOG] lp=0 asid=11 [dns] MEMBERSHIP epoch=0 joint=false members=1 commit=0 last=0 finalize_pending=false term=0 leader=false
+[+     4.742606] [EL0 LOG] lp=0 asid=11 [dns] RAFT STATE state=Follower term=0 leader=None millis=420 pending=0 queued=0
+[+     5.135158] [EL0 LOG] lp=0 asid=14 [time] requesting NTP sample
+[+     6.167444] [EL0 LOG] lp=0 asid=14 [time] synchronized unix_s=1795889964 utc=2026-11-28T18:19:24.279745066Z stratum=3 uncertainty_ms=516 drift_ppb=0
+[+     7.375000] [EL0 LOG] lp=0 asid=11 [dns] RAFT STATE state=Leader term=1 leader=Some("knytos:42e21edb") millis=2848 pending=0 queued=0
+[+     9.330144] [EL0 LOG] lp=0 asid=11 [dns] seeded capacity control for node 0000000042e21edb target=ExecutionTarget { architecture: Aarch64, runtime_abi: 4, features: 3 }
+[+     9.391488] [EL0 LOG] lp=0 asid=11 [dns] proposed filtered capacity for node 0000000042e21edb
+[+     9.547688] [EL0 LOG] lp=0 asid=17 [management] connection=1 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889968
+[+     9.548482] [EL0 LOG] lp=0 asid=17 [management] connection=1 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889968
+[+    10.095204] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    10.104854] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    10.118402] [EL0 LOG] lp=0 asid=18 CABI hello: C on Knytos
+[+    10.118864] [EL0 LOG] lp=0 asid=18 CABI PASS case=0
+[+    10.119100] [EL0 LOG] lp=0 asid=18 CABI FINI
+[+    10.119650] [EL0 LOG] lp=0 asid=18 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=688
+[+    10.120644] [EL0 LOG] lp=0 asid=16 [agent] launched "c-hello" generation=1 asid=18 principal=0x9fa51c8c1729c981
+[+    10.255518] [EL0 LOG] lp=0 asid=17 [management] connection=2 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889968
+[+    10.256142] [EL0 LOG] lp=0 asid=17 [management] connection=2 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889968
+[+    10.641838] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    10.663658] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    10.685386] [EL0 LOG] lp=0 asid=19 CABI PASS case=1
+[+    10.685798] [EL0 LOG] lp=0 asid=19 CABI FINI
+[+    10.686524] [EL0 LOG] lp=0 asid=19 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=4133241 sampled_stack=1456
+[+    10.688046] [EL0 LOG] lp=0 asid=16 [agent] launched "c-memory" generation=1 asid=19 principal=0xdb10e383201b2fdd
+[+    10.801220] [EL0 LOG] lp=0 asid=17 [management] connection=3 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889969
+[+    10.801938] [EL0 LOG] lp=0 asid=17 [management] connection=3 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889969
+[+    11.220264] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    11.236992] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    11.257190] [EL0 LOG] lp=0 asid=20 CABI formatting: value -42 123456789abcdef0 2.50
+[+    11.257552] [EL0 LOG] lp=0 asid=20 CABI PASS case=2
+[+    11.257936] [EL0 LOG] lp=0 asid=20 CABI FINI
+[+    11.258790] [EL0 LOG] lp=0 asid=20 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=768
+[+    11.259836] [EL0 LOG] lp=0 asid=16 [agent] launched "c-format" generation=1 asid=20 principal=0xf7f4c69301d2d5f1
+[+    11.351176] [EL0 LOG] lp=0 asid=17 [management] connection=4 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889969
+[+    11.352094] [EL0 LOG] lp=0 asid=17 [management] connection=4 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889969
+[+    11.780954] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    11.792318] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    11.807642] [EL0 LOG] lp=0 asid=21 CABI PASS case=3
+[+    11.807996] [EL0 LOG] lp=0 asid=21 CABI FINI
+[+    11.808640] [EL0 LOG] lp=0 asid=21 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=736
+[+    11.809732] [EL0 LOG] lp=0 asid=16 [agent] launched "c-clock" generation=1 asid=21 principal=0xaf4f6db8e06497de
+[+    11.899112] [EL0 LOG] lp=0 asid=17 [management] connection=5 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889970
+[+    11.899768] [EL0 LOG] lp=0 asid=17 [management] connection=5 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889970
+[+    12.344938] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    12.368400] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    12.388720] [EL0 LOG] lp=0 asid=16 [agent] launched "c-startup" generation=1 asid=22 principal=0xe7ee06b52ba3c6f0
+[+    12.390330] [EL0 LOG] lp=0 asid=22 CABI PASS case=4
+[+    12.390770] [EL0 LOG] lp=0 asid=22 CABI ATEXIT
+[+    12.390980] [EL0 LOG] lp=0 asid=22 CABI FINI
+[+    12.391876] [EL0 LOG] lp=0 asid=22 [c-runtime] exit=0 released_blocks=1 remaining_blocks=0 heap_peak=135 sampled_stack=752
+[+    12.581454] [EL0 LOG] lp=0 asid=17 [management] connection=6 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889971
+[+    12.582262] [EL0 LOG] lp=0 asid=17 [management] connection=6 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889971
+[+    12.927666] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    12.943312] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    12.960990] [EL0 LOG] lp=0 asid=23 CABI explicit exit
+[+    12.961402] [EL0 LOG] lp=0 asid=23 CABI ATEXIT
+[+    12.961588] [EL0 LOG] lp=0 asid=23 CABI FINI
+[+    12.962500] [EL0 LOG] lp=0 asid=23 [c-runtime] exit=0 released_blocks=1 remaining_blocks=0 heap_peak=103 sampled_stack=784
+[+    12.963772] [EL0 LOG] lp=0 asid=16 [agent] launched "c-exit" generation=1 asid=23 principal=0xe2a0103d8db38dad
+[+    13.051726] [EL0 LOG] lp=0 asid=17 [management] connection=7 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889971
+[+    13.052414] [EL0 LOG] lp=0 asid=17 [management] connection=7 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889971
+[+    13.510386] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    13.524248] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    13.541712] [EL0 LOG] lp=0 asid=24 CABI expected nonzero
+[+    13.542074] [EL0 LOG] lp=0 asid=24 CABI FINI
+[+    13.542940] [EL0 LOG] lp=0 asid=24 [c-runtime] exit=17 released_blocks=1 remaining_blocks=0 heap_peak=135 sampled_stack=688
+[+    13.543358] Aborting user address space 24
+[+    13.544704] [EL0 LOG] lp=0 asid=16 [agent] launched "c-error" generation=1 asid=24 principal=0xfc308c0aaf227d00
+[+    13.610790] [EL0 LOG] lp=0 asid=17 [management] connection=8 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889972
+[+    13.611378] [EL0 LOG] lp=0 asid=17 [management] connection=8 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889972
+[+    14.088120] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    14.104554] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    14.120220] [EL0 LOG] lp=0 asid=25 CABI expected abort
+[+    14.120702] [EL0 LOG] lp=0 asid=25 [c-runtime] abort
+[+    14.120926] Aborting user address space 25
+[+    14.121966] [EL0 LOG] lp=0 asid=16 [agent] launched "c-abort" generation=1 asid=25 principal=0xcd9ce8ba4aa82ab6
+[+    14.282154] [EL0 LOG] lp=0 asid=17 [management] connection=9 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889972
+[+    14.283134] [EL0 LOG] lp=0 asid=17 [management] connection=9 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889972
+[+    14.672814] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    14.692214] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    14.706998] [EL0 LOG] lp=0 asid=26 CABI PASS case=8
+[+    14.708014] [EL0 LOG] lp=0 asid=26 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=576
+[+    14.708958] [EL0 LOG] lp=0 asid=16 [agent] launched "c-empty" generation=1 asid=26 principal=0xb1cf7a43eb83ed84
+[+    14.869832] [EL0 LOG] lp=0 asid=17 [management] connection=10 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889973
+[+    14.870782] [EL0 LOG] lp=0 asid=17 [management] connection=10 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889973
+[+    15.253306] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    15.264362] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    15.278164] [EL0 LOG] lp=0 asid=27 CABI shutdown without request
+[+    15.278594] [EL0 LOG] lp=0 asid=27 [c-runtime] shutdown completion without a request
+[+    15.278858] [EL0 LOG] lp=0 asid=27 [c-runtime] abort
+[+    15.279030] Aborting user address space 27
+[+    15.279908] [EL0 LOG] lp=0 asid=16 [agent] launched "c-shutdown-without-request" generation=1 asid=27 principal=0xff796389ca63da99
+[+    15.369392] [EL0 LOG] lp=0 asid=17 [management] connection=11 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889973
+[+    15.370028] [EL0 LOG] lp=0 asid=17 [management] connection=11 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889973
+[+    15.825368] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    15.841326] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    15.858018] [EL0 LOG] lp=0 asid=16 [agent] launched "c-workers" generation=1 asid=28 principal=0xae941eca20f0a13d
+[+    15.863216] [EL0 LOG] lp=0 asid=28 WORKER wake-before-wait and deadline
+[+    15.864126] [EL0 LOG] lp=1 asid=28 WORKER private queue entry
+[+    15.866460] [EL0 LOG] lp=0 asid=28 WORKER cross-CPU handshake and admission
+[+    15.866718] [EL0 LOG] lp=0 asid=28 WORKER PASS
+[+    15.867614] [EL0 LOG] lp=0 asid=28 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=528
+[+    15.968016] [EL0 LOG] lp=0 asid=17 [management] connection=12 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889974
+[+    15.968616] [EL0 LOG] lp=0 asid=17 [management] connection=12 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889974
+[+    16.414590] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    16.431074] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    16.446154] [EL0 LOG] lp=1 asid=29 WORKER private queue entry
+[+    16.446496] [EL0 LOG] lp=0 asid=29 WORKER expected unjoined exit
+[+    16.447074] [EL0 LOG] lp=0 asid=29 [c-runtime] exit with an unjoined worker
+[+    16.447370] Aborting user address space 29
+[+    16.448594] [EL0 LOG] lp=0 asid=16 [agent] launched "c-unjoined" generation=1 asid=29 principal=0xb64b4758fb616923
+[+    16.585770] [EL0 LOG] lp=0 asid=17 [management] connection=13 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889975
+[+    16.586412] [EL0 LOG] lp=0 asid=17 [management] connection=13 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889975
+[+    17.006682] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    17.025754] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    17.043672] [EL0 LOG] lp=0 asid=16 [agent] launched "c-worker-reuse" generation=1 asid=30 principal=0x86792345ec499b1b
+[+    17.048012] [EL0 LOG] lp=0 asid=30 WORKER exact join and slot reuse
+[+    17.048576] [EL0 LOG] lp=0 asid=30 WORKER finalizer admission fenced
+[+    17.049220] [EL0 LOG] lp=0 asid=30 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=704
+[+    17.181498] [EL0 LOG] lp=0 asid=17 [management] connection=14 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889975
+[+    17.182140] [EL0 LOG] lp=0 asid=17 [management] connection=14 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889975
+[+    17.596356] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    17.612340] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    17.631766] [EL0 LOG] lp=0 asid=16 [agent] launched "c-sync" generation=1 asid=31 principal=0xa96118460b7ceb03
+[+    17.658754] [EL0 LOG] lp=0 asid=31 SYNC mutex contention and timeout
+[+    17.662614] [EL0 LOG] lp=0 asid=31 SYNC condition signal and broadcast
+[+    18.123878] [EL0 LOG] lp=0 asid=31 SYNC one deadline through reacquisition
+[+    18.140302] [EL0 LOG] lp=0 asid=31 SYNC previous slot owner fenced
+[+    18.141192] [EL0 LOG] lp=0 asid=31 SYNC PASS
+[+    18.145294] [EL0 LOG] lp=0 asid=31 [c-runtime] exit=0 released_blocks=1 remaining_blocks=0 heap_peak=169 sampled_stack=528
+[+    18.323282] [EL0 LOG] lp=0 asid=17 [management] connection=15 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889976
+[+    18.324038] [EL0 LOG] lp=0 asid=17 [management] connection=15 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889976
+[+    18.750960] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    18.763630] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    18.779692] [EL0 LOG] lp=0 asid=16 [agent] launched "c-rwlock" generation=1 asid=32 principal=0xa983dc6177b50110
+[+    18.780936] [EL0 LOG] lp=0 asid=32 RWLOCK shared and nested readers
+[+    19.241078] [EL0 LOG] lp=0 asid=32 RWLOCK writer timeout wakes readers
+[+    19.247178] [EL0 LOG] lp=0 asid=32 RWLOCK last reader releases writer
+[+    19.248028] [EL0 LOG] lp=0 asid=32 RWLOCK PASS
+[+    19.249906] [EL0 LOG] lp=0 asid=32 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=231 sampled_stack=528
+[+    19.386244] [EL0 LOG] lp=0 asid=17 [management] connection=16 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889977
+[+    19.386872] [EL0 LOG] lp=0 asid=17 [management] connection=16 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889977
+[+    19.893998] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    19.905772] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    19.921686] [EL0 LOG] lp=0 asid=33 EVENT retained set reset and wake-before-wait
+[+    19.923656] [EL0 LOG] lp=0 asid=16 [agent] launched "c-events" generation=1 asid=33 principal=0xd63ac3f765c407de
+[+    20.255148] [EL0 LOG] lp=0 asid=33 EVENT unrelated wakes preserve deadline elapsed_ns=102498992
+[+    20.263492] [EL0 LOG] lp=0 asid=33 EVENT cross-CPU publication and event-only wait
+[+    20.264408] [EL0 LOG] lp=0 asid=33 EVENT PASS
+[+    20.266286] [EL0 LOG] lp=0 asid=33 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=103 sampled_stack=640
+[+    20.458488] [EL0 LOG] lp=0 asid=17 [management] connection=17 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889979
+[+    20.459150] [EL0 LOG] lp=0 asid=17 [management] connection=17 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889979
+[+    21.129256] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    21.141732] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    21.170300] [EL0 LOG] lp=0 asid=34 ERTS CALENDAR vectors full Gregorian cycle boundaries and UTC policy PASS
+[+    21.171420] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-time-init" generation=1 asid=34 principal=0xf0bf0e223b3a082e
+[+    21.182734] [EL0 LOG] lp=0 asid=34 ERTS TIME INIT pinned metadata local performance counter and worker reads PASS
+[+    21.183414] [EL0 LOG] lp=0 asid=34 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512
+[+    21.286658] [EL0 LOG] lp=0 asid=17 [management] connection=18 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889979
+[+    21.287230] [EL0 LOG] lp=0 asid=17 [management] connection=18 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889979
+[+    21.736248] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    21.749996] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    21.768528] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-time-init-denied" generation=1 asid=35 principal=0x80497aa95a054d2c
+[+    21.770054] [EL0 LOG] lp=0 asid=35 ERTS TIME INIT missing grant preserves metadata and cold clock PASS
+[+    21.770816] [EL0 LOG] lp=0 asid=35 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=512
+[+    21.891534] [EL0 LOG] lp=0 asid=17 [management] connection=19 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889980
+[+    21.892174] [EL0 LOG] lp=0 asid=17 [management] connection=19 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889980
+[+    22.339878] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    22.356522] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    22.373932] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-time-init-failed" generation=1 asid=36 principal=0xd4cbb3434fdac543
+[+    22.375416] [EL0 LOG] lp=0 asid=36 [erts] clock initialization failed
+[+    22.375670] [EL0 LOG] lp=0 asid=36 [c-runtime] abort
+[+    22.375806] Aborting user address space 36
+[+    22.524230] [EL0 LOG] lp=0 asid=17 [management] connection=20 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889981
+[+    22.524938] [EL0 LOG] lp=0 asid=17 [management] connection=20 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889981
+[+    22.946602] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    22.959254] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    22.973840] [EL0 LOG] lp=0 asid=37 [erts] UTC calendar unavailable stale or out of range
+[+    22.974222] [EL0 LOG] lp=0 asid=37 [c-runtime] abort
+[+    22.974350] Aborting user address space 37
+[+    22.974684] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-calendar-failed" generation=1 asid=37 principal=0x9c33a0b08aa261ed
+[+    23.110268] [EL0 LOG] lp=0 asid=17 [management] connection=21 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889981
+[+    23.110900] [EL0 LOG] lp=0 asid=17 [management] connection=21 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889981
+[+    23.550476] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    23.567212] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    23.587408] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-pre-init" generation=1 asid=38 principal=0xcb591c5690eb2729
+[+    23.603426] [EL0 LOG] lp=0 asid=38 ERTS CALENDAR vectors full Gregorian cycle boundaries and UTC policy PASS
+[+    23.607750] [EL0 LOG] lp=0 asid=38 ERTS PRE INIT common time metadata early gate late worker handoff and zero owners PASS
+[+    23.608446] [EL0 LOG] lp=0 asid=38 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=730 sampled_stack=672
+[+    23.711544] [EL0 LOG] lp=0 asid=17 [management] connection=22 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889982
+[+    23.712236] [EL0 LOG] lp=0 asid=17 [management] connection=22 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889982
+[+    24.170488] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    24.186452] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    24.203726] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-pre-init-repeat" generation=1 asid=39 principal=0xd5cba66f95c8ab33
+[+    24.207846] [EL0 LOG] lp=0 asid=39 [erts] fatal error file=sys/knytos/erts_pre_init.c line=23 function=erts_sys_pre_init error=22
+[+    24.208210] [EL0 LOG] lp=0 asid=39 [c-runtime] abort
+[+    24.208340] Aborting user address space 39
+[+    24.314630] [EL0 LOG] lp=0 asid=17 [management] connection=23 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889982
+[+    24.315208] [EL0 LOG] lp=0 asid=17 [management] connection=23 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889982
+[+    24.779340] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    24.791004] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    24.806980] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-pre-init-keys" generation=1 asid=40 principal=0xe16499332468d2fc
+[+    24.807866] [EL0 LOG] lp=0 asid=40 [erts] fatal error file=sys/knytos/erts_pre_init.c line=23 function=erts_sys_pre_init error=11
+[+    24.808264] [EL0 LOG] lp=0 asid=40 [c-runtime] abort
+[+    24.808394] Aborting user address space 40
+[+    24.927864] [EL0 LOG] lp=0 asid=17 [management] connection=24 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889983
+[+    24.928450] [EL0 LOG] lp=0 asid=17 [management] connection=24 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889983
+[+    25.387788] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    25.404470] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    25.422062] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-pre-init-denied" generation=1 asid=41 principal=0xacbe6b236b5fb0f7
+[+    25.423122] [EL0 LOG] lp=0 asid=41 [erts] clock initialization failed
+[+    25.423352] [EL0 LOG] lp=0 asid=41 [c-runtime] abort
+[+    25.423478] Aborting user address space 41
+[+    25.579560] [EL0 LOG] lp=0 asid=17 [management] connection=25 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889984
+[+    25.580178] [EL0 LOG] lp=0 asid=17 [management] connection=25 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889984
+[+    26.010244] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    26.022202] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    26.040764] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-pre-init-worker" generation=1 asid=42 principal=0xb87ed6faced5430f
+[+    26.056872] [EL0 LOG] lp=0 asid=42 ERTS CALENDAR vectors full Gregorian cycle boundaries and UTC policy PASS
+[+    26.059516] [EL0 LOG] lp=1 asid=42 [erts] fatal error file=sys/knytos/erts_pre_init.c line=23 function=erts_sys_pre_init error=13
+[+    26.060026] [EL0 LOG] lp=1 asid=42 [c-runtime] abort
+[+    26.060182] Aborting user address space 42
+[+    26.179528] [EL0 LOG] lp=0 asid=17 [management] connection=26 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889984
+[+    26.180146] [EL0 LOG] lp=0 asid=17 [management] connection=26 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889984
+[+    26.629554] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    26.648850] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    26.666944] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-internal-reentrant" generation=1 asid=43 principal=0x866cec4c73652539
+[+    26.678720] [EL0 LOG] lp=0 asid=43 ERTS INTERNAL CPU unknown counts allocation rejection common prefix formatter and exact join PASS
+[+    26.679532] [EL0 LOG] lp=0 asid=43 [c-runtime] exit=0 released_blocks=1 remaining_blocks=0 heap_peak=936 sampled_stack=512
+[+    26.785080] [EL0 LOG] lp=0 asid=17 [management] connection=27 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889985
+[+    26.785646] [EL0 LOG] lp=0 asid=17 [management] connection=27 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889985
+[+    27.251988] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    27.261944] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    27.274842] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-internal-allocation-failed" generation=1 asid=44 principal=0xeb38abeb2bfe1fe5
+[+    27.276118] [EL0 LOG] lp=0 asid=44 ERTS INTERNAL CPU common allocation rejection zero owners before native pre-init PASS
+[+    27.276912] [EL0 LOG] lp=0 asid=44 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=103 sampled_stack=512
+[+    27.403648] [EL0 LOG] lp=0 asid=17 [management] connection=28 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889986
+[+    27.404246] [EL0 LOG] lp=0 asid=17 [management] connection=28 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889986
+[+    27.862346] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    27.874112] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    27.894584] [EL0 LOG] lp=0 asid=16 [agent] launched "c-erts-internal-regular" generation=1 asid=45 principal=0xcee2c67bf189c652
+[+    27.902124] [EL0 LOG] lp=0 asid=45 ERTS INTERNAL CPU unknown counts allocation rejection common prefix formatter and exact join PASS
+[+    27.902934] [EL0 LOG] lp=0 asid=45 [c-runtime] exit=0 released_blocks=1 remaining_blocks=0 heap_peak=936 sampled_stack=512
+[+    28.075880] [EL0 LOG] lp=0 asid=17 [management] connection=29 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889986
+[+    28.076670] [EL0 LOG] lp=0 asid=17 [management] connection=29 certificate=6b9789b192f791511b537cf79155f0a5f2673309a6bc02ca9de8c4a9009f1262 role=Administrator permission=Mutate allowed=true credential_utc=1795889986
+[+    28.480530] [EL0 LOG] lp=0 asid=16 [agent] selected variant=0 architecture=Aarch64 abi=4 required_features=0x0
+[+    28.497402] [EL0 LOG] lp=0 asid=16 [agent] verified selected variant in local artifact cache
+[+    28.508256] [EL0 LOG] lp=0 asid=46 CABI hello: C on Knytos
+[+    28.508734] [EL0 LOG] lp=0 asid=46 CABI PASS case=0
+[+    28.508968] [EL0 LOG] lp=0 asid=46 CABI FINI
+[+    28.509520] [EL0 LOG] lp=0 asid=46 [c-runtime] exit=0 released_blocks=0 remaining_blocks=0 heap_peak=0 sampled_stack=688
+[+    28.510012] [EL0 LOG] lp=0 asid=16 [agent] launched "c-survivor" generation=1 asid=46 principal=0xd9b34b84697e2d4d

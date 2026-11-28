@@ -1,0 +1,6 @@
+-- Configuring done (2.8s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/froran/Projects/private/knytos/target/c-runtime/picolibc-aarch64-workers-v1
+ninja: no work to do.
+    Finished `release` profile [optimized] target(s) in 0.11s
+Built /private/tmp/knytos-erts-internal-cpu-run/bundle/c-erts-internal-regular.elf; signing is a separate step

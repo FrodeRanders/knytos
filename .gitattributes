@@ -4,3 +4,4 @@ docs/plans/evidence/erts-native-configure/native-link.c -whitespace
 docs/plans/evidence/c-realtime/host-tests.txt -whitespace
 docs/plans/evidence/erts-time-supervisor/** -text -whitespace
 docs/plans/evidence/erts-pre-init/** -text -whitespace
+docs/plans/evidence/erts-internal-cpu/** -text -whitespace

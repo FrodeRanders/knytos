@@ -70,6 +70,8 @@ def main():
     parser.add_argument("--define", action="append", default=[])
     parser.add_argument("--include", action="append", default=[], type=Path)
     parser.add_argument("--library", action="append", default=[], type=Path)
+    parser.add_argument("--linker-argument", action="append", default=[],
+                        help="pass an additional argument directly to the native linker")
     profile = parser.add_mutually_exclusive_group()
     profile.add_argument("--native-workers", action="store_true",
                         help="enable the experimental worker ABI with restricted worker callbacks")
@@ -137,7 +139,7 @@ def main():
     link_map = ["-Map=" + str(objects / "link-map.txt")] if worker_libc else []
     run(llvm / "rust-lld", "-flavor", "gnu", "-m", "aarch64elf", "--gc-sections", "--entry=_start", *link_map,
         "-T", objects / "link.x", "-o", output, "--start-group", objects / "application.o", objects / "bridge.o",
-        *[p.resolve() for p in args.library],
+        *[p.resolve() for p in args.library], *args.linker_argument,
         ROOT / "target/aarch64-unknown-none/release/libknytos_cabi.a", libc / "libc.a", "--end-group")
     check_elf(output)
     run(llvm / "llvm-strip", "--strip-debug", output)
@@ -157,6 +159,7 @@ def main():
     if args.service_worker:
         evidence["profile"] = "aarch64-static-c11-service-worker-no-tls"
     evidence["libraries_sha256"] = {str(p.resolve()): hashlib.sha256(p.read_bytes()).hexdigest() for p in args.library}
+    evidence["linker_arguments"] = args.linker_argument
     inputs = [ROOT / "Cargo.lock", ROOT / "Cargo.toml", ROOT / "ports/libc/build.py",
               ROOT / "ports/libc/bridge.c", ROOT / "ports/libc/include/knytos.h",
               ROOT / "ports/libc/aarch64-clang.cmake", ROOT / "crates/knytos-services/link.x",

@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 configures native threads/clocks, generates emulator metadata, compiles the common time supervisor and executes native thread/clock pre-init. Complete ERTS startup and refresh ownership remain open.\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 builds real internal libraries and emulator metadata, and executes common CPU pre-early initialization plus native thread/clock pre-init. Complete ERTS startup and refresh ownership remain open.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -1590,6 +1590,22 @@ calls and preparation failures terminate without replaying a committed prefix.
 The [qualification](../reports/milestones/2026-11-28-erts-pre-init.md) separates
 this executed platform entry point from common emulator `early_init`, CPU
 topology, later correction/timer initialization and a complete emulator boot.
+
+The [internal-library/CPU step](erlang-m5-internal-cpu.md) adds
+`--native-internal`. Generated Make rules build both three-member internal
+archives and the common CPU-topology object, with unchanged pinned C sources.
+Native function/data sections permit discarding unused utilities. The selected
+CPU prefix and buffer formatter link and execute without replacement common
+symbols; the unported `select`-based sleep and descriptor stream helpers still
+fail linkage. CPU discovery remains unsupported, distinct from the
+one-scheduler policy. Signed fixtures
+run common CPU pre-early initialization before native pre-init, both buffer-formatter
+variants, allocation rejection and worker joins. The
+[qualification](../reports/milestones/2026-11-28-erts-internal-cpu.md) retains the
+runtime-lifetime CPU-info owner until C runtime exit. Full startup needs a
+terminal policy on rejected CPU-info allocation before the later topology
+initializer, which requires a nonnull object. Later topology/allocator/lock
+initialization, native discovery/binding and emulator boot remain open.
 
 A full OTP build will need to pass the target configuration through
 the top-level wrapper. An illustrative invocation is:

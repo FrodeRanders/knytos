@@ -1,0 +1,4 @@
+ld.lld: error: undefined symbol: select
+>>> referenced by erl_misc_utils.c
+>>>               erl_misc_utils.o:(erts_milli_sleep) in archive /private/tmp/knytos-erts-internal-cpu-complete/otp/erts/lib/internal/aarch64-unknown-knytos/liberts_internal_r.a
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

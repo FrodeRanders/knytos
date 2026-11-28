@@ -1,0 +1,7 @@
+{
+  "/private/tmp/knytos-erts-cpu-baseline/erl_cpu_topology.o": "6fbd3ae1db4dc05cad10fa3718a34185353a2cbcc2767aa9e84fa7d8f6024589",
+  "/private/tmp/knytos-erts-cpu-baseline/erl_misc_utils.o": "2d396a81113a4e16f67f7ba990dc16a965add0e9d97a884c5734297333efba60",
+  "/private/tmp/knytos-erts-cpu-baseline/baseline-cpu.a": "a3145ffa9fb234602976983997685c19bb736e71fb2be462c5b8f78771b0d566",
+  "/private/tmp/knytos-erts-pre-init-final/otp/erts/lib/internal/aarch64-unknown-knytos/liberts_internal.a": "6108834061f6f9a2101219425f734df5611def69b6ae800625e3499a5269e887",
+  "/private/tmp/knytos-erts-pre-init-final/otp/erts/lib/internal/aarch64-unknown-knytos/liberts_internal_r.a": "6108834061f6f9a2101219425f734df5611def69b6ae800625e3499a5269e887"
+}

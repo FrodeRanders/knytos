@@ -1,0 +1,12 @@
+[
+  "make",
+  "--no-print-directory",
+  "-f",
+  "/private/tmp/knytos-erts-pre-init-final/otp/erts/lib_src/aarch64-unknown-knytos/Makefile",
+  "ERL_TOP=/private/tmp/knytos-erts-pre-init-final/otp",
+  "TARGET=aarch64-unknown-knytos",
+  "TYPE=opt",
+  "V=1",
+  "../lib/internal/aarch64-unknown-knytos/liberts_internal.a",
+  "../lib/internal/aarch64-unknown-knytos/liberts_internal_r.a"
+]

@@ -1,0 +1,1767 @@
+clang --target=aarch64-none-elf --sysroot=/private/tmp/knytos-erts-internal-cpu-complete/sdk -std=gnu23 -Werror=undef -Werror=implicit -Werror=return-type  -fvisibility=hidden -fno-common -fstrict-flex-arrays=3 -fno-strict-aliasing -fno-delete-null-pointer-checks -fno-strict-overflow -fexceptions -mbranch-protection=standard -fstack-protector-strong -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -Os -ffreestanding -fno-builtin -fno-pic -fno-pie -mno-outline-atomics -I/private/tmp/knytos-erts-internal-cpu-complete/otp/erts/aarch64-unknown-knytos  -Dmain=knytos_c_main -DKNYTOS_NATIVE_WORKERS -D__STDIO_LOCKING -DKNYTOS_WORKER_LIBC -isystem /private/tmp/knytos-erts-internal-cpu-complete/sdk/include -DKNYTOS_SERVICE_WORKER -D_GNU_SOURCE  -DHAVE_CONFIG_H -Wall -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Wdeclaration-after-statement -DUSE_THREADS -DETHR_KNYTOS -DKNYTOS_NATIVE_WORKERS -DKNYTOS_WORKER_LIBC -D__STDIO_LOCKING   -Iaarch64-unknown-knytos/opt/emu -Ibeam -Isys/knytos -Isys/common -Iaarch64-unknown-knytos -Izlib  -Izstd -Iryu -Ipcre -I../include -I../include/aarch64-unknown-knytos -I../include/internal -I../include/internal/aarch64-unknown-knytos -c sys/knytos/erts_monotonic.c -o obj/aarch64-unknown-knytos/opt/emu/erts_monotonic.o
+clang --target=aarch64-none-elf --sysroot=/private/tmp/knytos-erts-internal-cpu-complete/sdk -std=gnu23 -Werror=undef -Werror=implicit -Werror=return-type  -fvisibility=hidden -fno-common -fstrict-flex-arrays=3 -fno-strict-aliasing -fno-delete-null-pointer-checks -fno-strict-overflow -fexceptions -mbranch-protection=standard -fstack-protector-strong -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -Os -ffreestanding -fno-builtin -fno-pic -fno-pie -mno-outline-atomics -I/private/tmp/knytos-erts-internal-cpu-complete/otp/erts/aarch64-unknown-knytos  -Dmain=knytos_c_main -DKNYTOS_NATIVE_WORKERS -D__STDIO_LOCKING -DKNYTOS_WORKER_LIBC -isystem /private/tmp/knytos-erts-internal-cpu-complete/sdk/include -DKNYTOS_SERVICE_WORKER -D_GNU_SOURCE  -DHAVE_CONFIG_H -Wall -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Wdeclaration-after-statement -DUSE_THREADS -DETHR_KNYTOS -DKNYTOS_NATIVE_WORKERS -DKNYTOS_WORKER_LIBC -D__STDIO_LOCKING   -Iaarch64-unknown-knytos/opt/emu -Ibeam -Isys/knytos -Isys/common -Iaarch64-unknown-knytos -Izlib  -Izstd -Iryu -Ipcre -I../include -I../include/aarch64-unknown-knytos -I../include/internal -I../include/internal/aarch64-unknown-knytos -c sys/knytos/erts_system_time.c -o obj/aarch64-unknown-knytos/opt/emu/erts_system_time.o
+sys/knytos/erts_system_time.c:33:14: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+   33 |     unsigned index = atomic_load(&active);
+      |              ^
+sys/knytos/erts_system_time.c:50:14: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+   50 |     uint64_t value;
+      |              ^
+sys/knytos/erts_system_time.c:70:35: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+   70 |     struct knytos_realtime_sample sample;
+      |                                   ^
+3 warnings generated.
+clang --target=aarch64-none-elf --sysroot=/private/tmp/knytos-erts-internal-cpu-complete/sdk -std=gnu23 -Werror=undef -Werror=implicit -Werror=return-type  -fvisibility=hidden -fno-common -fstrict-flex-arrays=3 -fno-strict-aliasing -fno-delete-null-pointer-checks -fno-strict-overflow -fexceptions -mbranch-protection=standard -fstack-protector-strong -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -Os -ffreestanding -fno-builtin -fno-pic -fno-pie -mno-outline-atomics -I/private/tmp/knytos-erts-internal-cpu-complete/otp/erts/aarch64-unknown-knytos  -Dmain=knytos_c_main -DKNYTOS_NATIVE_WORKERS -D__STDIO_LOCKING -DKNYTOS_WORKER_LIBC -isystem /private/tmp/knytos-erts-internal-cpu-complete/sdk/include -DKNYTOS_SERVICE_WORKER -D_GNU_SOURCE  -DHAVE_CONFIG_H -Wall -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Wdeclaration-after-statement -DUSE_THREADS -DETHR_KNYTOS -DKNYTOS_NATIVE_WORKERS -DKNYTOS_WORKER_LIBC -D__STDIO_LOCKING   -Iaarch64-unknown-knytos/opt/emu -Ibeam -Isys/knytos -Isys/common -Iaarch64-unknown-knytos -Izlib  -Izstd -Iryu -Ipcre -I../include -I../include/aarch64-unknown-knytos -I../include/internal -I../include/internal/aarch64-unknown-knytos -c sys/knytos/erts_time_init.c -o obj/aarch64-unknown-knytos/opt/emu/erts_time_init.o
+In file included from sys/knytos/erts_time_init.c:4:
+In file included from sys/knytos/erts_time_init.h:13:
+In file included from beam/sys.h:575:
+In file included from beam/erl_threads.h:254:
+In file included from ../include/internal/ethread.h:384:
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  121 | KNYTOS_ETHR_ATOMIC_FAMILY(ethr_atomic32, ethr_sint32_t, ethr_uint32_t)
+      | ^
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  122 | KNYTOS_ETHR_ATOMIC_FAMILY(ethr_atomic, ethr_sint_t, ethr_uint_t)
+      | ^
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+In file included from sys/knytos/erts_time_init.c:4:
+In file included from sys/knytos/erts_time_init.h:13:
+In file included from beam/sys.h:575:
+In file included from beam/erl_threads.h:254:
+In file included from ../include/internal/ethread.h:384:
+In file included from ../include/internal/knytos/ethr_atomics.h:197:
+../include/internal/knytos/ethr_dw_atomics.h:98:25: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+   98 |     knytos_ethr_dw_bits bits = __atomic_load_n(address, __ATOMIC_SEQ_CST);
+      |                         ^
+../include/internal/knytos/ethr_dw_atomics.h:111:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  111 |     int success = __atomic_compare_exchange_n(address, &observed, next, 0,
+      |         ^
+sys/knytos/erts_time_init.c:29:35: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+   29 |     struct knytos_realtime_sample sample;
+      |                                   ^
+73 warnings generated.
+clang --target=aarch64-none-elf --sysroot=/private/tmp/knytos-erts-internal-cpu-complete/sdk -std=gnu23 -Werror=undef -Werror=implicit -Werror=return-type  -fvisibility=hidden -fno-common -fstrict-flex-arrays=3 -fno-strict-aliasing -fno-delete-null-pointer-checks -fno-strict-overflow -fexceptions -mbranch-protection=standard -fstack-protector-strong -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -Os -ffreestanding -fno-builtin -fno-pic -fno-pie -mno-outline-atomics -I/private/tmp/knytos-erts-internal-cpu-complete/otp/erts/aarch64-unknown-knytos  -Dmain=knytos_c_main -DKNYTOS_NATIVE_WORKERS -D__STDIO_LOCKING -DKNYTOS_WORKER_LIBC -isystem /private/tmp/knytos-erts-internal-cpu-complete/sdk/include -DKNYTOS_SERVICE_WORKER -D_GNU_SOURCE  -DHAVE_CONFIG_H -Wall -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Wdeclaration-after-statement -DUSE_THREADS -DETHR_KNYTOS -DKNYTOS_NATIVE_WORKERS -DKNYTOS_WORKER_LIBC -D__STDIO_LOCKING   -Iaarch64-unknown-knytos/opt/emu -Ibeam -Isys/knytos -Isys/common -Iaarch64-unknown-knytos -Izlib  -Izstd -Iryu -Ipcre -I../include -I../include/aarch64-unknown-knytos -I../include/internal -I../include/internal/aarch64-unknown-knytos -c sys/knytos/erts_calendar.c -o obj/aarch64-unknown-knytos/opt/emu/erts_calendar.o
+sys/knytos/erts_calendar.c:15:20: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+   15 |     ErtsSystemTime nanoseconds;
+      |                    ^
+1 warning generated.
+clang --target=aarch64-none-elf --sysroot=/private/tmp/knytos-erts-internal-cpu-complete/sdk -std=gnu23 -Werror=undef -Werror=implicit -Werror=return-type  -fvisibility=hidden -fno-common -fstrict-flex-arrays=3 -fno-strict-aliasing -fno-delete-null-pointer-checks -fno-strict-overflow -fexceptions -mbranch-protection=standard -fstack-protector-strong -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -Os -ffreestanding -fno-builtin -fno-pic -fno-pie -mno-outline-atomics -I/private/tmp/knytos-erts-internal-cpu-complete/otp/erts/aarch64-unknown-knytos  -Dmain=knytos_c_main -DKNYTOS_NATIVE_WORKERS -D__STDIO_LOCKING -DKNYTOS_WORKER_LIBC -isystem /private/tmp/knytos-erts-internal-cpu-complete/sdk/include -DKNYTOS_SERVICE_WORKER -D_GNU_SOURCE  -DHAVE_CONFIG_H -Wall -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Wdeclaration-after-statement -DUSE_THREADS -DETHR_KNYTOS -DKNYTOS_NATIVE_WORKERS -DKNYTOS_WORKER_LIBC -D__STDIO_LOCKING   -Iaarch64-unknown-knytos/opt/emu -Ibeam -Isys/knytos -Isys/common -Iaarch64-unknown-knytos -Izlib  -Izstd -Iryu -Ipcre -I../include -I../include/aarch64-unknown-knytos -I../include/internal -I../include/internal/aarch64-unknown-knytos -c sys/knytos/erts_pre_init.c -o obj/aarch64-unknown-knytos/opt/emu/erts_pre_init.o
+In file included from sys/knytos/erts_pre_init.c:5:
+In file included from beam/sys.h:575:
+In file included from beam/erl_threads.h:254:
+In file included from ../include/internal/ethread.h:384:
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  121 | KNYTOS_ETHR_ATOMIC_FAMILY(ethr_atomic32, ethr_sint32_t, ethr_uint32_t)
+      | ^
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  122 | KNYTOS_ETHR_ATOMIC_FAMILY(ethr_atomic, ethr_sint_t, ethr_uint_t)
+      | ^
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+In file included from sys/knytos/erts_pre_init.c:5:
+In file included from beam/sys.h:575:
+In file included from beam/erl_threads.h:254:
+In file included from ../include/internal/ethread.h:384:
+In file included from ../include/internal/knytos/ethr_atomics.h:197:
+../include/internal/knytos/ethr_dw_atomics.h:98:25: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+   98 |     knytos_ethr_dw_bits bits = __atomic_load_n(address, __ATOMIC_SEQ_CST);
+      |                         ^
+../include/internal/knytos/ethr_dw_atomics.h:111:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  111 |     int success = __atomic_compare_exchange_n(address, &observed, next, 0,
+      |         ^
+72 warnings generated.
+clang --target=aarch64-none-elf --sysroot=/private/tmp/knytos-erts-internal-cpu-complete/sdk -std=gnu23  -Werror=undef -Werror=implicit -Werror=return-type  -fvisibility=hidden -fno-common -fstrict-flex-arrays=3 -fno-strict-aliasing -fno-delete-null-pointer-checks -fno-strict-overflow -fexceptions -mbranch-protection=standard -fstack-protector-strong -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -Os -ffreestanding -fno-builtin -fno-pic -fno-pie -mno-outline-atomics -I/private/tmp/knytos-erts-internal-cpu-complete/otp/erts/aarch64-unknown-knytos  -Dmain=knytos_c_main -DKNYTOS_NATIVE_WORKERS -D__STDIO_LOCKING -DKNYTOS_WORKER_LIBC -isystem /private/tmp/knytos-erts-internal-cpu-complete/sdk/include -DKNYTOS_SERVICE_WORKER -D_GNU_SOURCE  -DHAVE_CONFIG_H -Wall -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Wdeclaration-after-statement -DUSE_THREADS -DETHR_KNYTOS -DKNYTOS_NATIVE_WORKERS -DKNYTOS_WORKER_LIBC -D__STDIO_LOCKING   -ffunction-sections -fdata-sections -Iaarch64-unknown-knytos/opt/emu -Ibeam -Isys/knytos -Isys/common -Iaarch64-unknown-knytos -Izlib  -Izstd -Iryu -Ipcre -I../include -I../include/aarch64-unknown-knytos -I../include/internal -I../include/internal/aarch64-unknown-knytos -c beam/erl_cpu_topology.c -o obj/aarch64-unknown-knytos/opt/emu/erl_cpu_topology.o
+In file included from beam/erl_cpu_topology.c:35:
+In file included from beam/global.h:26:
+In file included from beam/sys.h:575:
+In file included from beam/erl_threads.h:254:
+In file included from ../include/internal/ethread.h:384:
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  121 | KNYTOS_ETHR_ATOMIC_FAMILY(ethr_atomic32, ethr_sint32_t, ethr_uint32_t)
+      | ^
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:121:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  122 | KNYTOS_ETHR_ATOMIC_FAMILY(ethr_atomic, ethr_sint_t, ethr_uint_t)
+      | ^
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:110:3: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  110 | } \
+      |   ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:111:39: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  111 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, ) \
+      |                                       ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:112:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  112 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _ddrb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:113:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  113 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _rb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:114:42: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  114 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _wb) \
+      |                                          ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:115:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  115 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _acqb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:51:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   51 |     U value = atomic_load_explicit(&var->value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:58:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   58 |     U old = atomic_exchange_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:74:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   74 |     U old = atomic_fetch_add_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:86:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   86 |     U old = atomic_fetch_and_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+../include/internal/knytos/ethr_atomics.h:122:1: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+../include/internal/knytos/ethr_atomics.h:116:44: note: expanded from macro 'KNYTOS_ETHR_ATOMIC_FAMILY'
+  116 | KNYTOS_ETHR_ATOMIC_VARIANT(P, S, U, _relb) \
+      |                                            ^
+../include/internal/knytos/ethr_atomics.h:93:7: note: expanded from macro '\
+KNYTOS_ETHR_ATOMIC_VARIANT'
+   93 |     U old = atomic_fetch_or_explicit(&var->value, (U)value, memory_order_seq_cst); \
+      |       ^
+In file included from beam/erl_cpu_topology.c:35:
+In file included from beam/global.h:26:
+In file included from beam/sys.h:575:
+In file included from beam/erl_threads.h:254:
+In file included from ../include/internal/ethread.h:384:
+In file included from ../include/internal/knytos/ethr_atomics.h:197:
+../include/internal/knytos/ethr_dw_atomics.h:98:25: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+   98 |     knytos_ethr_dw_bits bits = __atomic_load_n(address, __ATOMIC_SEQ_CST);
+      |                         ^
+../include/internal/knytos/ethr_dw_atomics.h:111:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  111 |     int success = __atomic_compare_exchange_n(address, &observed, next, 0,
+      |         ^
+72 warnings generated.
