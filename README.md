@@ -54,9 +54,9 @@ Some of that path already exists as working vertical slices while other parts
 remain research. The lists below distinguish implemented mechanisms from
 the longer-term direction.
 
-## Contributions in this fork
+## Contributions
 
-The main additions and extensions currently maintained here are:
+The main additions and extensions to the initial fork of CharlotteOS:
 
 - **AArch64 bring-up and SMP execution:** boot on QEMU's `virt` machine,
   secondary-processor startup, GICv3 and generic-timer support, PCIe ECAM
