@@ -2,7 +2,7 @@
 
 ## Implementation programme and architectural specification
 
-**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 configures native threads/clocks, generates upstream emulator metadata and compiles the common time supervisor with native UTC calendars and explicit unsupported CPU statistics. Native ERTS startup and refresh ownership remain open.\
+**Status:** M0–M2 complete within qualified scope. M3 single-scheduler semantics qualified and fixed native SMP demonstrated. M4 passed for the single-scheduler service profile. M5 configures native threads/clocks, generates emulator metadata, compiles the common time supervisor and executes native thread/clock pre-init. Complete ERTS startup and refresh ownership remain open.\
 **Target platform:** Knytos, initially AArch64\
 **Implementation languages:** Rust, C, Erlang\
 **Initial runtime:** AtomVM\
@@ -1580,6 +1580,17 @@ fabricated from wall or monotonic time. The
 distinguishes selected calendar execution from full time-supervisor startup,
 Erlang BIF execution and emulator boot.
 
+The [native pre-init step](erlang-m5-pre-init.md) adds `--native-pre-init`.
+Generated Make rules build the actual `erts_sys_pre_init` entry point in a
+separate archive. It initializes native ethread and executes unchanged common
+`erts_init_sys_time_sup`, including native time-record consumption. The initial
+profile is unbound/headless and rejects unsupported lock/signal profiles.
+Worker creation remains closed until late initialization. Repeated/worker
+calls and preparation failures terminate without replaying a committed prefix.
+The [qualification](../reports/milestones/2026-11-28-erts-pre-init.md) separates
+this executed platform entry point from common emulator `early_init`, CPU
+topology, later correction/timer initialization and a complete emulator boot.
+
 A full OTP build will need to pass the target configuration through
 the top-level wrapper. An illustrative invocation is:
 
@@ -1941,7 +1952,8 @@ provide full startup or continuous refresh.
 
 Remaining integration:
 
-- Full native ERTS startup and the remaining platform source implementations.
+- Complete native ERTS startup after the qualified platform pre-init prefix,
+  including CPU topology and the remaining platform source implementations.
 - Whole-emulator build dependencies, preloaded BEAM modules and host bootstrap.
 - ERTS startup and refresh scheduling/notification ownership.
 - Full-platform system-time and paired-read integration.

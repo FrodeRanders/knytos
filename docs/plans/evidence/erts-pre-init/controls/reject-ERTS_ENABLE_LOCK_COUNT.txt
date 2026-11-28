@@ -1,0 +1,4 @@
+/private/tmp/knytos-erts-pre-init-final/otp/erts/emulator/sys/knytos/erts_pre_init.c:10:2: error: "Native pre-init does not yet support ERTS lock instrumentation"
+   10 | #error "Native pre-init does not yet support ERTS lock instrumentation"
+      |  ^
+1 error generated.

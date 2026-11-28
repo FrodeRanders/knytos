@@ -1,0 +1,19 @@
+{
+  "mode": {
+    "status": 2,
+    "command": [
+      "python3",
+      "ports/erts/configure.py",
+      "--native-pre-init",
+      "--otp-source",
+      "/private/tmp/knytos-erlang-m0-otp",
+      "--picolibc-source",
+      "/private/tmp/knytos-erlang-m0-picolibc",
+      "--output",
+      "/private/tmp/knytos-erts-pre-init-final/unused"
+    ],
+    "diagnostic": "--native-pre-init requires --native-time"
+  },
+  "common_initializer_matches_pin": true,
+  "common_initializer_sha256": "ce358dbcff1f334bba0bcb46c5094a3b7dfeaf09bc853c7f2f69aaba83e3cbba"
+}

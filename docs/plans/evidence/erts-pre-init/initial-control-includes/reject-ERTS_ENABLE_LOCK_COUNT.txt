@@ -1,0 +1,7 @@
+In file included from /private/tmp/knytos-erts-pre-init-first/otp/erts/emulator/sys/knytos/erts_pre_init.c:7:
+In file included from /private/tmp/knytos-erts-pre-init-first/otp/erts/emulator/beam/erl_time.h:26:
+In file included from /private/tmp/knytos-erts-pre-init-first/otp/erts/emulator/beam/erl_monitor_link.h:433:
+/private/tmp/knytos-erts-pre-init-first/otp/erts/emulator/beam/erl_alloc.h:26:10: fatal error: 'erl_alloc_types.h' file not found
+   26 | #include "erl_alloc_types.h"
+      |          ^~~~~~~~~~~~~~~~~~~
+1 error generated.

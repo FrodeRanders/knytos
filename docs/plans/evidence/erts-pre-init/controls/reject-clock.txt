@@ -1,0 +1,4 @@
+ld.lld: error: undefined symbol: sys_init_time
+>>> referenced by erl_time_sup.c
+>>>               erl_time_sup.o:(erts_init_sys_time_sup) in archive /private/tmp/knytos-erts-pre-init-final/time-supervisor/libknytos_erts_calendar.a
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

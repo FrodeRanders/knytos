@@ -1,0 +1,29 @@
+--- a/erts/emulator/Makefile.in
++++ b/erts/emulator/Makefile.in
+@@ -493,6 +493,7 @@
+ 
+ ERLANG_OSTYPE = @ERLANG_OSTYPE@
+ 
++KNYTOS_PRE_INIT_OBJ = $(OBJDIR)/erts_pre_init.o
+ KNYTOS_CLOCK_SRC = erts_monotonic.c erts_system_time.c erts_time_init.c erts_calendar.c
+ KNYTOS_CLOCK_OBJS = $(addprefix $(OBJDIR)/,$(KNYTOS_CLOCK_SRC:.c=.o))
+ 
+@@ -997,6 +998,9 @@
+                      sys/knytos/erts_time_init.h beam/sys.h ../$(TARGET)/config.h
+ .PHONY: knytos-clock-objects
+ knytos-clock-objects: $(KNYTOS_CLOCK_OBJS)
++.PHONY: knytos-pre-init-object
++knytos-pre-init-object: $(KNYTOS_PRE_INIT_OBJ)
++$(KNYTOS_PRE_INIT_OBJ): beam/sys.h beam/erl_threads.h beam/erl_time.h ../$(TARGET)/config.h
+ endif
+ 
+ $(OBJDIR)/%.o: sys/$(ERLANG_OSTYPE)/%.c
+@@ -1263,7 +1267,7 @@
+ ifeq ($(ERLANG_OSTYPE),knytos)
+ # Only the implemented native platform sources. Missing startup, I/O and CPU
+ # accounting remain integration gates; do not import Unix implementations.
+-OS_OBJS = $(KNYTOS_CLOCK_OBJS)
++OS_OBJS = $(KNYTOS_CLOCK_OBJS) $(KNYTOS_PRE_INIT_OBJ)
+ DRV_OBJS =
+ else
+ ifeq ($(TARGET),win32)

@@ -211,6 +211,36 @@ records host error tests, native Gregorian/current-clock tests and signed
 denial/terminal controls. Full ERTS startup, continuous refresh, CPU accounting,
 timer integration and emulator boot remain open.
 
+### Native platform pre-initialization
+
+Add `--native-pre-init` to the native-time configure command to build the
+actual `erts_sys_pre_init` entry point. Run the resulting directory with the
+same `--erts-time-init --erts-platform-build ... --smp 2` guest command above.
+The campaign automatically adds early-startup success and terminal controls.
+
+Pre-init calls native `ethr_init`, then unchanged common
+`erts_init_sys_time_sup`. The latter consumes `sys_init_time`'s prepared native
+record and installs common clock metadata. This profile is startup-only,
+one-shot, headless and unbound. It installs no Unix signal/affinity inheritance
+callbacks. Lock instrumentation and signal-function profiles reject at compile
+time until their initialization contracts are ported.
+
+Native ethread still owns its identity/event registrations. Worker creation
+rejects until separate late initialization has committed the startup event.
+Repeated/worker calls and preparation failures terminate through the qualified
+ethread diagnostic. Missing clock authority after thread commit terminates the
+partial startup domain; the committed prefix cannot be retried. The generated
+Make rules build a separate pre-init archive alongside the four clock objects.
+Actual common-code linkage must pass; archive omission and unsupported-profile
+controls must reject.
+
+See the [qualification](../../docs/reports/milestones/2026-11-28-erts-pre-init.md)
+for common-initializer execution, late/worker handoff, exact join, final local
+owner release and terminal controls. This does not execute common emulator
+`early_init`, the later correction/timer initializer or a complete ERTS startup.
+CPU topology, stack/capacity qualification, remaining platform hooks, continuous
+refresh, I/O and the host bootstrap remain open.
+
 ## Native monotonic clock prerequisite
 
 `erts_monotonic.c` implements OTP's `erts_os_monotonic_time` and

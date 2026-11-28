@@ -1,0 +1,4 @@
+ld.lld: error: undefined symbol: erts_sys_pre_init
+>>> referenced by consumer.c
+>>>               /var/folders/ld/gmfpcx6n12j8w922_4_sbcvc0000gn/T/consumer-16937b.o:(entry)
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

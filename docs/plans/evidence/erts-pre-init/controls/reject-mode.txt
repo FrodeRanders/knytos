@@ -1,0 +1,6 @@
+usage: configure.py [-h] --otp-source OTP_SOURCE --picolibc-source
+                    PICOLIBC_SOURCE --output OUTPUT [--native-ethread]
+                    [--native-clock] [--native-platform] [--native-metadata]
+                    [--native-time] [--native-pre-init]
+                    [--clock-sample-age-ms CLOCK_SAMPLE_AGE_MS]
+configure.py: error: --native-pre-init requires --native-time

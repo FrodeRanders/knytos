@@ -17,7 +17,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def prepare(tree, metadata=False, native_time=False):
+def prepare(tree, metadata=False, native_time=False, native_pre_init=False):
     platform = tree / "erts/emulator/sys/knytos"
     platform.mkdir()
     for name in (*CLOCK_SOURCES, "erl_knytos_sys.h", "erts_monotonic.h", "erts_system_time.h",
@@ -33,9 +33,14 @@ def prepare(tree, metadata=False, native_time=False):
             shutil.copy2(ROOT / "ports/erts" / name, platform)
         subprocess.run(["patch", "-p1", "--batch", "--fuzz=0", "--input",
                         ROOT / "ports/erts/otp-29.1.2-time-supervisor.patch"], cwd=tree, check=True)
+    if native_pre_init:
+        shutil.copy2(ROOT / "ports/erts/erts_pre_init.c", platform)
+        subprocess.run(["patch", "-p1", "--batch", "--fuzz=0", "--input",
+                        ROOT / "ports/erts/otp-29.1.2-pre-init.patch"], cwd=tree, check=True)
 
 
-def qualify(out, tree, sdk, toolchain, age_ms, generate_metadata=False, otp_source=None, native_time=False):
+def qualify(out, tree, sdk, toolchain, age_ms, generate_metadata=False, otp_source=None, native_time=False,
+            native_pre_init=False):
     work = out / "platform"
     work.mkdir()
     build = out / "build"
@@ -71,6 +76,8 @@ def qualify(out, tree, sdk, toolchain, age_ms, generate_metadata=False, otp_sour
         metadata = generate(out, tree, otp_source)
         index = command.index(generated)
         del command[index - 1:index + 1]
+    if native_pre_init:
+        command.append("knytos-pre-init-object")
     with (work / "make.txt").open("w") as log:
         result = subprocess.run(command, cwd=tree / "erts/emulator",
                                 stdout=log, stderr=subprocess.STDOUT)
@@ -89,11 +96,13 @@ def qualify(out, tree, sdk, toolchain, age_ms, generate_metadata=False, otp_sour
     inspection.write_text(".PHONY: knytos-inspect\nknytos-inspect:\n"
                           "\t@echo $(ERLANG_OSTYPE)\n\t@echo $(OPSYS)\n"
                           "\t@echo $(OS_OBJS)\n\t@echo drivers=$(DRV_OBJS)\n")
-    inspect = command[:-1] + ["-f", inspection, "knytos-inspect"]
+    inspect = command[:-(2 if native_pre_init else 1)] + ["-f", inspection, "knytos-inspect"]
     selection = subprocess.check_output(inspect, cwd=tree / "erts/emulator", text=True)
     (work / "selection.txt").write_text(selection)
     rows = selection.splitlines()
     expected = [str(path.relative_to(tree / "erts/emulator")) for path in objects]
+    if native_pre_init:
+        expected.append(f"obj/{TARGET}/opt/emu/erts_pre_init.o")
     if rows[:2] != ["knytos", "knytos"] or rows[2].split() != expected or rows[3] != "drivers=":
         raise SystemExit("Generated Make did not select exactly the implemented native platform sources")
     includes = [tree / "erts" / TARGET, tree / "erts/emulator/beam", tree / "erts/emulator/sys/knytos",
@@ -182,5 +191,8 @@ def qualify(out, tree, sdk, toolchain, age_ms, generate_metadata=False, otp_sour
     if native_time:
         from platform_time import qualify_time
         result["native_time"] = qualify_time(out, tree, sdk, flags, toolchain, result)
+    if native_pre_init:
+        from platform_pre_init import qualify_pre_init
+        result["native_pre_init"] = qualify_pre_init(out, tree, sdk, flags, toolchain, result)
     (work / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     return result

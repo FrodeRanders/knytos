@@ -1,0 +1,8 @@
+ld.lld: error: undefined symbol: ethr_init
+>>> referenced by erts_pre_init.c
+>>>               erts_pre_init.o:(erts_sys_pre_init) in archive /private/tmp/knytos-erts-pre-init-final/pre-init/libknytos_erts_pre_init.a
+
+ld.lld: error: undefined symbol: ethr_fatal_error__
+>>> referenced by erts_pre_init.c
+>>>               erts_pre_init.o:(erts_sys_pre_init) in archive /private/tmp/knytos-erts-pre-init-final/pre-init/libknytos_erts_pre_init.a
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

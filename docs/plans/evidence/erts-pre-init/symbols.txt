@@ -1,0 +1,6 @@
+                 U __stack_chk_fail
+                 U __stack_chk_guard
+                 U erts_init_sys_time_sup
+0000000000000000 T erts_sys_pre_init
+                 U ethr_fatal_error__
+                 U ethr_init

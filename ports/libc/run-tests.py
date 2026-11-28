@@ -398,6 +398,14 @@ def main():
         }
         if platform_build and platform_build.get("native_time"):
             clock_cases[95] = ("c-erts-calendar-failed", 1, "[erts] UTC calendar unavailable stale or out of range")
+    if args.erts_time_init and platform_build and platform_build.get("native_pre_init"):
+        clock_cases.update({
+            96: ("c-erts-pre-init", 2, "ERTS PRE INIT common time metadata early gate late worker handoff and zero owners PASS"),
+            97: ("c-erts-pre-init-repeat", 1, "function=erts_sys_pre_init error=22"),
+            98: ("c-erts-pre-init-keys", 1, "function=erts_sys_pre_init error=11"),
+            99: ("c-erts-pre-init-denied", 1, "[erts] clock initialization failed"),
+            100: ("c-erts-pre-init-worker", 2, "function=erts_sys_pre_init error=13"),
+        })
     worker_cases.update(libc_cases)
     worker_cases.update(mutex_cases)
     worker_cases.update(tse_cases)
@@ -407,7 +415,7 @@ def main():
         if args.smp < 2:
             parser.error("worker fixtures need at least two guest CPUs")
         cases.extend((name, number) for number, (name, _, _) in worker_cases.items())
-    abort_cases = (7, 9, 11, 13, 15, 20, 39, 41, 47, 49, 52, 54, 56, 58, 61, 66, 77, 78, 82, 91, 94, 95)
+    abort_cases = (7, 9, 11, 13, 15, 20, 39, 41, 47, 49, 52, 54, 56, 58, 61, 66, 77, 78, 82, 91, 94, 95, 97, 98, 99, 100)
     cases += CASES[-1:]
     retirement_cases = {}
     retirement_images = [("parked", args.atomvm_shutdown_parked_elf)]
@@ -542,12 +550,17 @@ def main():
                           92: ROOT / "ports/erts/tests/time-init.c",
                           93: ROOT / "ports/erts/tests/time-init.c",
                           94: ROOT / "ports/erts/tests/time-init.c",
-                          95: ROOT / "ports/erts/tests/time-init.c"}.get(number, ROOT / "ports/libc/tests" / source)
+                          95: ROOT / "ports/erts/tests/time-init.c",
+                          96: ROOT / "ports/erts/tests/pre-init.c",
+                          97: ROOT / "ports/erts/tests/pre-init.c",
+                          98: ROOT / "ports/erts/tests/pre-init.c",
+                          99: ROOT / "ports/erts/tests/pre-init.c",
+                          100: ROOT / "ports/erts/tests/pre-init.c"}.get(number, ROOT / "ports/libc/tests" / source)
                 libraries = (["--library", erts_library, "--include", ROOT / "ports/erts"]
                              if number in (57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83) else [])
-                if number in (86, 89, 90, 91, 92, 93, 94, 95):
+                if number in (86, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100):
                     libraries = ["--library", clock_library, "--include", ROOT / "ports/erts"]
-                if number in (92, 93, 94, 95):
+                if number in (92, 93, 94, 95, 96, 97, 98, 99, 100):
                     if platform_build:
                         if platform_build.get("native_time"):
                             calendar_library = platform_root / "time-supervisor/libknytos_erts_calendar.a"
@@ -556,6 +569,15 @@ def main():
                             libraries.extend(("--library", calendar_library,
                                               "--include", ROOT / "ports/erts/tests",
                                               "--define", "KNYTOS_ERTS_CALENDAR_CHECK"))
+                        if number in (96, 97, 98, 99, 100):
+                            pre_init = platform_build["native_pre_init"]
+                            for path, expected_hash in pre_init["libraries_sha256"].items():
+                                if digest(Path(path)) != expected_hash:
+                                    raise RuntimeError("Native pre-init dependency identity mismatch: " + path)
+                                if Path(path) not in (calendar_library, clock_library):
+                                    libraries.extend(("--library", Path(path)))
+                            for include in pre_init["include_directories"]:
+                                libraries.extend(("--include", include))
                         for include in platform_build["include_directories"]:
                             libraries.extend(("--include", include))
                         libraries.extend(("--define", "HAVE_CONFIG_H", "--define", "USE_THREADS",
@@ -641,7 +663,7 @@ def main():
             grants = ["m4.missing=call"] if number in service_workers and number != active_cancel_case else []
             if number == service_case:
                 grants.extend(("time=call", "observe=call"))
-            if number in (84, 87, 89, 92):
+            if number in (84, 87, 89, 92, 96, 97, 98, 100):
                 grants.append("time=call")
             if number == active_cancel_case:
                 grants.append("m4.hold=call")
@@ -832,7 +854,7 @@ def main():
                                 terminal = "[c-runtime] recursive worker exit"
                             if expected not in domain_lines or terminal not in domain_lines:
                                 return False
-                            if number == 92 and platform_build and platform_build.get("native_time"):
+                            if number in (92, 96) and platform_build and platform_build.get("native_time"):
                                 if "ERTS CALENDAR vectors full Gregorian cycle boundaries and UTC policy PASS" not in domain_lines:
                                     return False
                             if number in (15, 20, 77, 78, 82):
